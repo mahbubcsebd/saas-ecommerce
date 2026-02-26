@@ -1,0 +1,5 @@
+﻿app/dashboard/campaigns/new/page.tsx(201,24): error TS2304: Cannot find name 'Badge'.
+app/dashboard/campaigns/new/page.tsx(213,25): error TS2304: Cannot find name 'Badge'.
+app/dashboard/campaigns/new/page.tsx(267,145): error TS2304: Cannot find name 'Badge'.
+app/dashboard/campaigns/new/page.tsx(267,164): error TS2304: Cannot find name 'Badge'.
+app/dashboard/users/new/page.tsx(4,30): error TS2353: Object literal may only specify known properties, and 'userId' does not exist in type 'Promise<{ userId: string; }>'.

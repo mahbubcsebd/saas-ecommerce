@@ -1,0 +1,15 @@
+🔌 Socket.IO initialized
+🚀 Starting application...
+- Node version: v25.2.1
+📦 Loading database config...
+✅ Database config loaded successfully
+🔄 Attempting database connection...
+✅ Database connected successfully
+🔄 Starting server on port 8000
+[2026-02-21 12:03:25] [31merror[39m: UNCAUGHT EXCEPTION! 💥 Shutting down... 
+[2026-02-21 12:03:25] [31merror[39m: Error: listen EADDRINUSE: address already in use :::8000
+Error: listen EADDRINUSE: address already in use :::8000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at startServer (D:\mahbub-shop\backend\server\src\server.js:41:16) 

@@ -1,0 +1,20 @@
+﻿app/dashboard/settings/shipping/ShippingSettingsClient.tsx(20,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(21,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(29,8): error TS2307: Cannot find module '@/components/ui/dialog' or its corresponding type declarations.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(30,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(31,23): error TS2307: Cannot find module '@/components/ui/label' or its corresponding type declarations.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(38,8): error TS2307: Cannot find module '@/components/ui/select' or its corresponding type declarations.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(39,24): error TS2307: Cannot find module '@/components/ui/switch' or its corresponding type declarations.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(40,58): error TS2307: Cannot find module '@/components/ui/tabs' or its corresponding type declarations.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(72,23): error TS2339: Property 'accessToken' does not exist on type 'Session'.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(79,63): error TS2339: Property 'accessToken' does not exist on type 'Session'.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(86,63): error TS2339: Property 'accessToken' does not exist on type 'Session'.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(93,63): error TS2339: Property 'accessToken' does not exist on type 'Session'.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(106,22): error TS2339: Property 'accessToken' does not exist on type 'Session'.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(107,18): error TS2339: Property 'accessToken' does not exist on type 'Session'.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(110,23): error TS2339: Property 'accessToken' does not exist on type 'Session'.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(117,56): error TS2339: Property 'accessToken' does not exist on type 'Session'.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(136,23): error TS2339: Property 'accessToken' does not exist on type 'Session'.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(148,56): error TS2339: Property 'accessToken' does not exist on type 'Session'.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(169,23): error TS2339: Property 'accessToken' does not exist on type 'Session'.
+app/dashboard/settings/shipping/ShippingSettingsClient.tsx(174,63): error TS2339: Property 'accessToken' does not exist on type 'Session'.

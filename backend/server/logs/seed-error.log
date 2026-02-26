@@ -1,0 +1,36 @@
+🌱 Starting comprehensive database seed for Mahbub Shop...
+
+🧹 Cleaning up old data...
+🗑️  Cleanup complete.
+
+👤 User: admin@example.com (ADMIN)
+❌ Seed failed: PrismaClientValidationError: 
+Invalid `prisma.user.create()` invocation in
+D:\mahbub-shop\backend\server\prisma\seed.js:88:36
+
+  85 const users = [];
+  86 
+  87 for (const userData of usersData) {
+→ 88   const user = await prisma.user.create({
+         data: {
+           firstName: "Mahbub",
+           lastName: "User",
+           email: "user@example.com",
+           username: "mahbub_user",
+           role: "USER",
+                 ~~~~~~
+           isActive: true,
+           phone: "+8801900000000",
+           password: "$2b$10$zVa3LuHCBLSJOmCIK7qD7udQKif2yRmO5NL90lU8RvFoaetHAUfpW"
+         }
+       })
+
+Invalid value for argument `role`. Expected UserRole.
+    at wn (D:\mahbub-shop\backend\server\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at $n.handleRequestError (D:\mahbub-shop\backend\server\node_modules\@prisma\client\runtime\library.js:121:6958)
+    at $n.handleAndLogRequestError (D:\mahbub-shop\backend\server\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (D:\mahbub-shop\backend\server\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at async l (D:\mahbub-shop\backend\server\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async main (D:\mahbub-shop\backend\server\prisma\seed.js:88:18) {
+  clientVersion: '5.22.0'
+}
