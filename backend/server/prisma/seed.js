@@ -8,9 +8,15 @@ const usersData = require('./seed-data/users.data');
 const addressesData = require('./seed-data/addresses.data');
 const categoriesData = require('./seed-data/categories.data');
 const productsData = require('./seed-data/products.data');
+const productsExtraData = require('./seed-data/products-extra.data');
 const heroSlidesData = require('./seed-data/hero-slides.data');
 const discountsData = require('./seed-data/discounts.data');
 const settingsData = require('./seed-data/settings.data');
+const shippingData = require('./seed-data/shipping.data');
+const suppliersData = require('./seed-data/suppliers.data');
+
+// Combine products
+const allProductsData = [...productsData, ...productsExtraData];
 
 // Variant creation helper
 const createVariants = (p, variantsData) => {
@@ -28,74 +34,63 @@ const createVariants = (p, variantsData) => {
 };
 
 async function main() {
-  console.log('🌱 Starting comprehensive database seed...\n');
+  console.log('🌱 Starting comprehensive database seed for Mahbub Shop...\n');
 
   // --- 1. Cleanup ---
-  // Helper for safe deletion
   const safeDelete = async (modelName) => {
     try {
       if (prisma[modelName]) {
         await prisma[modelName].deleteMany({});
-        // console.log(`  Deleted ${modelName}`);
       }
     } catch (e) {
       console.warn(`  ⚠️ Failed to delete ${modelName}: ${e.message}`);
     }
   };
 
-  // --- 1. Cleanup ---
   console.log('🧹 Cleaning up old data...');
-  await safeDelete('generalSetting');
-  await safeDelete('currencySetting');
-  await safeDelete('contactSetting');
-  await safeDelete('seoSetting');
-  await safeDelete('emailSetting');
-  await safeDelete('appearanceSetting');
-  await safeDelete('paymentSetting');
-  await safeDelete('orderSetting');
 
-  await safeDelete('stockMovement');
-  await safeDelete('discountUsage');
-  await safeDelete('productDiscount');
-  await safeDelete('discount');
-  await safeDelete('review');
-  await safeDelete('wishlist');
-  await safeDelete('orderItem');
-  await safeDelete('order');
-  await safeDelete('cartItem');
-  await safeDelete('cart');
-  await safeDelete('productVariant');
-  await safeDelete('product');
+  // Specific deletes for self-relations & problematic links
+  await safeDelete('landingPage');
 
-  // Special handling for Category (Hierarchy)
+  const models = [
+    'generalSetting', 'currencySetting', 'contactSetting', 'seoSetting', 'emailSetting', 'appearanceSetting', 'paymentSetting', 'orderSetting',
+    'stockMovement', 'discountUsage', 'productDiscount', 'discount',
+    'review', 'wishlist', 'invoice', 'returnRequest', 'orderItem', 'order', 'cartItem', 'cart',
+    'shippingRate', 'shippingZone', 'purchaseItem', 'purchase', 'supplier',
+    'productVariant', 'product', 'heroSlide', 'address', 'session', 'account'
+  ];
+
+  for (const model of models) {
+      await safeDelete(model);
+  }
+
+  // Categories (Hierarchy)
   try {
     if (prisma.category) {
-       // Delete children first
        await prisma.category.deleteMany({ where: { parentId: { not: null } } });
-       // Delete parents (roots)
        await prisma.category.deleteMany({});
-       // console.log('  Deleted category');
     }
   } catch (e) {
       console.warn(`  ⚠️ Failed to delete category: ${e.message}`);
   }
 
-  await safeDelete('address');
   await safeDelete('user');
-  await safeDelete('heroSlide');
+
   console.log('🗑️  Cleanup complete.\n');
 
   // --- 2. Create Users ---
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash('password123@!', salt);
   const userMap = {};
+  const users = [];
 
   for (const userData of usersData) {
     const user = await prisma.user.create({
       data: { ...userData, password: hashedPassword },
     });
     userMap[userData.email] = user;
-    console.log(`👤 User: ${user.email}`);
+    users.push(user);
+    console.log(`👤 User: ${user.email} (${user.role})`);
   }
 
   // --- 3. Create Addresses ---
@@ -108,15 +103,48 @@ async function main() {
       });
     }
   }
-  console.log(`📍 ${addressesData.length} addresses created\n`);
+  console.log(`📍 Addresses created\n`);
 
-  // --- 4. Create Categories ---
+  // --- 4. Create Shipping Zones & Rates ---
+  console.log(`🚚 Creating Shipping Configuration...`);
+  const zones = [];
+  try {
+    for (const zoneData of shippingData) {
+        const { rates, ...zone } = zoneData;
+        const createdZone = await prisma.shippingZone.create({ data: zone });
+        zones.push(createdZone);
+
+        if (rates && rates.length > 0) {
+        await prisma.shippingRate.createMany({
+            data: rates.map(r => ({ ...r, zoneId: createdZone.id }))
+        });
+        }
+    }
+    console.log(`🚚 ${zones.length} Shipping Zones created\n`);
+  } catch (e) { console.error("❌ Failed Shipping Zones", e.message); }
+
+  // --- 5. Create Suppliers ---
+  console.log(`🏭 Creating Suppliers...`);
+  const suppliers = [];
+  try {
+    for (const supplierData of suppliersData) {
+        const supplier = await prisma.supplier.create({ data: supplierData });
+        suppliers.push(supplier);
+    }
+    console.log(`🏭 ${suppliers.length} Suppliers created\n`);
+  } catch (e) { console.error("❌ Failed Suppliers", e.message); }
+
+
+  // --- 6. Create Categories ---
   const categoryMap = {};
+  console.log(`📂 Creating Categories...`);
   for (const parent of categoriesData) {
     const { children, ...parentData } = parent;
     const createdParent = await prisma.category.create({ data: parentData });
     categoryMap[parent.slug] = createdParent.id;
-    console.log(`📂 ${parent.name}`);
+
+    // Add fallback for generic matching if needed
+    categoryMap[parent.slug.split('-')[0]] = createdParent.id;
 
     if (children && children.length > 0) {
       for (const child of children) {
@@ -127,83 +155,198 @@ async function main() {
       }
     }
   }
-  console.log();
+  console.log(`📂 Categories created\n`);
 
-  // --- 5. Create Products ---
+  // --- 7. Create Products ---
   const productMap = {};
-  console.log(`📦 Creating ${productsData.length} products...\n`);
+  const allProducts = [];
+  console.log(`📦 Creating ${allProductsData.length} products...\n`);
 
-  for (const p of productsData) {
+  for (const p of allProductsData) {
     const { variants, categorySlug, ...data } = p;
-    const categoryId = categoryMap[categorySlug];
+    let categoryId = categoryMap[categorySlug];
+
+    if (!categoryId) {
+        if (categorySlug === 'gym-equipment' || categorySlug === 'jerseys') {
+             categoryId = categoryMap['sports'];
+        }
+    }
 
     if (!categoryId) {
       console.warn(`⚠️  Category '${categorySlug}' not found for ${p.name}`);
-      continue;
+      categoryId = Object.values(categoryMap)[0];
     }
 
-    const createdProduct = await prisma.product.create({
-      data: {
-        ...data,
-        categoryId,
-        sku: `PROD-${data.slug.substring(0, 5).toUpperCase()}-${Math.floor(Math.random() * 100000)}`,
-        barcode: Math.floor(Math.random() * 1000000000000).toString(),
-        stock: variants.length > 0 ? variants.reduce((acc, v) => acc + (v.stock || 20), 0) : 10,
-        status: 'PUBLISHED',
-        variants: { create: createVariants(p, variants) }
-      }
-    });
-    productMap[p.slug] = createdProduct.id;
-    console.log(`  ✅ ${createdProduct.name}`);
-  }
+    try {
+        const createdProduct = await prisma.product.create({
+          data: {
+            ...data,
+            categoryId,
+            sku: `PROD-${data.slug.substring(0, 5).toUpperCase()}-${Math.floor(Math.random() * 100000)}`,
+            barcode: Math.floor(Math.random() * 1000000000000).toString(),
+            stock: variants.length > 0 ? variants.reduce((acc, v) => acc + (v.stock || 20), 0) : 50,
+            status: 'PUBLISHED',
+            variants: { create: createVariants(p, variants) }
+          },
+          include: { variants: true }
+        });
+        productMap[p.slug] = createdProduct.id;
+        allProducts.push(createdProduct);
 
-  // --- 6. Create Discounts ---
-  console.log(`\n💰 Creating discounts...\n`);
-  for (const d of discountsData) {
-    const { categorySlugs, targetProductSlug, ...data } = d;
-
-    // Resolve category IDs
-    if (categorySlugs) {
-      data.categoryIds = categorySlugs.map(slug => categoryMap[slug]).filter(Boolean);
-    }
-
-    const discount = await prisma.discount.create({ data });
-
-    // Link to product if specified
-    if (targetProductSlug && productMap[targetProductSlug]) {
-      await prisma.productDiscount.create({
-        data: {
-          productId: productMap[targetProductSlug],
-          discountId: discount.id
+        // Create Initial Stock Movement (Purchase)
+        if (users.length > 0 && suppliers.length > 0) {
+            await prisma.stockMovement.create({
+                data: {
+                    productId: createdProduct.id,
+                    type: 'PURCHASE',
+                    quantity: createdProduct.stock,
+                    previousQty: 0,
+                    newQty: createdProduct.stock,
+                    reason: 'Initial Seeding',
+                    performedBy: users[0].id, // Admin
+                    supplierId: suppliers[0].id
+                }
+            });
         }
-      });
+        console.log(`  ✅ ${createdProduct.name}`);
+    } catch(e) {
+        console.error(`  ❌ Failed to create product ${p.name}: ${e.message}`);
     }
-    console.log(`  💰 ${discount.code}`);
   }
 
-  // --- 7. Create Hero Slides ---
-  await prisma.heroSlide.createMany({ data: heroSlidesData });
-  console.log(`\n🖼️  ${heroSlidesData.length} hero slides created`);
+  // --- 8. Create Discounts ---
+  console.log(`\n💰 Creating discounts...\n`);
+  try {
+      for (const d of discountsData) {
+        const { categorySlugs, targetProductSlug, ...data } = d;
+        if (categorySlugs) data.categoryIds = categorySlugs.map(slug => categoryMap[slug]).filter(Boolean);
+        const discount = await prisma.discount.create({ data });
+        if (targetProductSlug && productMap[targetProductSlug]) {
+          await prisma.productDiscount.create({
+            data: { productId: productMap[targetProductSlug], discountId: discount.id }
+          });
+        }
+        console.log(`  💰 ${discount.code}`);
+      }
+  } catch (err) {
+      console.error("❌ Failed to create discounts:", err.message);
+  }
 
-  console.log('\n✅ Seed completed!');
-  console.log(`   - ${Object.keys(userMap).length} users`);
-  console.log(`   - ${addressesData.length} addresses`);
-  console.log(`   - ${Object.keys(categoryMap).length} categories`);
-  console.log(`   - ${productsData.length} products`);
-  console.log(`   - ${discountsData.length} discounts`);
-  console.log(`   - ${heroSlidesData.length} hero slides\n`);
+  // --- 9. Create Orders & Reviews ---
+  const normalUser = users.find(u => u.role === 'USER') || users[0];
+  const orderCount = 5;
+  console.log(`\n🛍️  Genearting ${orderCount} dummy orders...`);
 
-  // --- 8. Create Global Settings ---
-  console.log(`⚙️  Seeding Global Settings...`);
-  await prisma.generalSetting.create({ data: settingsData.general });
-  await prisma.currencySetting.create({ data: settingsData.currency });
-  await prisma.contactSetting.create({ data: settingsData.contact });
-  await prisma.seoSetting.create({ data: settingsData.seo });
-  await prisma.emailSetting.create({ data: settingsData.email });
-  await prisma.appearanceSetting.create({ data: settingsData.appearance });
-  await prisma.paymentSetting.create({ data: settingsData.payment });
-  await prisma.orderSetting.create({ data: settingsData.order });
-  console.log(`   - Settings created`);
+  try {
+      for (let i = 0; i < orderCount; i++) {
+            // Pick random products
+            const randomProducts = allProducts.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 3) + 1);
+            if (randomProducts.length === 0) continue;
+
+            const orderItems = [];
+            let subtotal = 0;
+
+            for (const product of randomProducts) {
+                 const variant = product.variants[0]; // Simple logic
+                 const quantity = Math.floor(Math.random() * 2) + 1;
+                 const price = variant ? (variant.sellingPrice || product.sellingPrice) : product.sellingPrice;
+                 const total = price * quantity;
+
+                 orderItems.push({
+                     productId: product.id,
+                     variantId: variant?.id,
+                     name: product.name,
+                     unitPrice: price,
+                     salePrice: price,
+                     quantity,
+                     total
+                 });
+                 subtotal += total;
+
+                 // Advanced Review Seeding
+                 const numReviews = Math.floor(Math.random() * 4); // 0 to 3 reviews per product
+                 for (let r = 0; r < numReviews; r++) {
+                     const statuses = ['PENDING', 'APPROVED', 'REJECTED'];
+                     const status = statuses[Math.floor(Math.random() * statuses.length)];
+                     const comments = [
+                         "Great product! Really loved it.",
+                         "It's decent, but could be better.",
+                         "Worst purchase ever. Do not recommend.",
+                         "Exactly as described. Fast shipping too!",
+                         "Very disappointed with the quality."
+                     ];
+                     const rating = Math.floor(Math.random() * 5) + 1; // 1 to 5
+
+                     await prisma.review.create({
+                         data: {
+                             rating,
+                             comment: comments[Math.floor(Math.random() * comments.length)],
+                             userId: r % 2 === 0 ? normalUser.id : users[Math.floor(Math.random() * users.length)]?.id || normalUser.id,
+                             productId: product.id,
+                             status,
+                             isFlagged: Math.random() > 0.8, // 20% chance of being flagged
+                             adminReply: status === 'REJECTED' ? "We apologize for the inconvenience." : null
+                         }
+                     });
+                 }
+            }
+
+            const shippingCost = 60;
+            const total = subtotal + shippingCost;
+
+            await prisma.order.create({
+                data: {
+                    orderNumber: `ORD-SEED-${1000 + i}`,
+                    invoiceNumber: `INV-SEED-${1000 + i}`,
+                    userId: normalUser.id,
+                    items: { create: orderItems },
+                    source: 'ONLINE',
+                    subtotal,
+                    discountAmount: 0,
+                    vatAmount: 0,
+                    tax: 0,
+                    total,
+                    shippingCost,
+                    paymentMethod: 'COD',
+                    paymentStatus: 'PENDING',
+                    status: 'PENDING',
+                    shippingAddress: {
+                        name: normalUser.firstName,
+                        address: "123 Seed Street",
+                        city: "Dhaka",
+                        phone: "01700000000"
+                    }
+                }
+            });
+      }
+      console.log(`  🛍️ Orders Created`);
+  } catch (err) {
+      console.error("❌ Failed to create orders:", err.message);
+  }
+
+  // --- 10. Hero Slides ---
+  try {
+    await prisma.heroSlide.createMany({ data: heroSlidesData });
+    console.log(`\n🖼️  Hero slides created`);
+  } catch (e) { console.error("❌ Failed Hero Slides", e.message); }
+
+  // --- 11. Global Settings ---
+  try {
+      console.log(`⚙️  Seeding Global Settings...`);
+      await prisma.generalSetting.create({ data: settingsData.general });
+      await prisma.currencySetting.create({ data: settingsData.currency });
+      await prisma.contactSetting.create({ data: settingsData.contact });
+      await prisma.seoSetting.create({ data: settingsData.seo });
+      await prisma.emailSetting.create({ data: settingsData.email });
+      await prisma.appearanceSetting.create({ data: settingsData.appearance });
+      await prisma.paymentSetting.create({ data: settingsData.payment });
+      await prisma.orderSetting.create({ data: settingsData.order });
+      console.log(`   - Settings created`);
+  } catch (e) {
+      console.error("❌ Failed Settings:", e.message);
+  }
+
+  console.log('\n✅ Seed completed Successfully!');
 }
 
 main()

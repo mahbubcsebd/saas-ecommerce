@@ -1,88 +1,56 @@
 const winston = require('winston');
-const fs = require('fs-extra');
-const path = require('node:path');
+const path = require('path');
+const fs = require('fs');
 
 // Ensure logs directory exists
-const logDir = 'logs';
-fs.ensureDirSync(logDir);
+const logDir = path.join(__dirname, '../../logs');
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir, { recursive: true });
+}
 
-// Define colors for different log levels
-const customColors = {
-    error: 'red',
-    warn: 'yellow',
-    info: 'cyan',
-    http: 'magenta',
-    verbose: 'blue',
-    debug: 'green',
-    silly: 'rainbow',
-};
-
-// Add colors to Winston
-winston.addColors(customColors);
-
-// Custom log format with metadata
-const logFormat = winston.format.printf(
-    ({ level, message, timestamp, stack }) => {
-        return `[${timestamp}] ${level.toUpperCase()}: ${stack || message}`;
-    },
+// Define log format
+const logFormat = winston.format.combine(
+  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+  winston.format.errors({ stack: true }), // Capture stack trace
+  winston.format.splat(),
+  winston.format.json()
 );
 
-// Create logger instance
+const consoleFormat = winston.format.combine(
+    winston.format.colorize(),
+    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winston.format.printf(({ timestamp, level, message, stack }) => {
+        return `[${timestamp}] ${level}: ${message} ${stack ? `\n${stack}` : ''}`;
+    })
+);
+
+// Create the logger instance
 const logger = winston.createLogger({
-    level: 'info',
-    format: winston.format.combine(
-        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-        winston.format.errors({ stack: true }), // Ensure error stack traces are logged
-        winston.format.json(),
-        logFormat,
-    ),
-    transports: [
-        // Console log with color and simple format
-        new winston.transports.Console({
-            format: winston.format.combine(
-                winston.format.colorize({ all: true }), // Apply color to full log
-                winston.format.printf(
-                    ({ level, message, timestamp, stack }) => {
-                        return `\x1b[1m[${timestamp}]\x1b[0m ${level}: ${
-                            stack || message
-                        }`;
-                    },
-                ),
-            ),
-        }),
-
-        // Separate file for error logs
-        new winston.transports.File({
-            filename: path.join(logDir, 'error.log'),
-            level: 'error',
-            format: winston.format.combine(
-                winston.format.timestamp(),
-                winston.format.json(),
-            ),
-        }),
-
-        // Combined log file for all levels (info, warn, error, etc.)
-        new winston.transports.File({
-            filename: path.join(logDir, 'combined.log'),
-            format: winston.format.combine(
-                winston.format.timestamp(),
-                winston.format.json(),
-            ),
-        }),
-    ],
+  level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
+  format: logFormat,
+  defaultMeta: { service: 'mahbub-shop-backend' },
+  transports: [
+    // Write all errors to `error.log`
+    new winston.transports.File({
+        filename: path.join(logDir, 'error.log'),
+        level: 'error',
+        maxsize: 5242880, // 5MB
+        maxFiles: 5,
+    }),
+    // Write all logs to `combined.log`
+    new winston.transports.File({
+        filename: path.join(logDir, 'combined.log'),
+        maxsize: 5242880, // 5MB
+        maxFiles: 5,
+    }),
+  ],
 });
 
-// Handle uncaught exceptions & rejections
-logger.exceptions.handle(
-    new winston.transports.File({
-        filename: path.join(logDir, 'exceptions.log'),
-    }),
-);
-
-logger.rejections.handle(
-    new winston.transports.File({
-        filename: path.join(logDir, 'rejections.log'),
-    }),
-);
+// If we're not in production, also log to the console with colorized output
+if (process.env.NODE_ENV !== 'production') {
+  logger.add(new winston.transports.Console({
+    format: consoleFormat,
+  }));
+}
 
 module.exports = logger;

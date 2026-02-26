@@ -1,88 +1,276 @@
 const PDFDocument = require('pdfkit');
 const prisma = require('../config/prisma');
-const { errorResponse } = require('../helpers/responseHandler');
+const { errorResponse, successResponse } = require('../helpers/responseHandler');
+const { generateInvoicePDF } = require('../utils/invoiceGenerator');
+const emailService = require('../services/emailService');
 
 /**
- * Generate Invoice PDF
+ * Get All Invoices
  */
-exports.generateInvoice = async (req, res, next) => {
+exports.getAllInvoices = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { page = 1, limit = 10, search, status } = req.query;
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+
+        const where = {};
+        if (status && status !== 'ALL') where.status = status;
+        if (search) {
+            where.OR = [
+                { invoiceNumber: { contains: search, mode: 'insensitive' } },
+                { order: { orderNumber: { contains: search, mode: 'insensitive' } } },
+                { user: { email: { contains: search, mode: 'insensitive' } } }
+            ];
+        }
+
+        const [invoices, total] = await Promise.all([
+            prisma.invoice.findMany({
+                where,
+                include: {
+                    order: true,
+                    user: {
+                        select: { firstName: true, lastName: true, email: true }
+                    }
+                },
+                orderBy: { createdAt: 'desc' },
+                skip,
+                take: parseInt(limit)
+            }),
+            prisma.invoice.count({ where })
+        ]);
+
+        return successResponse(res, {
+            data: invoices,
+            meta: {
+                total,
+                page: parseInt(page),
+                limit: parseInt(limit),
+                totalPages: Math.ceil(total / limit)
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * Generate Invoice Record for an Order
+ */
+exports.generateInvoiceRecord = async (req, res, next) => {
+    try {
+        const { id } = req.params; // Order ID
 
         const order = await prisma.order.findUnique({
             where: { id },
-             include: {
-                items: {
-                    include: { product: true }
+            include: { user: true }
+        });
+
+        if (!order) return errorResponse(res, { statusCode: 404, message: 'Order not found' });
+
+        let invoice = await prisma.invoice.findUnique({ where: { orderId: order.id } });
+
+        if (invoice) return errorResponse(res, { statusCode: 400, message: 'Invoice already exists for this order' });
+
+        // Generate invoice number
+        const lastInvoice = await prisma.invoice.findFirst({
+            orderBy: { invoiceNumber: 'desc' }
+        });
+
+        const nextNumber = lastInvoice
+            ? parseInt(lastInvoice.invoiceNumber.split('-')[1]) + 1
+            : 1;
+
+        const invoiceNumber = `INV-${String(nextNumber).padStart(6, '0')}`;
+
+        invoice = await prisma.invoice.create({
+            data: {
+                invoiceNumber,
+                orderId: order.id,
+                userId: order.userId,
+                amount: order.total,
+                issueDate: new Date(),
+                dueDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), // 15 days default as per terms in PDF
+                status: order.paymentStatus === 'PAID' ? 'PAID' : 'PENDING'
+            }
+        });
+
+        return successResponse(res, {
+            message: 'Invoice generated successfully',
+            data: invoice
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * Generate Invoice PDF (Download)
+ */
+exports.generateInvoice = async (req, res, next) => {
+    try {
+        const { id } = req.params; // Order ID or Invoice ID
+
+        let order = await prisma.order.findUnique({
+            where: { id },
+            include: {
+                user: true,
+                items: { include: { product: true, variant: true } },
+                soldByUser: { select: { firstName: true, lastName: true } }
+            }
+        });
+
+        // If not found by order id, try finding by invoice id
+        if (!order) {
+            const inv = await prisma.invoice.findUnique({
+                where: { id },
+                include: {
+                    order: {
+                        include: {
+                            user: true,
+                            items: { include: { product: true, variant: true } },
+                            soldByUser: { select: { firstName: true, lastName: true } }
+                        }
+                    }
+                }
+            });
+            if (inv) order = inv.order;
+        }
+
+        if (!order) {
+            return errorResponse(res, { statusCode: 404, message: 'Order/Invoice not found' });
+        }
+
+        // Get or create invoice record
+        let invoice = await prisma.invoice.findUnique({ where: { orderId: order.id } });
+
+        if (!invoice) {
+             const lastInvoice = await prisma.invoice.findFirst({ orderBy: { invoiceNumber: 'desc' } });
+             const nextNumber = lastInvoice ? parseInt(lastInvoice.invoiceNumber.split('-')[1]) + 1 : 1;
+             const invoiceNumber = `INV-${String(nextNumber).padStart(6, '0')}`;
+
+             invoice = await prisma.invoice.create({
+                 data: {
+                     invoiceNumber,
+                     orderId: order.id,
+                     userId: order.userId,
+                     amount: order.total,
+                     issueDate: new Date(),
+                     dueDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+                     status: order.paymentStatus === 'PAID' ? 'PAID' : 'PENDING'
+                 }
+             });
+        }
+
+        const [companySettings, currencySettings] = await Promise.all([
+            prisma.companySetting.findFirst(),
+            prisma.currencySetting.findFirst()
+        ]);
+
+        const doc = new PDFDocument({ size: 'A4', margin: 50, bufferPages: true });
+        const fileName = `${invoice.invoiceNumber}.pdf`;
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+        res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+
+        doc.pipe(res);
+        generateInvoicePDF(doc, { order, invoice, companySettings, currencySettings });
+        doc.end();
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * Send Invoice via Email
+ */
+exports.sendInvoiceEmail = async (req, res, next) => {
+    try {
+        const { id } = req.params; // Invoice ID
+
+        const invoice = await prisma.invoice.findUnique({
+            where: { id },
+            include: {
+                order: {
+                    include: {
+                        user: true,
+                        items: { include: { product: true, variant: true } }
+                    }
                 },
                 user: true
             }
         });
 
-        if (!order) {
-            return errorResponse(res, { statusCode: 404, message: 'Order not found' });
-        }
+        if (!invoice) return errorResponse(res, { statusCode: 404, message: 'Invoice not found' });
 
-        // Create PDF
-        const doc = new PDFDocument({ margin: 50 });
+        const customerEmail = invoice.user?.email || invoice.order?.guestInfo?.email;
+        if (!customerEmail) return errorResponse(res, { statusCode: 400, message: 'Customer email not found' });
 
-        // Stream response
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=invoice-${order.orderNumber}.pdf`);
+        const [companySettings, currencySettings] = await Promise.all([
+            prisma.companySetting.findFirst(),
+            prisma.currencySetting.findFirst()
+        ]);
 
-        doc.pipe(res);
+        // Generate PDF Buffer
+        const doc = new PDFDocument({ size: 'A4', margin: 50 });
+        const buffers = [];
+        doc.on('data', buffers.push.bind(buffers));
 
-        // Header
-        doc.fontSize(20).text('INVOICE', { align: 'center' });
-        doc.moveDown();
-
-        // Company Info (Placeholder)
-        doc.fontSize(12).text('Mahbub Shop');
-        doc.text('Dhaka, Bangladesh');
-        doc.moveDown();
-
-        // Order Info
-        doc.text(`Order Number: ${order.orderNumber}`);
-        doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`);
-        doc.text(`Status: ${order.status}`);
-        doc.moveDown();
-
-        // Customer Info
-        const customerName = order.guestInfo?.name || (order.user ? `${order.user.firstName} ${order.user.lastName}` : 'Guest');
-        doc.text(`Customer: ${customerName}`);
-        doc.moveDown();
-
-        // Table Header
-        doc.text('Item', 50, 250);
-        doc.text('Qty', 300, 250);
-        doc.text('Price', 400, 250);
-        doc.text('Total', 500, 250);
-        doc.moveTo(50, 265).lineTo(550, 265).stroke();
-
-        // Items
-        let y = 280;
-        order.items.forEach(item => {
-            doc.text(item.name.substring(0, 30), 50, y);
-            doc.text(item.quantity.toString(), 300, y);
-            doc.text(item.sellingPrice.toFixed(2), 400, y);
-            doc.text(item.total.toFixed(2), 500, y);
-            y += 20;
+        generateInvoicePDF(doc, {
+            order: invoice.order,
+            invoice,
+            companySettings,
+            currencySettings
         });
-
-        doc.moveTo(50, y + 10).lineTo(550, y + 10).stroke();
-
-        // Totals
-        y += 30;
-        doc.text(`Subtotal: ${order.subtotal.toFixed(2)}`, 400, y);
-        y += 20;
-        if (order.discountAmount > 0) {
-            doc.text(`Discount: -${order.discountAmount.toFixed(2)}`, 400, y);
-            y += 20;
-        }
-        doc.fontSize(14).text(`Total: ${order.total.toFixed(2)}`, 400, y);
 
         doc.end();
 
+        doc.on('end', async () => {
+            const pdfBuffer = Buffer.concat(buffers);
+            const customerName = invoice.user ? `${invoice.user.firstName} ${invoice.user.lastName}` : (invoice.order.walkInName || invoice.order.guestInfo?.name || 'Customer');
+
+            await emailService.sendInvoicePdfEmail({
+                to: customerEmail,
+                name: customerName,
+                invoiceNumber: invoice.invoiceNumber,
+                pdfBuffer
+            });
+
+            return successResponse(res, { message: 'Invoice email sent successfully' });
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * Update Invoice Status
+ */
+exports.updateInvoiceStatus = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body; // PENDING, PAID, OVERDUE, CANCELLED
+
+        const invoice = await prisma.invoice.update({
+            where: { id },
+            data: {
+                status,
+                paidDate: status === 'PAID' ? new Date() : undefined
+            }
+        });
+
+        // Sync with order if status is PAID
+        if (status === 'PAID') {
+            await prisma.order.update({
+                where: { id: invoice.orderId },
+                data: { paymentStatus: 'PAID' }
+            });
+        }
+
+        return successResponse(res, {
+            message: 'Invoice status updated',
+            data: invoice
+        });
     } catch (error) {
         next(error);
     }

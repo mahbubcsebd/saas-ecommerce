@@ -1,419 +1,678 @@
 const prisma = require('../config/prisma');
-const { errorResponse } = require('../helpers/responseHandler');
+const asyncHandler = require('../middlewares/asyncHandler');
+const ApiError = require('../utils/ApiError');
+const { successResponse, createdResponse } = require('../utils/response');
+const { getIO } = require('../socket');
+const {
+  emitOrderUpdate,
+  emitStaffOrderPlaced,
+} = require('../socket/handlers/orderHandler');
 
 // Order Include Helper
 const orderInclude = {
   items: {
     include: {
-      product: { select: { slug: true, images: true } }
-    }
-  }
+      product: { select: { name: true, slug: true, images: true } },
+      variant: { select: { name: true, attributes: true, images: true } },
+    },
+  },
+  user: {
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+    },
+  },
 };
 
 /**
  * Create Order
  */
-exports.createOrder = async (req, res, next) => {
-  try {
-    const userId = req.user?.id;
-    const {
-      sessionId,
-      guestInfo,
-      shippingAddress,
-      paymentMethod,
-      source = 'ONLINE', // ONLINE, POS
-      items: directItems, // Items passed directly (POS)
+exports.createOrder = asyncHandler(async (req, res) => {
+  const userId = req.user?.id;
+  const {
+    sessionId,
+    guestInfo,
+    shippingAddress,
+    paymentMethod,
+    source = 'ONLINE', // ONLINE, POS
+    items: directItems, // Items passed directly (POS)
 
-      // POS specific
-      walkInName,
-      walkInPhone,
-      discount = 0, // value
-      discountType, // PERCENTAGE, FLAT
-      vatPercent = 0,
-      tenderedAmount,
-      changeAmount,
-      soldBy
-    } = req.body;
+    // POS specific
+    walkInName,
+    walkInPhone,
+    discount = 0, // value
+    discountType, // PERCENTAGE, FLAT
+    vatPercent = 0,
+    tenderedAmount,
+    changeAmount,
+    soldBy,
 
-    let orderItemsData = [];
-    let total = 0;
-    let finalTotal = 0;
-    let totalDiscountAmount = 0;
-    let cart; // Fixed scope issue
+    // Online Order specific fields
+    shippingCost = 0,
+    shippingMethod,
+    shippingZoneId,
+    shippingRateId,
+    appliedCoupon,
+    discountAmount: discountAmountFromFront, // Actual amount deducted from frontend
+  } = req.body;
 
-    // ---------------------------------------------------------
-    // 1. Item Retrieval (Cart vs Direct)
-    // ---------------------------------------------------------
-    if (source === 'POS' && directItems && directItems.length > 0) {
-        // Direct items processing for POS
-        for (const item of directItems) {
-            // Fetch product to get latest price/stock
-            // Optimization: could `findMany` but loop is easier for logic now
-            const product = await prisma.product.findUnique({
-                where: { id: item.productId },
-                include: { variants: true }
-            });
+  let orderItemsData = [];
+  let total = 0;
+  let finalTotal = 0;
+  let totalDiscountAmount = 0;
+  let cart;
 
-            if (!product) continue;
+  // ---------------------------------------------------------
+  // 1. Item Retrieval (Cart vs Direct)
+  // ---------------------------------------------------------
+  if (source === 'POS' && directItems && directItems.length > 0) {
+    // Direct items processing for POS
+    for (const item of directItems) {
+      // Fetch product to get latest price/stock
+      // Optimization: could `findMany` but loop is easier for logic now
+      const product = await prisma.product.findUnique({
+        where: { id: item.productId },
+        include: { variants: true },
+      });
 
-            let variant;
-            if (item.variantId) {
-                variant = product.variants.find(v => v.id === item.variantId);
-            }
+      if (!product) continue;
 
-            const basePrice = variant ? (variant.basePrice || product.basePrice) : product.basePrice;
-            const salePrice = variant ? (variant.sellingPrice || product.sellingPrice) : product.sellingPrice;
-            const sku = variant ? variant.sku : product.sku;
-            const name = product.name + (variant ? ` - ${variant.name}` : '');
-
-            // Warranty (Variant overrides Product)
-            const warranty = variant?.warranty || product.warranty;
-
-            // Stock Check
-            const currentStock = variant ? variant.stock : product.stock;
-            if (currentStock < item.quantity) {
-                 return errorResponse(res, { statusCode: 400, message: `Insufficient stock for ${name}` });
-            }
-
-            const itemTotal = salePrice * item.quantity;
-            total += itemTotal;
-
-            orderItemsData.push({
-                productId: item.productId,
-                variantId: item.variantId,
-                name,
-                sku,
-                unitPrice: basePrice,
-                salePrice: salePrice,
-                quantity: item.quantity,
-                total: itemTotal,
-                warranty, // Added warranty
-                // Legacy mapping if needed
-                basePrice,
-                sellingPriceLegacy: salePrice,
-            });
-        }
-    } else {
-        // Existing Cart Logic (Online)
-        if (userId) {
-           cart = await prisma.cart.findFirst({
-            where: { userId },
-            include: { items: { include: { product: true, variant: true } } }
-          });
-        } else if (sessionId) {
-           cart = await prisma.cart.findFirst({
-            where: { sessionId },
-            include: { items: { include: { product: true, variant: true } } }
-          });
-        }
-
-        if (!cart || cart.items.length === 0) {
-          return errorResponse(res, { statusCode: 400, message: 'Cart is empty' });
-        }
-
-        for (const item of cart.items) {
-          const itemSellingPrice = item.variant?.sellingPrice || item.product.sellingPrice;
-          const itemBasePrice = item.variant?.basePrice || item.product.basePrice;
-          const availableStock = item.variant?.stock || item.product.stock;
-          const isPreOrder = item.variant?.isPreOrder || item.product.isPreOrder;
-
-          // Warranty
-          const warranty = item.variant?.warranty || item.product.warranty;
-
-          if (availableStock < item.quantity && !isPreOrder) {
-            return errorResponse(res, {
-              statusCode: 400,
-              message: `Insufficient stock for ${item.product.name}`
-            });
-          }
-
-          const itemTotal = itemSellingPrice * item.quantity;
-          total += itemTotal;
-
-          orderItemsData.push({
-            productId: item.productId,
-            variantId: item.variantId || undefined,
-            name: item.product.name,
-            sku: item.variant?.sku || item.product.slug,
-            unitPrice: itemBasePrice,
-            salePrice: itemSellingPrice,
-            quantity: item.quantity,
-            total: itemTotal,
-            warranty, // Added warranty
-            // Legacy
-            basePrice: itemBasePrice,
-            sellingPriceLegacy: itemSellingPrice,
-          });
-        }
-    }
-
-    // ---------------------------------------------------------
-    // 2. Calculations (Discount, VAT)
-    // ---------------------------------------------------------
-
-    // Apply Discount
-    if (discount > 0) {
-        if (discountType === 'PERCENTAGE') {
-            totalDiscountAmount = (total * discount) / 100;
-        } else {
-            totalDiscountAmount = discount;
-        }
-    }
-
-    let subtotal = total;
-    let afterDiscount = subtotal - totalDiscountAmount;
-
-    // Apply VAT
-    let vatAmount = 0;
-    if (vatPercent > 0) {
-        vatAmount = (afterDiscount * vatPercent) / 100;
-    }
-
-    // Shipping Cost (Online only usually)
-    let shippingCost = 0;
-    // ... (existing shipping calculation if any) ...
-
-    finalTotal = afterDiscount + vatAmount + shippingCost;
-
-
-    // ---------------------------------------------------------
-    // 3. Create Order
-    // ---------------------------------------------------------
-    const prefix = source === 'POS' ? 'POS' : 'ORD';
-    // Generate clearer Unique Order Number: ORD-YYYYMMDD-Random
-    const dateStr = new Date().toISOString().slice(0,10).replace(/-/g,"");
-    const randomStr = Math.random().toString(36).substring(2, 7).toUpperCase();
-    const orderNumber = `${prefix}-${dateStr}-${randomStr}`;
-
-    // Generate Invoice Number: INV-YYYYMMDD-Random
-    // This reduces collision chance significantly compared to just random
-    const invoiceNumber = `INV-${dateStr}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-
-    // Validation
-    if (source === 'ONLINE' && !shippingAddress) {
-        return errorResponse(res, { statusCode: 400, message: 'Shipping address is required for Online orders' });
-    }
-
-    const orderData = {
-        orderNumber,
-        invoiceNumber, // Added invoice number
-        source: source,
-        userId: userId || undefined,
-
-        // Info
-        guestInfo: !userId ? guestInfo : undefined,
-        walkInName,
-        walkInPhone,
-
-        // Financials
-        subtotal,
-        discountType,
-        discountValue: parseFloat(discount),
-        discountAmount: totalDiscountAmount,
-        vatPercent: parseFloat(vatPercent),
-        vatAmount,
-        total: finalTotal,
-
-        // Payment
-        paymentMethod: paymentMethod || 'CASH',
-        paymentStatus: source === 'POS' ? 'PAID' : 'PENDING',
-        tenderedAmount: source === 'POS' ? parseFloat(tenderedAmount) : undefined,
-        changeAmount: source === 'POS' ? parseFloat(changeAmount) : undefined,
-
-        // Status
-        status: source === 'POS' ? 'COMPLETED' : 'PENDING',
-
-        // Fulfillment
-        shippingAddress: shippingAddress || {},
-
-        // Staff
-        soldBy: soldBy || (source === 'POS' ? userId : undefined),
-
-        items: {
-          create: orderItemsData
-        }
-    };
-
-    if (source === 'POS') {
-        orderData.deliveredAt = new Date();
-    }
-
-    const order = await prisma.order.create({
-      data: orderData,
-      include: orderInclude
-    });
-
-    // ---------------------------------------------------------
-    // 4. Stock Updates
-    // ---------------------------------------------------------
-    // Re-iterate items to decrement stock
-    // Note: If using Cart, we iterate cart items. If Direct, we iterate directItems.
-    // Easier to iterate the `orderItemsData` we prepared.
-
-    for (const item of orderItemsData) {
-      let previousQty = 0;
-      let newQty = 0;
-
+      let variant;
       if (item.variantId) {
-        const v = await prisma.productVariant.findUnique({ where: { id: item.variantId }});
-        previousQty = v.stock;
-        await prisma.productVariant.update({
-          where: { id: item.variantId },
-          data: { stock: { decrement: item.quantity } }
-        });
-        // Sync parent
-        await prisma.product.update({
-            where: { id: item.productId },
-            data: { stock: { decrement: item.quantity } }
-        });
-        newQty = previousQty - item.quantity;
-      } else {
-        const p = await prisma.product.findUnique({ where: { id: item.productId }});
-        previousQty = p.stock;
-        await prisma.product.update({
-          where: { id: item.productId },
-          data: { stock: { decrement: item.quantity } }
-        });
-        newQty = previousQty - item.quantity;
+        variant = product.variants.find((v) => v.id === item.variantId);
       }
 
-      await prisma.stockMovement.create({
-          data: {
-              productId: item.productId,
-              variantId: item.variantId,
-              type: 'SALE',
-              quantity: -item.quantity,
-              previousQty,
-              newQty,
-              reason: `Order ${orderNumber}`,
-              performedBy: userId
-          }
+      const basePrice = variant
+        ? variant.basePrice || product.basePrice
+        : product.basePrice;
+      const salePrice = variant
+        ? variant.sellingPrice || product.sellingPrice
+        : product.sellingPrice;
+      const sku = variant ? variant.sku : product.sku;
+      const name = product.name + (variant ? ` - ${variant.name}` : '');
+
+      // Warranty (Variant overrides Product)
+      const warranty = variant?.warranty || product.warranty;
+
+      // Stock Check
+      const currentStock = variant ? variant.stock : product.stock;
+      if (currentStock < item.quantity) {
+        throw ApiError.badRequest(`Insufficient stock for ${name}`);
+      }
+
+      const itemTotal = salePrice * item.quantity;
+      total += itemTotal;
+
+      orderItemsData.push({
+        productId: item.productId,
+        variantId: item.variantId,
+        name,
+        sku,
+        unitPrice: basePrice,
+        salePrice: salePrice,
+        quantity: item.quantity,
+        total: itemTotal,
+        warranty, // Added warranty
+        // Legacy mapping if needed
+        basePrice,
+        sellingPriceLegacy: salePrice,
+      });
+    }
+  } else {
+    // Existing Cart Logic (Online)
+    if (userId) {
+      cart = await prisma.cart.findFirst({
+        where: { userId },
+        include: { items: { include: { product: true, variant: true } } },
+      });
+    } else if (sessionId) {
+      cart = await prisma.cart.findFirst({
+        where: { sessionId },
+        include: { items: { include: { product: true, variant: true } } },
       });
     }
 
-    // Clear Cart (only if Online or if Cart was used)
-    if (source === 'ONLINE' && cart) {
-        await prisma.cart.delete({ where: { id: cart.id } });
+    if (!cart || cart.items.length === 0) {
+      throw ApiError.badRequest('Cart is empty');
     }
 
-    res.status(201).json({
-      success: true,
-      data: order,
-      message: 'Order placed successfully',
-    });
+    for (const item of cart.items) {
+      const itemSellingPrice =
+        item.variant?.sellingPrice || item.product.sellingPrice;
+      const itemBasePrice = item.variant?.basePrice || item.product.basePrice;
+      const availableStock = item.variant?.stock || item.product.stock;
+      const isPreOrder = item.variant?.isPreOrder || item.product.isPreOrder;
 
-  } catch (error) {
-    next(error);
+      // Warranty
+      const warranty = item.variant?.warranty || item.product.warranty;
+
+      if (availableStock < item.quantity && !isPreOrder) {
+        throw ApiError.badRequest(
+          `Insufficient stock for ${item.product.name}`,
+        );
+      }
+
+      const itemTotal = itemSellingPrice * item.quantity;
+      total += itemTotal;
+
+      orderItemsData.push({
+        productId: item.productId,
+        variantId: item.variantId || undefined,
+        name:
+          item.product.name + (item.variant ? ` - ${item.variant.name}` : ''),
+        sku: item.variant?.sku || item.product.slug,
+        unitPrice: itemBasePrice,
+        salePrice: itemSellingPrice,
+        quantity: item.quantity,
+        total: itemTotal,
+        warranty, // Added warranty
+        // Legacy
+        basePrice: itemBasePrice,
+        sellingPriceLegacy: itemSellingPrice,
+      });
+    }
   }
-};
+
+  // ---------------------------------------------------------
+  // 2. Calculations (Discount, VAT)
+  // ---------------------------------------------------------
+
+  // Apply Discount
+  if (discount > 0) {
+    if (discountType === 'PERCENTAGE') {
+      totalDiscountAmount = (total * discount) / 100;
+    } else {
+      totalDiscountAmount = discount;
+    }
+  }
+
+  let subtotal = total;
+  let afterDiscount = subtotal - totalDiscountAmount;
+
+  // Apply VAT
+  let vatAmount = 0;
+  if (vatPercent > 0) {
+    vatAmount = (afterDiscount * vatPercent) / 100;
+  }
+
+  // Shipping Cost
+  // We trust the value from the frontend for now, or could re-calculate
+  const finalShippingCost = parseFloat(shippingCost) || 0;
+
+  finalTotal = afterDiscount + vatAmount + finalShippingCost;
+
+  // ---------------------------------------------------------
+  // 3. Create Order
+  // ---------------------------------------------------------
+  const prefix = source === 'POS' ? 'POS' : 'ORD';
+  // Generate clearer Unique Order Number: ORD-YYYYMMDD-Random
+  const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const randomStr = Math.random().toString(36).substring(2, 7).toUpperCase();
+  const orderNumber = `${prefix}-${dateStr}-${randomStr}`;
+
+  // Generate Invoice Number: INV-YYYYMMDD-Random
+  // This reduces collision chance significantly compared to just random
+  const invoiceNumber = `INV-${dateStr}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+
+  // Validation
+  if (source === 'ONLINE' && !shippingAddress) {
+    throw ApiError.badRequest('Shipping address is required for Online orders');
+  }
+
+  const orderData = {
+    orderNumber,
+    invoiceNumber, // Added invoice number
+    source: source,
+    userId: userId || undefined,
+
+    // Info
+    guestInfo: !userId ? guestInfo : undefined,
+    walkInName,
+    walkInPhone,
+
+    // Financials
+    subtotal,
+    discountType,
+    discountValue: parseFloat(discount),
+    discountAmount:
+      discountAmountFromFront !== undefined
+        ? parseFloat(discountAmountFromFront)
+        : totalDiscountAmount,
+    vatPercent: parseFloat(vatPercent),
+    vatAmount,
+    shippingCost: finalShippingCost,
+    shippingMethod,
+    shippingZoneId,
+    shippingRateId,
+    appliedCoupon,
+    couponDiscount:
+      discountAmountFromFront !== undefined
+        ? parseFloat(discountAmountFromFront)
+        : totalDiscountAmount,
+    total: finalTotal,
+
+    // Payment
+    paymentMethod: paymentMethod || 'CASH',
+    paymentStatus: source === 'POS' ? 'PAID' : 'PENDING',
+    tenderedAmount: source === 'POS' ? parseFloat(tenderedAmount) : undefined,
+    changeAmount: source === 'POS' ? parseFloat(changeAmount) : undefined,
+
+    // Status
+    status: source === 'POS' ? 'COMPLETED' : 'PENDING',
+
+    // Fulfillment
+    shippingAddress: shippingAddress || {},
+
+    // Staff
+    soldBy: soldBy || (source === 'POS' ? userId : undefined),
+
+    items: {
+      create: orderItemsData,
+    },
+  };
+
+  if (source === 'POS') {
+    orderData.deliveredAt = new Date();
+  }
+
+  const order = await prisma.order.create({
+    data: orderData,
+    include: orderInclude,
+  });
+
+  // ---------------------------------------------------------
+  // 4. Stock Updates
+  // ---------------------------------------------------------
+  // Re-iterate items to decrement stock
+  // Note: If using Cart, we iterate cart items. If Direct, we iterate directItems.
+  // Easier to iterate the `orderItemsData` we prepared.
+
+  for (const item of orderItemsData) {
+    let previousQty = 0;
+    let newQty = 0;
+
+    if (item.variantId) {
+      const v = await prisma.productVariant.findUnique({
+        where: { id: item.variantId },
+      });
+      previousQty = v.stock;
+      await prisma.productVariant.update({
+        where: { id: item.variantId },
+        data: { stock: { decrement: item.quantity } },
+      });
+      // Sync parent
+      await prisma.product.update({
+        where: { id: item.productId },
+        data: {
+          stock: { decrement: item.quantity },
+          soldCount: { increment: item.quantity }
+        },
+      });
+      newQty = previousQty - item.quantity;
+    } else {
+      const p = await prisma.product.findUnique({
+        where: { id: item.productId },
+      });
+      previousQty = p.stock;
+      await prisma.product.update({
+        where: { id: item.productId },
+        data: {
+          stock: { decrement: item.quantity },
+          soldCount: { increment: item.quantity }
+        },
+      });
+      newQty = previousQty - item.quantity;
+    }
+
+    await prisma.stockMovement.create({
+      data: {
+        productId: item.productId,
+        variantId: item.variantId,
+        type: 'SALE',
+        quantity: -item.quantity,
+        previousQty,
+        newQty,
+        reason: `Order ${orderNumber}`,
+        performedBy: userId,
+      },
+    });
+  }
+
+  // Clear Cart items but preserve the cart object for recovery analytics
+  if (source === 'ONLINE' && cart) {
+    await prisma.cart.update({
+      where: { id: cart.id },
+      data: {
+        isRecovered: cart.recoveryEmailCount > 0,
+        items: { deleteMany: {} },
+        appliedCoupon: null,
+        discountAmount: 0,
+        subtotal: 0,
+        total: 0
+      }
+    });
+  }
+
+  // Trigger Staff notifications only (no customer notify on order create)
+  try {
+    const io = getIO();
+    await emitStaffOrderPlaced(io, order.id);
+  } catch (ioError) {
+    console.warn('Socket.IO not initialized during order creation notify');
+  }
+
+  // Send order confirmation email to customer (or guest)
+  try {
+    const { sendOrderConfirmationEmail } = require('../services/emailService');
+    const customerEmail = order.user?.email || order.guestInfo?.email;
+    const customerName = order.user
+      ? `${order.user.firstName || ''} ${order.user.lastName || ''}`.trim()
+      : order.guestInfo?.name || 'Customer';
+    if (customerEmail) {
+      await sendOrderConfirmationEmail({
+        to: customerEmail,
+        name: customerName,
+        order,
+      });
+    }
+  } catch (emailErr) {
+    console.warn(
+      'Failed to send order confirmation email:',
+      emailErr?.message || emailErr,
+    );
+  }
+
+  return createdResponse(res, {
+    message: 'Order placed successfully',
+    data: order,
+  });
+});
 
 /**
  * Get My Orders
  */
-exports.getMyOrders = async (req, res, next) => {
-  try {
-    const userId = req.user.id;
-    const orders = await prisma.order.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-      include: orderInclude
-    });
+exports.getMyOrders = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const orders = await prisma.order.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+    include: orderInclude,
+  });
 
-    res.status(200).json({
-      success: true,
-      data: orders,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+  return successResponse(res, {
+    message: 'Orders retrieved successfully',
+    data: orders,
+  });
+});
 
 /**
  * Get All Orders (Admin)
  */
-exports.getAllOrders = async (req, res, next) => {
-  try {
-    const { status, page = 1, limit = 10 } = req.query;
-    const query = {};
-    if (status) query.status = status;
+exports.getAllOrders = asyncHandler(async (req, res) => {
+  const { status, search, startDate, endDate, paymentMethod, userId, page = 1, limit = 10 } = req.query;
+  const query = {};
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-    const take = parseInt(limit);
-
-    const [orders, total] = await Promise.all([
-      prisma.order.findMany({
-        where: query,
-        skip,
-        take,
-        orderBy: { createdAt: 'desc' },
-        include: { user: { select: { email: true, username: true } }, ...orderInclude }
-      }),
-      prisma.order.count({ where: query }),
-    ]);
-
-    res.status(200).json({
-      success: true,
-      data: orders,
-      pagination: {
-        total,
-        page: parseInt(page),
-        pages: Math.ceil(total / take)
-      }
-    });
-  } catch (error) {
-    next(error);
+  if (status && status !== 'ALL') {
+    query.status = status;
   }
-};
+
+  if (userId) {
+    query.userId = userId;
+  }
+
+  if (paymentMethod) {
+    query.paymentMethod = paymentMethod;
+  }
+
+  // Date filtering
+  if (startDate || endDate) {
+    query.createdAt = {};
+    if (startDate) query.createdAt.gte = new Date(startDate);
+    if (endDate) query.createdAt.lte = new Date(endDate);
+  }
+
+  // Search by orderNumber or customer info
+  if (search) {
+    query.OR = [
+      { orderNumber: { contains: search, mode: 'insensitive' } },
+      { invoiceNumber: { contains: search, mode: 'insensitive' } },
+      { user: { firstName: { contains: search, mode: 'insensitive' } } },
+      { user: { lastName: { contains: search, mode: 'insensitive' } } },
+      { user: { email: { contains: search, mode: 'insensitive' } } },
+      { walkInPhone: { contains: search, mode: 'insensitive' } }
+    ];
+  }
+
+  const skip = (parseInt(page) - 1) * parseInt(limit);
+  const take = parseInt(limit);
+
+  const [orders, total] = await Promise.all([
+    prisma.order.findMany({
+      where: query,
+      skip,
+      take,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        ...orderInclude,
+      },
+    }),
+    prisma.order.count({ where: query }),
+  ]);
+
+  return successResponse(res, {
+    message: 'Orders retrieved successfully',
+    data: orders,
+    pagination: {
+      total,
+      page: parseInt(page),
+      pages: Math.ceil(total / take),
+    },
+  });
+});
 
 /**
  * Update Order Status (Admin)
  */
-exports.updateOrderStatus = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const { status } = req.body; // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+exports.updateOrderStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
 
-    const order = await prisma.order.update({
-      where: { id },
-      data: { status },
-    });
+  // Get current order with items to check if we need to revert stock
+  const currentOrder = await prisma.order.findUnique({
+    where: { id },
+    include: { items: true }
+  });
 
-    res.status(200).json({
-      success: true,
-      data: order,
-      message: `Order status updated to ${status}`,
-    });
-  } catch (error) {
-    next(error);
+  if (!currentOrder) {
+    throw ApiError.notFound('Order not found');
   }
-};
+
+  const order = await prisma.order.update({
+    where: { id },
+    data: { status },
+  });
+
+  // If order is being CANCELLED, revert stock and decrement soldCount
+  if (status === 'CANCELLED' && currentOrder.status !== 'CANCELLED') {
+    for (const item of currentOrder.items) {
+      if (item.productId) {
+        await prisma.product.update({
+          where: { id: item.productId },
+          data: {
+            stock: { increment: item.quantity },
+            soldCount: { decrement: item.quantity }
+          }
+        });
+
+        // Also update variant stock if applicable
+        if (item.variantId) {
+          await prisma.productVariant.update({
+            where: { id: item.variantId },
+            data: { stock: { increment: item.quantity } }
+          });
+        }
+      }
+    }
+  }
+
+  // Trigger Real-time notifications for status update
+  try {
+    const io = getIO();
+    await emitOrderUpdate(io, order.id);
+  } catch (ioError) {
+    console.warn('Socket.IO not initialized during order status update notify');
+  }
+
+  return successResponse(res, {
+    message: `Order status updated to ${status}`,
+    data: order,
+  });
+});
+
+/**
+ * Update Payment Status (Admin)
+ */
+exports.updatePaymentStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { paymentStatus } = req.body; // PENDING, PAID, FAILED, REFUNDED
+
+  const order = await prisma.order.update({
+    where: { id },
+    data: { paymentStatus },
+    include: {
+      user: { select: { id: true, firstName: true, lastName: true } },
+    },
+  });
+
+  try {
+    if (order.userId) {
+      const { sendNotification } = require('./notification.controller');
+      const type =
+        paymentStatus === 'PAID'
+          ? 'PAYMENT_SUCCESS'
+          : paymentStatus === 'FAILED'
+            ? 'PAYMENT_FAILED'
+            : 'PAYMENT_UPDATE';
+      await sendNotification(order.userId, {
+        type,
+        title:
+          paymentStatus === 'PAID'
+            ? 'Payment Successful'
+            : paymentStatus === 'FAILED'
+              ? 'Payment Failed'
+              : 'Payment Update',
+        message: `Order #${order.orderNumber || order.id} payment status: ${paymentStatus}`,
+        data: { orderId: order.id, url: `/orders/${order.id}` },
+      });
+    }
+  } catch (notifyErr) {
+    console.warn(
+      'Payment status notify error:',
+      notifyErr?.message || notifyErr,
+    );
+  }
+
+  return successResponse(res, {
+    message: `Payment status updated to ${paymentStatus}`,
+    data: order,
+  });
+});
+
 /**
  * Get Single Order (Public/Shared)
  */
-exports.getOrder = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const order = await prisma.order.findUnique({
-      where: { id },
-      include: {
-        items: {
-          include: {
-            product: true
-          }
+exports.getOrder = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const order = await prisma.order.findUnique({
+    where: { id },
+    include: {
+      items: {
+        include: {
+          product: true,
+          variant: true,
         },
-        user: { select: { email: true, firstName: true, lastName: true, phone: true, address: true } }
-      }
-    });
+      },
+      user: {
+        select: {
+          email: true,
+          firstName: true,
+          lastName: true,
+          phone: true,
+          address: true,
+        },
+      },
+      soldByUser: { select: { firstName: true, lastName: true } },
+    },
+  });
 
-    if (!order) {
-      return errorResponse(res, { statusCode: 404, message: 'Order not found' });
-    }
-
-    res.status(200).json({
-      success: true,
-      data: order
-    });
-  } catch (error) {
-    next(error);
+  if (!order) {
+    throw ApiError.notFound('Order not found');
   }
-};
+
+  return successResponse(res, {
+    message: 'Order retrieved successfully',
+    data: order,
+  });
+});
+
+/**
+ * Bulk Update Order Status (Admin)
+ */
+exports.bulkUpdateStatus = asyncHandler(async (req, res) => {
+  const { ids, status } = req.body;
+
+  if (!ids || !Array.isArray(ids) || ids.length === 0) {
+    throw ApiError.badRequest('Order IDs are required as an array');
+  }
+
+  // We loop to ensure stock reversal logic triggers if needed for each
+  // Alternatively, use updateMany if no stock logic is needed, but here we want to be safe
+  const results = [];
+  for (const id of ids) {
+    try {
+      // Re-using the logic from updateOrderStatus or similar
+      const currentOrder = await prisma.order.findUnique({
+        where: { id },
+        include: { items: true }
+      });
+
+      if (!currentOrder) continue;
+
+      const updated = await prisma.order.update({
+        where: { id },
+        data: { status }
+      });
+
+      // Stock Reversal for CANCELLED
+      if (status === 'CANCELLED' && currentOrder.status !== 'CANCELLED') {
+        for (const item of currentOrder.items) {
+          if (item.productId) {
+            await prisma.product.update({
+              where: { id: item.productId },
+              data: {
+                stock: { increment: item.quantity },
+                soldCount: { decrement: item.quantity }
+              }
+            });
+            if (item.variantId) {
+              await prisma.productVariant.update({
+                where: { id: item.variantId },
+                data: { stock: { increment: item.quantity } }
+              });
+            }
+          }
+        }
+      }
+      results.push(updated);
+    } catch (err) {
+      console.error(`Bulk update failed for ${id}:`, err.message);
+    }
+  }
+
+  return successResponse(res, {
+    message: `Successfully updated ${results.length} orders to ${status}`,
+    data: results,
+  });
+});

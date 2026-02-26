@@ -1,0 +1,48 @@
+// ==================== LANDING PAGE / SALES FUNNEL ====================
+model LandingPageUnique {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  slug  String @unique // URL: /landing/headphone-offer
+  title String // Internal title
+
+  // Linked Product (for checkout)
+  productId String  @db.ObjectId
+  // MongoDB does not support referential actions; handle delete/update behavior in application code
+  product   Product @relation(fields: [productId], references: [id])
+
+  // Hero Section
+  heroHeadline    String
+  heroSubheadline String?
+  heroImage       String? // Cloudinary URL
+  heroVideo       String? // YouTube/Vimeo ID or URL
+  isVideoHero     Boolean @default(false)
+
+  // Content
+  description String? // Rich Text (HTML)
+  features    Json? // Array of { title, description, icon }
+
+  // Social Proof
+  testimonials Json? // Array of { name, review, rating, image }
+
+  // Urgency
+  showTimer    Boolean   @default(false)
+  offerEndTime DateTime?
+
+  // Design
+  themeColor String @default("#3b82f6") // Primary color
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+
+  // Analytics
+  viewCount  Int @default(0)
+  orderCount Int @default(0)
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productId]) // Ensure one landing page per product
+  @@map("landing_pages_unique")
+}

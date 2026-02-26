@@ -8,59 +8,356 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  avatar    String?
-  firstName String
-  lastName  String
-  email     String   @unique
-  username  String   @unique
-  password  String
-  role      UserRole @default(USER)
-  isActive  Boolean  @default(true)
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  avatar      String?
+  firstName   String
+  lastName    String
+  email       String     @unique
+  username    String     @unique
+  password    String
+  role        UserRole   @default(CUSTOMER)
+  isActive    Boolean    @default(true) // Consider deprecating in favor of status
+  status      UserStatus @default(ACTIVE)
+  permissions String[] // Granular permissions: ["manage_orders", "edit_products"]
+
+  customRoleId String?     @db.ObjectId
+  customRole   CustomRole? @relation(fields: [customRoleId], references: [id])
+
+  groupId String?        @db.ObjectId
+  group   CustomerGroup? @relation("CustomerGroupUsers", fields: [groupId], references: [id])
+
+  // Invitation & Password Reset
+  invitationToken      String?
+  invitationSentAt     DateTime?
+  invitationExpiry     DateTime?
+  passwordResetToken   String?
+  passwordResetExpires DateTime?
+
+  // Account verification
+  isEmailVerified              Boolean   @default(false)
+  emailVerifiedAt              DateTime?
+  emailVerificationToken       String?
+  emailVerificationTokenExpiry DateTime?
 
   phone   String?
   address String?
   website String?
   bio     String?
+  dob     DateTime?
 
   refreshToken        String?
   refreshTokenExpires DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  createdBy     String? @db.ObjectId
+  createdByUser User?   @relation("CreatedUsers", fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdUsers  User[]  @relation("CreatedUsers")
 
   addresses Address[]
   orders    Order[]
   reviews   Review[]
   wishlist  Wishlist[]
-  cart      Cart?
+  carts     Cart[]
 
-  staffSales Order[] @relation("StaffSales")
+  staffSales Order[]   @relation("StaffSales")
+  invoices   Invoice[]
+
+  createdProducts   Product[]  @relation("CreatedProducts")
+  createdCategories Category[] @relation("CreatedCategories")
+
+  returns ReturnRequest[]
+
+  aiQueries AIQuery[]
+
+  damageReports DamageReport[]
+
+  // Notifications & Chat
+  notifications   Notification[]
+  sentMessages    ChatMessage[]  @relation("SentMessages")
+  conversationIds String[]       @db.ObjectId
+  conversations   Conversation[] @relation("ConversationParticipants", fields: [conversationIds], references: [id])
+  assignedChats   Conversation[] @relation("AssignedConversations")
+
+  createdLandingPages LandingPage[]   @relation("LandingPageCreator")
+  activities          StaffActivity[]
+
+  isOnline Boolean   @default(false)
+  lastSeen DateTime?
+  socketId String? // Current socket connection
+  backups  Backup[]
+}
+
+model CustomerGroup {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  name          String  @unique
+  description   String?
+  discountType  String  @default("PERCENTAGE") // PERCENTAGE or FLAT
+  discountValue Float   @default(0)
+  isActive      Boolean @default(true)
+
+  users User[] @relation("CustomerGroupUsers")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==================== NOTIFICATIONS ====================
+model Notification {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  type    NotificationType
+  title   String
+  message String
+  data    Json? // Extra data (orderId, productId, etc)
+
+  isRead Boolean   @default(false)
+  readAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+}
+
+// ==================== STAFF ACTIVITY ====================
+model StaffActivity {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  action   String // e.g., "UPDATE_PRODUCT", "DELETE_ORDER"
+  target   String // e.g., "Product: iPhone 13", "Order #ORD-1234"
+  metadata Json? // Before/After changes, etc.
+
+  ipAddress String?
+  userAgent String?
+  timestamp DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([timestamp])
+}
+
+enum NotificationType {
+  // CUSTOMER
+  ORDER_PLACED
+  ORDER_CONFIRMED
+  ORDER_PROCESSING
+  ORDER_SHIPPED
+  ORDER_OUT_FOR_DELIVERY
+  ORDER_DELIVERED
+  ORDER_CANCELLED
+  ORDER_REFUND_INITIATED
+  ORDER_REFUND_COMPLETED
+
+  PAYMENT_SUCCESS
+  PAYMENT_FAILED
+  PAYMENT_PENDING
+
+  PRODUCT_BACK_IN_STOCK
+  PRICE_DROP
+  WISHLIST_ITEM_LOW_STOCK
+  PRODUCT_REVIEW_RESPONSE
+
+  FLASH_SALE_STARTED
+  COUPON_EXPIRING
+  POINTS_EARNED
+  BIRTHDAY_OFFER
+
+  WELCOME
+  PASSWORD_CHANGED
+  LOGIN_NEW_DEVICE
+  ACCOUNT_VERIFIED
+
+  SUPPORT_MESSAGE_REPLY
+  TICKET_RESOLVED
+  TICKET_REOPENED
+
+  // ADMIN
+  NEW_ORDER
+  ORDER_PAYMENT_RECEIVED
+  ORDER_CANCELLED_BY_USER
+  ORDER_PENDING_APPROVAL
+  BULK_ORDER
+
+  STOCK_LOW
+  STOCK_OUT
+  PRODUCT_RESTOCK_NEEDED
+  EXPIRING_PRODUCTS
+
+  DAILY_SALES_TARGET
+  SALES_MILESTONE
+  REVENUE_DROP
+  HIGH_VALUE_TRANSACTION
+
+  NEW_CUSTOMER
+  VIP_CUSTOMER_ORDER
+  CART_ABANDONMENT
+
+  NEW_PRODUCT_REVIEW
+  NEGATIVE_REVIEW
+  PRODUCT_QUESTION
+
+  NEW_CHAT_MESSAGE
+  SUPPORT_TICKET
+  URGENT_TICKET
+  UNATTENDED_CHAT
+
+  SUSPICIOUS_ACTIVITY
+  PAYMENT_GATEWAY_DOWN
+  REFUND_REQUEST
+  STAFF_LOGIN
+
+  DAILY_REPORT
+  WEEKLY_SUMMARY
+  TOP_PRODUCT_ALERT
+
+  SYSTEM_ALERT // Generic
+}
+
+// ==================== LIVE CHAT ====================
+model ChatMessage {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  conversationId String       @db.ObjectId
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+
+  senderId String @db.ObjectId
+  sender   User   @relation("SentMessages", fields: [senderId], references: [id])
+
+  message     String
+  attachments String[] // URLs
+
+  type String @default("TEXT") // TEXT, IMAGE, FILE
+
+  replyToId String?       @db.ObjectId
+  replyTo   ChatMessage?  @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies   ChatMessage[] @relation("MessageReplies")
+
+  reactions Json? // Array of { emoji: string, userIds: string[] }
+
+  isEdited  Boolean   @default(false)
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  isRead Boolean   @default(false)
+  readAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@index([createdAt])
+}
+
+model Conversation {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  participantIds String[] @db.ObjectId
+  participants   User[]   @relation("ConversationParticipants", fields: [participantIds], references: [id])
+
+  type   ConversationType   @default(SUPPORT)
+  status ConversationStatus @default(OPEN)
+
+  lastMessage   String?
+  lastMessageAt DateTime?
+
+  assignedTo    String? @db.ObjectId
+  assignedAdmin User?   @relation("AssignedConversations", fields: [assignedTo], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  messages ChatMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([lastMessageAt])
+}
+
+enum ConversationType {
+  SUPPORT // Customer support
+  ORDER // Order-related
+  GENERAL // General inquiry
+}
+
+enum ConversationStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+// ==================== HERO SLIDES ====================
+model HeroSlide {
+  id        String            @id @default(auto()) @map("_id") @db.ObjectId
+  image     String // Cloudinary URL
+  title     String?
+  subtitle  String?
+  linkType  HeroSlideLinkType @default(NONE)
+  linkValue String? // ID or URL
+  isActive  Boolean           @default(true)
+  startDate DateTime?
+  endDate   DateTime?
+  order     Int               @default(0)
+
+  translations HeroSlideTranslation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("hero_slides")
 }
 
 enum UserRole {
+  SUPER_ADMIN
   ADMIN
-  MODERATOR
-  USER
-  SUPERADMIN
-  STAFF     // New for POS
-  CUSTOMER  // New (Explicit customer role)
+  MANAGER
+  STAFF
+  STAFFER
+  CUSTOMER
+}
+
+model CustomRole {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  description String?
+  permissions String[] // ["product.read", "product.update", "order.all"]
+
+  users User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("custom_roles")
 }
 
 model Address {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String?  @db.ObjectId
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId String? @db.ObjectId
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  type      String   @default("Home") // Home, Office, Other
-  name      String   // Recipient Name
-  phone     String
-  street    String
-  city      String
-  state     String?
-  zipCode   String
-  country   String   @default("Bangladesh")
+  type    String  @default("Home") // Home, Office, Other
+  name    String // Recipient Name
+  phone   String
+  street  String
+  city    String
+  state   String?
+  zipCode String
+  country String  @default("Bangladesh")
 
-  isDefault Boolean  @default(false)
+  isDefault Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -68,54 +365,53 @@ model Address {
 
 // ... Product models remain same ...
 
-
-
 model Product {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
   name        String
-  slug        String   @unique
+  slug        String @unique
   description String
 
   // Pricing
-  basePrice       Float    // Original price
-  sellingPrice    Float    // Current selling price (after discount)
-  costPrice       Float?   // Your purchase cost (for profit calculation)
+  basePrice    Float // Original price
+  sellingPrice Float // Current selling price (after discount)
+  costPrice    Float? // Your purchase cost (for profit calculation)
 
   // Stock & Inventory
-  sku             String?  @unique  // Main SKU
-  barcode         String?  @unique  // EAN/UPC barcode
-  stock           Int      @default(0)
-  lowStockAlert   Int?     @default(10) // Alert when stock <= this
-  trackInventory  Boolean  @default(true)
+  sku            String? @unique // Main SKU
+  barcode        String? @unique // EAN/UPC barcode
+  stock          Int     @default(0)
+  minStockLevel  Int     @default(5) // New: threshold for low stock alert
+  lowStockAlert  Int?    @default(10) // Kept for safety/compatibility
+  trackInventory Boolean @default(true)
 
   // Product Info
-  images          String[]
-  categoryId      String   @db.ObjectId
-  category        Category @relation(fields: [categoryId], references: [id])
-  brand           String?
-  tags            String[]
+  images     String[]
+  categoryId String   @db.ObjectId
+  category   Category @relation(fields: [categoryId], references: [id])
+  brand      String?
+  tags       String[]
 
   // Weight & Dimensions (for shipping)
-  weight          Float?   // in kg
-  length          Float?   // in cm
-  width           Float?
-  height          Float?
+  weight Float? // in kg
+  length Float? // in cm
+  width  Float?
+  height Float?
 
   // Status
-  status          ProductStatus @default(DRAFT)
-  isNewArrival    Boolean       @default(false)
-  isFeatured      Boolean       @default(false)
+  status       ProductStatus @default(DRAFT)
+  isNewArrival Boolean       @default(false)
+  isFeatured   Boolean       @default(false)
 
   // Home Page Display Control
-  isHomeShown     Boolean       @default(false)  // Show in home page category slider
-  homeOrder       Int           @default(0)      // Order in home page slider
+  isHomeShown Boolean @default(false) // Show in home page category slider
+  homeOrder   Int     @default(0) // Order in home page slider
 
   // Shipping & Pre-order
-  isFreeShipping  Boolean       @default(false)
-  isPreOrder      Boolean       @default(false)
+  isFreeShipping Boolean @default(false)
+  isPreOrder     Boolean @default(false)
 
   // Warranty
-  warranty        String?       // e.g. "1 Year Official Warranty"
+  warranty String? // e.g. "1 Year Official Warranty"
 
   // SEO
   metaTitle       String?
@@ -124,56 +420,110 @@ model Product {
   ogImage         String?
 
   // Analytics
-  viewCount       Int      @default(0)
-  soldCount       Int      @default(0)
+  viewCount Int @default(0)
+  soldCount Int @default(0)
 
   // Relations
-  cartItems       CartItem[]
-  orderItems      OrderItem[]
-  purchaseItems   PurchaseItem[]
-  reviews         Review[]
-  variants        ProductVariant[]
-  wishlistItems   Wishlist[]
-  discounts       ProductDiscount[] // Link to applicable discounts
+  cartItems         CartItem[]
+  orderItems        OrderItem[]
+  purchaseItems     PurchaseItem[]
+  reviews           Review[]
+  variants          ProductVariant[]
+  wishlistItems     Wishlist[]
+  discounts         ProductDiscount[] // Link to applicable discounts
+  returns           ReturnRequest[]
+  translations      ProductTranslation[]
+  landingPages      LandingPage[]
+  damageReports     DamageReport[]
+  stockMovements    StockMovement[]
+  flashSaleProducts FlashSaleProduct[]
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  taxClassId String?   @db.ObjectId
+  taxClass   TaxClass? @relation(fields: [taxClassId], references: [id])
+
+  createdById       String?            @db.ObjectId
+  createdBy         User?              @relation("CreatedProducts", fields: [createdById], references: [id])
+  landingPageUnique LandingPageUnique?
 
   @@index([categoryId])
   @@index([status])
 }
 
-model ProductVariant {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  productId   String   @db.ObjectId
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+// ==================== LANDING PAGE / SALES FUNNEL ====================
+model LandingPageUnique {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  slug  String @unique
+  title String
 
-  name        String   // e.g. "Red / XL"
-  sku         String   @unique  // Unique SKU for this variant
-  barcode     String?  @unique  // Unique barcode
+  productId String  @db.ObjectId @unique
+  product   Product @relation(fields: [productId], references: [id])
+
+  heroHeadline    String
+  heroSubheadline String?
+  heroImage       String?
+  heroVideo       String?
+  isVideoHero     Boolean @default(false)
+
+  description  String?
+  features     Json?
+  testimonials Json?
+
+  showTimer    Boolean   @default(false)
+  offerEndTime DateTime?
+
+  themeColor String @default("#3b82f6")
+
+  metaTitle       String?
+  metaDescription String?
+
+  viewCount  Int @default(0)
+  orderCount Int @default(0)
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("landing_pages_unique")
+}
+
+model ProductVariant {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  productId String  @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  name    String // e.g. "Red / XL"
+  sku     String  @unique // Unique SKU for this variant
+  barcode String? @unique // Unique barcode
 
   // Pricing
-  basePrice   Float?   // Override base price
-  sellingPrice Float?  // Override selling price
-  costPrice   Float?
+  basePrice    Float? // Override base price
+  sellingPrice Float? // Override selling price
+  costPrice    Float?
 
-  stock       Int      @default(0)
-  attributes  Json?    // { color: "Red", size: "XL" }
-  images      String[] // Variant specific images
+  stock         Int      @default(0)
+  minStockLevel Int      @default(2) // New: threshold for variant low stock alert
+  attributes    Json? // { color: "Red", size: "XL" }
+  images        String[] // Variant specific images
 
-  isActive    Boolean  @default(true)
+  damageReports  DamageReport[]
+  stockMovements StockMovement[]
+
+  isActive Boolean @default(true)
 
   isFreeShipping Boolean? // Override product toggle
   isPreOrder     Boolean? // Override product toggle
-  warranty       String?  // Override product warranty
+  warranty       String? // Override product warranty
 
-  cartItems   CartItem[] // Back-relation for cart items
+  cartItems     CartItem[] // Back-relation for cart items
   purchaseItems PurchaseItem[]
   orderItems    OrderItem[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([productId])
 }
@@ -183,74 +533,109 @@ model ProductVariant {
 // ============================================
 
 enum DiscountType {
-  PERCENTAGE      // 20% off
-  FLAT            // $10 off
-  BUY_X_GET_Y     // Buy 2 Get 1
-  FREE_SHIPPING   // Free delivery
+  PERCENTAGE // 20% off
+  FLAT // $10 off
+  BUY_X_GET_Y // Buy 2 Get 1
+  FREE_SHIPPING // Free delivery
 }
 
 enum DiscountApplicableOn {
-  PRODUCT         // Specific products
-  CATEGORY        // All products in category
-  BRAND           // All products of brand
-  CART            // Entire cart
-  SHIPPING        // Shipping cost
+  PRODUCT // Specific products
+  CATEGORY // All products in category
+  BRAND // All products of brand
+  CART // Entire cart
+  SHIPPING // Shipping cost
 }
 
 model Discount {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   // Basic Info
-  name            String   // Internal name: "Black Friday Sale"
-  code            String?  @unique // Coupon code: "SAVE20"
-  description     String?
+  name        String // Internal name: "Black Friday Sale"
+  code        String? @unique // Coupon code: "SAVE20"
+  description String?
 
   // Discount Config
-  type            DiscountType
-  applicableOn    DiscountApplicableOn
-  value           Float    // Percentage or flat amount
+  type         DiscountType
+  applicableOn DiscountApplicableOn
+  value        Float // Percentage or flat amount
 
   // Buy X Get Y Config (if type is BUY_X_GET_Y)
-  buyQuantity     Int?     @default(0)
-  getQuantity     Int?     @default(0)
+  buyQuantity Int? @default(0)
+  getQuantity Int? @default(0)
 
   // Validity
-  startDate       DateTime
-  endDate         DateTime?
-  isActive        Boolean  @default(true)
+  startDate DateTime
+  endDate   DateTime?
+  isActive  Boolean   @default(true)
 
   // Usage Limits
-  usageLimit      Int?     // Total uses allowed
-  usageCount      Int      @default(0)
-  perUserLimit    Int?     @default(1) // Uses per customer
+  usageLimit   Int? // Total uses allowed
+  usageCount   Int  @default(0)
+  perUserLimit Int? @default(1) // Uses per customer
 
   // Conditions
-  minOrderValue   Float?   @default(0)
-  maxDiscountCap  Float?   // Max discount amount for percentage
+  minOrderValue  Float? @default(0)
+  maxDiscountCap Float? // Max discount amount for percentage
 
   // Targeting (can apply to multiple)
-  categoryIds     String[] @db.ObjectId // Empty = all categories
-  brandNames      String[] // Empty = all brands
+  categoryIds String[] @db.ObjectId // Empty = all categories
+  brandNames  String[] // Empty = all brands
 
   // NEW FIELDS
   allowedCountries String[] // ISO codes
   excludedProducts String[] @db.ObjectId
   allowedUserIds   String[] @db.ObjectId
+  allowedGroupIds  String[] @db.ObjectId
   newUsersOnly     Boolean  @default(false)
 
   // Priority (higher = applied first)
-  priority        Int      @default(0)
+  priority Int @default(0)
 
   // Stackable with other discounts?
-  isStackable     Boolean  @default(false)
+  isStackable Boolean @default(false)
 
   // Relations
   productDiscounts ProductDiscount[]
+  usages           DiscountUsage[]
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([isActive])
+}
+
+model FlashSale {
+  id          String             @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean            @default(true)
+  products    FlashSaleProduct[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([startDate, endDate])
+}
+
+model FlashSaleProduct {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  flashSaleId String    @db.ObjectId
+  flashSale   FlashSale @relation(fields: [flashSaleId], references: [id], onDelete: Cascade)
+  productId   String    @db.ObjectId
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  discountType  DiscountType @default(PERCENTAGE)
+  discountValue Float
+  salePrice     Float
+  stockLimit    Int?         @default(0) // 0 = unlimited within sale scope
+  soldCount     Int          @default(0)
+
+  @@index([flashSaleId])
+  @@index([productId])
 }
 
 // Link table for Product <-> Discount (many-to-many)
@@ -261,21 +646,24 @@ model ProductDiscount {
   discountId String   @db.ObjectId
   discount   Discount @relation(fields: [discountId], references: [id], onDelete: Cascade)
 
-  createdAt  DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@unique([productId, discountId])
 }
 
 // Track discount usage per user
 model DiscountUsage {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId     String   @db.ObjectId
-  discountId String   @db.ObjectId
-  orderId    String   @db.ObjectId
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @db.ObjectId
+  discountId     String   @db.ObjectId
+  discount       Discount @relation(fields: [discountId], references: [id], onDelete: Cascade)
+  orderId        String   @db.ObjectId
+  discountAmount Float
 
-  usedAt     DateTime @default(now())
+  usedAt DateTime @default(now())
 
   @@index([userId, discountId])
+  @@index([orderId])
 }
 
 // ============================================
@@ -283,62 +671,132 @@ model DiscountUsage {
 // ============================================
 
 model ShippingZone {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String   // e.g., "Dhaka City", "Europe", "North America"
-  countries   String[] // ISO codes: ["BD", "IN"] or ["US", "CA"]
-  regions     String[] // For country subdivisions (states/divisions)
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String // e.g., "Dhaka City", "Europe", "North America"
+  countries String[] // ISO codes: ["BD", "IN"] or ["US", "CA"]
+  regions   String[] // For country subdivisions (states/divisions)
 
-  rates       ShippingRate[]
-  isActive    Boolean  @default(true)
-  priority    Int      @default(0) // Higher priority zones checked first
+  rates    ShippingRate[]
+  isActive Boolean        @default(true)
+  priority Int            @default(0) // Higher priority zones checked first
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum CalculationType {
-  FLAT           // Fixed rate
-  WEIGHT_BASED   // Based on package weight
-  ORDER_VALUE    // Based on order total (with free shipping option)
-  TABLE_RATE     // Complex rules (future enhancement)
+  FLAT // Fixed rate
+  WEIGHT_BASED // Based on package weight
+  ORDER_VALUE // Based on order total (with free shipping option)
+  TABLE_RATE // Complex rules (future enhancement)
+}
+
+enum TrackingType {
+  POLLING
+  WEBHOOK
+  MANUAL
 }
 
 model ShippingRate {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  zoneId      String       @db.ObjectId
-  zone        ShippingZone @relation(fields: [zoneId], references: [id])
+  zoneId String       @db.ObjectId
+  zone   ShippingZone @relation(fields: [zoneId], references: [id])
 
-  method      String       // "standard", "express", "overnight"
-  carrier     String?      // "DHL", "FedEx", "Local Courier"
+  method  String // "standard", "express", "overnight"
+  carrier String? // "DHL", "FedEx", "Local Courier"
+
+  courierId String?  @db.ObjectId
+  courier   Courier? @relation(fields: [courierId], references: [id])
 
   // Pricing Strategy
   calculationType CalculationType
 
   // For FLAT rate
-  flatRate    Float?
+  flatRate Float?
 
   // For WEIGHT-based
-  baseRate    Float?
-  perKgRate   Float?
+  baseRate  Float?
+  perKgRate Float?
 
   // For ORDER-based (free shipping threshold)
   freeShippingThreshold Float?
 
   // Conditions
-  minWeight   Float?     // in kg
-  maxWeight   Float?
+  minWeight     Float? // in kg
+  maxWeight     Float?
   minOrderValue Float?
 
   // Delivery Time
-  estimatedDays String?    // "2-3", "5-7", "10-14"
+  estimatedDays String? // "2-3", "5-7", "10-14"
 
-  isActive    Boolean      @default(true)
+  isActive Boolean @default(true)
 
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([zoneId])
+  @@index([courierId])
+}
+
+model Courier {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String // e.g., "DHL", "Pathao", "RedX"
+  code        String  @unique // Internal code: "dhl", "pathao"
+  description String?
+  logo        String? // Image URL
+  website     String?
+
+  // Integration Settings
+  apiConfig    Json? // Store credentials securely (encrypted in service if needed)
+  trackingUrl  String? // Template: "https://track.it/{{id}}"
+  trackingType TrackingType @default(POLLING)
+
+  // Service Availability
+  supportedCountries String[] // ISO codes: ["BD", "IN"]
+  supportedRegions   String[] // Subdivisions: ["Dhaka", "Chittagong"]
+  serviceLevels      Json? // e.g., ["COD", "NEXT_DAY", "FRAGILE"]
+
+  isActive Boolean @default(true)
+
+  shippingRates ShippingRate[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── 11. SHIPPING SETTINGS ───────────────────────────
+model ShippingSetting {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  isShippingEnabled     Boolean @default(true)
+  defaultShippingZoneId String? @db.ObjectId
+  freeShippingThreshold Float?  @default(0)
+
+  // Calculation Strategy
+  calculationMethod String @default("ZONE_BASED") // ZONE_BASED, FLAT_RATE, REAL_TIME
+
+  // Real-time API Credentials (Generic)
+  apiEnabled  Boolean @default(false)
+  apiProvider String? // e.g., "Shippo", "EasyPost"
+  apiKey      String?
+
+  updatedAt DateTime @updatedAt
+}
+
+model Packaging {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  name      String // e.g., "Small Box", "Bubble Mailer"
+  length    Float?
+  width     Float?
+  height    Float?
+  weight    Float? // Weight of the empty box
+  maxWeight Float? // Max weight it can hold
+  cost      Float   @default(0)
+  isActive  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // ============================================
@@ -346,38 +804,44 @@ model ShippingRate {
 // ============================================
 
 enum StockMovementType {
-  PURCHASE        // Stock added
-  SALE            // Stock sold
-  RETURN          // Customer return
-  ADJUSTMENT      // Manual correction
-  DAMAGE          // Damaged items
+  PURCHASE // Stock added
+  SALE // Stock sold
+  RETURN // Customer return
+  ADJUSTMENT // Manual correction
+  DAMAGE // Damaged items
+  PURCHASE_RETURN // Stock returned to supplier
 }
 
 model StockMovement {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  productId   String   @db.ObjectId
-  variantId   String?  @db.ObjectId
+  productId String          @db.ObjectId
+  product   Product         @relation(fields: [productId], references: [id])
+  variantId String?         @db.ObjectId
+  variant   ProductVariant? @relation(fields: [variantId], references: [id])
 
-  type        StockMovementType
-  quantity    Int      // Positive for addition, negative for reduction
+  type     StockMovementType
+  quantity Int // Positive for addition, negative for reduction
 
-  previousQty Int      // Stock before this movement
-  newQty      Int      // Stock after this movement
+  previousQty Int // Stock before this movement
+  newQty      Int // Stock after this movement
 
-  reason      String?  // "Order #12345", "Restock from supplier"
-  notes       String?
+  reason String? // "Order #12345", "Restock from supplier"
+  notes  String?
 
-  performedBy String?  @db.ObjectId // Admin user ID
+  performedBy String? @db.ObjectId // Admin user ID
 
   // Inventory Extension
-  supplierId  String?  @db.ObjectId
-  supplier    Supplier? @relation(fields: [supplierId], references: [id])
+  supplierId String?   @db.ObjectId
+  supplier   Supplier? @relation(fields: [supplierId], references: [id])
 
-  purchaseId  String?  @db.ObjectId
-  purchase    Purchase? @relation(fields: [purchaseId], references: [id])
+  purchaseId String?   @db.ObjectId
+  purchase   Purchase? @relation(fields: [purchaseId], references: [id])
 
-  createdAt   DateTime @default(now())
+  purchaseReturnId String?         @db.ObjectId
+  purchaseReturn   PurchaseReturn? @relation(fields: [purchaseReturnId], references: [id])
+
+  createdAt DateTime @default(now())
 
   @@index([productId])
   @@index([createdAt])
@@ -388,41 +852,49 @@ model StockMovement {
 // ============================================
 
 model Cart {
-  id            String     @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String?    @unique @db.ObjectId
-  user          User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sessionId     String?    @unique
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String? @db.ObjectId
+  user      User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId String?
 
-  items         CartItem[]
+  items CartItem[]
 
   // Applied discounts
-  appliedCoupon String?    // Coupon code applied
-  discountAmount Float?    @default(0)
+  appliedCoupon  String? // Coupon code applied
+  discountAmount Float?  @default(0)
 
-  subtotal      Float?     @default(0)
-  total         Float?     @default(0)
+  subtotal Float? @default(0)
+  total    Float? @default(0)
 
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Recovery fields
+  recoveryEmailSentAt DateTime?
+  recoveryEmailCount  Int       @default(0)
+  isRecovered         Boolean   @default(false)
+
+  @@index([userId])
+  @@index([sessionId])
 }
 
 model CartItem {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  cartId      String   @db.ObjectId
-  cart        Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  cartId String @db.ObjectId
+  cart   Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
 
-  productId   String   @db.ObjectId
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String  @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  variantId   String?  @db.ObjectId
-  variant     ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  variantId String?         @db.ObjectId
+  variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
 
-  quantity    Int
+  quantity Int
 
   // Price snapshot at time of adding
-  unitPrice   Float
-  discount    Float?   @default(0)
-  total       Float
+  unitPrice Float
+  discount  Float? @default(0)
+  total     Float
 }
 
 // ============================================
@@ -446,7 +918,7 @@ enum OrderStatus {
   PROCESSING
   SHIPPED
   DELIVERED
-  COMPLETED     // POS - sale done
+  COMPLETED // POS - sale done
   CANCELLED
   REFUNDED
 }
@@ -457,7 +929,7 @@ enum PaymentMethod {
   NAGAD
   CARD
   ONLINE
-  COD        // Cash on Delivery
+  COD // Cash on Delivery
 }
 
 enum PaymentStatus {
@@ -469,85 +941,88 @@ enum PaymentStatus {
 }
 
 model Order {
-  id              String      @id @default(auto()) @map("_id") @db.ObjectId
-  orderNumber     String      @unique // e.g., "ORD-2024-00001"
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  orderNumber String @unique // e.g., "ORD-2024-00001"
 
   // Source
-  source          OrderSource @default(ONLINE)
+  source OrderSource @default(ONLINE)
 
   // Customer
-  userId          String?     @db.ObjectId // Optional for guest orders
-  user            User?       @relation(fields: [userId], references: [id])
+  userId String? @db.ObjectId // Optional for guest orders
+  user   User?   @relation(fields: [userId], references: [id])
 
   // Guest / Walk-in Info
-  guestInfo       Json?       // Online Guest: { name, email, phone }
-  walkInName      String?     // POS Guest Name
-  walkInPhone     String?     // POS Guest Phone
+  guestInfo   Json? // Online Guest: { name, email, phone }
+  walkInName  String? // POS Guest Name
+  walkInPhone String? // POS Guest Phone
 
-  items           OrderItem[]
+  items OrderItem[]
 
   // Pricing breakdown
-  subtotal        Float
+  subtotal Float
 
   // Discount
-  discountType    DiscountType?
-  discountValue   Float?      // 10 (%) or 100 (flat)
-  discountAmount  Float       @default(0) // Actual amount deducted
+  discountType   DiscountType?
+  discountValue  Float? // 10 (%) or 100 (flat)
+  discountAmount Float         @default(0) // Actual amount deducted
 
   // VAT / Tax
-  vatPercent      Float       @default(0)
-  vatAmount       Float       @default(0)
-  tax             Float       @default(0) // Kept for safety
+  vatPercent Float @default(0)
+  vatAmount  Float @default(0)
+  tax        Float @default(0) // Kept for safety
 
   // Shipping (Online)
-  shippingCost    Float       @default(0)
-  shippingAddress Json?       // Optional for POS
+  shippingCost    Float   @default(0)
+  shippingAddress Json? // Optional for POS
   billingAddress  Json?
   shippingZoneId  String?
   shippingRateId  String?
   shippingMethod  String?
 
-  total           Float
+  total Float
 
   // Coupon (Online)
-  appliedCoupon   String?
-  couponDiscount  Float?      @default(0)
+  appliedCoupon  String?
+  couponDiscount Float?  @default(0)
 
   // Payment
-  paymentMethod   PaymentMethod @default(COD)
-  paymentStatus   PaymentStatus @default(PENDING)
+  paymentMethod PaymentMethod @default(COD)
+  paymentStatus PaymentStatus @default(PENDING)
 
   // Cash Payment Details
-  tenderedAmount  Float?      // Customer paid (POS)
-  changeAmount    Float?      // Return to customer (POS)
-  transactionId   String?     // Trx ID for digital payment
+  tenderedAmount Float? // Customer paid (POS)
+  changeAmount   Float? // Return to customer (POS)
+  transactionId  String? // Trx ID for digital payment
 
   // Status
-  status          OrderStatus @default(PENDING)
+  status OrderStatus @default(PENDING)
 
   // Fulfillment
-  trackingNumber  String?
-  shippedAt       DateTime?
-  deliveredAt     DateTime?
+  trackingNumber String?
+  shippedAt      DateTime?
+  deliveredAt    DateTime?
 
   // Invoice
-  invoiceNumber   String?     @unique
+  invoice       Invoice?
+  invoiceNumber String?  @unique
 
-  notes           String?
+  returns ReturnRequest[]
 
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Staff Tracking
+  soldBy     String? @db.ObjectId // Staff ID for POS
+  soldByUser User?   @relation("StaffSales", fields: [soldBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  // Legacy / Deprecated
+  salesChannel SalesChannel @default(ONLINE)
 
   // Indexes
   @@index([userId])
   @@index([status])
-
-  // Staff Tracking
-  soldBy          String?      @db.ObjectId // Staff ID for POS
-  soldByUser      User?        @relation("StaffSales", fields: [soldBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  // Legacy / Deprecated
-  salesChannel    SalesChannel @default(ONLINE)
 }
 
 enum SalesChannel {
@@ -557,38 +1032,71 @@ enum SalesChannel {
 }
 
 model OrderItem {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  orderId     String   @db.ObjectId
-  order       Order    @relation(fields: [orderId], references: [id])
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  orderId String @db.ObjectId
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
-  productId   String   @db.ObjectId
-  product     Product  @relation(fields: [productId], references: [id])
+  productId String  @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id])
 
-  variantId   String?  @db.ObjectId
-  variant     ProductVariant? @relation(fields: [variantId], references: [id])
+  variantId String?         @db.ObjectId
+  variant   ProductVariant? @relation(fields: [variantId], references: [id])
 
-  // Snapshot of product at sale time
-  name        String
-  sku         String?
-
-  // Pricing
-  unitPrice   Float    // Base price
-  salePrice   Float    // Selling price at that moment
-
+  productName String
   quantity    Int
-  total       Float    // (salePrice * quantity)
+  unitPrice   Float
+  totalPrice  Float
 
-  // Snapshot
-  warranty    String?
+  // Returned quantity tracking
+  returnedQuantity Int @default(0)
 
-  // Legacy fields
-  basePrice   Float?
-  sellingPriceLegacy Float? @map("sellingPriceLegacy") // Renaming to avoid conflict if any? No, let's keep consistent.
-  // Actually, user schema OrderItem had: unitPrice, salePrice, quantity, total.
-  // Existing schema had: basePrice, sellingPrice, discount, finalPrice, quantity, total.
-  // I will coalesce these.
-  discount    Float    @default(0)
-  finalPrice  Float?
+  // Status
+  isRefunded Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================
+// RETURNS (RMA) SYSTEM
+// ============================================
+
+enum ReturnStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REFUNDED
+}
+
+model ReturnRequest {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  rmaId String @unique // e.g. "RET-001"
+
+  orderId String @db.ObjectId
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  userId String? @db.ObjectId
+  user   User?   @relation(fields: [userId], references: [id])
+
+  // Snapshot of return item details
+  productId   String  @db.ObjectId
+  product     Product @relation(fields: [productId], references: [id])
+  productName String
+
+  quantity     Int
+  refundAmount Float
+  reason       String
+
+  status     ReturnStatus @default(PENDING)
+  images     String[] // Proof attachments
+  adminNotes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([userId])
+  @@index([status])
 }
 
 model Supplier {
@@ -599,49 +1107,144 @@ model Supplier {
   phone         String?
   address       String?
   isActive      Boolean  @default(true)
+  dueBalance    Float    @default(0) // New: Current outstanding balance
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  purchases     Purchase[]
-  stockMovements StockMovement[]
+  purchases       Purchase[]
+  purchaseReturns PurchaseReturn[]
+  stockMovements  StockMovement[]
+  payments        SupplierPayment[]
+  transactions    SupplierTransaction[]
+}
+
+model SupplierPayment {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  paymentNumber String @unique // SP-2024-001
+
+  supplierId String   @db.ObjectId
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+
+  amount        Float
+  paymentMethod String // CASH, BANK, BKASH, etc.
+  reference     String? // Cheque no, TrxID, etc.
+  notes         String?
+
+  paymentDate DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  transaction SupplierTransaction?
+}
+
+model SupplierTransaction {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  supplierId String   @db.ObjectId
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+
+  type   SupplierTransactionType
+  amount Float // Positive for Purchase, Negative for Payment/Return
+
+  // Current balance after this transaction
+  balanceAfter Float
+
+  referenceId String @db.ObjectId // purchaseId, purchaseReturnId, or supplierPaymentId
+
+  purchaseId String?   @db.ObjectId
+  purchase   Purchase? @relation(fields: [purchaseId], references: [id])
+
+  purchaseReturnId String?         @db.ObjectId
+  purchaseReturn   PurchaseReturn? @relation(fields: [purchaseReturnId], references: [id])
+
+  paymentId String?          @unique @db.ObjectId
+  payment   SupplierPayment? @relation(fields: [paymentId], references: [id])
+
+  notes String?
+
+  createdAt DateTime @default(now())
+}
+
+enum SupplierTransactionType {
+  PURCHASE
+  PURCHASE_RETURN
+  PAYMENT
+  ADJUSTMENT
 }
 
 model Purchase {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  purchaseNumber  String   @unique // PO-2024-001
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  purchaseNumber String @unique // PO-2024-001
 
-  supplierId      String   @db.ObjectId
-  supplier        Supplier @relation(fields: [supplierId], references: [id])
+  supplierId String   @db.ObjectId
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
 
-  items           PurchaseItem[]
+  items PurchaseItem[]
 
-  totalCost       Float
-  status          PurchaseStatus @default(PENDING)
-  notes           String?
+  totalCost Float
+  status    PurchaseStatus @default(PENDING)
+  notes     String?
 
-  receivedAt      DateTime?
-  createdBy       String?   @db.ObjectId // Admin/Staff ID
+  receivedAt DateTime?
+  createdBy  String?   @db.ObjectId // Admin/Staff ID
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  stockMovements  StockMovement[]
+  stockMovements       StockMovement[]
+  purchaseReturns      PurchaseReturn[]
+  supplierTransactions SupplierTransaction[]
 }
 
 model PurchaseItem {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  purchaseId  String   @db.ObjectId
-  purchase    Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  purchaseId String   @db.ObjectId
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
 
-  productId   String   @db.ObjectId
-  product     Product  @relation(fields: [productId], references: [id])
+  productId String  @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id])
 
-  variantId   String?  @db.ObjectId
-  variant     ProductVariant? @relation(fields: [variantId], references: [id])
+  variantId String?         @db.ObjectId
+  variant   ProductVariant? @relation(fields: [variantId], references: [id])
 
-  quantity    Int
-  unitCost    Float
-  totalCost   Float
+  quantity  Int
+  unitCost  Float
+  totalCost Float
+}
+
+model PurchaseReturn {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  returnNumber String @unique // PR-2024-001
+
+  purchaseId String?   @db.ObjectId
+  purchase   Purchase? @relation(fields: [purchaseId], references: [id])
+
+  supplierId String   @db.ObjectId
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+
+  items PurchaseReturnItem[]
+
+  totalAmount Float
+  status      String  @default("COMPLETED") // PENDING, COMPLETED, CANCELLED
+  notes       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stockMovements       StockMovement[]
+  supplierTransactions SupplierTransaction[]
+}
+
+model PurchaseReturnItem {
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  purchaseReturnId String         @db.ObjectId
+  purchaseReturn   PurchaseReturn @relation(fields: [purchaseReturnId], references: [id], onDelete: Cascade)
+
+  productId String  @db.ObjectId
+  variantId String? @db.ObjectId
+
+  quantity  Int
+  unitCost  Float
+  totalCost Float
 }
 
 enum PurchaseStatus {
@@ -650,16 +1253,13 @@ enum PurchaseStatus {
   CANCELLED
 }
 
-
-
-
 model Wishlist {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @db.ObjectId
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  productId String   @db.ObjectId
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String  @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -667,53 +1267,60 @@ model Wishlist {
   @@unique([userId, productId])
 }
 
-model HeroSlide {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  image       String
-  title       String?
-  subtitle    String?
-  link        String?
-  isFeatured  Boolean  @default(false)
-  isActive    Boolean  @default(true) // For internal control (draft/published)
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
 model Category {
-  id            String        @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  slug          String        @unique
-  image         String?
-  icon          String?       // New: Icon for home page
-  description   String?
-  isHomeShown   Boolean       @default(false) // New: Show on home page
-  order         Int           @default(0)     // New: Display order
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  slug        String  @unique
+  image       String?
+  icon        String? // New: Icon for home page
+  description String?
+  isHomeShown Boolean @default(false) // New: Show on home page
+  order       Int     @default(0) // New: Display order
+  isActive    Boolean @default(true) // Active/inactive status
 
-  parentId    String?       @db.ObjectId
-  parent      Category?     @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children    Category[]    @relation("CategoryHierarchy")
+  // SEO Meta
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
 
-  products      Product[]
+  parentId String?    @db.ObjectId
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children Category[] @relation("CategoryHierarchy")
 
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-}
-
-model Review {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  rating    Int
-  comment   String?
-
-  userId    String   @db.ObjectId
-  user      User     @relation(fields: [userId], references: [id])
-
-  productId String   @db.ObjectId
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  products     Product[]
+  translations CategoryTranslation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  createdById String? @db.ObjectId
+  createdBy   User?   @relation("CreatedCategories", fields: [createdById], references: [id])
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Review {
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  rating  Int
+  comment String?
+
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  productId String  @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  // Moderation fields
+  status     ReviewStatus @default(PENDING)
+  adminReply String?
+  isFlagged  Boolean      @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // ============================================
@@ -722,24 +1329,37 @@ model Review {
 
 // ─── 1. GENERAL SETTINGS ─────────────────────────────
 model GeneralSetting {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  siteName      String   @default("My Shop")
-  tagline       String?
+  siteName    String  @default("My Shop")
+  tagline     String?
+  description String?
 
-  logoUrl       String?
-  faviconUrl    String?
-  footerLogoUrl String?
+  logoUrl    String? // Legacy Main Logo
+  headerLogo String? // New
+  footerLogo String? // New
+  faviconUrl String?
+  favicon    String? // New Alias or use existing? Prefer explicit.
 
   maintenanceMode    Boolean @default(false)
   maintenanceMessage String?
+  copyrightText      String?
 
-  defaultLanguage String  @default("en") // "en", "bn"
-  timezone        String  @default("Asia/Dhaka")
+  defaultLanguage String @default("en") // "en", "bn"
+  timezone        String @default("Asia/Dhaka")
 
-  shopType        ShopType @default(GADGET)
+  currency   String @default("BDT")
+  dateFormat String @default("MMM D, YYYY") // Dec 25, 2023
+  timeFormat String @default("h:mm A") // 1:30 PM
 
-  updatedAt     DateTime @updatedAt
+  shopType ShopType @default(GADGET)
+
+  // SEO Defaults
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String[]
+
+  updatedAt DateTime @updatedAt
 }
 
 enum ShopType {
@@ -747,60 +1367,59 @@ enum ShopType {
   CLOTHING
 }
 
-
 // ─── 2. CURRENCY SETTINGS ────────────────────────────
 model CurrencySetting {
-  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  code             String   @default("BDT")  // ISO: BDT, USD, EUR
-  symbol           String   @default("৳")
-  symbolPosition   SymbolPosition @default(LEFT)
+  code           String         @default("BDT") // ISO: BDT, USD, EUR
+  symbol         String         @default("৳")
+  symbolPosition SymbolPosition @default(LEFT)
 
-  decimalPlaces    Int      @default(2)
-  decimalSeparator String   @default(".")
-  thousandSeparator String  @default(",")
+  decimalPlaces     Int    @default(2)
+  decimalSeparator  String @default(".")
+  thousandSeparator String @default(",")
 
   // Multi-currency support
-  supportedCurrencies Json  @default("[]")
+  supportedCurrencies Json @default("[]")
   // [{ code: "USD", symbol: "$", rate: 110 }]
 
-  autoUpdateRates  Boolean  @default(false)
-  ratesUpdatedAt   DateTime?
+  autoUpdateRates Boolean   @default(false)
+  ratesUpdatedAt  DateTime?
 
-  updatedAt        DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
 
 enum SymbolPosition {
-  LEFT   // ৳100
-  RIGHT  // 100৳
+  LEFT // ৳100
+  RIGHT // 100৳
 }
-
 
 // ─── 3. CONTACT & SOCIAL ─────────────────────────────
 model ContactSetting {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   // Primary Contact
-  email       String?
-  phone       String?
-  whatsapp    String?
+  email    String?
+  phone    String?
+  whatsapp String?
 
   // Address
-  addressLine1 String?
-  addressLine2 String?
-  city         String?
-  state        String?
-  country      String  @default("BD")
-  postalCode   String?
+  addressLine1  String?
+  addressLine2  String?
+  city          String?
+  state         String?
+  country       String  @default("BD")
+  postalCode    String?
   googleMapsUrl String?
 
   // Social Links
-  facebook    String?
-  instagram   String?
-  youtube     String?
-  twitter     String?
-  linkedin    String?
-  tiktok      String?
+  facebook  String?
+  instagram String?
+  youtube   String?
+  twitter   String?
+  linkedin  String?
+  tiktok    String?
+  pinterest String? // New
 
   // Business Hours
   businessHours Json?
@@ -810,109 +1429,142 @@ model ContactSetting {
   //   sat: { closed: true }
   // }
 
-  updatedAt   DateTime @updatedAt
-}
+  // Additional Info
+  workingHours  String? // e.g. "Mon-Fri: 9am - 6pm"
+  mapUrl        String? // Google Maps Embed URL
+  copyrightText String? // Copyright notice
 
+  updatedAt DateTime @updatedAt
+}
 
 // ─── 4. SEO SETTINGS ─────────────────────────────────
 model SeoSetting {
-  id               String  @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  metaTitle        String?
-  metaDescription  String?
-  metaKeywords     String?
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
 
   // Open Graph (Facebook, WhatsApp share)
-  ogTitle          String?
-  ogDescription    String?
-  ogImageUrl       String?
+  ogTitle       String?
+  ogDescription String?
+  ogImageUrl    String?
 
   // Analytics
-  googleAnalyticsId  String?  // G-XXXXXXXXXX
-  facebookPixelId    String?
-  googleTagManagerId String?  // GTM-XXXXXXX
+  googleAnalyticsId  String[] // Array of G-XXXXXXXXXX
+  facebookPixelId    String[] // Array of Pixel IDs
+  googleTagManagerId String[] // Array of GTM-XXXXXXX
 
   // Verification
   googleSiteVerification String?
 
   // Robots
-  allowIndexing    Boolean @default(true)
+  allowIndexing Boolean @default(true)
 
-  updatedAt        DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
-
 
 // ─── 5. EMAIL SETTINGS ───────────────────────────────
 model EmailSetting {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   // SMTP Config
-  smtpHost    String?
-  smtpPort    Int     @default(587)
-  smtpUser    String?
-  smtpPass    String? // Encrypted store korbe
-  smtpSecure  Boolean @default(true)
+  smtpHost   String?
+  smtpPort   Int     @default(587)
+  smtpUser   String?
+  smtpPass   String? // Encrypted store korbe
+  smtpSecure Boolean @default(true)
 
   // Sender Info
-  fromName    String?
-  fromEmail   String?
-  replyTo     String?
+  fromName  String?
+  fromEmail String?
+  replyTo   String?
 
   // Email Templates On/Off
-  sendOrderConfirmation  Boolean @default(true)
-  sendShippingUpdate     Boolean @default(true)
-  sendDeliveryConfirm    Boolean @default(true)
-  sendAbandonedCart      Boolean @default(false)
+  sendOrderConfirmation Boolean @default(true)
+  sendShippingUpdate    Boolean @default(true)
+  sendDeliveryConfirm   Boolean @default(true)
+  sendAbandonedCart     Boolean @default(false)
 
-  updatedAt   DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
 
+// ─── 5. SMS SETTINGS ───────────────────────────
+model SmsSetting {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-// ─── 6. APPEARANCE ───────────────────────────────────
+  // Gateway Config
+  gateway    String  @default("TWILIO") // TWILIO, MSG91, etc.
+  apiSid     String? // Twilio SID
+  apiToken   String? // Twilio Auth Token
+  apiSecret  String? // Other gateways
+  fromNumber String? // Sender ID or Number
+
+  // SMS Notifications On/Off
+  sendOrderConfirmation Boolean @default(true)
+  sendShippingUpdate    Boolean @default(true)
+  sendDeliveryConfirm   Boolean @default(true)
+  sendOtp               Boolean @default(true)
+
+  updatedAt DateTime @updatedAt
+}
+
+// ─── 6. LEGAL & POLICIES ─────────────────────────────
+model LegalSetting {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  termsAndConditions String?
+  privacyPolicy      String?
+  returnPolicy       String?
+  shippingPolicy     String?
+
+  updatedAt DateTime @updatedAt
+}
+
+// ─── 7. APPEARANCE ───────────────────────────────────
 model AppearanceSetting {
-  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  primaryColor    String  @default("#3b82f6")
-  secondaryColor  String  @default("#1e40af")
-  accentColor     String  @default("#f59e0b")
+  primaryColor   String @default("#3b82f6")
+  secondaryColor String @default("#1e40af")
+  accentColor    String @default("#f59e0b")
 
-  fontFamily      String  @default("Inter")
+  fontFamily String @default("Inter")
 
   // Layout
-  headerStyle     String  @default("default") // "default", "centered", "minimal"
-  footerStyle     String  @default("default")
+  headerStyle String @default("default") // "default", "centered", "minimal"
+  footerStyle String @default("default")
 
   // Homepage Sections On/Off
-  showHeroBanner    Boolean @default(true)
+  showHeroBanner       Boolean @default(true)
   showFeaturedProducts Boolean @default(true)
-  showCategories    Boolean @default(true)
-  showTestimonials  Boolean @default(false)
+  showCategories       Boolean @default(true)
+  showTestimonials     Boolean @default(false)
 
   // Custom Code
-  customCss         String? // Admin custom CSS inject
-  headerScripts     String? // <head> e inject
-  footerScripts     String? // </body> er age inject
+  customCss     String? // Admin custom CSS inject
+  headerScripts String? // <head> e inject
+  footerScripts String? // </body> er age inject
 
-  updatedAt       DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
-
 
 // ─── 7. PAYMENT SETTINGS ─────────────────────────────
 model PaymentSetting {
-  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   // Cash on Delivery
-  codEnabled      Boolean @default(true)
-  codExtraCharge  Float   @default(0) // Decimal -> Float for MongoDB
-  codNote         String?
+  codEnabled     Boolean @default(true)
+  codExtraCharge Float   @default(0) // Decimal -> Float for MongoDB
+  codNote        String?
 
   // bKash
-  bkashEnabled    Boolean @default(false)
-  bkashAppKey     String?
-  bkashAppSecret  String?
-  bkashUsername   String?
-  bkashPassword   String?
-  bkashSandbox    Boolean @default(true)
+  bkashEnabled   Boolean @default(false)
+  bkashAppKey    String?
+  bkashAppSecret String?
+  bkashUsername  String?
+  bkashPassword  String?
+  bkashSandbox   Boolean @default(true)
 
   // Nagad
   nagadEnabled    Boolean @default(false)
@@ -921,59 +1573,64 @@ model PaymentSetting {
   nagadSandbox    Boolean @default(true)
 
   // Stripe (International)
-  stripeEnabled   Boolean @default(false)
-  stripePublicKey String?
-  stripeSecretKey String?
+  stripeEnabled       Boolean @default(false)
+  stripePublicKey     String?
+  stripeSecretKey     String?
   stripeWebhookSecret String?
+  stripeSandbox       Boolean @default(true)
+
+  // PayPal
+  paypalEnabled   Boolean @default(false)
+  paypalClientId  String?
+  paypalSecretKey String?
+  paypalSandbox   Boolean @default(true)
 
   // SSL Commerz
-  sslcEnabled     Boolean @default(false)
-  sslcStoreId     String?
-  sslcStorePass   String?
-  sslcSandbox     Boolean @default(true)
+  sslcEnabled   Boolean @default(false)
+  sslcStoreId   String?
+  sslcStorePass String?
+  sslcSandbox   Boolean @default(true)
 
-  updatedAt       DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
-
 
 // ─── 8. ORDER SETTINGS ───────────────────────────────
 model OrderSetting {
-  id                    String  @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   // Order Rules
-  minOrderAmount        Float?  // Decimal -> Float
-  maxOrderAmount        Float?  // Decimal -> Float
+  minOrderAmount Float? // Decimal -> Float
+  maxOrderAmount Float? // Decimal -> Float
 
-  orderPrefix           String  @default("ORD") // ORD-0001
-  invoicePrefix         String  @default("INV") // INV-0001
+  orderPrefix   String @default("ORD") // ORD-0001
+  invoicePrefix String @default("INV") // INV-0001
 
   // Guest Checkout
-  allowGuestCheckout    Boolean @default(true)
+  allowGuestCheckout Boolean @default(true)
 
   // Stock Rules
-  allowBackorder        Boolean @default(false)
-  lowStockThreshold     Int     @default(10)
-  hideOutOfStock        Boolean @default(false)
+  allowBackorder    Boolean @default(false)
+  lowStockThreshold Int     @default(10)
+  hideOutOfStock    Boolean @default(false)
 
   // Auto Cancel
-  autoCancelUnpaidAfter Int?    // Minutes (null = disabled)
+  autoCancelUnpaidAfter Int? // Minutes (null = disabled)
 
   // Return Policy
-  returnPolicyDays      Int     @default(7)
-  returnPolicyNote      String?
+  returnPolicyDays Int     @default(7)
+  returnPolicyNote String?
 
-  updatedAt             DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
-
 
 // ─── 9. MULTI-LANGUAGE ───────────────────────────────
 model UiTranslation {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  langCode  String   // "en", "bn", "es"
-  namespace String   // "common", "cart", "checkout"
-  key       String   // "addToCart", "outOfStock"
-  value     String   // "Add to Cart", "Agregar al carrito"
+  langCode  String // "en", "bn", "es"
+  namespace String // "common", "cart", "checkout"
+  key       String // "addToCart", "outOfStock"
+  value     String // "Add to Cart", "Agregar al carrito"
 
   isAutoTranslated Boolean @default(false)
   isReviewed       Boolean @default(false)
@@ -985,15 +1642,669 @@ model UiTranslation {
   @@index([langCode, namespace])
 }
 
-model Language {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  code        String   @unique // "en", "bn", "es"
-  name        String           // "English"
-  nativeName  String           // "Español"
-  flag        String?          // "🇪🇸"
-  isDefault   Boolean  @default(false)
-  isActive    Boolean  @default(true)
-  isRtl       Boolean  @default(false)
+// Content Translation Models
+model CategoryTranslation {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  categoryId  String  @db.ObjectId
+  langCode    String // "en", "bn", "es"
+  name        String
+  description String?
 
-  createdAt   DateTime @default(now())
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  isAutoTranslated Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([categoryId, langCode])
+  @@index([langCode])
+}
+
+model ProductTranslation {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  productId   String  @db.ObjectId
+  langCode    String // "en", "bn", "es"
+  name        String
+  description String?
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  isAutoTranslated Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([productId, langCode])
+  @@index([langCode])
+}
+
+model HeroSlideTranslation {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  heroSlideId String  @db.ObjectId
+  langCode    String // "en", "bn", "es"
+  title       String?
+  subtitle    String?
+
+  heroSlide HeroSlide @relation(fields: [heroSlideId], references: [id], onDelete: Cascade)
+
+  isAutoTranslated Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([heroSlideId, langCode])
+  @@index([langCode])
+}
+
+// ─── 10. TAX SETTINGS ────────────────────────────────
+model TaxSetting {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  isTaxEnabled        Boolean @default(true)
+  taxInclusivePricing Boolean @default(false) // Whether prices include tax
+  vatGstNumber        String? // Business VAT/GST ID
+  isVatEnabled        Boolean @default(false)
+
+  defaultTaxClassId String? @db.ObjectId
+
+  updatedAt DateTime @updatedAt
+}
+
+model TaxRate {
+  id       String      @id @default(auto()) @map("_id") @db.ObjectId
+  name     String // e.g., "VAT 15%", "NY Sales Tax"
+  rate     Float // e.g., 15.0
+  country  String      @default("BD") // ISO Code
+  state    String?
+  zip      String?
+  type     TaxRateType @default(PERCENTAGE)
+  priority Int         @default(0)
+  isActive Boolean     @default(true)
+
+  taxClassIds String[]   @db.ObjectId
+  taxClasses  TaxClass[] @relation(fields: [taxClassIds], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TaxRateType {
+  PERCENTAGE
+  FLAT
+}
+
+model TaxClass {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String  @unique // e.g., "Standard", "Reduced", "Zero Rated"
+  description String?
+
+  taxRateIds String[]  @db.ObjectId
+  taxRates   TaxRate[] @relation(fields: [taxRateIds], references: [id])
+
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Language {
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  code       String  @unique // "en", "bn", "es"
+  name       String // "English"
+  nativeName String // "Español"
+  flag       String? // "🇪🇸"
+  isDefault  Boolean @default(false)
+  isActive   Boolean @default(true)
+  isRtl      Boolean @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+enum DamageReason {
+  DAMAGED
+  EXPIRED
+  STOLEN
+  LOST
+  OTHER
+}
+
+model DamageReport {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  productId String          @db.ObjectId
+  product   Product         @relation(fields: [productId], references: [id])
+  variantId String?         @db.ObjectId
+  variant   ProductVariant? @relation(fields: [variantId], references: [id])
+
+  quantity   Int
+  reason     DamageReason
+  notes      String?
+  lossAmount Float // Quantity * Cost Price at time of reporting
+
+  reportedById String? @db.ObjectId // Optional: Who reported it
+  reportedBy   User?   @relation(fields: [reportedById], references: [id])
+
+  reportedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([productId])
+  @@index([variantId])
+  @@index([reason])
+}
+
+model Invoice {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  invoiceNumber String        @unique // INV-000001
+  orderId       String        @unique @db.ObjectId
+  order         Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId        String?       @db.ObjectId
+  user          User?         @relation(fields: [userId], references: [id])
+  amount        Float
+  issueDate     DateTime      @default(now())
+  dueDate       DateTime
+  paidDate      DateTime?
+  status        InvoiceStatus @default(PENDING)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([userId])
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+// Duplicate models removed. Use original ones at top.
+
+model CompanySetting {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  logo         String?
+  address      String?
+  phone        String?
+  email        String?
+  website      String?
+  taxId        String? // Tax/VAT registration number
+  invoiceTerms String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ============================================
+// AI CHATBOT SYSTEM
+// ============================================
+
+model KnowledgeBase {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  content   String
+  tags      String[]
+  language  String   @default("en") // "en", "bn"
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ChatRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum ChatType {
+  CUSTOMER
+  ADMIN
+}
+
+model AIQuery {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  query     String
+  response  Json?
+  chartData Json?
+
+  executedBy String @db.ObjectId
+  user       User   @relation(fields: [executedBy], references: [id])
+
+  executionTime Int? // in ms
+  createdAt     DateTime @default(now())
+
+  @@index([executedBy])
+}
+
+// ============================================
+// TRANSLATION SYSTEM
+// ============================================
+
+model TranslationNamespace {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique // e.g., "common", "auth", "product"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==================== LANDING PAGE / SALES FUNNEL ====================
+model LandingPage {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  slug        String  @unique // URL: /landing/headphone-offer
+  title       String // Internal title
+  description String?
+
+  // Linked Product (for checkout)
+  productId String?  @db.ObjectId
+  product   Product? @relation(fields: [productId], references: [id])
+
+  // GrapesJS Data
+  gjs_html String? // HTML output
+  gjs_css  String? // CSS output
+  gjs_json String? // JSON data (editable)
+
+  // A/B Testing
+  isAbTestActive Boolean              @default(false)
+  variants       LandingPageVariant[]
+
+  // Builder Content (Legacy custom dnd)
+  blocks Json? // Array of { type, data, settings }
+
+  // Design
+  themeColor String @default("#3b82f6")
+  fontFamily String @default("Inter")
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  ogImage         String?
+
+  // Analytics (Aggregated)
+  viewCount  Int @default(0)
+  orderCount Int @default(0)
+
+  isActive    Boolean   @default(true)
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+
+  // Tracking
+  createdBy String? @db.ObjectId
+  creator   User?   @relation("LandingPageCreator", fields: [createdBy], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isPublished])
+  @@index([createdBy])
+  @@map("landing_pages")
+}
+
+model LandingPageVariant {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  landingPageId String      @db.ObjectId
+  landingPage   LandingPage @relation(fields: [landingPageId], references: [id], onDelete: Cascade)
+
+  name String // "Variant A", "Variant B"
+
+  // GrapesJS Data per variant
+  gjs_html String?
+  gjs_css  String?
+  gjs_json String?
+
+  blocks Json? // Specific blocks for this variant (Legacy)
+
+  weight Int @default(50) // Traffic weight percentage
+
+  // Stats per variant
+  viewCount  Int @default(0)
+  orderCount Int @default(0)
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("landing_page_variants")
+}
+
+// Page Analytics (Granular)
+model PageAnalytics {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  pageId    String @db.ObjectId
+  sessionId String
+
+  event     LPAnalyticsEvent // VIEW, CLICK, SUBMIT, CONVERSION
+  elementId String? // Button/form that was clicked
+
+  // User Data
+  ipAddress String?
+  userAgent String?
+  referrer  String?
+
+  timestamp DateTime @default(now())
+
+  @@index([pageId])
+  @@index([event])
+  @@index([timestamp])
+  @@map("landing_page_analytics")
+}
+
+enum LPAnalyticsEvent {
+  VIEW
+  CLICK
+  SUBMIT
+  CONVERSION
+}
+
+// ============================================
+// ANALYTICS SYSTEM
+// ============================================
+
+model AnalyticsEvent {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Event Info
+  eventName String // page_view, add_to_cart, purchase, etc
+  eventType EventType
+
+  // User Info
+  userId    String? @db.ObjectId
+  sessionId String // Unique session identifier
+  clientId  String // GA4 client_id
+
+  // Page/Source Info
+  pageUrl   String?
+  pageTitle String?
+  referrer  String?
+
+  // UTM Parameters
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmTerm     String?
+  utmContent  String?
+
+  // Device Info
+  userAgent String?
+  ipAddress String?
+  country   String?
+  city      String?
+  device    String? // mobile, desktop, tablet
+  browser   String?
+  os        String?
+
+  // E-commerce Data
+  eventData Json? // Custom event data
+  revenue   Float? // For purchase events
+  currency  String? @default("BDT")
+
+  // Product Data (for product events)
+  productId    String? @db.ObjectId
+  productName  String?
+  productPrice Float?
+  quantity     Int?
+
+  // Timestamps
+  timestamp DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  @@index([eventName])
+  @@index([userId])
+  @@index([sessionId])
+  @@index([timestamp])
+  @@index([eventType])
+}
+
+enum EventType {
+  PAGE_VIEW
+  ECOMMERCE
+  USER_ACTION
+  FORM
+  VIDEO
+  CUSTOM
+}
+
+// User Sessions (for analytics)
+model AnalyticsSession {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  sessionId String  @unique
+  userId    String? @db.ObjectId
+  clientId  String
+
+  // Session tracking
+  startTime DateTime
+  endTime   DateTime?
+  duration  Int? // in seconds
+  pageViews Int       @default(0)
+  events    Int       @default(0)
+
+  // Acquisition
+  source   String?
+  medium   String?
+  campaign String?
+
+  // Device
+  device  String?
+  browser String?
+  os      String?
+  country String?
+
+  // Conversion
+  converted Boolean @default(false)
+  revenue   Float?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([startTime])
+}
+
+// Daily Analytics Summary (for fast queries)
+model AnalyticsDailySummary {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  date DateTime @unique
+
+  // Traffic
+  totalUsers         Int
+  totalSessions      Int
+  totalPageViews     Int
+  avgSessionDuration Float
+  bounceRate         Float
+
+  // E-commerce
+  transactions   Int
+  revenue        Float
+  avgOrderValue  Float
+  conversionRate Float
+
+  // Top Sources
+  topSources  Json // [{source, sessions, revenue}]
+  topPages    Json // [{page, views}]
+  topProducts Json // [{product, sales, revenue}]
+
+  createdAt DateTime @default(now())
+}
+
+// Marketing Pixel Tracking
+model PixelEvent {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  pixel     PixelType
+  eventName String
+  eventId   String    @unique // Deduplication
+
+  // User
+  userId String? @db.ObjectId
+  fbp    String? // Facebook browser ID
+  fbc    String? // Facebook click ID
+
+  // Event data
+  eventData Json?
+
+  // Server info
+  sentToPixel   Boolean @default(false)
+  pixelResponse Json?
+
+  timestamp DateTime @default(now())
+
+  @@index([pixel])
+  @@index([eventName])
+  @@index([timestamp])
+}
+
+enum PixelType {
+  META // Facebook/Instagram
+  GOOGLE_ADS
+  TIKTOK
+  SNAPCHAT
+}
+
+// ============================================
+// MARKETING CAMPAIGNS
+// ============================================
+
+enum CampaignType {
+  EMAIL
+  SMS
+  PUSH
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENDING
+  SENT
+  FAILED
+}
+
+model Campaign {
+  id       String         @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  subject  String?
+  type     CampaignType   @default(EMAIL)
+  status   CampaignStatus @default(DRAFT)
+  content  String
+  template String?
+
+  // Targeting
+  targetType     String   @default("ALL") // ALL, GROUP, CUSTOM
+  targetGroupIds String[] @db.ObjectId
+  targetUserIds  String[] @db.ObjectId
+
+  // Scheduling
+  scheduledAt DateTime?
+  sentAt      DateTime?
+
+  // Stats
+  totalRecipients Int @default(0)
+  sentCount       Int @default(0)
+  openCount       Int @default(0)
+  failedCount     Int @default(0)
+
+  recipients CampaignRecipient[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model CampaignRecipient {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  campaignId String    @db.ObjectId
+  campaign   Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  userId     String    @db.ObjectId
+  email      String
+  phone      String?
+  status     String    @default("PENDING") // PENDING, SENT, FAILED, OPENED
+  openedAt   DateTime?
+  sentAt     DateTime?
+
+  @@index([campaignId])
+  @@index([userId])
+}
+
+enum HeroSlideLinkType {
+  NONE
+  PRODUCT
+  CATEGORY
+  EXTERNAL
+}
+
+// ============================================
+// EMAIL TEMPLATES
+// ============================================
+
+model EmailTemplate {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique
+  subject   String
+  type      String? // e.g., "ORDER_CONFIRMATION", "WELCOME_EMAIL"
+  body      String // Generated HTML with Tailwind styles
+  design    Json? // Optional: Gjs JSON or builder state
+  variables Json? // Array of { key: "customer_name", label: "Customer Name" }
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("email_templates")
+}
+
+// ─── 11. INTEGRATIONS & WEBHOOKS ───────────────────
+model IntegrationSetting {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Analytics
+  googleAnalyticsId  String?
+  facebookPixelId    String?
+  googleTagManagerId String?
+
+  // Third-party (Flexible JSON)
+  thirdPartyConfig Json? @default("{}")
+
+  updatedAt DateTime @updatedAt
+}
+
+model Webhook {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  url       String
+  secret    String?
+  events    String[] // e.g., ["order.created", "product.updated"]
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==================== BACKUP SYSTEM ====================
+model Backup {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  fileName String
+  filePath String
+  type     String // "database", "scheduled", "export", "restore"
+  size     Int // File size in bytes
+  status   String @default("completed") // "pending", "completed", "failed"
+  metadata Json? // Additional info like export type, restore source, etc.
+
+  createdBy String? @db.ObjectId
+  creator   User?   @relation(fields: [createdBy], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("backups")
+}
+
+model BackupSchedule {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  frequency String   @default("daily") // "daily", "weekly", "monthly"
+  time      String   @default("02:00") // HH:mm format
+  enabled   Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+
+  @@map("backup_schedules")
 }

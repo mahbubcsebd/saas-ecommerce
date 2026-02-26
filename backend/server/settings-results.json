@@ -1,0 +1,57 @@
+{
+  "general": {
+    "id": "698ce740968aa380591fb944",
+    "siteName": "Mahbub's Shop",
+    "tagline": "Your one-stop furniture shop",
+    "logoUrl": "",
+    "faviconUrl": null,
+    "footerLogoUrl": "",
+    "maintenanceMode": false,
+    "maintenanceMessage": null,
+    "defaultLanguage": "en",
+    "timezone": "Asia/Dhaka",
+    "shopType": "GADGET",
+    "updatedAt": "2026-02-11T20:32:00.608Z"
+  },
+  "currency": {
+    "id": "698ce740968aa380591fb945",
+    "code": "BDT",
+    "symbol": "৳",
+    "symbolPosition": "LEFT",
+    "decimalPlaces": 2,
+    "decimalSeparator": ".",
+    "thousandSeparator": ",",
+    "supportedCurrencies": [],
+    "autoUpdateRates": false,
+    "ratesUpdatedAt": null,
+    "updatedAt": "2026-02-11T20:32:00.834Z"
+  },
+  "languages": [
+    {
+      "id": "698c61e70e879c7be3e09871",
+      "code": "en",
+      "name": "English",
+      "nativeName": "English",
+      "flag": "🇺🇸",
+      "isDefault": true,
+      "isActive": true,
+      "isRtl": false,
+      "createdAt": "2026-02-11T11:03:03.399Z"
+    },
+    {
+      "id": "698c65e43441e97e5a12ca27",
+      "code": "bn",
+      "name": "Bangla",
+      "nativeName": "বাংলা",
+      "flag": "🇧🇩",
+      "isDefault": false,
+      "isActive": true,
+      "isRtl": false,
+      "createdAt": "2026-02-11T11:20:04.415Z"
+    }
+  ],
+  "translations": {
+    "en": 55,
+    "bn": 55
+  }
+}

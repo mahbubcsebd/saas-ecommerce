@@ -2,16 +2,15 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  try {
-    const count = await prisma.product.count();
-    console.log(`Product count: ${count}`);
-    const products = await prisma.product.findMany({ take: 2 });
-    console.log('Sample products:', JSON.stringify(products, null, 2));
-  } catch (e) {
-    console.error('Error connecting/counting:', e);
-  } finally {
-    await prisma.$disconnect();
-  }
+  const products = await prisma.product.findMany({
+    select: { id: true, name: true, sku: true, status: true },
+    take: 10
+  });
+  console.log(JSON.stringify(products, null, 2));
+  process.exit(0);
 }
 
-main();
+main().catch(err => {
+  console.error(err);
+  process.exit(1);
+});

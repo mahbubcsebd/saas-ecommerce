@@ -1,5 +1,7 @@
 const prisma = require('../config/prisma');
-const { errorResponse } = require('../helpers/responseHandler');
+const asyncHandler = require('../middlewares/asyncHandler');
+const ApiError = require('../utils/ApiError');
+const { successResponse, createdResponse } = require('../utils/response');
 
 // Helper to get cart include
 const cartInclude = {
@@ -18,18 +20,7 @@ const cartInclude = {
           variants: true, // Include all variants for the product
         },
       },
-      // TODO: Re-enable after running: npx prisma generate
-      // variant: {
-      //   select: {
-      //     id: true,
-      //     name: true,
-      //     sellingPrice: true,
-      //     basePrice: true,
-      //     stock: true,
-      //     images: true,
-      //     attributes: true,
-      //   },
-      // },
+      variant: true,
     },
   },
 };
@@ -38,49 +29,61 @@ const cartInclude = {
  * Get Cart (Auth or Guest)
  * Query param: guestId (if not logged in)
  */
-exports.getCart = async (req, res, next) => {
-  try {
+exports.getCart = asyncHandler(async (req, res) => {
     const userId = req.user?.id;
     const { guestId } = req.query;
 
+    console.log(`[getCart] START userId: ${userId || 'none'}, guestId: ${guestId || 'none'}`);
+
     if (!userId && !guestId) {
-      return res.status(200).json({ success: true, data: null });
+      console.log(`[getCart] No userId or guestId provided, returning null`);
+      return successResponse(res, { data: null });
     }
 
-    let cart;
+    let cart = null;
+
+    // 1. Try fetching User cart if logged in
     if (userId) {
+      console.log(`[getCart] Looking for userId: ${userId}`);
       cart = await prisma.cart.findFirst({
         where: { userId },
         include: cartInclude,
       });
+      console.log(`[getCart] User cart found: ${!!cart}`);
+    }
 
-      // If user has a guestId session, maybe merge carts? (Skipping for simplicity now)
-    } else {
+    // 2. If no user cart or not logged in, fetch Guest cart if guestId provided
+    if (!cart && guestId) {
+      console.log(`[getCart] Looking for sessionId (guestId): ${guestId}`);
       cart = await prisma.cart.findFirst({
         where: { sessionId: guestId },
         include: cartInclude,
       });
+      console.log(`[getCart] Guest cart found: ${!!cart}`);
+      if (cart) {
+          console.log(`[getCart] Guest cart items: ${cart.items?.length || 0}`);
+      }
     }
 
-    res.status(200).json({
-      success: true,
-      data: cart,
+    return successResponse(res, {
+        message: 'Cart retrieved successfully',
+        data: cart
     });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
 /**
  * Add / Update Item in Cart
  */
-exports.addToCart = async (req, res, next) => {
-  try {
+/**
+ * Add / Update Item in Cart
+ */
+exports.addToCart = asyncHandler(async (req, res) => {
     const userId = req.user?.id;
-    const { guestId, productId, variantId, quantity } = req.body;
+    const { productId, variantId, quantity } = req.body;
 
-    if (!userId && !guestId) {
-      return errorResponse(res, { statusCode: 400, message: 'User ID or Guest ID required' });
+    // Strict Auth Check (Guest logic moved to LocalStorage)
+    if (!userId) {
+      throw ApiError.unauthorized('Please log in to add items to the cart');
     }
 
     // 1. Fetch Product & Variant Details
@@ -90,7 +93,7 @@ exports.addToCart = async (req, res, next) => {
     });
 
     if (!product) {
-      return errorResponse(res, { statusCode: 404, message: 'Product not found' });
+      throw ApiError.notFound('Product not found');
     }
 
     let unitPrice = product.sellingPrice;
@@ -99,28 +102,20 @@ exports.addToCart = async (req, res, next) => {
     if (variantId) {
       const variant = product.variants.find(v => v.id === variantId);
       if (!variant) {
-        return errorResponse(res, { statusCode: 404, message: 'Variant not found' });
+        throw ApiError.notFound('Variant not found');
       }
-      unitPrice = variant.sellingPrice || product.sellingPrice; // Fallback if variant price is null
+      unitPrice = variant.sellingPrice || product.sellingPrice;
       availableStock = variant.stock;
     }
 
-    if (availableStock < quantity) {
-      return errorResponse(res, { statusCode: 400, message: 'Insufficient stock' });
+    if (availableStock < (quantity || 1)) {
+      throw ApiError.badRequest('Insufficient stock');
     }
 
-    // 2. Find or create cart
-    let cart;
-    const where = userId ? { userId } : { sessionId: guestId };
-
-    cart = await prisma.cart.findFirst({ where });
+    // 2. Find or create user cart
+    let cart = await prisma.cart.findFirst({ where: { userId } });
     if (!cart) {
-      cart = await prisma.cart.create({
-        data: {
-          userId: userId || undefined,
-          sessionId: guestId || undefined,
-        },
-      });
+        cart = await prisma.cart.create({ data: { userId } });
     }
 
     // 3. Check if item exists in cart
@@ -133,8 +128,11 @@ exports.addToCart = async (req, res, next) => {
     });
 
     if (existingItem) {
-      // Update quantity and total
       const newQuantity = existingItem.quantity + (quantity || 1);
+      if (availableStock < newQuantity) {
+          throw ApiError.badRequest('Insufficient stock for total quantity');
+      }
+
       await prisma.cartItem.update({
         where: { id: existingItem.id },
         data: {
@@ -143,7 +141,6 @@ exports.addToCart = async (req, res, next) => {
         },
       });
     } else {
-      // Create new item
       await prisma.cartItem.create({
         data: {
           cartId: cart.id,
@@ -156,63 +153,203 @@ exports.addToCart = async (req, res, next) => {
       });
     }
 
-    // 4. Update Cart Totals (Optional but good practice)
-    // For now, we rely on the client or a separate calculation,
-    // but the schema has subtotal/total fields on Cart.
-    // Let's leave them for now or update if needed.
-
     // Return updated cart
     const updatedCart = await prisma.cart.findUnique({
       where: { id: cart.id },
       include: cartInclude,
     });
 
-    res.status(200).json({
-      success: true,
-      data: updatedCart,
-      message: 'Item added to cart',
+    return successResponse(res, {
+        message: 'Item added to cart',
+        data: updatedCart
     });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
 /**
  * Update Cart Item Quantity
  */
-exports.updateCartItem = async (req, res, next) => {
-    try {
-        const { id } = req.params; // CartItem ID
-        const { quantity } = req.body;
+exports.updateCartItem = asyncHandler(async (req, res) => {
+    const userId = req.user?.id;
+    const { id } = req.params; // CartItem ID
+    const { quantity } = req.body;
 
-        await prisma.cartItem.update({
-            where: { id },
-            data: { quantity },
-        });
-
-        res.status(200).json({
-            success: true,
-            message: 'Cart updated',
-        });
-    } catch (error) {
-        next(error);
+    if (!userId) {
+        throw ApiError.unauthorized('Please log in to update cart');
     }
-}
+
+    const cartItem = await prisma.cartItem.findUnique({
+        where: { id },
+        include: { product: true, variant: true, cart: true }
+    });
+
+    if (!cartItem) {
+        throw ApiError.notFound('Cart item not found');
+    }
+
+    // Ownership Check
+    if (cartItem.cart.userId !== userId) {
+        throw ApiError.forbidden('You do not have permission to update this item');
+    }
+
+    const availableStock = cartItem.variant ? cartItem.variant.stock : cartItem.product.stock;
+    if (availableStock < quantity) {
+        throw ApiError.badRequest('Insufficient stock');
+    }
+
+    await prisma.cartItem.update({
+        where: { id },
+        data: {
+            quantity,
+            total: cartItem.unitPrice * quantity
+        },
+    });
+
+    const updatedCart = await prisma.cart.findUnique({
+      where: { id: cartItem.cartId },
+      include: cartInclude,
+    });
+
+    return successResponse(res, {
+        message: 'Cart updated successfully',
+        data: updatedCart
+    });
+});
 
 /**
  * Remove Item from Cart
  */
-exports.removeFromCart = async (req, res, next) => {
-  try {
+exports.removeFromCart = asyncHandler(async (req, res) => {
+    const userId = req.user?.id;
     const { id } = req.params; // CartItem ID
 
+    if (!userId) {
+        throw ApiError.unauthorized('Please log in to remove items');
+    }
+
+    const item = await prisma.cartItem.findUnique({
+        where: { id },
+        include: { cart: true }
+    });
+
+    if (!item) {
+        throw ApiError.notFound('Cart item not found');
+    }
+
+    // Ownership Check
+    if (item.cart.userId !== userId) {
+        throw ApiError.forbidden('You do not have permission to remove this item');
+    }
+
+    const cartId = item.cartId;
     await prisma.cartItem.delete({ where: { id } });
 
-    res.status(200).json({
-      success: true,
-      message: 'Item removed from cart',
+    const updatedCart = await prisma.cart.findUnique({
+      where: { id: cartId },
+      include: cartInclude,
     });
-  } catch (error) {
-    next(error);
-  }
-};
+
+    return successResponse(res, {
+        message: 'Item removed from cart',
+        data: updatedCart
+    });
+});
+
+/**
+ * Merge Guest Cart into User Cart
+ */
+exports.mergeCart = asyncHandler(async (req, res) => {
+    const userId = req.user?.id;
+    const { items } = req.body; // Expecting { items: [{ productId, variantId, quantity }] }
+
+    console.log(`[mergeCart] Merging ${items?.length || 0} items into userId: ${userId}`);
+
+    if (!userId) {
+        throw ApiError.unauthorized('User must be logged in to merge cart');
+    }
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+        return successResponse(res, { message: 'No items to merge' });
+    }
+
+    // 1. Find or create the user cart
+    let userCart = await prisma.cart.findFirst({
+        where: { userId }
+    });
+
+    if (!userCart) {
+        userCart = await prisma.cart.create({
+            data: { userId }
+        });
+        console.log(`[mergeCart] Created new user cart: ${userCart.id}`);
+    }
+
+    // 2. Add local items to user cart
+    for (const item of items) {
+        // Skip invalid items
+        if (!item.productId || !item.quantity) continue;
+
+        // Fetch product details for current price
+        const product = await prisma.product.findUnique({
+            where: { id: item.productId },
+            include: { variants: true }
+        });
+
+        if (!product) continue;
+
+        let unitPrice = product.sellingPrice;
+        let availableStock = product.stock;
+
+        if (item.variantId) {
+             const variant = product.variants.find(v => v.id === item.variantId);
+             if (variant) {
+                 unitPrice = variant.sellingPrice || product.sellingPrice;
+                 availableStock = variant.stock;
+             }
+        }
+
+        // Check stock (optional: could skip check and just merge, but safest to check)
+        // For merge, we might want to be lenient or cap at max stock
+
+        const existingItem = await prisma.cartItem.findFirst({
+            where: {
+                cartId: userCart.id,
+                productId: item.productId,
+                variantId: item.variantId || null // explicit null check
+            }
+        });
+
+        if (existingItem) {
+            const newQuantity = existingItem.quantity + item.quantity;
+             // Cap at stock if needed, or just let it update
+            await prisma.cartItem.update({
+                where: { id: existingItem.id },
+                data: {
+                    quantity: newQuantity,
+                    total: existingItem.unitPrice * newQuantity
+                }
+            });
+        } else {
+             await prisma.cartItem.create({
+                data: {
+                  cartId: userCart.id,
+                  productId: item.productId,
+                  variantId: item.variantId || null,
+                  quantity: item.quantity,
+                  unitPrice: parseFloat(unitPrice),
+                  total: parseFloat(unitPrice) * item.quantity
+                },
+              });
+        }
+    }
+
+    // 3. Return updated user cart
+    const updatedCart = await prisma.cart.findUnique({
+        where: { id: userCart.id },
+        include: cartInclude
+    });
+
+    return successResponse(res, {
+        message: 'Cart merged successfully',
+        data: updatedCart
+    });
+});

@@ -1,12 +1,13 @@
 const prisma = require('../config/prisma');
 const { validateCoupon } = require('../utils/discount');
-// const { validateCoupon } = require('../utils/discountCalculator');
+const asyncHandler = require('../middlewares/asyncHandler');
+const ApiError = require('../utils/ApiError');
+const { successResponse, createdResponse } = require('../utils/response');
 
 /**
  * Create Discount/Coupon
  */
-exports.createDiscount = async (req, res, next) => {
-  try {
+exports.createDiscount = asyncHandler(async (req, res) => {
     const {
       name, code, description, type, applicableOn, value,
       buyQuantity, getQuantity, startDate, endDate, isActive,
@@ -20,10 +21,7 @@ exports.createDiscount = async (req, res, next) => {
         where: { code: code.toUpperCase() }
       });
       if (existing) {
-        return res.status(400).json({
-          success: false,
-          message: 'Discount code already exists'
-        });
+        throw ApiError.conflict('Discount code already exists');
       }
     }
 
@@ -61,21 +59,16 @@ exports.createDiscount = async (req, res, next) => {
       });
     }
 
-    res.status(201).json({
-      success: true,
-      data: discount,
-      message: 'Discount created successfully'
+    return createdResponse(res, {
+        message: 'Discount created successfully',
+        data: discount
     });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
 /**
  * Update Discount
  */
-exports.updateDiscount = async (req, res, next) => {
-  try {
+exports.updateDiscount = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const {
       name, code, description, type, applicableOn, value,
@@ -93,10 +86,7 @@ exports.updateDiscount = async (req, res, next) => {
         }
       });
       if (existing) {
-        return res.status(400).json({
-          success: false,
-          message: 'Discount code already exists'
-        });
+        throw ApiError.conflict('Discount code already exists');
       }
     }
 
@@ -143,21 +133,16 @@ exports.updateDiscount = async (req, res, next) => {
       }
     }
 
-    res.status(200).json({
-      success: true,
-      data: discount,
-      message: 'Discount updated successfully'
+    return successResponse(res, {
+        message: 'Discount updated successfully',
+        data: discount
     });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
 /**
  * Get All Discounts
  */
-exports.getDiscounts = async (req, res, next) => {
-  try {
+exports.getDiscounts = asyncHandler(async (req, res) => {
     const {
       page = 1,
       limit = 10,
@@ -201,26 +186,22 @@ exports.getDiscounts = async (req, res, next) => {
 
     const count = await prisma.discount.count({ where: query });
 
-    res.status(200).json({
-      success: true,
-      data: discounts,
-      pagination: {
-        total: count,
-        pages: Math.ceil(count / parseInt(limit)),
-        page: parseInt(page),
-        limit: parseInt(limit)
-      }
+    return successResponse(res, {
+        message: 'Discounts retrieved successfully',
+        data: discounts,
+        pagination: {
+            total: count,
+            pages: Math.ceil(count / parseInt(limit)),
+            page: parseInt(page),
+            limit: parseInt(limit)
+        }
     });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
 /**
  * Get Single Discount
  */
-exports.getDiscount = async (req, res, next) => {
-  try {
+exports.getDiscount = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const discount = await prisma.discount.findUnique({
@@ -237,40 +218,34 @@ exports.getDiscount = async (req, res, next) => {
     });
 
     if (!discount) {
-      return res.status(404).json({
-        success: false,
-        message: 'Discount not found'
-      });
+      throw ApiError.notFound('Discount not found');
     }
 
-    res.status(200).json({
-      success: true,
-      data: discount
+    return successResponse(res, {
+        message: 'Discount retrieved successfully',
+        data: discount
     });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
 /**
  * Delete Discount
  */
-exports.deleteDiscount = async (req, res, next) => {
-  try {
+exports.deleteDiscount = asyncHandler(async (req, res) => {
     const { id } = req.params;
+
+    const discount = await prisma.discount.findUnique({ where: { id } });
+    if (!discount) {
+        throw ApiError.notFound('Discount not found');
+    }
 
     await prisma.discount.delete({
       where: { id }
     });
 
-    res.status(200).json({
-      success: true,
-      message: 'Discount deleted successfully'
+    return successResponse(res, {
+        message: 'Discount deleted successfully'
     });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
 /**
  * Validate Coupon Code (Public)
@@ -280,49 +255,99 @@ exports.validateCouponCode = async (req, res, next) => {
     const { code, cartTotal } = req.body;
     const userId = req.user?.id;
 
-    const coupon = await validateCoupon(
-      code.toUpperCase(),
-      userId,
-      parseFloat(cartTotal)
-    );
+    // Note: asyncHandler is not used here because validateCoupon might throw custom errors
+    // that we want to catch and return as 400 (as in original code).
+    // However, ApiError handles status codes.
+    // Let's refactor to use asyncHandler and rely on global error handler,
+    // provided validateCoupon throws errors or we accept its throws.
+    // The original code caught error and sent 400.
+    // If validateCoupon throws Error('msg'), global handler returns 500 unless we map it.
+    // Safest is to keep try/catch block BUT use ApiError inside.
 
-    // Calculate discount amount
-    let discountAmount = 0;
-    if (coupon.type === 'PERCENTAGE') {
-      discountAmount = (parseFloat(cartTotal) * coupon.value) / 100;
-    } else if (coupon.type === 'FLAT') {
-      discountAmount = coupon.value;
+    try {
+        const coupon = await validateCoupon(
+          code.toUpperCase(),
+          userId,
+          parseFloat(cartTotal)
+        );
+
+        // Calculate discount amount
+        let discountAmount = 0;
+        if (coupon.type === 'PERCENTAGE') {
+          discountAmount = (parseFloat(cartTotal) * coupon.value) / 100;
+        } else if (coupon.type === 'FLAT') {
+          discountAmount = coupon.value;
+        }
+
+        // Apply max cap
+        if (coupon.maxDiscountCap && discountAmount > coupon.maxDiscountCap) {
+          discountAmount = coupon.maxDiscountCap;
+        }
+
+        return successResponse(res, {
+            message: 'Coupon applied successfully',
+            data: {
+                code: coupon.code,
+                type: coupon.type,
+                value: coupon.value,
+                discountAmount: Math.round(discountAmount * 100) / 100,
+                description: coupon.description
+            }
+        });
+    } catch (err) {
+        // Map any error from validateCoupon to BadRequest
+        throw ApiError.badRequest(err.message);
     }
-
-    // Apply max cap
-    if (coupon.maxDiscountCap && discountAmount > coupon.maxDiscountCap) {
-      discountAmount = coupon.maxDiscountCap;
-    }
-
-    res.status(200).json({
-      success: true,
-      data: {
-        code: coupon.code,
-        type: coupon.type,
-        value: coupon.value,
-        discountAmount: Math.round(discountAmount * 100) / 100,
-        description: coupon.description
-      },
-      message: 'Coupon applied successfully'
-    });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 };
+
+// Exports for validateCouponCode using asyncHandler wrapper
+exports.validateCouponCode = asyncHandler(async (req, res) => {
+    const { code, cartTotal } = req.body;
+    const userId = req.user?.id;
+
+    try {
+        const coupon = await validateCoupon(
+          code.toUpperCase(),
+          userId,
+          parseFloat(cartTotal)
+        );
+
+        // Calculate discount amount
+        let discountAmount = 0;
+        if (coupon.type === 'PERCENTAGE') {
+          discountAmount = (parseFloat(cartTotal) * coupon.value) / 100;
+        } else if (coupon.type === 'FLAT') {
+          discountAmount = coupon.value;
+        }
+
+        // Apply max cap
+        if (coupon.maxDiscountCap && discountAmount > coupon.maxDiscountCap) {
+          discountAmount = coupon.maxDiscountCap;
+        }
+
+        return successResponse(res, {
+            message: 'Coupon applied successfully',
+            data: {
+                code: coupon.code,
+                type: coupon.type,
+                value: coupon.value,
+                discountAmount: Math.round(discountAmount * 100) / 100,
+                description: coupon.description
+            }
+        });
+    } catch (err) {
+        throw ApiError.badRequest(err.message);
+    }
+});
+
 
 /**
  * Get Active Discounts (Public)
  */
-exports.getActiveDiscounts = async (req, res, next) => {
-  try {
+exports.getActiveDiscounts = asyncHandler(async (req, res) => {
     const now = new Date();
 
     const discounts = await prisma.discount.findMany({
@@ -348,11 +373,8 @@ exports.getActiveDiscounts = async (req, res, next) => {
       orderBy: { priority: 'desc' }
     });
 
-    res.status(200).json({
-      success: true,
-      data: discounts
+    return successResponse(res, {
+        message: 'Active discounts retrieved successfully',
+        data: discounts
     });
-  } catch (error) {
-    next(error);
-  }
-};
+});

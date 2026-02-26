@@ -55,7 +55,8 @@ exports.getWishlist = async (req, res, next) => {
                     id: true,
                     name: true,
                     slug: true,
-                    price: true,
+                    sellingPrice: true,
+                    basePrice: true,
                     images: true,
                     category: true,
                     stock: true

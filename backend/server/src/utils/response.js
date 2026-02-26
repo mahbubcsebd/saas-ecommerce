@@ -1,133 +1,183 @@
+const HTTP_STATUS = require('./httpStatus');
+
 /**
- * Standard API Response Utilities
+ * Success Response Handler
+ * @param {Object} res - Express response object
+ * @param {Object} options - Response options
+ * @param {number} options.statusCode - HTTP status code (default: 200)
+ * @param {string} options.message - Response message
+ * @param {*} options.data - Response data
+ * @param {Object} options.meta - Pagination or additional metadata
  */
-
-class ApiResponse {
-  constructor(statusCode, success, message, data = null) {
-    this.statusCode = statusCode;
-    this.success = success;
-    this.message = message;
-    if (data) this.data = data;
-  }
-}
-
-class ApiError extends Error {
-  constructor(statusCode, message, isOperational = true, stack = '') {
-    super(message);
-    this.statusCode = statusCode;
-    this.isOperational = isOperational;
-    this.success = false;
-
-    if (stack) {
-      this.stack = stack;
-    } else {
-      Error.captureStackTrace(this, this.constructor);
+const successResponse = (
+    res,
+    {
+        statusCode = HTTP_STATUS.OK,
+        message = 'Success',
+        data = null,
+        meta = null,
     }
-  }
-}
+) => {
+    const response = {
+        success: true,
+        message,
+    };
 
-/**
- * Success Response Helper
- */
-const sendSuccess = (res, statusCode, message, data = null) => {
-  const response = new ApiResponse(statusCode, true, message, data);
-  return res.status(statusCode).json(response);
+    if (data !== null && data !== undefined) {
+        response.data = data;
+    }
+
+    if (meta) {
+        response.meta = meta;
+    }
+
+    return res.status(statusCode).json(response);
 };
 
 /**
- * Error Response Helper
+ * Error Response Handler
+ * @param {Object} res - Express response object
+ * @param {Object} options - Response options
+ * @param {number} options.statusCode - HTTP status code (default: 500)
+ * @param {string} options.message - Error message
+ * @param {*} options.errors - Validation or detailed errors
+ * @param {string} options.stack - Error stack trace (only in development)
  */
-const sendError = (res, statusCode, message, details = null) => {
-  const response = {
-    statusCode,
-    success: false,
-    message,
-    ...(details && { details }),
-  };
-  return res.status(statusCode).json(response);
+const errorResponse = (
+    res,
+    {
+        statusCode = HTTP_STATUS.INTERNAL_SERVER_ERROR,
+        message = 'Internal Server Error',
+        errors = null,
+        stack = null,
+    }
+) => {
+    const response = {
+        success: false,
+        message,
+    };
+
+    if (errors) {
+        response.errors = errors;
+    }
+
+    // Stack trace শুধু development এ দেখাবে
+    if (process.env.NODE_ENV === 'development' && stack) {
+        response.stack = stack;
+    }
+
+    return res.status(statusCode).json(response);
 };
 
 /**
- * Wrap an async Express route handler and forward errors to next()
- * @param {Function} fn - Async route handler or middleware
- * @returns {Function} Express middleware with error handling
+ * Pagination Meta Generator
+ * @param {number} page - Current page
+ * @param {number} limit - Items per page
+ * @param {number} total - Total items
  */
-const asyncHandler = (fn) => {
-  if (typeof fn !== 'function') {
-    throw new TypeError('Expected a function as argument to asyncHandler');
-  }
+const paginationMeta = (page, limit, total) => {
+    const totalPages = Math.ceil(total / limit);
+    return {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+    };
+};
 
-  return function wrappedAsyncHandler(req, res, next) {
-    Promise.resolve(fn(req, res, next)).catch((err) => {
-      console.error(`[AsyncHandler Error]: ${err.message}`);
-      next(err);
+/**
+ * Created Response (201)
+ */
+const createdResponse = (res, { message = 'Created successfully', data = null }) => {
+    return successResponse(res, {
+        statusCode: HTTP_STATUS.CREATED,
+        message,
+        data,
     });
-  };
 };
 
 /**
- * Global Error Handler Middleware
+ * No Content Response (204)
  */
-const globalErrorHandler = (err, req, res, next) => {
-  let error = { ...err };
-  error.message = err.message;
-
-  // Log error
-  console.error('Error:', err);
-
-  // Prisma unique constraint error
-  if (err.code === 'P2002') {
-    const message = 'Resource already exists';
-    error = new ApiError(409, message);
-  }
-
-  // Prisma record not found error
-  if (err.code === 'P2025') {
-    const message = 'Resource not found';
-    error = new ApiError(404, message);
-  }
-
-  // JWT errors
-  if (err.name === 'JsonWebTokenError') {
-    const message = 'Invalid token';
-    error = new ApiError(401, message);
-  }
-
-  if (err.name === 'TokenExpiredError') {
-    const message = 'Token expired';
-    error = new ApiError(401, message);
-  }
-
-  // Validation errors
-  if (err.name === 'ValidationError') {
-    const message = Object.values(err.errors)
-      .map((val) => val.message)
-      .join(', ');
-    error = new ApiError(400, message);
-  }
-
-  // Default error
-  if (!error.statusCode) {
-    error = new ApiError(500, 'Internal server error');
-  }
-
-  sendError(res, error.statusCode, error.message);
+const noContentResponse = (res) => {
+    return res.status(HTTP_STATUS.NO_CONTENT).send();
 };
 
 /**
- * 404 Handler
+ * Bad Request Response (400)
  */
-const notFound = (req, res, next) => {
-  const error = new ApiError(404, `Not found - ${req.originalUrl}`);
-  next(error);
+const badRequestResponse = (res, { message = 'Bad request', errors = null }) => {
+    return errorResponse(res, {
+        statusCode: HTTP_STATUS.BAD_REQUEST,
+        message,
+        errors,
+    });
+};
+
+/**
+ * Unauthorized Response (401)
+ */
+const unauthorizedResponse = (res, { message = 'Unauthorized' } = {}) => {
+    return errorResponse(res, {
+        statusCode: HTTP_STATUS.UNAUTHORIZED,
+        message,
+    });
+};
+
+/**
+ * Forbidden Response (403)
+ */
+const forbiddenResponse = (res, { message = 'Forbidden' } = {}) => {
+    return errorResponse(res, {
+        statusCode: HTTP_STATUS.FORBIDDEN,
+        message,
+    });
+};
+
+/**
+ * Not Found Response (404)
+ */
+const notFoundResponse = (res, { message = 'Resource not found' } = {}) => {
+    return errorResponse(res, {
+        statusCode: HTTP_STATUS.NOT_FOUND,
+        message,
+    });
+};
+
+/**
+ * Conflict Response (409)
+ */
+const conflictResponse = (res, { message = 'Conflict', errors = null }) => {
+    return errorResponse(res, {
+        statusCode: HTTP_STATUS.CONFLICT,
+        message,
+        errors,
+    });
+};
+
+/**
+ * Validation Error Response (422)
+ */
+const validationErrorResponse = (res, { message = 'Validation failed', errors }) => {
+    return errorResponse(res, {
+        statusCode: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+        message,
+        errors,
+    });
 };
 
 module.exports = {
-  ApiResponse,
-  ApiError,
-  sendSuccess,
-  sendError,
-  asyncHandler,
-  globalErrorHandler,
-  notFound,
+    successResponse,
+    errorResponse,
+    createdResponse,
+    noContentResponse,
+    badRequestResponse,
+    unauthorizedResponse,
+    forbiddenResponse,
+    notFoundResponse,
+    conflictResponse,
+    validationErrorResponse,
+    paginationMeta,
 };

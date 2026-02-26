@@ -1,10 +1,9 @@
-const express = require('express');
+const express = require('express'); // Server entry point
 
 const app = express();
 // require('./utils/cronBackup');
 
-// const userRoutes = require('./api/routes/userRoutes');
-// const authRouter = require('./api/routes/authRouter');
+
 
 // http-errors is a middleware which creates an error object
 const createError = require('http-errors');
@@ -24,8 +23,9 @@ const compression = require('compression');
 
 const cookieParser = require('cookie-parser');
 const swaggerUI = require('swagger-ui-express');
-const { errorResponse } = require('./helpers/responseHandler');
 const morganMiddleware = require('./middlewares/loggerMiddleware');
+const { globalErrorHandler } = require('./middlewares/errorHandler');
+const { notFound } = require('./middlewares/notFound');
 
 const swaggerSpec = require('./utils/swagger');
 const routes = require('./routes');
@@ -40,9 +40,33 @@ const rateLimiter = rateLimit({
 
 // Middlewares
 // Static files
+// CORS Middleware
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      const allowedOrigins = [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://127.0.0.1:3000',
+        'http://127.0.0.1:3001',
+        'https://bloghub-sooty.vercel.app',
+      ];
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: true,
+    optionsSuccessStatus: 200,
+  })
+);
+
 app.use(express.static('public'));
 
-app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(rateLimiter);
@@ -79,29 +103,6 @@ app.use(
 //   })
 // );
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-
-      const allowedOrigins = [
-        'http://localhost:3000',
-        'http://localhost:3001',
-        'https://bloghub-sooty.vercel.app',
-      ];
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    credentials: true,
-    optionsSuccessStatus: 200,
-  })
-);
 
 app.get('/', (req, res) => {
   res.status(200).json({
@@ -112,28 +113,10 @@ app.get('/', (req, res) => {
 // Use the centralized router
 app.use('/api', routes);
 
-// // Task Function
-// const runTask = () => {
-//     console.log(`⏰ Task Running at: ${new Date().toLocaleString()}`);
-// };
-
-// // Run cron job every minute
-// cron.schedule('*/5 * * * * *', runTask);
-
-// Client Error Handling Middleware
-app.use((req, res, next) => {
-  next(createError(404, '404 Not Found'));
-});
+// Client Error Handling Middleware (404)
+app.use(notFound);
 
 // Server Error Handling Middleware
-app.use((error, req, res, _next) => {
-  console.error(error.stack);
-  errorResponse(res, {
-    statusCode: error.status,
-    message: error.message,
-  });
-
-  // next();
-});
+app.use(globalErrorHandler);
 
 module.exports = app;

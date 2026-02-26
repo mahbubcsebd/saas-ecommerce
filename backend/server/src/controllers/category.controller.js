@@ -1,166 +1,359 @@
-const { PrismaClient } = require("@prisma/client");
-const createError = require("http-errors");
+const prisma = require('../config/prisma');
 const slugify = require("slugify");
-const prisma = new PrismaClient();
+const asyncHandler = require('../middlewares/asyncHandler');
+const ApiError = require('../utils/ApiError');
+const { successResponse, createdResponse } = require('../utils/response');
+const contentTranslationService = require('../services/contentTranslation.service');
 
 // Get all categories (Public)
-exports.getAllCategories = async (req, res, next) => {
-  try {
+exports.getAllCategories = asyncHandler(async (req, res) => {
     const { isHomeShown, search } = req.query;
-    const query = {};
+
+    // CRITICAL: Only fetch root categories (parentId: null)
+    // Children will be included via the recursive includeChildren
+    const query = { parentId: null };
+
     if (isHomeShown === 'true') query.isHomeShown = true;
 
     if (search) {
         query.name = { contains: search, mode: 'insensitive' };
     }
 
-    // Fetch all to allow frontend to build tree, or filtered
-    // For admin DnD we usually want all
+    // Recursive function to include all nested children with translations
+    const includeChildren = {
+        include: {
+            translations: true, // Include translations at root level
+            children: {
+                include: {
+                    translations: true,
+                    children: {
+                        include: {
+                            translations: true,
+                            children: {
+                                include: {
+                                    translations: true,
+                                    children: {
+                                        include: {
+                                            translations: true,
+                                            children: {
+                                                include: {
+                                                    translations: true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    // Fetch all categories with nested children
     const categories = await prisma.category.findMany({
       where: query,
       orderBy: { order: 'asc' },
-      include: {
-        children: {
-            include: { children: true } // Support 3 levels depth or just flat list
-        },
-      },
+      ...includeChildren
     });
 
-    res.status(200).json({
-      success: true,
-      data: categories,
+    // Debug: Log category structure
+    console.log('=== GET ALL CATEGORIES ===');
+    console.log('Total root categories:', categories.length);
+    categories.forEach(cat => {
+        console.log(`- ${cat.name} (id: ${cat.id}, parentId: ${cat.parentId}, children: ${cat.children?.length || 0})`);
+        if (cat.children && cat.children.length > 0) {
+            cat.children.forEach(child => {
+                console.log(`  - ${child.name} (id: ${child.id}, parentId: ${child.parentId})`);
+            });
+        }
     });
-  } catch (error) {
-    next(error);
-  }
-};
+
+    return successResponse(res, {
+        message: 'Categories retrieved successfully',
+        data: categories
+    });
+});
 
 // Get single category by slug
-exports.getCategoryBySlug = async (req, res, next) => {
-  try {
+exports.getCategoryBySlug = asyncHandler(async (req, res) => {
     const { slug } = req.params;
     const category = await prisma.category.findUnique({
       where: { slug },
       include: {
-        children: true,
+        translations: true,
+        children: {
+          include: {
+            translations: true
+          }
+        },
         products: {
             take: 10,
-            include: { variants: true }
+            include: {
+              variants: true,
+              translations: true
+            }
         }
       },
     });
 
     if (!category) {
-      throw createError(404, "Category not found");
+      throw ApiError.notFound('Category not found');
     }
 
-    res.status(200).json({
-      success: true,
-      data: category,
+    return successResponse(res, {
+        message: 'Category retrieved successfully',
+        data: category
     });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
 // Create Category (Admin)
-exports.createCategory = async (req, res, next) => {
-  try {
-    const { name, image, description, isHomeShown, order, icon, parentId } = req.body;
+exports.createCategory = asyncHandler(async (req, res) => {
+    const { name, description, isHomeShown, order, parentId, isActive, metaTitle, metaDescription, metaKeywords } = req.body;
     let { slug } = req.body;
+
+    // Debug logging
+    console.log('=== CREATE CATEGORY REQUEST ===');
+    console.log('Name:', name);
+    console.log('ParentId:', parentId);
+    console.log('Body:', req.body);
 
     if (!slug) {
         slug = slugify(name, { lower: true });
+    }
+
+    // Check if slug exists
+    const existing = await prisma.category.findUnique({ where: { slug } });
+    if (existing) {
+        throw ApiError.conflict('Category with this slug already exists');
+    }
+
+    // Handle image upload from multer
+    const imageUrl = req.file ? req.file.path : null;
+
+    let parsedTranslations = [];
+    if (req.body.translations) {
+        try {
+            parsedTranslations = JSON.parse(req.body.translations);
+        } catch (e) {
+            console.error("JSON Parse Error for translations:", e);
+        }
     }
 
     const category = await prisma.category.create({
       data: {
         name,
         slug,
-        image,
+        image: imageUrl,
         description,
-        isHomeShown: isHomeShown || false,
+        isHomeShown: isHomeShown === 'true' || isHomeShown === true || false,
+        isActive: isActive !== undefined ? (isActive === 'true' || isActive === true) : true,
+        metaTitle,
+        metaDescription,
+        metaKeywords,
         order: order ? parseInt(order) : 0,
-        icon,
-        parentId: parentId || null
+        parentId: parentId || null,
+        translations: {
+            create: parsedTranslations.map(t => ({
+                langCode: t.langCode,
+                name: t.name,
+                description: t.description
+            }))
+        }
       },
     });
 
-    res.status(201).json({
-      success: true,
-      data: category,
+    console.log('Created category:', category.id, 'with parentId:', category.parentId);
+
+    // Trigger background auto-translation
+    contentTranslationService.autoTranslateCategoryForAll(category.id).catch(console.error);
+
+    return createdResponse(res, {
+        message: 'Category created successfully',
+        data: category
     });
-  } catch (error) {
-    next(error);
-  }
-};
+});
 
 // Update Category (Admin)
-exports.updateCategory = async (req, res, next) => {
-  try {
+exports.updateCategory = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { name, image, description, slug, isHomeShown, order, icon, parentId } = req.body;
+    const { name, description, slug, isHomeShown, order, parentId, isActive, metaTitle, metaDescription, metaKeywords } = req.body;
+
+    const existingCategory = await prisma.category.findUnique({ where: { id } });
+    if (!existingCategory) {
+        throw ApiError.notFound('Category not found');
+    }
+
+    // Handle new image upload
+    let imageUrl = existingCategory.image;
+    if (req.file) {
+        // Delete old image from Cloudinary if exists
+        if (existingCategory.image) {
+            const { deleteImageFromCloudinary } = require('../utils/cloudinary.utils');
+            await deleteImageFromCloudinary(existingCategory.image);
+        }
+        imageUrl = req.file.path;
+    }
 
     const data = {
-        name, image, description,
-        isHomeShown,
-        icon,
-        slug,
+        name,
+        image: imageUrl,
+        description,
+        isHomeShown: isHomeShown !== undefined ? (isHomeShown === 'true' || isHomeShown === true) : undefined,
+        isActive: isActive !== undefined ? (isActive === 'true' || isActive === true) : undefined,
+        metaTitle,
+        metaDescription,
+        metaKeywords,
         order: order ? parseInt(order) : undefined,
-        parentId: parentId || null // Allow clearing parent
+        parentId: parentId === '' ? null : (parentId || undefined) // Allow clearing parent
     };
 
-    if (slug) data.slug = slug;
-
-    const category = await prisma.category.update({
-      where: { id },
-      data,
-    });
-
-    res.status(200).json({
-      success: true,
-      data: category,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// Delete Category
-exports.deleteCategory = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        await prisma.category.delete({ where: { id } });
-        res.status(200).json({ success: true, message: "Category deleted" });
-    } catch (error) {
-        next(error);
+    if (slug) {
+        // Check if new slug conflicts (if changed)
+        if (slug !== existingCategory.slug) {
+             const slugConflict = await prisma.category.findUnique({ where: { slug } });
+             if (slugConflict) {
+                 throw ApiError.conflict('Category with this slug already exists');
+             }
+             data.slug = slug;
+        }
     }
-};
 
-// NEW: Update Category Structure (for Drag and Drop)
-exports.updateCategoryStructure = async (req, res, next) => {
-    try {
-        const { categories } = req.body; // Expect array of { id, parentId, order }
+    // Remove undefined
+    Object.keys(data).forEach(key => data[key] === undefined && delete data[key]);
 
-        if (!Array.isArray(categories)) {
-            throw createError(400, "Categories array is required");
+    // Transactional update
+    const operations = [];
+
+    // 1. Update main category data
+    operations.push(
+        prisma.category.update({
+            where: { id },
+            data,
+        })
+    );
+
+    // 2. Handle Translations
+    if (req.body.translations) {
+        let parsedTranslations = [];
+        try {
+            parsedTranslations = JSON.parse(req.body.translations);
+        } catch (e) {
+             console.error("JSON Parse Error for translations:", e);
         }
 
-        // Use transaction to update all
-        const operations = categories.map((cat) =>
-            prisma.category.update({
-                where: { id: cat.id },
-                data: {
-                    parentId: cat.parentId || null,
-                    order: cat.order
-                }
+        // Delete existing translations
+        operations.push(
+            prisma.categoryTranslation.deleteMany({
+                where: { categoryId: id }
             })
         );
 
-        await prisma.$transaction(operations);
-
-        res.status(200).json({ success: true, message: "Structure updated" });
-    } catch (error) {
-        next(error);
+        // Create new translations
+        if (parsedTranslations.length > 0) {
+            operations.push(
+                prisma.categoryTranslation.createMany({
+                    data: parsedTranslations.map(t => ({
+                        categoryId: id,
+                        langCode: t.langCode,
+                        name: t.name,
+                        description: t.description
+                    }))
+                })
+            );
+        }
     }
-};
+
+    await prisma.$transaction(operations);
+
+    // Fetch updated category
+    const category = await prisma.category.findUnique({
+        where: { id },
+        include: { translations: true }
+    });
+
+    // Trigger background auto-translation if content changed
+    if (name || description !== undefined) {
+        contentTranslationService.autoTranslateCategoryForAll(category.id, true).catch(console.error);
+    }
+
+    return successResponse(res, {
+        message: 'Category updated successfully',
+        data: category
+    });
+});
+
+// Delete Category (with recursive child deletion)
+exports.deleteCategory = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const category = await prisma.category.findUnique({
+        where: { id },
+        include: { children: true }
+    });
+
+    if (!category) {
+        throw ApiError.notFound('Category not found');
+    }
+
+    // Recursive function to delete category and all its children
+    const deleteCategoryRecursive = async (categoryId) => {
+        // Find category with children
+        const cat = await prisma.category.findUnique({
+            where: { id: categoryId },
+            include: { children: true }
+        });
+
+        if (!cat) return;
+
+        // Recursively delete all children first
+        if (cat.children && cat.children.length > 0) {
+            for (const child of cat.children) {
+                await deleteCategoryRecursive(child.id);
+            }
+        }
+
+        // Delete image from Cloudinary if exists
+        if (cat.image) {
+            const { deleteImageFromCloudinary } = require('../utils/cloudinary.utils');
+            await deleteImageFromCloudinary(cat.image);
+        }
+
+        // Delete the category from database
+        await prisma.category.delete({ where: { id: categoryId } });
+    };
+
+    // Start recursive deletion
+    await deleteCategoryRecursive(id);
+
+    return successResponse(res, {
+        message: 'Category and all child categories deleted successfully'
+    });
+});
+
+// NEW: Update Category Structure (for Drag and Drop)
+exports.updateCategoryStructure = asyncHandler(async (req, res) => {
+    const { categories } = req.body; // Expect array of { id, parentId, order }
+
+    if (!Array.isArray(categories)) {
+        throw ApiError.badRequest('Categories array is required');
+    }
+
+    // Use transaction to update all
+    const operations = categories.map((cat) =>
+        prisma.category.update({
+            where: { id: cat.id },
+            data: {
+                parentId: cat.parentId || null,
+                order: cat.order
+            }
+        })
+    );
+
+    await prisma.$transaction(operations);
+
+    return successResponse(res, {
+        message: 'Category structure updated successfully'
+    });
+});

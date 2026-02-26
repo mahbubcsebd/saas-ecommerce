@@ -1,39 +1,45 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 const orderController = require('../controllers/order.controller');
-const { authMiddleware, isAdmin } = require('../middlewares/auth.middleware');
-const { permissiveAuth } = require('./cart.routes'); // Reuse permissive auth helper?
-// Actually let's redefine permissiveAuth here or move it to a shared middleware file.
-// For now, implementing permissive logic inline or importing if I extracted it.
-// To avoid "cannot find module cart.routes", I'll just check conditions.
+const { authMiddleware, isStaff } = require('../middlewares/auth.middleware');
+const validate = require('../middlewares/validate');
+const {
+    createOrderValidation,
+    updateOrderStatusValidation,
+    orderIdValidation,
+    orderQueryValidation
+} = require('../validators/orderValidator');
 
 const permissiveAuthMiddleware = async (req, res, next) => {
     try {
-         const authHeader = req.header('Authorization');
-         const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : req.cookies.accessToken;
+        const authHeader = req.header('Authorization');
+        const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : req.cookies.accessToken;
 
-         if (token) {
-             const jwt = require('jsonwebtoken');
-             const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET || 'FHDJKFHDJKSHFJKFHJKDSHF');
-             req.user = { id: decoded.userId };
-         }
-         next();
+        if (token) {
+             const secret = process.env.JWT_ACCESS_SECRET || process.env.JWT_ACCESS_KEY || 'FHDJKFHDJKSHFJKFHJKDSHF';
+             const decoded = jwt.verify(token, secret);
+             req.user = { id: decoded.userId, role: decoded.role };
+        }
+        next();
     } catch (e) {
         next();
     }
 }
 
-// Public/Guest/Auth
-router.post('/', permissiveAuthMiddleware, orderController.createOrder);
-
-// Auth Only
+// ============================================
+// PUBLIC / USER ROUTES
+// ============================================
+router.post('/', permissiveAuthMiddleware, createOrderValidation, validate, orderController.createOrder); // Auth optional (Guest/User)
 router.get('/my-orders', authMiddleware, orderController.getMyOrders);
+router.get('/:id', permissiveAuthMiddleware, orderIdValidation, validate, orderController.getOrder); // Shared (User/Admin/Guest with correct ID?)
 
-// Admin Only
-router.get('/admin/all', authMiddleware, isAdmin, orderController.getAllOrders);
-router.put('/admin/:id/status', authMiddleware, isAdmin, orderController.updateOrderStatus);
-
-// Public/Shared - Get Single Order
-router.get('/:id', orderController.getOrder);
+// ============================================
+// ADMIN ROUTES
+// ============================================
+router.get('/admin/all', authMiddleware, isStaff, orderQueryValidation, validate, orderController.getAllOrders);
+router.patch('/admin/bulk-status', authMiddleware, isStaff, orderController.bulkUpdateStatus);
+router.patch('/admin/:id/status', authMiddleware, isStaff, updateOrderStatusValidation, validate, orderController.updateOrderStatus);
+router.patch('/admin/:id/payment-status', authMiddleware, isStaff, validate, orderController.updatePaymentStatus);
 
 module.exports = router;

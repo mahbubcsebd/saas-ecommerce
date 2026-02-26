@@ -1,24 +1,29 @@
 const express = require('express');
-const {
-  getAllCategories,
-  getCategoryBySlug,
-  createCategory,
-  updateCategory,
-  deleteCategory,
-  updateCategoryStructure
-} = require('../controllers/category.controller');
-const { authMiddleware, isAdmin } = require('../middlewares/auth.middleware');
-
 const router = express.Router();
+const categoryController = require('../controllers/category.controller');
+const { authMiddleware, isAdmin, isManager } = require('../middlewares/auth.middleware');
+const { singleImageUpload } = require('../middlewares/upload.middleware');
+const validate = require('../middlewares/validate');
 
-// Public
-router.get('/', getAllCategories);
-router.get('/:slug', getCategoryBySlug);
+const {
+    createCategoryValidation,
+    updateCategoryValidation,
+    categoryIdValidation,
+    categoryStructureValidation
+} = require('../validators/categoryValidator');
 
-// Admin Routes
-router.post('/', authMiddleware, isAdmin, createCategory);
-router.put('/structure', authMiddleware, isAdmin, updateCategoryStructure); // Bulk update structure
-router.put('/:id', authMiddleware, isAdmin, updateCategory);
-router.delete('/:id', authMiddleware, isAdmin, deleteCategory);
+// ============================================
+// PUBLIC CATEGORY ROUTES
+// ============================================
+router.get('/', categoryController.getAllCategories);
+router.get('/:slug', categoryController.getCategoryBySlug);
+
+// ============================================
+// ADMIN CATEGORY ROUTES
+// ============================================
+router.post('/', authMiddleware, isManager, singleImageUpload('ecommerce/categories', 'image'), createCategoryValidation, validate, categoryController.createCategory);
+router.put('/structure', authMiddleware, isManager, categoryStructureValidation, validate, categoryController.updateCategoryStructure); // Specific route first
+router.put('/:id', authMiddleware, isManager, singleImageUpload('ecommerce/categories', 'image'), updateCategoryValidation, validate, categoryController.updateCategory);
+router.delete('/:id', authMiddleware, isManager, categoryIdValidation, validate, categoryController.deleteCategory);
 
 module.exports = router;

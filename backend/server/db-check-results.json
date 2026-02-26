@@ -1,0 +1,109 @@
+{
+  "users": [
+    {
+      "id": "698ce71b968aa380591fb888",
+      "email": "admin@example.com",
+      "username": "sysadmin"
+    },
+    {
+      "id": "698ce71b968aa380591fb889",
+      "email": "user@example.com",
+      "username": "mahbub_user"
+    },
+    {
+      "id": "698cf20177328641b2d54b95",
+      "email": "mahbubcseme@gmail.com",
+      "username": "mahbub"
+    }
+  ],
+  "orders": [
+    {
+      "id": "698ce73d968aa380591fb930",
+      "userId": "698ce71b968aa380591fb889",
+      "orderNumber": "ORD-SEED-1000",
+      "total": 420,
+      "source": "ONLINE"
+    },
+    {
+      "id": "698ce73e968aa380591fb934",
+      "userId": "698ce71b968aa380591fb889",
+      "orderNumber": "ORD-SEED-1001",
+      "total": 1699,
+      "source": "ONLINE"
+    },
+    {
+      "id": "698ce73f968aa380591fb938",
+      "userId": "698ce71b968aa380591fb889",
+      "orderNumber": "ORD-SEED-1002",
+      "total": 118,
+      "source": "ONLINE"
+    },
+    {
+      "id": "698ce73f968aa380591fb93b",
+      "userId": "698ce71b968aa380591fb889",
+      "orderNumber": "ORD-SEED-1003",
+      "total": 5226,
+      "source": "ONLINE"
+    },
+    {
+      "id": "698ce740968aa380591fb93f",
+      "userId": "698ce71b968aa380591fb889",
+      "orderNumber": "ORD-SEED-1004",
+      "total": 1858,
+      "source": "ONLINE"
+    },
+    {
+      "id": "698cf7f760725a987ea9840f",
+      "userId": null,
+      "orderNumber": "ORD-20260211-XXCF0",
+      "total": 39,
+      "source": "ONLINE"
+    },
+    {
+      "id": "698cfe0e0830e532799ddac2",
+      "userId": null,
+      "orderNumber": "ORD-20260211-52TTE",
+      "total": 399,
+      "source": "ONLINE"
+    },
+    {
+      "id": "698cff920830e532799ddac7",
+      "userId": null,
+      "orderNumber": "ORD-20260211-3Y9EX",
+      "total": 35,
+      "source": "ONLINE"
+    },
+    {
+      "id": "698d01c99dbede759a33572c",
+      "userId": null,
+      "orderNumber": "ORD-20260211-8XG4A",
+      "total": 2179,
+      "source": "ONLINE"
+    },
+    {
+      "id": "698d4c21e5293395bfe4079f",
+      "userId": null,
+      "orderNumber": "ORD-20260212-F4CZJ",
+      "total": 480,
+      "source": "ONLINE"
+    },
+    {
+      "id": "698d4e920770b0edca8a2a4f",
+      "userId": null,
+      "orderNumber": "ORD-20260212-AIQCT",
+      "total": 160,
+      "source": "ONLINE"
+    },
+    {
+      "id": "698d512aab879b949af9cd73",
+      "userId": null,
+      "orderNumber": "ORD-20260212-Y7SC8",
+      "total": 240,
+      "source": "ONLINE"
+    }
+  ],
+  "ordersWithNoUser": 7,
+  "userIdsInOrders": [
+    "698ce71b968aa380591fb889"
+  ]
+}

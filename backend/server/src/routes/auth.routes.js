@@ -1,4 +1,5 @@
 const express = require('express');
+const { body } = require('express-validator');
 const authRouter = express.Router();
 
 const {
@@ -7,45 +8,73 @@ const {
   refreshToken,
   logout,
   getProfile,
+  verifyInvitation,
+  setupPassword,
+  verifyEmail, // Import verifyEmail
+  forgotPassword,
+  resetPassword,
 } = require('../controllers/auth.controllers');
+
+// ... (existing code)
+
+// Verify email
+authRouter.post('/verify-email', verifyEmail);
+
+module.exports = authRouter;
 
 const {
   registerValidation,
   loginValidation,
 } = require('../validators/authValidator');
 
-const runValidation = require('../middlewares/validate');
+const validate = require('../middlewares/validate');
 
 const {
   authMiddleware,
-  isLoggedIn,
-  isLoggedOut,
   isAdmin,
-  hasRole,
 } = require('../middlewares/auth.middleware');
 
 // Public routes (only accessible when logged out)
-authRouter.post('/register', registerValidation, runValidation, register);
+authRouter.post('/register', registerValidation, validate, register);
 
-authRouter.post('/login', loginValidation, runValidation, login);
+authRouter.post('/login', loginValidation, validate, login);
 
 // Refresh token doesn’t care about login/logout state
 authRouter.post('/refresh', refreshToken);
 
-// Protected routes (require authentication)
-authRouter.post('/logout', authMiddleware, isLoggedIn, logout);
+// Forgot/Reset password
+authRouter.post('/forgot-password', forgotPassword);
+authRouter.post('/reset-password', resetPassword);
 
-authRouter.get('/profile', authMiddleware, isLoggedIn, getProfile);
+// Protected routes (require authentication)
+authRouter.post('/logout', authMiddleware, logout);
+
+authRouter.get('/profile', authMiddleware, getProfile);
 
 // Example admin-only route
 authRouter.get(
   '/admin/stats',
   authMiddleware,
-  isLoggedIn,
   isAdmin,
   (req, res) => {
     res.json({ message: 'Admin stats here' });
   }
+);
+
+// Verify invitation
+authRouter.get('/verify-invitation/:token', verifyInvitation);
+
+// Setup password
+authRouter.post(
+    '/setup-password',
+    [
+        body('token').notEmpty().withMessage('Token is required'),
+        body('password')
+            .isLength({ min: 6 })
+            .withMessage('Password must be at least 6 characters'),
+    ],
+    validate,
+    setupPassword
 );
 
 module.exports = authRouter;

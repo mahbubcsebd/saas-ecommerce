@@ -128,17 +128,125 @@ class ShippingService {
         return Math.round(cost * 100) / 100;
     }
     /**
-     * Get All Active Shipping Zones
+     * Get All Shipping Zones (Admin)
      */
-    async getActiveZones() {
+    async getAllZones() {
         return await prisma.shippingZone.findMany({
-            where: { isActive: true },
             include: {
-                rates: {
-                    where: { isActive: true }
-                }
+                rates: true
             },
-            orderBy: { priority: 'desc' }
+            orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }]
+        });
+    }
+
+    /**
+     * Get Zone By ID
+     */
+    async getZoneById(id) {
+        return await prisma.shippingZone.findUnique({
+            where: { id },
+            include: { rates: true }
+        });
+    }
+
+    /**
+     * Create Shipping Zone
+     */
+    async createZone(data) {
+        return await prisma.shippingZone.create({
+            data: {
+                name: data.name,
+                countries: data.countries || [],
+                regions: data.regions || [],
+                isActive: data.isActive !== undefined ? data.isActive : true,
+                priority: data.priority || 0
+            }
+        });
+    }
+
+    /**
+     * Update Shipping Zone
+     */
+    async updateZone(id, data) {
+        return await prisma.shippingZone.update({
+            where: { id },
+            data: {
+                name: data.name,
+                countries: data.countries,
+                regions: data.regions,
+                isActive: data.isActive,
+                priority: data.priority
+            }
+        });
+    }
+
+    /**
+     * Delete Shipping Zone
+     */
+    async deleteZone(id) {
+        // Delete associated rates first (Prisma handle this if setup with Cascade, but manual for safety here if no cascade)
+        await prisma.shippingRate.deleteMany({
+            where: { zoneId: id }
+        });
+        return await prisma.shippingZone.delete({
+            where: { id }
+        });
+    }
+
+    /**
+     * Create Shipping Rate
+     */
+    async createRate(zoneId, data) {
+        return await prisma.shippingRate.create({
+            data: {
+                zoneId,
+                method: data.method,
+                carrier: data.carrier,
+                calculationType: data.calculationType,
+                flatRate: data.flatRate,
+                baseRate: data.baseRate,
+                perKgRate: data.perKgRate,
+                freeShippingThreshold: data.freeShippingThreshold,
+                minWeight: data.minWeight,
+                maxWeight: data.maxWeight,
+                minOrderValue: data.minOrderValue,
+                estimatedDays: data.estimatedDays,
+                courierId: data.courierId,
+                isActive: data.isActive !== undefined ? data.isActive : true
+            }
+        });
+    }
+
+    /**
+     * Update Shipping Rate
+     */
+    async updateRate(id, data) {
+        return await prisma.shippingRate.update({
+            where: { id },
+            data: {
+                method: data.method,
+                carrier: data.carrier,
+                calculationType: data.calculationType,
+                flatRate: data.flatRate,
+                baseRate: data.baseRate,
+                perKgRate: data.perKgRate,
+                freeShippingThreshold: data.freeShippingThreshold,
+                minWeight: data.minWeight,
+                maxWeight: data.maxWeight,
+                minOrderValue: data.minOrderValue,
+                estimatedDays: data.estimatedDays,
+                courierId: data.courierId,
+                isActive: data.isActive
+            }
+        });
+    }
+
+    /**
+     * Delete Shipping Rate
+     */
+    async deleteRate(id) {
+        return await prisma.shippingRate.delete({
+            where: { id }
         });
     }
 }
