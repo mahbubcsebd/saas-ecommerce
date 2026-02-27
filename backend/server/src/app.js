@@ -50,7 +50,7 @@ app.use(
         'http://localhost:3001',
         'http://127.0.0.1:3000',
         'http://127.0.0.1:3001',
-        'https://bloghub-sooty.vercel.app',
+        'https://shop-kappa-lac.vercel.app', // Removed trailing slash
       ];
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);

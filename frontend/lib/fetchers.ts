@@ -1,33 +1,53 @@
 import { api } from "./api-client";
 
 export async function getHeroSlides() {
-  return api.get<any[]>("/hero-slides?featured=true&isActive=true", {
-    revalidate: 3600,
-    tags: ["hero-slides"],
-  });
+  try {
+    return await api.get<any[]>("/hero-slides?featured=true&isActive=true", {
+      revalidate: 3600,
+      tags: ["hero-slides"],
+    });
+  } catch (error) {
+    console.error("Error fetching hero slides:", error);
+    return [];
+  }
 }
 
 export async function getFeaturedCategories() {
-  return api.get<any[]>("/categories?isHomeShown=true", {
-    revalidate: 3600,
-    tags: ["categories"],
-  });
+  try {
+    return await api.get<any[]>("/categories?isHomeShown=true", {
+      revalidate: 3600,
+      tags: ["categories"],
+    });
+  } catch (error) {
+    console.error("Error fetching featured categories:", error);
+    return [];
+  }
 }
 
 export async function getNewArrivals() {
-  return api.get<any[]>("/products?isNewArrival=true&limit=8", {
-    revalidate: 300,
-    tags: ["products", "new-arrivals"],
-  });
+  try {
+    return await api.get<any[]>("/products?isNewArrival=true&limit=8", {
+      revalidate: 300,
+      tags: ["products", "new-arrivals"],
+    });
+  } catch (error) {
+    console.error("Error fetching new arrivals:", error);
+    return [];
+  }
 }
 
 export async function getTopSellingProducts() {
-  // Assuming 'sold' or a particular sort parameter exists for Best Selling.
-  // The backend product controller handles `sort` params. We will pass a standard string.
-  return api.get<any>("/products?sort=sold_desc&limit=8", {
-    revalidate: 3600,
-    tags: ["products", "top-selling"],
-  });
+  try {
+    // Assuming 'sold' or a particular sort parameter exists for Best Selling.
+    // The backend product controller handles `sort` params. We will pass a standard string.
+    return await api.get<any>("/products?sort=sold_desc&limit=8", {
+      revalidate: 3600,
+      tags: ["products", "top-selling"],
+    });
+  } catch (error) {
+    console.error("Error fetching top selling products:", error);
+    return { data: [], total: 0 };
+  }
 }
 
 export async function getFlashSale() {
@@ -42,10 +62,15 @@ export async function getFlashSale() {
 }
 
 export async function getHomeSections() {
-  return api.get<any[]>("/homeCategoryWiseProduct", {
-    revalidate: 3600,
-    tags: ["home-sections"],
-  });
+  try {
+    return await api.get<any[]>("/homeCategoryWiseProduct", {
+      revalidate: 3600,
+      tags: ["home-sections"],
+    });
+  } catch (error) {
+    console.error("Error fetching home sections:", error);
+    return [];
+  }
 }
 
 export async function getLandingPageBySlug(slug: string) {
@@ -76,8 +101,13 @@ export async function getProducts(params: Record<string, any>) {
 }
 
 export async function getCategories() {
-  return api.get<any[]>("/categories", {
-    revalidate: 3600,
-    tags: ["categories"],
-  });
+  try {
+    return await api.get<any[]>("/categories", {
+      revalidate: 3600,
+      tags: ["categories"],
+    });
+  } catch (error) {
+    console.error("Error fetching all categories:", error);
+    return [];
+  }
 }
