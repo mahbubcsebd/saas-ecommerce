@@ -2,6 +2,7 @@
 
 import { useTranslations } from "@/context/TranslationContext";
 import { useCurrency } from '@/hooks/useCurrency';
+import { api } from '@/lib/api-client';
 import { Loader2, Truck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -36,7 +37,6 @@ export function ShippingOptions({
 }: ShippingOptionsProps) {
   const { formatPrice } = useCurrency();
   const { t } = useTranslations();
-  const [zones, setZones] = useState<ShippingZone[]>([]);
   const [options, setOptions] = useState<ShippingOption[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -47,27 +47,19 @@ export function ShippingOptions({
       setError('');
 
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-        const response = await fetch(`${API_URL}/shipping/zones`);
-        const data = await response.json();
+        const response = await api.get<any[]>('/shipping/zones');
 
-        if (!response.ok || !data.success) {
-            setError(data.message || 'Failed to load shipping areas');
+        if (!response) {
+            setError('Failed to load shipping areas');
             return;
         }
 
-        const validZones = data.data;
+        const validZones = response;
         const allOptions: ShippingOption[] = [];
 
         // Flatten zones and rates into selectable options
-        // We will group by Zone Name in the UI potentially, or just list them "Inside Dhaka - Standard"
         validZones.forEach((zone: any) => {
             zone.rates.forEach((rate: any) => {
-                // Calculate cost (reusing logic or simplified if passed pre-calculated? No, we need to calculate here or just use flat/base)
-                // For now, let's assume flat rate or simple logic.
-                // ideally backend calculates, but for "Area Selection" usually it's flat rate per area.
-                // Let's implement simple calculation matching backend service logic strictly for display
-
                 let cost = 0;
                 if (rate.calculationType === 'FLAT') {
                     cost = rate.flatRate || 0;
@@ -83,9 +75,8 @@ export function ShippingOptions({
 
                  allOptions.push({
                     id: rate.id,
-                     // Combine Zone Name + Method for clarity: "Inside Dhaka - Standard Delivery"
                     method: `${zone.name}`,
-                    carrier: rate.method, // Put specific method here e.g "Standard"
+                    carrier: rate.method,
                     cost: cost,
                     estimatedDays: rate.estimatedDays,
                     isFree: cost === 0,
@@ -94,7 +85,6 @@ export function ShippingOptions({
             });
         });
 
-        // setZones(validZones);
         setOptions(allOptions);
 
         // Auto-select first if none selected
@@ -102,15 +92,15 @@ export function ShippingOptions({
              onSelect(allOptions[0]);
         }
 
-      } catch (err) {
-        setError('Failed to load shipping options');
+      } catch (err: any) {
+        setError(err.message || 'Failed to load shipping options');
       } finally {
         setLoading(false);
       }
     };
 
     fetchZones();
-  }, [cartTotal, cartWeight]);
+  }, [cartTotal, cartWeight, onSelect, selectedId]);
 
   if (loading) {
     return (

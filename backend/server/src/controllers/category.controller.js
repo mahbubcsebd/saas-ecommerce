@@ -5,13 +5,10 @@ const ApiError = require('../utils/ApiError');
 const { successResponse, createdResponse } = require('../utils/response');
 const contentTranslationService = require('../services/contentTranslation.service');
 
-// Get all categories (Public)
 exports.getAllCategories = asyncHandler(async (req, res) => {
     const { isHomeShown, search } = req.query;
 
-    // CRITICAL: Only fetch root categories (parentId: null)
-    // Children will be included via the recursive includeChildren
-    const query = { parentId: null };
+    let query = {};
 
     if (isHomeShown === 'true') query.isHomeShown = true;
 
@@ -22,7 +19,7 @@ exports.getAllCategories = asyncHandler(async (req, res) => {
     // Recursive function to include all nested children with translations
     const includeChildren = {
         include: {
-            translations: true, // Include translations at root level
+            translations: true,
             children: {
                 include: {
                     translations: true,
@@ -51,12 +48,17 @@ exports.getAllCategories = asyncHandler(async (req, res) => {
         }
     };
 
-    // Fetch all categories with nested children
-    const categories = await prisma.category.findMany({
+    // Fetch all categories first to be safe with parentId null/missing
+    let categories = await prisma.category.findMany({
       where: query,
       orderBy: { order: 'asc' },
       ...includeChildren
     });
+
+    // If no search is performed, we only want root categories at the top level
+    if (!search) {
+        categories = categories.filter(c => !c.parentId);
+    }
 
     // Debug: Log category structure
     console.log('=== GET ALL CATEGORIES ===');

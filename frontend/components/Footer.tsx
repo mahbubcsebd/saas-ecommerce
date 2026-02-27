@@ -83,7 +83,8 @@ export default function Footer() {
               <li><Link href="/contact" className="text-muted-foreground hover:text-primary">{t('common', 'contactUs', { defaultValue: 'Contact Us' })}</Link></li>
               <li><Link href="/profile" className="text-muted-foreground hover:text-primary">{t('common', 'myAccount', { defaultValue: 'My Account' })}</Link></li>
               <li><Link href="/profile/orders" className="text-muted-foreground hover:text-primary">{t('common', 'trackOrder', { defaultValue: 'Track Order' })}</Link></li>
-              <li><Link href="/policy" className="text-muted-foreground hover:text-primary">{t('common', 'privacyPolicy', { defaultValue: 'Privacy Policy' })}</Link></li>
+              <li><Link href="/privacy" className="text-muted-foreground hover:text-primary">{t('common', 'privacyPolicy', { defaultValue: 'Privacy Policy' })}</Link></li>
+              <li><Link href="/terms" className="text-muted-foreground hover:text-primary">{t('common', 'termsConditions', { defaultValue: 'Terms and Conditions' })}</Link></li>
             </ul>
           </div>
 

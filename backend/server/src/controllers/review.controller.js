@@ -12,6 +12,9 @@ exports.createReview = async (req, res, next) => {
       return errorResponse(res, { statusCode: 404, message: 'Product not found' });
     }
 
+    // Extract uploaded images
+    const images = req.files ? req.files.map(file => file.path) : [];
+
     // Create review
     const review = await prisma.review.create({
       data: {
@@ -19,6 +22,7 @@ exports.createReview = async (req, res, next) => {
         productId,
         rating: parseInt(rating),
         comment,
+        images,
       },
     });
 

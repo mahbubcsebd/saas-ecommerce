@@ -1,75 +1,83 @@
+import { api } from "./api-client";
 
 export async function getHeroSlides() {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-  try {
-    const res = await fetch(`${API_URL}/hero-slides?featured=true&isActive=true`, {
-      next: { revalidate: 3600 } // Revalidate every hour
-    });
-    if (!res.ok) throw new Error("Failed to fetch slides");
-    const data = await res.json();
-    return data.data || [];
-  } catch (error) {
-    console.error("Error fetching hero slides:", error);
-    return [];
-  }
+  return api.get<any[]>("/hero-slides?featured=true&isActive=true", {
+    revalidate: 3600,
+    tags: ["hero-slides"],
+  });
 }
 
 export async function getFeaturedCategories() {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-  try {
-    const res = await fetch(`${API_URL}/categories?isHomeShown=true`, {
-        next: { revalidate: 3600 }
-    });
-    if (!res.ok) throw new Error("Failed to fetch featured categories");
-    const data = await res.json();
-    return data.data || [];
-  } catch (error) {
-    console.error("Error fetching featured categories:", error);
-    return [];
-  }
+  return api.get<any[]>("/categories?isHomeShown=true", {
+    revalidate: 3600,
+    tags: ["categories"],
+  });
 }
 
 export async function getNewArrivals() {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-    try {
-        const res = await fetch(`${API_URL}/products?isNewArrival=true&limit=8`, {
-             next: { revalidate: 300 } // Revalidate every 5 mins
-        });
-        if (!res.ok) throw new Error("Failed to fetch new arrivals");
-        const data = await res.json();
-        return data.data || [];
-    } catch (error) {
-        console.error("Error fetching new arrivals:", error);
-        return [];
-    }
+  return api.get<any[]>("/products?isNewArrival=true&limit=8", {
+    revalidate: 300,
+    tags: ["products", "new-arrivals"],
+  });
+}
+
+export async function getTopSellingProducts() {
+  // Assuming 'sold' or a particular sort parameter exists for Best Selling.
+  // The backend product controller handles `sort` params. We will pass a standard string.
+  return api.get<any>("/products?sort=sold_desc&limit=8", {
+    revalidate: 3600,
+    tags: ["products", "top-selling"],
+  });
+}
+
+export async function getFlashSale() {
+  try {
+    return await api.get<any>("/flash-sales/public/active", {
+      revalidate: 60, // check frequently for sales turning active
+      tags: ["flash-sale"],
+    });
+  } catch (error) {
+    return null;
+  }
 }
 
 export async function getHomeSections() {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-    try {
-        const res = await fetch(`${API_URL}/homeCategoryWiseProduct`, {
-             next: { revalidate: 3600 }
-        });
-        if (!res.ok) throw new Error("Failed to fetch home sections");
-        const data = await res.json();
-        return data.data || [];
-    } catch (error) {
-        console.error("Error fetching home sections:", error);
-      return [];
-    }
+  return api.get<any[]>("/homeCategoryWiseProduct", {
+    revalidate: 3600,
+    tags: ["home-sections"],
+  });
 }
 
 export async function getLandingPageBySlug(slug: string) {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
   try {
-    const res = await fetch(`${API_URL}/landing-pages/public/${slug}`, {
-      next: { revalidate: 60 }, // Cache for 1 min
+    return await api.get<any>(`/landing-pages/public/${slug}`, {
+      revalidate: 60,
+      tags: [`landing-page-${slug}`],
     });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json.success ? json.data : null;
   } catch (error) {
-    console.error(`Error fetching landing page ${slug}:`, error);
     return null;
   }
+}
+
+export async function getProducts(params: Record<string, any>) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      value.forEach((v) => query.append(key, v as string));
+    } else if (value !== undefined && value !== null && value !== '') {
+      query.append(key, value as string);
+    }
+  });
+
+  return api.get<{ data: any[]; total: number }>(`/products?${query.toString()}`, {
+    cache: "no-store",
+    tags: ["products"],
+  });
+}
+
+export async function getCategories() {
+  return api.get<any[]>("/categories", {
+    revalidate: 3600,
+    tags: ["categories"],
+  });
 }

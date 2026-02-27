@@ -19,6 +19,7 @@ exports.getHomeCategoryWiseProduct = async (req, res, next) => {
         order: true,
         parentId: true,
         isHomeShown: true, // Explicitly select this field
+        translations: true,
         children: {
           select: {
             id: true,
@@ -75,6 +76,7 @@ exports.getHomeCategoryWiseProduct = async (req, res, next) => {
               where: { isActive: true },
               take: 5,
             },
+            translations: true,
           },
         });
 

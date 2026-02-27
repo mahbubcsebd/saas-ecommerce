@@ -55,6 +55,8 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
                 setLocaleState(langCode);
                 if (typeof window !== 'undefined') {
                     localStorage.setItem('locale', langCode);
+                    // Also set cookie for server-side accessibility
+                    document.cookie = `next-locale=${langCode}; path=/; max-age=31536000; SameSite=Lax`;
                     localStorage.setItem(`translations_${langCode}`, JSON.stringify(data.data)); // Cache data
                     localStorage.setItem(`translations_version_${langCode}`, String(serverVersion)); // Cache version
                 }
@@ -64,6 +66,7 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
         // Updates direction and document attributes
         if (typeof window !== 'undefined') {
              localStorage.setItem('locale', langCode);
+             document.cookie = `next-locale=${langCode}; path=/; max-age=31536000; SameSite=Lax`;
         }
         setDir(langCode === 'ar' || langCode === 'he' ? 'rtl' : 'ltr');
         document.documentElement.dir = langCode === 'ar' || langCode === 'he' ? 'rtl' : 'ltr';

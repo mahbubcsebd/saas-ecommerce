@@ -56,6 +56,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
     shippingRateId,
     appliedCoupon,
     discountAmount: discountAmountFromFront, // Actual amount deducted from frontend
+    codExtraCharge = 0,
   } = req.body;
 
   let orderItemsData = [];
@@ -67,11 +68,20 @@ exports.createOrder = asyncHandler(async (req, res) => {
   // ---------------------------------------------------------
   // 1. Item Retrieval (Cart vs Direct)
   // ---------------------------------------------------------
-  if (source === 'POS' && directItems && directItems.length > 0) {
-    // Direct items processing for POS
-    for (const item of directItems) {
+  const isBuyNow = req.body.isBuyNow;
+  const frontendOrderItems = req.body.orderItems || [];
+
+  if (source === 'POS' || isBuyNow) {
+    // POS direct items OR Online "Buy Now"
+    // For Buy Now, frontend passes `orderItems` (matching what POS calls directItems theoretically, but frontend keys it as orderItems)
+    const itemsToProcess = source === 'POS' ? directItems : frontendOrderItems;
+
+    if (!itemsToProcess || itemsToProcess.length === 0) {
+      throw ApiError.badRequest('No items provided for direct purchase.');
+    }
+
+    for (const item of itemsToProcess) {
       // Fetch product to get latest price/stock
-      // Optimization: could `findMany` but loop is easier for logic now
       const product = await prisma.product.findUnique({
         where: { id: item.productId },
         include: { variants: true },
@@ -84,12 +94,8 @@ exports.createOrder = asyncHandler(async (req, res) => {
         variant = product.variants.find((v) => v.id === item.variantId);
       }
 
-      const basePrice = variant
-        ? variant.basePrice || product.basePrice
-        : product.basePrice;
-      const salePrice = variant
-        ? variant.sellingPrice || product.sellingPrice
-        : product.sellingPrice;
+      const basePrice = variant ? (variant.basePrice || product.basePrice) : product.basePrice;
+      const salePrice = variant ? (variant.sellingPrice || product.sellingPrice) : product.sellingPrice;
       const sku = variant ? variant.sku : product.sku;
       const name = product.name + (variant ? ` - ${variant.name}` : '');
 
@@ -99,7 +105,9 @@ exports.createOrder = asyncHandler(async (req, res) => {
       // Stock Check
       const currentStock = variant ? variant.stock : product.stock;
       if (currentStock < item.quantity) {
-        throw ApiError.badRequest(`Insufficient stock for ${name}`);
+        throw ApiError.badRequest(
+          `Insufficient stock for ${name}. Available: ${currentStock}, Requested: ${item.quantity}`,
+        );
       }
 
       const itemTotal = salePrice * item.quantity;
@@ -107,50 +115,58 @@ exports.createOrder = asyncHandler(async (req, res) => {
 
       orderItemsData.push({
         productId: item.productId,
-        variantId: item.variantId,
-        name,
+        variantId: item.variantId || undefined,
+        productName: name,
         sku,
-        unitPrice: basePrice,
-        salePrice: salePrice,
+        unitPrice: salePrice,
         quantity: item.quantity,
-        total: itemTotal,
-        warranty, // Added warranty
-        // Legacy mapping if needed
-        basePrice,
-        sellingPriceLegacy: salePrice,
+        totalPrice: itemTotal,
+        warranty,
       });
     }
   } else {
-    // Existing Cart Logic (Online)
+    // Standard Online Cart Checkout (Selective Items)
     if (userId) {
       cart = await prisma.cart.findFirst({
         where: { userId },
         include: { items: { include: { product: true, variant: true } } },
       });
-    } else if (sessionId) {
-      cart = await prisma.cart.findFirst({
+    }
+
+    // Fallback to anonymous guest cart if the authenticated cart is missing or empty
+    if ((!cart || cart.items.length === 0) && sessionId) {
+      const guestCart = await prisma.cart.findFirst({
         where: { sessionId },
         include: { items: { include: { product: true, variant: true } } },
       });
+      if (guestCart && guestCart.items.length > 0) {
+         cart = guestCart;
+         // We could optionally link it to the user here, but it's fine since it will be cleared soon anyway
+      }
     }
 
     if (!cart || cart.items.length === 0) {
       throw ApiError.badRequest('Cart is empty');
     }
 
-    for (const item of cart.items) {
+    // Filter cart items strictly to match the selections transmitted from the frontend
+    const selectedItemIds = frontendOrderItems.map((item) => item.id);
+    const selectedCartItems = cart.items.filter((item) => selectedItemIds.includes(item.id));
+
+    if (selectedCartItems.length === 0) {
+      throw ApiError.badRequest('No valid items selected from the cart.');
+    }
+
+    for (const item of selectedCartItems) {
       const itemSellingPrice =
         item.variant?.sellingPrice || item.product.sellingPrice;
-      const itemBasePrice = item.variant?.basePrice || item.product.basePrice;
       const availableStock = item.variant?.stock || item.product.stock;
       const isPreOrder = item.variant?.isPreOrder || item.product.isPreOrder;
-
-      // Warranty
       const warranty = item.variant?.warranty || item.product.warranty;
 
       if (availableStock < item.quantity && !isPreOrder) {
         throw ApiError.badRequest(
-          `Insufficient stock for ${item.product.name}`,
+          `Insufficient stock for ${item.product.name}. Available: ${availableStock}, Requested: ${item.quantity}`,
         );
       }
 
@@ -160,17 +176,13 @@ exports.createOrder = asyncHandler(async (req, res) => {
       orderItemsData.push({
         productId: item.productId,
         variantId: item.variantId || undefined,
-        name:
+        productName:
           item.product.name + (item.variant ? ` - ${item.variant.name}` : ''),
         sku: item.variant?.sku || item.product.slug,
-        unitPrice: itemBasePrice,
-        salePrice: itemSellingPrice,
+        unitPrice: itemSellingPrice,
         quantity: item.quantity,
-        total: itemTotal,
-        warranty, // Added warranty
-        // Legacy
-        basePrice: itemBasePrice,
-        sellingPriceLegacy: itemSellingPrice,
+        totalPrice: itemTotal,
+        warranty,
       });
     }
   }
@@ -201,7 +213,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
   // We trust the value from the frontend for now, or could re-calculate
   const finalShippingCost = parseFloat(shippingCost) || 0;
 
-  finalTotal = afterDiscount + vatAmount + finalShippingCost;
+  finalTotal = afterDiscount + vatAmount + finalShippingCost + (parseFloat(codExtraCharge) || 0);
 
   // ---------------------------------------------------------
   // 3. Create Order
@@ -235,12 +247,12 @@ exports.createOrder = asyncHandler(async (req, res) => {
     // Financials
     subtotal,
     discountType,
-    discountValue: parseFloat(discount),
+    discountValue: parseFloat(discount) || 0,
     discountAmount:
       discountAmountFromFront !== undefined
-        ? parseFloat(discountAmountFromFront)
+        ? parseFloat(discountAmountFromFront) || 0
         : totalDiscountAmount,
-    vatPercent: parseFloat(vatPercent),
+    vatPercent: parseFloat(vatPercent) || 0,
     vatAmount,
     shippingCost: finalShippingCost,
     shippingMethod,
@@ -249,8 +261,9 @@ exports.createOrder = asyncHandler(async (req, res) => {
     appliedCoupon,
     couponDiscount:
       discountAmountFromFront !== undefined
-        ? parseFloat(discountAmountFromFront)
+        ? parseFloat(discountAmountFromFront) || 0
         : totalDiscountAmount,
+    codExtraCharge: parseFloat(codExtraCharge) || 0,
     total: finalTotal,
 
     // Payment
@@ -340,17 +353,22 @@ exports.createOrder = asyncHandler(async (req, res) => {
     });
   }
 
-  // Clear Cart items but preserve the cart object for recovery analytics
-  if (source === 'ONLINE' && cart) {
+  // Clear purchased items from the Cart (Skip if it was a Buy Now without an underlying cart tie)
+  if (source === 'ONLINE' && cart && !isBuyNow) {
+    const selectedItemIds = frontendOrderItems.map((item) => item.id);
+
+    await prisma.cartItem.deleteMany({
+        where: { id: { in: selectedItemIds } }
+    });
+
+    // We don't necessarily reset the whole cart's coupon/totals because other items might still exist.
+    // The next `fetchCart` call from the frontend will naturally recalculate totals via Prisma inclusion.
     await prisma.cart.update({
       where: { id: cart.id },
       data: {
         isRecovered: cart.recoveryEmailCount > 0,
-        items: { deleteMany: {} },
-        appliedCoupon: null,
+        appliedCoupon: null, // Reset coupon since it was used on this order
         discountAmount: 0,
-        subtotal: 0,
-        total: 0
       }
     });
   }

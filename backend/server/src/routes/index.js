@@ -1,6 +1,10 @@
 const express = require('express');
+const i18nMiddleware = require('../middlewares/i18n.middleware');
 
 const routes = express.Router();
+
+// Global Middlewares
+routes.use(i18nMiddleware);
 
 // Import all route files
 const authRouter = require('./auth.routes');
@@ -132,5 +136,8 @@ routes.use('/tax-configurations', taxRouter);
 
 const backupRouter = require('./backup.routes');
 routes.use('/backup', backupRouter);
+
+const newsletterRouter = require('./newsletter.routes');
+routes.use('/newsletter', newsletterRouter);
 
 module.exports = routes;

@@ -5,9 +5,9 @@ const { authenticate, isAdmin } = require('../middlewares/auth.middleware');
 
 // Public/Common
 router.post('/calculate', shippingController.calculateShipping);
+router.get('/zones', shippingController.getZones);
 
 // Admin Only
-router.get('/zones', authenticate, isAdmin, shippingController.getZones);
 router.get('/zones/:id', authenticate, isAdmin, shippingController.getZoneById);
 router.post('/zones', authenticate, isAdmin, shippingController.createZone);
 router.put('/zones/:id', authenticate, isAdmin, shippingController.updateZone);

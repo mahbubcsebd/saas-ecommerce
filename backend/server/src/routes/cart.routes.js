@@ -36,5 +36,6 @@ router.post('/add', permissiveAuth, addToCartValidation, validate, cartControlle
 router.post('/merge', permissiveAuth, cartController.mergeCart);
 router.put('/items/:id', permissiveAuth, updateCartItemValidation, validate, cartController.updateCartItem);
 router.delete('/items/:id', permissiveAuth, cartItemIdValidation, validate, cartController.removeFromCart);
+router.delete('/', permissiveAuth, cartController.clearCart);
 
 module.exports = router;

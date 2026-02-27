@@ -3,7 +3,10 @@ const router = express.Router();
 const flashSaleController = require('../controllers/flash-sale.controller');
 const { authMiddleware, isManager } = require('../middlewares/auth.middleware');
 
-// All routes are protected by manager/admin rights
+// Public routes
+router.get('/public/active', flashSaleController.getActiveFlashSale);
+
+// All other routes are protected by manager/admin rights
 router.use(authMiddleware, isManager);
 
 router.post('/', flashSaleController.createFlashSale);

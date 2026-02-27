@@ -1,4 +1,6 @@
+import ProductBreadcrumbs from "@/components/product/ProductBreadcrumbs";
 import ProductDetailsClient from "@/components/product/ProductDetailsClient";
+import RelatedProducts from "@/components/product/RelatedProducts";
 import { generateProductMetadata, generateProductSchema } from "@/lib/seo-utils";
 import { Product } from "@/types/product";
 import { Metadata } from "next";
@@ -74,7 +76,14 @@ export default async function ProductDetailsPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
 
+      <ProductBreadcrumbs product={product} />
       <ProductDetailsClient product={product} />
+
+      {/* Related Products */}
+      <RelatedProducts
+        categoryId={typeof product.category === 'object' ? (product.category as any).id : product.categoryId}
+        currentProductId={product.id}
+      />
     </div>
   );
 }

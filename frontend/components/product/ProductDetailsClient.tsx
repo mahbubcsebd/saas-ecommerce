@@ -2,14 +2,18 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "@/context/TranslationContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useCurrency } from "@/hooks/useCurrency";
-import { useCart } from "@/lib/cart-context";
 import { cn, getLocalized } from "@/lib/utils";
+import { useCartStore } from "@/store/useCartStore";
 import { Product, ProductVariant } from "@/types/product";
-import { Heart } from "lucide-react";
+import { CreditCard, Heart, Minus, Plus, ShieldCheck, Truck } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import Reviews from "../Reviews";
 import ProductGallery from "./ProductGallery";
@@ -21,13 +25,25 @@ interface ProductDetailsClientProps {
 export default function ProductDetailsClient({ product }: ProductDetailsClientProps) {
   const { t, locale } = useTranslations();
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
-  const { addToCart } = useCart();
+  const { addToCart } = useCartStore();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { formatPrice } = useCurrency();
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [realtimeProduct, setRealtimeProduct] = useState<Product>(product);
+  const [qty, setQty] = useState<number | string>(1);
+  const router = useRouter();
+  const [shippingPolicy, setShippingPolicy] = useState<string | null>(null);
+  const [returnPolicy, setReturnPolicy] = useState<string | null>(null);
+
+  // Determine if the product has specifications to show
+  const hasSpecifications = Boolean(
+    (realtimeProduct.specifications && Object.keys(realtimeProduct.specifications).length > 0) ||
+    realtimeProduct.brand ||
+    realtimeProduct.weight
+  );
+
 
   // Fetch real-time data on mount to ensure stock is fresh
   useEffect(() => {
@@ -36,11 +52,24 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
         const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
 
-        const res = await fetch(`${apiUrl}/products/${product.slug}`);
-        if (res.ok) {
-            const data = await res.json();
+        // Fetch product and settings concurrently
+        const [productRes, settingsRes] = await Promise.all([
+            fetch(`${apiUrl}/products/${product.slug}`),
+            fetch(`${apiUrl}/settings/public`)
+        ]);
+
+        if (productRes.ok) {
+            const data = await productRes.json();
             if (data.success && data.data) {
                 setRealtimeProduct(data.data);
+            }
+        }
+
+        if (settingsRes.ok) {
+            const data = await settingsRes.json();
+            if (data.success && data.data?.legal) {
+                if (data.data.legal.shippingPolicy) setShippingPolicy(data.data.legal.shippingPolicy);
+                if (data.data.legal.returnPolicy) setReturnPolicy(data.data.legal.returnPolicy);
             }
         }
       } catch (error) {
@@ -222,6 +251,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
     setErrorMessage(null);
     setSuccessMessage(null);
+    setQty(1); // Reset qty when variant changes
   };
 
   // Separate Color from other attributes
@@ -263,12 +293,12 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
     setLoading(true);
     try {
-        await addToCart(realtimeProduct.id, 1, selectedVariant?.id);
-        setSuccessMessage("Added to cart successfully!");
+        await addToCart(realtimeProduct.id, Number(qty) || 1, selectedVariant?.id);
+        setSuccessMessage(t('common', 'addedToCart', { defaultValue: 'Added to cart successfully!' }));
         setTimeout(() => setSuccessMessage(null), 3000);
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
-        setErrorMessage("Failed to add to cart.");
+        setErrorMessage(error.message || "Failed to add to cart.");
     } finally {
         setLoading(false);
     }
@@ -289,42 +319,169 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   const categoryName = typeof realtimeProduct.category === 'object' ? getLocalized(realtimeProduct.category, locale, 'name') : realtimeProduct.category;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-      {/* Gallery */}
-      <ProductGallery images={currentImages} title={productName} />
+    <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+      {/* Left Column: Gallery and Information Tabs */}
+      <div className="w-full lg:w-[60%] xl:w-2/3 flex flex-col gap-8">
+        <ProductGallery images={currentImages} title={productName} />
 
-      {/* Details */}
-      <div className="flex flex-col gap-6">
-        <div>
-          <Badge variant="secondary" className="mb-2">
-              {categoryName}
-          </Badge>
-          <div className="flex items-center gap-4">
-              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{productName}</h1>
-              {realtimeProduct.discount && (
-                  <Badge variant="destructive" className="text-lg px-3 py-1">
-                      {realtimeProduct.discount.type === 'PERCENTAGE'
-                        ? `-${realtimeProduct.discount.value}% ${t('product', 'off', { defaultValue: 'OFF' })}`
-                        : realtimeProduct.discount.type === 'FLAT'
-                            ? `${formatPrice(realtimeProduct.discount.value)} ${t('product', 'off', { defaultValue: 'OFF' })}`
+        {/* Information Tabs */}
+        <div className="mt-4">
+          <Tabs defaultValue="description" className="w-full">
+            <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent flex-wrap overflow-x-auto no-scrollbar">
+              <TabsTrigger
+                value="description"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 font-semibold text-base transition-colors"
+               >
+                {t('product', 'description', { defaultValue: 'Description' })}
+              </TabsTrigger>
+              {hasSpecifications && (
+                <TabsTrigger
+                  value="specifications"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 font-semibold text-base transition-colors"
+                 >
+                  {t('product', 'specifications', { defaultValue: 'Specifications' })}
+                </TabsTrigger>
+              )}
+              <TabsTrigger
+                value="shipping"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 font-semibold text-base transition-colors"
+               >
+                {t('product', 'shipping', { defaultValue: 'Shipping & Returns' })}
+              </TabsTrigger>
+              <TabsTrigger
+                value="reviews"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 font-semibold text-base transition-colors"
+               >
+                {t('product', 'reviews', { defaultValue: 'Reviews' })} ({realtimeProduct.numReviews})
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="description" className="pt-6 animate-in fade-in-50 duration-500">
+               <div
+                  className="prose prose-zinc dark:prose-invert max-w-none text-sm text-muted-foreground leading-relaxed ProseMirror"
+                  dangerouslySetInnerHTML={{ __html: productDesc || "" }}
+                />
+            </TabsContent>
+
+            {hasSpecifications && (
+              <TabsContent value="specifications" className="pt-6 animate-in fade-in-50 duration-500">
+                {realtimeProduct.specifications && Object.keys(realtimeProduct.specifications).length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                    {Object.entries(realtimeProduct.specifications).map(([key, value]) => (
+                      <div key={key} className="flex justify-between py-2 border-b border-border/40">
+                        <span className="text-muted-foreground font-medium">{key}</span>
+                        <span className="font-semibold text-right">{value}</span>
+                      </div>
+                    ))}
+                    {realtimeProduct.brand && (
+                      <div className="flex justify-between py-2 border-b border-border/40">
+                        <span className="text-muted-foreground font-medium">{t('product', 'brand', { defaultValue: 'Brand' })}</span>
+                        <span className="font-semibold text-right">{realtimeProduct.brand}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between py-2 border-b border-border/40">
+                      <span className="text-muted-foreground font-medium">{t('product', 'sku', { defaultValue: 'SKU' })}</span>
+                      <span className="font-semibold text-right">{selectedVariant?.sku || realtimeProduct.sku || "N/A"}</span>
+                    </div>
+                    {realtimeProduct.weight && (
+                        <div className="flex justify-between py-2 border-b border-border/40">
+                          <span className="text-muted-foreground font-medium">{t('product', 'weight', { defaultValue: 'Weight' })}</span>
+                          <span className="font-semibold text-right">{realtimeProduct.weight} {t('common', 'kg', { defaultValue: 'kg' })}</span>
+                        </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                    {realtimeProduct.brand && (
+                      <div className="flex justify-between py-2 border-b border-border/40">
+                        <span className="text-muted-foreground font-medium">{t('product', 'brand', { defaultValue: 'Brand' })}</span>
+                        <span className="font-semibold text-right">{realtimeProduct.brand}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between py-2 border-b border-border/40">
+                      <span className="text-muted-foreground font-medium">{t('product', 'sku', { defaultValue: 'SKU' })}</span>
+                      <span className="font-semibold text-right">{selectedVariant?.sku || realtimeProduct.sku || "N/A"}</span>
+                    </div>
+                    {realtimeProduct.weight && (
+                        <div className="flex justify-between py-2 border-b border-border/40">
+                          <span className="text-muted-foreground font-medium">{t('product', 'weight', { defaultValue: 'Weight' })}</span>
+                          <span className="font-semibold text-right">{realtimeProduct.weight} {t('common', 'kg', { defaultValue: 'kg' })}</span>
+                        </div>
+                    )}
+                  </div>
+                )}
+              </TabsContent>
+            )}
+
+            <TabsContent value="shipping" className="pt-6 animate-in fade-in-50 duration-500">
+              <div className="space-y-6 text-sm text-muted-foreground">
+                <div className="flex gap-4">
+                  <Truck className="h-6 w-6 text-primary shrink-0 mt-1" />
+                  <div>
+                    <strong className="text-foreground block mb-2 text-base">Shipping Policy</strong>
+                    {shippingPolicy ? (
+                       <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed" dangerouslySetInnerHTML={{ __html: shippingPolicy }} />
+                    ) : (
+                       <p>Information about shipping policies is currently unavailable.</p>
+                    )}
+                  </div>
+                </div>
+                <Separator />
+                <div className="flex gap-4">
+                  <ShieldCheck className="h-6 w-6 text-primary shrink-0 mt-1" />
+                  <div>
+                    <strong className="text-foreground block mb-2 text-base">Return Policy</strong>
+                    {returnPolicy ? (
+                       <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed" dangerouslySetInnerHTML={{ __html: returnPolicy }} />
+                    ) : (
+                       <p>Information about return policies is currently unavailable.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="reviews" className="pt-6 animate-in fade-in-50 duration-500">
+              <Reviews productId={realtimeProduct.id} />
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+
+      {/* Right Column: Sticky Purchase Dashboard */}
+      <div className="w-full lg:w-[40%] xl:w-1/3">
+        <div className="sticky top-24 flex flex-col gap-6 rounded-2xl border bg-card p-6 shadow-sm">
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <Badge variant="secondary" className="uppercase tracking-wider text-[10px] font-semibold">
+                  {categoryName}
+              </Badge>
+              <span className="text-xs text-muted-foreground font-mono bg-muted/60 px-2 py-0.5 rounded border">
+                  SKU: {selectedVariant?.sku || realtimeProduct.sku || "N/A"}
+              </span>
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl leading-tight mb-2">{productName}</h1>
+
+            <div className="flex flex-wrap items-center gap-2 mt-4">
+              <p className="text-3xl font-extrabold text-red-600">{formatPrice(currentPrice)}</p>
+              {currentBasePrice > currentPrice && (
+                <p className="text-lg text-muted-foreground line-through decoration-muted-foreground/50">
+                  {formatPrice(currentBasePrice)}
+                </p>
+              )}
+               {realtimeProduct.discount && (
+                  <Badge variant="destructive" className="ml-2 font-bold px-2 py-0.5 animate-pulse">
+                      {realtimeProduct.discount?.type === 'PERCENTAGE'
+                        ? `-${realtimeProduct.discount?.value}% ${t('product', 'off', { defaultValue: 'OFF' })}`
+                        : realtimeProduct.discount?.type === 'FLAT'
+                            ? `-${formatPrice(realtimeProduct.discount?.value || 0)} ${t('product', 'off', { defaultValue: 'OFF' })}`
                             : t('product', 'sale', { defaultValue: 'SALE' })}
                   </Badge>
               )}
+            </div>
           </div>
-          <div className="mt-4 flex items-baseline gap-3">
-            <p className="text-3xl font-bold text-primary">{formatPrice(currentPrice)}</p>
-            {currentBasePrice > currentPrice && (
-              <p className="text-lg text-muted-foreground line-through">
-                {formatPrice(currentBasePrice)}
-              </p>
-            )}
-          </div>
-        </div>
 
-        <div
-          className="prose prose-zinc dark:prose-invert max-w-none text-sm text-muted-foreground"
-          dangerouslySetInnerHTML={{ __html: productDesc }}
-        />
+          <Separator />
 
         {/* Color Selection with Images */}
         {colorKey && colorVariants.length > 0 && (
@@ -332,7 +489,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
             <div className="flex items-center justify-between">
               <h4 className="font-semibold text-sm">{colorKey}:</h4>
               <span className="text-sm text-muted-foreground">
-                {selectedAttributes[colorKey] || t('product', 'selectColor', { defaultValue: 'Select a color' })}
+                {selectedAttributes[colorKey as string] || t('product', 'selectColor', { defaultValue: 'Select a color' })}
               </span>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -346,13 +503,13 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
                 if (!colorValue) return null;
 
-                const isSelected = selectedAttributes[colorKey] === colorValue;
-                const isCompatible = getAvailableOptions(colorKey).has(colorValue);
+                const isSelected = selectedAttributes[colorKey as string] === colorValue;
+                const isCompatible = getAvailableOptions(colorKey as string).has(colorValue);
 
                 return (
                   <button
                     key={variant.id}
-                    onClick={() => handleAttributeSelect(colorKey, colorValue)}
+                    onClick={() => handleAttributeSelect(colorKey as string, colorValue as string)}
                     className={cn(
                       "relative w-16 h-16 rounded-lg border-2 overflow-hidden transition-all",
                       isSelected && "ring-2 ring-primary ring-offset-2 border-primary",
@@ -419,78 +576,142 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
         })}
 
         {/* Stock Status */}
-        <div className="flex items-center gap-2 text-sm">
+        {/* Quantity Selection */}
+        {!isOutOfStock && (
+          <div className="space-y-3">
+            <h4 className="font-semibold text-sm">{t('product', 'quantity', { defaultValue: 'Quantity' })}:</h4>
+            <div className="flex items-center gap-3 w-fit border rounded-lg p-1.5 bg-background shadow-sm">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-md hover:bg-muted"
+                onClick={() => setQty(Math.max(1, (Number(qty) || 1) - 1))}
+                disabled={Number(qty) <= 1}
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+              <Input
+                type="number"
+                min={1}
+                max={currentStock}
+                value={qty}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value) || 1;
+                  setQty(Math.min(Math.max(1, val), currentStock));
+                }}
+                className="w-16 h-8 text-center px-1 py-1 text-base font-bold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-md hover:bg-muted"
+                onClick={() => setQty(Math.min(currentStock, (Number(qty) || 1) + 1))}
+                disabled={Number(qty) >= currentStock}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
+
+        <div className="flex items-center gap-2 text-sm mt-1">
           <div className={cn(
             "h-2 w-2 rounded-full",
-            isOutOfStock ? "bg-destructive" : currentStock < 10 ? "bg-yellow-500" : "bg-green-500"
+            isOutOfStock ? "bg-destructive" : currentStock < 10 ? "bg-orange-500" : "bg-green-500"
           )} />
           <span className={cn(
-            "font-medium",
+            "font-semibold",
             isOutOfStock && "text-destructive"
           )}>
-            {isOutOfStock ? t('product', 'outOfStock', { defaultValue: 'Out of Stock' }) : currentStock < 10 ? t('product', 'onlyLeft', { defaultValue: `Only ${currentStock} left` }).replace('{{count}}', String(currentStock)) : t('product', 'inStock', { defaultValue: 'In Stock' })}
+            {isOutOfStock ? t('product', 'outOfStock', { defaultValue: 'Out of Stock' }) : currentStock < 10 ? t('product', 'onlyLeft', { defaultValue: `Only ${currentStock} left!` }).replace('{{count}}', String(currentStock)) : t('product', 'inStock', { defaultValue: 'In Stock' })}
           </span>
         </div>
 
-        {/* Add to Cart */}
-        <div className="space-y-2">
-            <Button
-                size="lg"
-                className="w-full text-base py-6"
-                disabled={isOutOfStock || loading}
-                onClick={handleAddToCart}
-            >
-                {isOutOfStock ? t('product', 'outOfStock', { defaultValue: 'Out of Stock' }) : loading ? t('common', 'loading', { defaultValue: 'Adding...' }) : t('product', 'addToCart', { defaultValue: 'Add to Cart' })}
-            </Button>
+        {/* Action Buttons */}
+        <div className="space-y-3 mt-2">
+            <div className="flex gap-4">
+              <Button
+                  size="lg"
+                  className="flex-1 text-base py-6 font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-[0.98]"
+                  disabled={isOutOfStock || loading}
+                  onClick={handleAddToCart}
+              >
+                  {isOutOfStock ? t('product', 'outOfStock', { defaultValue: 'Out of Stock' }) : loading ? t('common', 'loading', { defaultValue: 'Adding...' }) : t('product', 'addToCart', { defaultValue: 'Add to Cart' })}
+              </Button>
+              <Button
+                  variant="secondary"
+                  size="lg"
+                  className="flex-1 text-base py-6 font-bold transition-all active:scale-[0.98]"
+                  disabled={isOutOfStock || loading}
+                  onClick={() => {
+                      const store = useCartStore.getState();
+                      store.setBuyNowItem({
+                          id: "buy_now_temp",
+                          productId: realtimeProduct.id,
+                          variantId: selectedVariant?.id,
+                          quantity: Number(qty) || 1,
+                          product: {
+                              name: realtimeProduct.name,
+                              images: realtimeProduct.images,
+                              slug: realtimeProduct.slug,
+                              stock: realtimeProduct.stock,
+                              sellingPrice: realtimeProduct.sellingPrice,
+                              basePrice: realtimeProduct.basePrice,
+                          },
+                          variant: selectedVariant ? {
+                              name: selectedVariant.name,
+                              sellingPrice: selectedVariant.sellingPrice,
+                              basePrice: selectedVariant.basePrice,
+                              images: selectedVariant.images
+                          } : undefined
+                      });
+                      router.push("/checkout");
+                  }}
+              >
+                  Buy Now
+              </Button>
+            </div>
             <Button
                 variant="outline"
                 size="lg"
-                className="w-full text-base py-6 gap-2"
+                className="w-full text-base py-6 gap-2 font-semibold hover:bg-muted transition-colors active:scale-[0.98]"
                 onClick={() => toggleWishlist(realtimeProduct.id)}
             >
                 <Heart className={cn("h-5 w-5", isInWishlist(realtimeProduct.id) && "fill-current text-red-500")} />
                 {isInWishlist(realtimeProduct.id) ? t('product', 'inWishlist', { defaultValue: 'In Wishlist' }) : t('product', 'addToWishlist', { defaultValue: 'Add to Wishlist' })}
             </Button>
             {errorMessage && (
-                <p className="text-sm text-destructive text-center font-medium">{errorMessage}</p>
+                <p className="text-sm text-destructive text-center font-medium animate-in slide-in-from-top-1">{errorMessage}</p>
             )}
             {successMessage && (
-                <p className="text-sm text-green-600 text-center font-medium">{successMessage}</p>
+                <p className="text-sm text-green-600 text-center font-medium animate-in slide-in-from-top-1">{successMessage}</p>
             )}
         </div>
 
-        {/* Product Details */}
-        <div className="mt-4 border-t pt-6 space-y-2">
-          <h3 className="font-semibold text-sm">{t('product', 'productDetails', { defaultValue: 'Product Details' })}</h3>
-          <ul className="text-sm text-muted-foreground space-y-1">
-            {realtimeProduct.brand && <li>{t('product', 'brand', { defaultValue: 'Brand' })}: <span className="text-foreground">{realtimeProduct.brand}</span></li>}
-            <li>{t('product', 'sku', { defaultValue: 'SKU' })}: <span className="text-foreground">{selectedVariant?.sku || realtimeProduct.slug}</span></li>
-            {realtimeProduct.tags.length > 0 && (
-              <li>{t('product', 'tags', { defaultValue: 'Tags' })}: <span className="text-foreground">{realtimeProduct.tags.join(', ')}</span></li>
-            )}
-          </ul>
-        </div>
-
-        {/* Specifications */}
-        {realtimeProduct.specifications && Object.keys(realtimeProduct.specifications).length > 0 && (
-          <div className="mt-6 border-t pt-6">
-            <h3 className="font-semibold text-sm mb-3">{t('product', 'specifications', { defaultValue: 'Specifications' })}</h3>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-              {Object.entries(realtimeProduct.specifications).map(([key, value]) => (
-                <div key={key} className="flex justify-between py-1.5 border-b border-border/40">
-                  <span className="text-muted-foreground">{key}:</span>
-                  <span className="font-medium text-right">{value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Reviews */}
-        <div className="mt-8 border-t pt-8">
-          <Reviews productId={realtimeProduct.id} />
+        {/* Trust Badges */}
+        <Separator className="my-2" />
+        <div className="grid grid-cols-1 gap-3 py-2">
+           <div className="flex items-center gap-3 text-sm text-muted-foreground">
+               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary">
+                  <ShieldCheck className="h-4 w-4" />
+               </div>
+               <span className="font-medium">Genuine Product Quality Guaranteed</span>
+           </div>
+           <div className="flex items-center gap-3 text-sm text-muted-foreground">
+               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary">
+                  <Truck className="h-4 w-4" />
+               </div>
+               <span className="font-medium">Fast & Reliable Delivery</span>
+           </div>
+           <div className="flex items-center gap-3 text-sm text-muted-foreground">
+               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary">
+                  <CreditCard className="h-4 w-4" />
+               </div>
+               <span className="font-medium">100% Secure Payment Processing</span>
+           </div>
         </div>
       </div>
+     </div>
     </div>
   );
 }

@@ -1,49 +1,59 @@
 "use server";
 
+import { api } from "@/lib/api-client";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+const addToCartSchema = z.object({
+  productId: z.string().min(1, "Product ID is required"),
+  quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
+  variantId: z.string().optional(),
+  guestId: z.string().min(1, "Guest ID is required"),
+});
 
 export async function addToCartAction(prevState: any, formData: FormData) {
-    const productId = formData.get("productId") as string;
-    const quantity = parseInt(formData.get("quantity") as string) || 1;
-    const variantId = formData.get("variantId") as string || undefined;
-    const guestId = formData.get("guestId") as string;
+  const result = addToCartSchema.safeParse(Object.fromEntries(formData.entries()));
 
-    if (!guestId) return { success: false, message: "Guest ID is required" };
+  if (!result.success) {
+    return {
+      success: false,
+      message: result.error.issues[0].message,
+    };
+  }
 
-    try {
-        const res = await fetch(`${API_URL}/cart/add`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ guestId, productId, quantity, variantId }),
-        });
+  try {
+    const data = await api.post("/cart/add", result.data);
 
-        const result = await res.json();
+    revalidatePath("/cart");
 
-        if (res.ok) {
-            revalidatePath("/cart");
-            return { success: true, message: "Added to cart", data: result.data };
-        } else {
-            return { success: false, message: result.message || "Failed to add to cart" };
-        }
-    } catch (error) {
-        return { success: false, message: "Server error occurred" };
-    }
+    return {
+      success: true,
+      message: "Added to cart",
+      data
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "Server error occurred",
+    };
+  }
 }
 
 export async function removeFromCartAction(itemId: string, guestId: string) {
-    try {
-        const res = await fetch(`${API_URL}/cart/items/${itemId}`, {
-            method: "DELETE",
-        });
+  if (!itemId || !guestId) {
+    return { success: false, message: "Item ID and Guest ID are required" };
+  }
 
-        if (res.ok) {
-            revalidatePath("/cart");
-            return { success: true, message: "Item removed" };
-        }
-        return { success: false, message: "Failed to remove item" };
-    } catch (error) {
-        return { success: false, message: "Server error occurred" };
-    }
+  try {
+    await api.delete(`/cart/items/${itemId}`);
+
+    revalidatePath("/cart");
+
+    return { success: true, message: "Item removed" };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "Server error occurred",
+    };
+  }
 }

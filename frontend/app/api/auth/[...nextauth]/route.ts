@@ -9,7 +9,8 @@ export const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
+        guestId: { label: "Guest ID", type: "text" }
       },
       async authorize(credentials) {
         console.log("Authorize called with credentials:", credentials); // DEBUG LOG
@@ -22,7 +23,8 @@ export const authOptions: NextAuthOptions = {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               email: credentials.email,
-              password: credentials.password
+              password: credentials.password,
+              guestId: credentials.guestId
             })
           });
           console.log("Backend response status:", res.status); // DEBUG LOG

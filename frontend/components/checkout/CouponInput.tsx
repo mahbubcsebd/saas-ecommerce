@@ -1,10 +1,11 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
 import { useTranslations } from "@/context/TranslationContext";
 import { useCurrency } from "@/hooks/useCurrency";
+import { api } from '@/lib/api-client';
 import { Loader2, Tag, X } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface CouponInputProps {
   onApply: (discount: number, code: string) => void;
@@ -24,7 +25,6 @@ export function CouponInput({
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { toast } = useToast();
   const { t } = useTranslations();
   const { formatPrice } = useCurrency();
 
@@ -35,39 +35,25 @@ export function CouponInput({
     setError('');
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-      const response = await fetch(`${API_URL}/coupons/validate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, cart, country })
+      const response = await api.post<any>('/coupons/validate', {
+        code,
+        cart,
+        country
       });
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        setError(data.message || data.error || t('common', 'couponApplyError', { defaultValue: 'Failed to apply coupon' }));
-        toast({
-            variant: "destructive",
-            title: t('common', 'couponError', { defaultValue: 'Coupon Error' }),
-            description: data.message || t('common', 'invalidCoupon', { defaultValue: 'Invalid coupon code' })
-        });
+      if (!response) {
+        setError(t('common', 'couponApplyError', { defaultValue: 'Failed to apply coupon' }));
+        toast.error(t('common', 'invalidCoupon', { defaultValue: 'Invalid coupon code' }));
         return;
       }
 
-      onApply(data.discount, code.toUpperCase());
+      onApply(response.discount, code.toUpperCase());
       setCode('');
-      toast({
-          title: t('common', 'couponApplied', { defaultValue: 'Coupon Applied' }),
-          description: `${t('common', 'youSaved', { defaultValue: 'You saved' })} ${formatPrice(data.discount)}!`
-      });
+      toast.success(`${t('common', 'youSaved', { defaultValue: 'You saved' })} ${formatPrice(response.discount)}!`);
 
-    } catch (err) {
-      setError(t('common', 'couponApplyError', { defaultValue: 'Failed to apply coupon' }));
-      toast({
-        variant: "destructive",
-        title: t('common', 'error', { defaultValue: 'Error' }),
-        description: t('common', 'somethingWrong', { defaultValue: 'Something went wrong. Please try again.' })
-    });
+    } catch (err: any) {
+      setError(err.message || t('common', 'couponApplyError', { defaultValue: 'Failed to apply coupon' }));
+      toast.error(err.message || t('common', 'somethingWrong', { defaultValue: 'Something went wrong. Please try again.' }));
     } finally {
       setLoading(false);
     }

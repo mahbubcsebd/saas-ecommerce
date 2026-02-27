@@ -45,7 +45,7 @@ export default function HeroSlider({ slides }: HeroSliderProps) {
         modules={[Autoplay, Pagination, Navigation]}
         className="mySwiper w-full h-full"
       >
-        {slides.map((slide) => (
+        {slides.map((slide, index) => (
           <SwiperSlide key={slide.id}>
             <div className="relative w-full h-full">
               {/* Image */}
@@ -54,7 +54,7 @@ export default function HeroSlider({ slides }: HeroSliderProps) {
                 alt={slide.title || "Hero Image"}
                 fill
                 className="object-cover"
-                priority
+                priority={index === 0}
                 unoptimized // Bypass optimization to handle external URLs more reliably in dev
               />
 

@@ -170,3 +170,47 @@ exports.toggleFlashSale = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+// ─── PUBLIC (ACTIVE FLASH SALE) ──────────────────────────────────────────────
+exports.getActiveFlashSale = async (req, res) => {
+    try {
+        const now = new Date();
+        const activeSale = await prisma.flashSale.findFirst({
+            where: {
+                isActive: true,
+                startDate: { lte: now },
+                endDate: { gte: now }
+            },
+            include: {
+                products: {
+                    include: {
+                        product: {
+                            select: {
+                                id: true,
+                                name: true,
+                                slug: true,
+                                basePrice: true,
+                                sellingPrice: true,
+                                images: true,
+                                category: { select: { name: true } },
+                                stock: true,
+                                rating: true,
+                                numReviews: true,
+                                sku: true
+                            }
+                        }
+                    }
+                }
+            },
+            orderBy: { startDate: 'desc' }
+        });
+
+        if (!activeSale) {
+            return res.json({ success: true, data: null });
+        }
+        res.json({ success: true, data: activeSale });
+    } catch (error) {
+        console.error('Active FlashSale Error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

@@ -18,7 +18,7 @@ import {
 import { useSettings } from "@/context/SettingsContext";
 import { useTranslations } from "@/context/TranslationContext";
 import { useWishlist } from "@/context/WishlistContext";
-import { useCart } from "@/lib/cart-context";
+import { useCartStore } from '@/store/useCartStore';
 import { Heart, LogOut, Menu, ShoppingCart, User } from 'lucide-react';
 import { signOut, useSession } from "next-auth/react";
 import Link from 'next/link';
@@ -29,7 +29,7 @@ import SearchWithSuggestions from './SearchWithSuggestions';
 import { Button } from './ui/button';
 
 export default function Header() {
-  const { cart } = useCart();
+  const cart = useCartStore((state) => state.cart);
   const { wishlist } = useWishlist();
   const { data: session } = useSession();
   const { settings } = useSettings();

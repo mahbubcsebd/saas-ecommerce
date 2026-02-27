@@ -66,8 +66,8 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
           className="w-full"
         >
           {images.map((img, index) => (
-            <SwiperSlide key={index}>
-              <div className="relative aspect-square overflow-hidden rounded-lg border-2 border-muted hover:border-primary/50 transition-all cursor-pointer">
+            <SwiperSlide key={index} className="opacity-60 [&.swiper-slide-thumb-active]:opacity-100 transition-opacity">
+              <div className="relative aspect-square overflow-hidden rounded-lg border-2 border-transparent [&.swiper-slide-thumb-active]:border-primary hover:border-primary/50 transition-all cursor-pointer bg-muted">
                 <Image
                   src={img}
                   alt={`${title} thumbnail ${index + 1}`}

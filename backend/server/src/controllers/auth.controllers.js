@@ -262,7 +262,7 @@ exports.verifyEmail = asyncHandler(async (req, res) => {
 });
 
 exports.login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, guestId } = req.body;
 
   // Find user by email, username (case-insensitive), or phone
   const loginId = email.trim();
@@ -316,6 +316,63 @@ exports.login = asyncHandler(async (req, res) => {
       });
       // refresh user object in memory with minimal fields
       user.isEmailVerified = true;
+    }
+  }
+
+  // Cart Merging Logic
+  if (guestId) {
+    try {
+      const guestCart = await prisma.cart.findFirst({
+        where: { sessionId: guestId },
+        include: { items: true },
+      });
+
+      if (guestCart && guestCart.items.length > 0) {
+        let userCart = await prisma.cart.findFirst({
+          where: { userId: user.id },
+          include: { items: true },
+        });
+
+        if (!userCart) {
+           // If user has no existing cart, just take over the guest cart
+           await prisma.cart.update({
+             where: { id: guestCart.id },
+             data: { userId: user.id, sessionId: null }
+           });
+        } else {
+           // User has a cart, need to merge
+           for (const guestItem of guestCart.items) {
+              const existingItem = userCart.items.find(ui =>
+                  ui.productId === guestItem.productId && ui.variantId === guestItem.variantId
+              );
+
+              if (existingItem) {
+                 // Add quantities if the same item exists
+                 await prisma.cartItem.update({
+                    where: { id: existingItem.id },
+                    data: { quantity: existingItem.quantity + guestItem.quantity }
+                 });
+                 // Delete the duplicate item from the guest cart
+                 await prisma.cartItem.delete({
+                     where: { id: guestItem.id }
+                 });
+              } else {
+                 // Transfer the item to the user's cart
+                 await prisma.cartItem.update({
+                    where: { id: guestItem.id },
+                    data: { cartId: userCart.id }
+                 });
+              }
+           }
+           // Delete the now empty guest cart
+           await prisma.cart.delete({
+              where: { id: guestCart.id }
+           });
+        }
+      }
+    } catch (cartError) {
+      console.error("Cart merge error during login:", cartError);
+      // Suppress cart errors to not block login
     }
   }
 

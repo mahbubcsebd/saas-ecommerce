@@ -64,12 +64,31 @@ export interface SeoSetting {
   googleTagManagerId?: string[];
 }
 
+export interface PaymentSetting {
+  codEnabled: boolean;
+  codExtraCharge: number;
+  codNote?: string;
+  bkashEnabled: boolean;
+  nagadEnabled: boolean;
+  stripeEnabled: boolean;
+  sslcEnabled: boolean;
+}
+
+export interface TaxSetting {
+  isTaxEnabled: boolean;
+  taxInclusivePricing: boolean;
+  isVatEnabled: boolean;
+  vatGstNumber?: string;
+}
+
 export interface SettingsData {
   general: GeneralSetting;
   currency: CurrencySetting;
   contact: ContactSetting;
   appearance: AppearanceSetting;
   seo?: SeoSetting;
+  tax?: TaxSetting;
+  payment?: PaymentSetting;
 }
 
 interface SettingsContextType {

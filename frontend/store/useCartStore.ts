@@ -29,10 +29,19 @@ interface CartState {
   loading: boolean;
   guestId: string | null;
 
+  // Selection
+  selectedItemIds: string[];
+  buyNowItem: CartItem | null;
+
   // Actions
   setCart: (cart: { id: string; items: CartItem[] } | null) => void;
   setLoading: (loading: boolean) => void;
   setGuestId: (guestId: string) => void;
+
+  toggleSelectItem: (itemId: string) => void;
+  selectAllItems: (itemIds: string[]) => void;
+  clearSelection: () => void;
+  setBuyNowItem: (item: CartItem | null) => void;
 
   // Handlers
   fetchCart: (guestId: string) => Promise<void>;
@@ -42,7 +51,7 @@ interface CartState {
   clearCart: () => void;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+import { api } from '@/lib/api-client';
 
 export const useCartStore = create<CartState>()(
   persist(
@@ -50,19 +59,36 @@ export const useCartStore = create<CartState>()(
       cart: null,
       loading: false,
       guestId: null,
+      selectedItemIds: [],
+      buyNowItem: null,
 
       setCart: (cart) => set({ cart }),
       setLoading: (loading) => set({ loading }),
       setGuestId: (guestId) => set({ guestId }),
 
-      fetchCart: async (guestId) => {
+      toggleSelectItem: (itemId) => set((state) => ({
+         selectedItemIds: state.selectedItemIds.includes(itemId)
+            ? state.selectedItemIds.filter(id => id !== itemId)
+            : [...state.selectedItemIds, itemId]
+      })),
+
+      selectAllItems: (itemIds) => set({ selectedItemIds: itemIds }),
+      clearSelection: () => set({ selectedItemIds: [] }),
+      setBuyNowItem: (item) => set({ buyNowItem: item }),
+
+      fetchCart: async (id) => {
+        const guestId = id || get().guestId;
+        console.log(`[useCartStore] fetchCart called with id: ${id || 'none'}, current guestId: ${get().guestId || 'none'}`);
+        if (!guestId) {
+          console.log(`[useCartStore] No guestId, skipping fetch`);
+          return;
+        }
+
         set({ loading: true });
         try {
-          const res = await fetch(`${API_URL}/cart?guestId=${guestId}`);
-          if (res.ok) {
-            const data = await res.json();
-            set({ cart: data.data });
-          }
+          const data = await api.get<any>(`/cart?guestId=${guestId}`);
+          console.log(`[useCartStore] Cart fetched successfully, items: ${data?.items?.length || 0}`);
+          set({ cart: data });
         } catch (error) {
           console.error("Failed to fetch cart", error);
         } finally {
@@ -72,18 +98,22 @@ export const useCartStore = create<CartState>()(
 
       addToCart: async (productId, quantity, variantId) => {
         const { guestId } = get();
-        if (!guestId) return;
+        console.log(`[useCartStore] Adding to cart: productId=${productId}, guestId=${guestId || 'none'}`);
+        // Allow if we have either a guestId OR a user might be logged in
+        // (api client will handle auth headers/cookies)
 
         try {
-          const res = await fetch(`${API_URL}/cart/add`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ guestId, productId, quantity, variantId }),
+          const data = await api.post<any>(`/cart/add`, {
+            guestId: guestId || undefined,
+            productId,
+            quantity,
+            variantId
           });
-          if (res.ok) {
-            const data = await res.json();
-            set({ cart: data.data });
-            // Re-fetch to ensure data consistency
+          console.log(`[useCartStore] Add to cart success, new items count: ${data?.items?.length || 0}`);
+          set({ cart: data });
+          // Re-fetch to ensure data consistency and derived fields
+          if (guestId) {
+            console.log(`[useCartStore] Re-fetching cart for guestId: ${guestId}`);
             await get().fetchCart(guestId);
           }
         } catch (error) {
@@ -94,21 +124,9 @@ export const useCartStore = create<CartState>()(
       removeFromCart: async (itemId) => {
         const { guestId } = get();
         try {
-          const res = await fetch(`${API_URL}/cart/items/${itemId}`, {
-            method: "DELETE",
-          });
-          if (res.ok) {
-            const currentCart = get().cart;
-            if (currentCart) {
-              set({
-                cart: {
-                  ...currentCart,
-                  items: currentCart.items.filter((i) => i.id !== itemId),
-                },
-              });
-            }
-            if (guestId) await get().fetchCart(guestId);
-          }
+          const data = await api.delete<any>(`/cart/items/${itemId}?guestId=${guestId || ""}`);
+          set({ cart: data });
+          if (guestId) await get().fetchCart(guestId);
         } catch (error) {
           console.error("Failed to remove item", error);
         }
@@ -117,20 +135,24 @@ export const useCartStore = create<CartState>()(
       updateQuantity: async (itemId, quantity) => {
         const { guestId } = get();
         try {
-          const res = await fetch(`${API_URL}/cart/items/${itemId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ quantity }),
-          });
-          if (res.ok) {
-            if (guestId) await get().fetchCart(guestId);
-          }
+          const data = await api.put<any>(`/cart/items/${itemId}?guestId=${guestId || ""}`, { quantity });
+          set({ cart: data });
+          if (guestId) await get().fetchCart(guestId);
         } catch (error) {
           console.error("Failed to update quantity", error);
         }
       },
 
-      clearCart: () => set({ cart: null }),
+      clearCart: async () => {
+        const { guestId } = get();
+        try {
+          const data = await api.delete<any>(`/cart?guestId=${guestId || ""}`);
+          set({ cart: data, selectedItemIds: [] });
+          if (guestId) await get().fetchCart(guestId);
+        } catch (error) {
+          console.error("Failed to clear cart", error);
+        }
+      },
     }),
     {
       name: 'cart-storage',

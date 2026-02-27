@@ -23,6 +23,7 @@ const authenticate = async (req, res, next) => {
     }
 
     if (!token) {
+      console.log(`[AUTH] Missing token for ${req.method} ${req.originalUrl}`);
       return res.status(401).json({
         success: false,
         message: 'Access token not found',

@@ -683,18 +683,28 @@ exports.getProduct = asyncHandler(async (req, res) => {
       ? product.reviews.reduce((acc, r) => acc + r.rating, 0) / product.reviews.length
       : 0;
 
+    // Filter out sensitive or unnecessary fields
+    const { costPrice, translations, discounts, ...safeProduct } = product;
+
+    // Safely map variants to exclude their costPrice too
+    const safeVariants = safeProduct.variants?.map(v => {
+      const { costPrice: vCostPrice, ...safeVariant } = v;
+      return safeVariant;
+    }) || [];
+
     return successResponse(res, {
         message: 'Product retrieved successfully',
         data: {
-            ...product,
+            ...safeProduct,
+            variants: safeVariants,
             discountAmount,
             finalPrice,
             hasDiscount: discountAmount > 0,
-            discountPercentage: product.sellingPrice > 0
-              ? Math.round((discountAmount / product.sellingPrice) * 100)
+            discountPercentage: safeProduct.sellingPrice > 0
+              ? Math.round((discountAmount / safeProduct.sellingPrice) * 100)
               : 0,
             avgRating: Math.round(avgRating * 10) / 10,
-            reviewCount: product.reviews.length
+            reviewCount: safeProduct.reviews?.length || 0
         }
     });
 });

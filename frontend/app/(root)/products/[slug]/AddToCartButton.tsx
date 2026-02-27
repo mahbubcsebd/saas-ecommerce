@@ -88,7 +88,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
             </div>
         )}
 
-        <div className="flex items-end gap-4">
+        <div className="flex flex-col gap-4 mt-6">
             <div className="w-24">
                 <Label className="mb-2 block">Quantity</Label>
                 <Input
@@ -97,17 +97,49 @@ export default function AddToCartButton({ product }: { product: Product }) {
                     min={1}
                     max={product.stock}
                     value={quantity}
-                    onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                    onChange={(e) => {
+                        const val = parseInt(e.target.value) || 1;
+                        setQuantity(Math.min(val, product.stock));
+                    }}
+                    className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
             </div>
-            <Button
-                type="submit"
-                size="lg"
-                className="flex-1"
-                disabled={product.stock <= 0 || isPending}
-            >
-                {isPending ? "Adding..." : product.stock > 0 ? "Add to Cart" : "Out of Stock"}
-            </Button>
+            <div className="flex gap-4 w-full">
+                <Button
+                    type="submit"
+                    size="lg"
+                    className="flex-1"
+                    disabled={product.stock <= 0 || isPending}
+                >
+                    {isPending ? "Adding..." : product.stock > 0 ? "Add to Cart" : "Out of Stock"}
+                </Button>
+                <Button
+                    type="button"
+                    variant="secondary"
+                    size="lg"
+                    className="flex-1"
+                    disabled={product.stock <= 0 || isPending}
+                    onClick={() => {
+                        const store = useCartStore.getState();
+                        store.setBuyNowItem({
+                            id: "buy_now_temp",
+                            productId: product.id,
+                            quantity: quantity,
+                            product: {
+                                name: product.name,
+                                images: product.images,
+                                slug: product.slug,
+                                stock: product.stock,
+                                sellingPrice: product.sellingPrice,
+                                basePrice: product.basePrice,
+                            },
+                        });
+                        window.location.href = "/checkout";
+                    }}
+                >
+                    Buy Now
+                </Button>
+            </div>
         </div>
     </form>
   );

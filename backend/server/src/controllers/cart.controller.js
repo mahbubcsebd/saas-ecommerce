@@ -74,16 +74,17 @@ exports.getCart = asyncHandler(async (req, res) => {
 /**
  * Add / Update Item in Cart
  */
-/**
- * Add / Update Item in Cart
- */
 exports.addToCart = asyncHandler(async (req, res) => {
     const userId = req.user?.id;
-    const { productId, variantId, quantity } = req.body;
+    const { productId, variantId, quantity, guestId } = req.body;
 
-    // Strict Auth Check (Guest logic moved to LocalStorage)
-    if (!userId) {
-      throw ApiError.unauthorized('Please log in to add items to the cart');
+    console.log(`[addToCart] START userId: ${userId || 'none'}, guestId: ${guestId || 'none'}`);
+    console.log(`[addToCart] Body: productId=${productId}, variantId=${variantId || 'none'}, quantity=${quantity}`);
+
+    // Allow either logged-in user or guest with guestId
+    if (!userId && !guestId) {
+      console.log(`[addToCart] Error: No userId or guestId`);
+      throw ApiError.unauthorized('User must be logged in or have a guest ID to add items to the cart');
     }
 
     // 1. Fetch Product & Variant Details
@@ -109,13 +110,21 @@ exports.addToCart = asyncHandler(async (req, res) => {
     }
 
     if (availableStock < (quantity || 1)) {
-      throw ApiError.badRequest('Insufficient stock');
+      throw ApiError.badRequest(`Insufficient stock. Available: ${availableStock}`);
     }
 
-    // 2. Find or create user cart
-    let cart = await prisma.cart.findFirst({ where: { userId } });
-    if (!cart) {
-        cart = await prisma.cart.create({ data: { userId } });
+    // 2. Find or create cart (by userId or sessionId)
+    let cart = null;
+    if (userId) {
+        cart = await prisma.cart.findFirst({ where: { userId } });
+        if (!cart) {
+            cart = await prisma.cart.create({ data: { userId } });
+        }
+    } else {
+        cart = await prisma.cart.findFirst({ where: { sessionId: guestId } });
+        if (!cart) {
+            cart = await prisma.cart.create({ data: { sessionId: guestId } });
+        }
     }
 
     // 3. Check if item exists in cart
@@ -128,9 +137,10 @@ exports.addToCart = asyncHandler(async (req, res) => {
     });
 
     if (existingItem) {
+      console.log(`[addToCart] Item already exists. Id: ${existingItem.id}, OldQty: ${existingItem.quantity}`);
       const newQuantity = existingItem.quantity + (quantity || 1);
       if (availableStock < newQuantity) {
-          throw ApiError.badRequest('Insufficient stock for total quantity');
+          throw ApiError.badRequest(`Insufficient stock for total quantity. Available: ${availableStock}`);
       }
 
       await prisma.cartItem.update({
@@ -141,6 +151,7 @@ exports.addToCart = asyncHandler(async (req, res) => {
         },
       });
     } else {
+      console.log(`[addToCart] Creating new CartItem in cart ${cart.id}`);
       await prisma.cartItem.create({
         data: {
           cartId: cart.id,
@@ -172,10 +183,7 @@ exports.updateCartItem = asyncHandler(async (req, res) => {
     const userId = req.user?.id;
     const { id } = req.params; // CartItem ID
     const { quantity } = req.body;
-
-    if (!userId) {
-        throw ApiError.unauthorized('Please log in to update cart');
-    }
+    const { guestId } = req.query;
 
     const cartItem = await prisma.cartItem.findUnique({
         where: { id },
@@ -186,14 +194,17 @@ exports.updateCartItem = asyncHandler(async (req, res) => {
         throw ApiError.notFound('Cart item not found');
     }
 
-    // Ownership Check
-    if (cartItem.cart.userId !== userId) {
+    // Ownership Check (userId or guestId/sessionId)
+    const isOwner = (userId && cartItem.cart.userId === userId) ||
+                    (guestId && cartItem.cart.sessionId === guestId);
+
+    if (!isOwner) {
         throw ApiError.forbidden('You do not have permission to update this item');
     }
 
     const availableStock = cartItem.variant ? cartItem.variant.stock : cartItem.product.stock;
     if (availableStock < quantity) {
-        throw ApiError.badRequest('Insufficient stock');
+        throw ApiError.badRequest(`Insufficient stock. Available: ${availableStock}`);
     }
 
     await prisma.cartItem.update({
@@ -221,10 +232,7 @@ exports.updateCartItem = asyncHandler(async (req, res) => {
 exports.removeFromCart = asyncHandler(async (req, res) => {
     const userId = req.user?.id;
     const { id } = req.params; // CartItem ID
-
-    if (!userId) {
-        throw ApiError.unauthorized('Please log in to remove items');
-    }
+    const { guestId } = req.query;
 
     const item = await prisma.cartItem.findUnique({
         where: { id },
@@ -235,8 +243,11 @@ exports.removeFromCart = asyncHandler(async (req, res) => {
         throw ApiError.notFound('Cart item not found');
     }
 
-    // Ownership Check
-    if (item.cart.userId !== userId) {
+    // Ownership Check (userId or guestId/sessionId)
+    const isOwner = (userId && item.cart.userId === userId) ||
+                    (guestId && item.cart.sessionId === guestId);
+
+    if (!isOwner) {
         throw ApiError.forbidden('You do not have permission to remove this item');
     }
 
@@ -351,5 +362,38 @@ exports.mergeCart = asyncHandler(async (req, res) => {
     return successResponse(res, {
         message: 'Cart merged successfully',
         data: updatedCart
+    });
+});
+
+/**
+ * Clear Entire Cart
+ */
+exports.clearCart = asyncHandler(async (req, res) => {
+    const userId = req.user?.id;
+    const { guestId } = req.query;
+
+    let cartQuery = {};
+    if (userId) {
+        cartQuery.userId = userId;
+    } else if (guestId) {
+        cartQuery.sessionId = guestId;
+    } else {
+        throw ApiError.unauthorized('User must be logged in or have a guest ID to clear the cart');
+    }
+
+    const cart = await prisma.cart.findFirst({
+        where: cartQuery
+    });
+
+    if (cart) {
+        await prisma.cartItem.deleteMany({
+            where: { cartId: cart.id }
+        });
+    }
+
+    // Return empty cart structure
+    return successResponse(res, {
+        message: 'Cart cleared successfully',
+        data: cart ? { ...cart, items: [] } : null
     });
 });

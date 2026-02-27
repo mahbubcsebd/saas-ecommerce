@@ -12,7 +12,9 @@ exports.getPublicSettings = async (req, res, next) => {
       seo,
       appearance,
       order, // Needed for order rules like minAmount
-      company
+      company,
+      tax,
+      legal
     ] = await Promise.all([
       prisma.generalSetting.findFirst(),
       prisma.currencySetting.findFirst(),
@@ -21,6 +23,8 @@ exports.getPublicSettings = async (req, res, next) => {
       prisma.appearanceSetting.findFirst(),
       prisma.orderSetting.findFirst(),
       prisma.companySetting.findFirst(),
+      prisma.taxSetting.findFirst(),
+      prisma.legalSetting.findFirst(),
     ]);
 
     // Note: Do NOT return Email or Payment settings publicly if they contain sensitive keys.
@@ -50,7 +54,9 @@ exports.getPublicSettings = async (req, res, next) => {
             orderPrefix: order.orderPrefix,
             returnPolicyDays: order.returnPolicyDays
         } : null,
-        company
+        company,
+        tax,
+        legal
       },
     });
   } catch (error) {

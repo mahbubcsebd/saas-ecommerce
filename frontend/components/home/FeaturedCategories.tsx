@@ -1,14 +1,4 @@
-"use client";
-
-import {
-    Cpu,
-    Dumbbell,
-    Home,
-    Leaf,
-    LucideIcon,
-    Shirt,
-    ShoppingBag
-} from "lucide-react";
+import { Cpu, Dumbbell, Home, Leaf, type LucideIcon, Shirt, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
 // Map string icon names to Lucide icons

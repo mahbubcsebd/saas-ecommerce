@@ -9,9 +9,10 @@ const {
     deleteReview
 } = require('../controllers/review.controller');
 const { authMiddleware: protect, isManager } = require('../middlewares/auth.middleware');
+const { anyImageUpload } = require('../middlewares/upload.middleware');
 
 // Public / Customer Routes
-router.post('/', protect, createReview);
+router.post('/', protect, anyImageUpload('reviews'), createReview);
 router.get('/:productId', getProductReviews);
 
 // Admin Routes

@@ -3,14 +3,18 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useCartStore } from "@/store/useCartStore";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/admin";
+
   const [email, setEmail] = useState("superadmin@example.com");
   const [password, setPassword] = useState("password123");
   const [loading, setLoading] = useState(false);
@@ -20,18 +24,20 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      console.log('Attempting login with:', { email, password }); // DEBUG LOG
+      const guestId = useCartStore.getState().guestId;
+      console.log('Attempting login with:', { email, password, guestId }); // DEBUG LOG
       const res = await signIn("credentials", {
         redirect: false,
         email,
         password,
+        guestId,
       });
 
       if (res?.error) {
         toast.error(res.error === "CredentialsSignin" ? "Invalid credentials. Please check your email/phone and password." : res.error);
       } else {
         toast.success("Logged in successfully!");
-        router.push("/admin");
+        router.push(callbackUrl);
         router.refresh();
       }
     } catch (error) {

@@ -28,7 +28,7 @@ interface SidebarFilterProps {
 export default function SidebarFilter({ categories, baseUrl = '/products', categoryMode = 'filter' }: SidebarFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { locale } = useTranslations();
+  const { t, locale } = useTranslations();
 
   // State
   const [priceRange, setPriceRange] = useState([0, 1000]);
@@ -77,14 +77,14 @@ export default function SidebarFilter({ categories, baseUrl = '/products', categ
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-         <h3 className="text-lg font-semibold">Filters</h3>
-         <Button variant="ghost" size="sm" onClick={() => router.push(baseUrl)}>Reset</Button>
+         <h3 className="text-lg font-semibold">{t('filters', 'Filters')}</h3>
+         <Button variant="ghost" size="sm" onClick={() => router.push(baseUrl)}>{t('reset', 'Reset')}</Button>
       </div>
 
       <Accordion type="single" collapsible defaultValue="category" className="w-full">
         {/* Categories */}
         <AccordionItem value="category">
-          <AccordionTrigger>Categories</AccordionTrigger>
+          <AccordionTrigger>{t('categories', 'Categories')}</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-2">
               {categories.map((cat) => (
@@ -120,7 +120,7 @@ export default function SidebarFilter({ categories, baseUrl = '/products', categ
 
         {/* Price */}
         <AccordionItem value="price">
-          <AccordionTrigger>Price Range</AccordionTrigger>
+          <AccordionTrigger>{t('price_range', 'Price Range')}</AccordionTrigger>
           <AccordionContent>
             <div className="px-2 pt-4 pb-2">
                 <Slider
@@ -142,7 +142,7 @@ export default function SidebarFilter({ categories, baseUrl = '/products', categ
 
         {/* Rating */}
          <AccordionItem value="rating">
-          <AccordionTrigger>Rating</AccordionTrigger>
+          <AccordionTrigger>{t('rating', 'Rating')}</AccordionTrigger>
           <AccordionContent>
             <RadioGroup value={minRating} onValueChange={setMinRating}>
                 {[4, 3, 2, 1].map((r) => (
@@ -152,7 +152,7 @@ export default function SidebarFilter({ categories, baseUrl = '/products', categ
                             {Array.from({ length: r }).map((_, i) => (
                                 <span key={i} className="text-yellow-500">★</span>
                             ))}
-                            <span className="ml-1 text-muted-foreground">& Up</span>
+                            <span className="ml-1 text-muted-foreground">{t('and_up', '& Up')}</span>
                         </Label>
                     </div>
                 ))}
@@ -161,7 +161,7 @@ export default function SidebarFilter({ categories, baseUrl = '/products', categ
         </AccordionItem>
       </Accordion>
 
-      <Button className="w-full" onClick={handleFilter}>Apply Filters</Button>
+      <Button className="w-full" onClick={handleFilter}>{t('apply_filters', 'Apply Filters')}</Button>
     </div>
   );
 }

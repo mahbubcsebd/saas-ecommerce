@@ -32,7 +32,7 @@ class ContentTranslationService {
       throw new Error(`Language ${targetLangCode} not found`);
     }
 
-    // Translate using OpenAI
+    // Translate using AI
     const translated = await this.translateWithAI(
       [
         { key: 'name', text: category.name },
@@ -96,7 +96,7 @@ class ContentTranslationService {
       throw new Error(`Language ${targetLangCode} not found`);
     }
 
-    // Translate using OpenAI
+    // Translate using AI
     const translated = await this.translateWithAI(
       [
         { key: 'name', text: product.name },
@@ -160,7 +160,7 @@ class ContentTranslationService {
       throw new Error(`Language ${targetLangCode} not found`);
     }
 
-    // Translate using OpenAI
+    // Translate using AI
     const textsToTranslate = [];
     if (heroSlide.title) textsToTranslate.push({ key: 'title', text: heroSlide.title });
     if (heroSlide.subtitle) textsToTranslate.push({ key: 'subtitle', text: heroSlide.subtitle });
@@ -199,15 +199,15 @@ class ContentTranslationService {
   }
 
   /**
-   * Translate text using Grok API (xAI)
+   * Translate text using AI (Groq, Grok, or OpenAI)
    */
   async translateWithAI(texts, targetLanguageName) {
-    // Try Grok API first, fallback to OpenAI if not available
+    const groqApiKey = process.env.GROQ_API_KEY;
     const grokApiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
     const openaiApiKey = process.env.OPENAI_API_KEY;
 
-    if (!grokApiKey && !openaiApiKey) {
-      throw new Error("Neither GROK_API_KEY nor OPENAI_API_KEY found in environment variables");
+    if (!groqApiKey && !grokApiKey && !openaiApiKey) {
+      throw new Error("No AI API keys found (GROQ_API_KEY, GROK_API_KEY, or OPENAI_API_KEY)");
     }
 
     const prompt = `Translate the following e-commerce content to ${targetLanguageName}.
@@ -220,14 +220,17 @@ class ContentTranslationService {
 
     let apiUrl, apiKey, model;
 
-    if (grokApiKey) {
-      // Use Grok API (xAI)
+    if (groqApiKey) {
+      apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
+      apiKey = groqApiKey;
+      model = 'llama-3.3-70b-versatile';
+      console.log('Using Groq API for translation');
+    } else if (grokApiKey) {
       apiUrl = 'https://api.x.ai/v1/chat/completions';
       apiKey = grokApiKey;
-      model = 'grok-beta'; // or 'grok-2-latest'
+      model = 'grok-beta';
       console.log('Using Grok API for translation');
     } else {
-      // Fallback to OpenAI
       apiUrl = 'https://api.openai.com/v1/chat/completions';
       apiKey = openaiApiKey;
       model = 'gpt-4o-mini';
@@ -244,7 +247,7 @@ class ContentTranslationService {
         model: model,
         messages: [{ role: 'user', content: prompt }],
         response_format: { type: 'json_object' },
-        temperature: 0.3 // Lower temperature for more consistent translations
+        temperature: 0.3
       })
     });
 

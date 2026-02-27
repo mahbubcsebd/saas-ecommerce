@@ -1,4 +1,5 @@
 const shippingService = require('../services/shipping.service');
+const prisma = require('../config/prisma');
 
 exports.calculateShipping = async (req, res, next) => {
     try {
