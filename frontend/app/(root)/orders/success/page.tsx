@@ -6,9 +6,26 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
+import { trackPurchase } from "@/lib/analytics";
+import { api } from "@/lib/api-client";
+import { useEffect, useState } from "react";
+
 function SuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
+  const [order, setOrder] = useState<any>(null);
+
+  useEffect(() => {
+    if (orderId) {
+      // Fetch order details for tracking
+      api.get<any>(`/orders/${orderId}`)
+        .then((data) => {
+          setOrder(data);
+          trackPurchase(data);
+        })
+        .catch((err) => console.error("Failed to fetch order for tracking:", err));
+    }
+  }, [orderId]);
 
   return (
     <div className="container py-20 flex flex-col items-center justify-center text-center">

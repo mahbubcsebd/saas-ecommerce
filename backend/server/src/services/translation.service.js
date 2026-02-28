@@ -390,6 +390,67 @@ Example: { "bn": "...", "es": "..." }`;
         }
         return { success: true };
     }
+    /**
+     * Generate SEO-optimized category description using AI with internal links
+     * @param {string} categoryName - Name of the category
+     * @param {string[]} productNames - List of representative products
+     * @param {Object[]} relatedCategories - List of {name, slug} for internal linking
+     * @returns {Promise<string>} - Generated HTML description
+     */
+    async generateSEOContent(categoryName, productNames, relatedCategories = []) {
+        try {
+            const prompt = `You are a premium e-commerce SEO expert.
+Generate a comprehensive, high-quality SEO description for the category "${categoryName}".
+The description should be professional, engaging, and optimized for search engines (Google).
+
+CONTEXT:
+- Category: ${categoryName}
+- Key Products: ${productNames.slice(0, 5).join(', ')}
+- Related Categories (for internal linking): ${JSON.stringify(relatedCategories)}
+- Location: Bangladesh (so use terms like "Price in Bangladesh", "Latest Price in BD 2026")
+- Tone: Professional, authoritative, and helpful.
+
+SEARCH ENGINE OPTIMIZATION RULES:
+1. INTERNAL LINKING (CRITICAL): Naturally embed 2-4 internal links to related categories using <a> tags.
+   - Use the provide slugs. Example: if a related category is "Laptops" with slug "laptops", use <a href="/laptops">Laptops</a>.
+   - Do NOT use absolute URLs (http://...), only relative paths starting with /.
+2. KEYWORDS: Over-optimize for "${categoryName} Price in Bangladesh", "Best Price", and "High Performance".
+3. STRUCTURE:
+   - An engaging H2 heading containing the category name.
+   - 2-3 paragraphs of detailed content.
+   - Mention key features, benefits, and why customers should buy from "Mahbub Shop".
+   - Use <strong> tags for important keywords.
+4. LENGTH: Around 200-300 words.
+
+Return ONLY the HTML content (use <p>, <h2>, <strong>, <ul>, <li>, <a> tags).
+
+Output Format: HTML string.`;
+
+            const response = await fetch(this.apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.apiKey}`,
+                },
+                body: JSON.stringify({
+                    model: this.model,
+                    messages: [
+                        { role: 'system', content: 'You are an SEO content generator.' },
+                        { role: 'user', content: prompt }
+                    ],
+                    temperature: 0.7,
+                }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error?.message || 'Generation failed');
+
+            return data.choices?.[0]?.message?.content || '';
+        } catch (error) {
+            console.error('SEO Generation Error:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = new TranslationService();

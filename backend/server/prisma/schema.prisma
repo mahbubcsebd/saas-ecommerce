@@ -2266,9 +2266,9 @@ model IntegrationSetting {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
   // Analytics
-  googleAnalyticsId  String?
-  facebookPixelId    String?
-  googleTagManagerId String?
+  googleAnalyticsId  String[]
+  facebookPixelId    String[]
+  googleTagManagerId String[]
 
   // Third-party (Flexible JSON)
   thirdPartyConfig Json? @default("{}")

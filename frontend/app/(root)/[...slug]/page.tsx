@@ -1,6 +1,6 @@
 import CategoryProductList from "@/components/category/CategoryProductList";
 import ProductDetailsClient from "@/components/product/ProductDetailsClient";
-import { generateProductMetadata, generateProductSchema } from "@/lib/seo-utils";
+import { generateCategoryMetadata, generateProductMetadata, generateProductSchema } from "@/lib/seo-utils";
 import { Product } from "@/types/product";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -91,10 +91,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // 2. Try Category
   const category = await getCategory(lastSlug);
   if (category) {
-    return {
-      title: `${category.name} - Mahbub Shop`,
-      description: category.description || `Browse our ${category.name} collection.`,
-    };
+    return generateCategoryMetadata(category);
   }
 
   return {

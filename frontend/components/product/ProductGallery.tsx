@@ -47,6 +47,7 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
                 alt={`${title} - Image ${index + 1}`}
                 fill
                 className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority={index === 0}
               />
             </div>
@@ -73,6 +74,7 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
                   alt={`${title} thumbnail ${index + 1}`}
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 25vw, 10vw"
                 />
               </div>
             </SwiperSlide>

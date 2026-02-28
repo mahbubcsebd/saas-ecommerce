@@ -5,7 +5,7 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { DndContext, closestCenter, useDroppable } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ChevronDown, ChevronRight, Edit2, Eye, GripVertical, Image as ImageIcon, Plus, Save, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronRight, Edit2, Eye, GripVertical, Image as ImageIcon, LucideSparkles, Plus, Save, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
@@ -571,6 +571,41 @@ export default function CategoriesPage() {
       }
   };
 
+  // Generate SEO Description using AI
+  const handleGenerateSEO = async () => {
+    if (!formData.id) {
+        toast.error("Please save the category first to generate AI content.");
+        return;
+    }
+
+    setSaving(true);
+    try {
+        const res = await fetch(`${API_URL}/ai/seo/category-content`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${session?.accessToken}`
+            },
+            body: JSON.stringify({ categoryId: formData.id })
+        });
+
+        if (res.ok) {
+            const { data } = await res.json();
+            if (data.content) {
+                updateTranslation('description', data.content);
+                toast.success("SEO Description generated!");
+            }
+        } else {
+            toast.error("Failed to generate SEO content.");
+        }
+    } catch (error) {
+        console.error("AI Generation error:", error);
+        toast.error("AI Generation failed.");
+    } finally {
+        setSaving(false);
+    }
+  };
+
   // Save category
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -932,17 +967,26 @@ export default function CategoriesPage() {
                 </div>
 
                 {/* Description */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Description ({selectedLang.toUpperCase()})
-                  </label>
-                  <textarea
-                    value={translations[selectedLang]?.description || ""}
-                    onChange={(e) => updateTranslation('description', e.target.value)}
-                    rows={3}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium">Description ({selectedLang.toUpperCase()})</label>
+              <button
+                type="button"
+                onClick={handleGenerateSEO}
+                disabled={saving || !formData.id}
+                className="flex items-center gap-1.5 text-xs font-semibold text-purple-600 hover:text-purple-700 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-full border border-purple-200 transition-all disabled:opacity-50"
+              >
+                <LucideSparkles className="w-3.5 h-3.5" />
+                AI Generate
+              </button>
+            </div>
+            <textarea
+              className="w-full h-32 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 transition-all"
+              placeholder="Enter category description or generate with AI..."
+              value={translations[selectedLang]?.description || ""}
+              onChange={(e) => updateTranslation("description", e.target.value)}
+            />
+          </div>
 
                 <div className="border-t pt-4 mt-4">
                     <h3 className="font-semibold mb-4 text-gray-900">General Settings</h3>

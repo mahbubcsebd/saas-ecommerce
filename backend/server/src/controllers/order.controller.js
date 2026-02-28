@@ -402,6 +402,20 @@ exports.createOrder = asyncHandler(async (req, res) => {
     );
   }
 
+  // ---------------------------------------------------------
+  // 5. Analytics (Server-side Purchase)
+  // ---------------------------------------------------------
+  // 5. Analytics (Internal + Server-side Tracking)
+  try {
+    const analyticsService = require('../services/analytics.service');
+    // Track purchase (Internal DB + GA4 + Meta)
+    // Attach sessionId from request if available for proper session attribution
+    const analyticsOrder = { ...order, sessionId };
+    analyticsService.trackPurchase(analyticsOrder, req);
+  } catch (analyticsErr) {
+    console.warn('Failed to send server-side analytics:', analyticsErr.message);
+  }
+
   return createdResponse(res, {
     message: 'Order placed successfully',
     data: order,

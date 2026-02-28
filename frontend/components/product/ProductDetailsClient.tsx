@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from "@/context/TranslationContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useCurrency } from "@/hooks/useCurrency";
+import { trackAddToCart, trackViewContent } from "@/lib/analytics";
 import { cn, getLocalized } from "@/lib/utils";
 import { useCartStore } from "@/store/useCartStore";
 import { Product, ProductVariant } from "@/types/product";
@@ -78,6 +79,8 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
     };
     fetchProduct();
   }, [product.slug]);
+
+
 
   // Extract all unique attribute keys and their values
   const attributeOptions = useMemo(() => {
@@ -294,6 +297,17 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
     setLoading(true);
     try {
         await addToCart(realtimeProduct.id, Number(qty) || 1, selectedVariant?.id);
+
+        // Track AddToCart
+        trackAddToCart({
+          id: realtimeProduct.id,
+          name: productName,
+          price: currentPrice,
+          quantity: Number(qty) || 1,
+          category: categoryName,
+          variant: selectedVariant?.name,
+        });
+
         setSuccessMessage(t('common', 'addedToCart', { defaultValue: 'Added to cart successfully!' }));
         setTimeout(() => setSuccessMessage(null), 3000);
     } catch (error: any) {
@@ -317,6 +331,19 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   const productName = getLocalized(realtimeProduct, locale, 'name');
   const productDesc = getLocalized(realtimeProduct, locale, 'description');
   const categoryName = typeof realtimeProduct.category === 'object' ? getLocalized(realtimeProduct.category, locale, 'name') : realtimeProduct.category;
+
+  // Track ViewContent/view_item
+  useEffect(() => {
+    if (realtimeProduct.id) {
+      trackViewContent({
+        id: realtimeProduct.id,
+        name: productName,
+        price: currentPrice,
+        category: categoryName,
+        variant: selectedVariant?.name,
+      });
+    }
+  }, [realtimeProduct.id, selectedVariant?.id, productName, currentPrice, categoryName]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">

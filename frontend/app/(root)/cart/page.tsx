@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { useTranslations } from "@/context/TranslationContext";
 import { useCurrency } from "@/hooks/useCurrency";
+import { trackBeginCheckout } from "@/lib/analytics";
 import { useCartStore } from "@/store/useCartStore";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -232,7 +233,23 @@ export default function CartPage() {
 
                 <Button className="w-full" size="lg" disabled={selectedItemIds.length === 0} asChild={selectedItemIds.length > 0}>
                     {selectedItemIds.length > 0 ? (
-                        <Link href="/checkout">{t('common', 'proceedToCheckout', { defaultValue: 'Proceed to Checkout' })}</Link>
+                        <Link
+                            href="/checkout"
+                            onClick={() => {
+                                const selectedItems = cart.items
+                                    .filter(item => selectedItemIds.includes(item.id))
+                                    .map(item => ({
+                                        id: item.productId,
+                                        name: item.product.name,
+                                        price: item.variant?.sellingPrice || item.product.sellingPrice,
+                                        quantity: item.quantity,
+                                        variant: item.variant?.name
+                                    }));
+                                trackBeginCheckout(selectedItems, subtotal);
+                            }}
+                        >
+                            {t('common', 'proceedToCheckout', { defaultValue: 'Proceed to Checkout' })}
+                        </Link>
                     ) : (
                         <span>Select items to checkout</span>
                     )}

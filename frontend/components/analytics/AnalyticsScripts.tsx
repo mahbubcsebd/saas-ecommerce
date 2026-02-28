@@ -1,6 +1,7 @@
 'use client';
 
 import { useSettings } from '@/context/SettingsContext';
+import { trackPageView } from '@/lib/analytics';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
 import { useEffect } from 'react';
@@ -17,9 +18,9 @@ export default function AnalyticsScripts() {
     return [ids];
   };
 
-  const gtmIds = getIds(settings?.seo?.googleTagManagerId);
-  const ga4Ids = getIds(settings?.seo?.googleAnalyticsId);
-  const pixelIds = getIds(settings?.seo?.facebookPixelId);
+  const gtmIds = getIds(settings?.integration?.googleTagManagerId || settings?.seo?.googleTagManagerId);
+  const ga4Ids = getIds(settings?.integration?.googleAnalyticsId || settings?.seo?.googleAnalyticsId);
+  const pixelIds = getIds(settings?.integration?.facebookPixelId || settings?.seo?.facebookPixelId);
 
   useEffect(() => {
     if (pathname) {
@@ -39,6 +40,8 @@ export default function AnalyticsScripts() {
         // Actually, fbq('track', 'PageView') sends to all initialized IDs.
         window.fbq('track', 'PageView');
       }
+      // Internal analytics
+      trackPageView(pathname);
     }
   }, [pathname, searchParams, ga4Ids, pixelIds]);
 
@@ -72,7 +75,7 @@ export default function AnalyticsScripts() {
           <Script id="google-analytics-init" strategy="afterInteractive">
             {`
           window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
+          function gtag(){window.dataLayer.push(arguments);}
           gtag('js', new Date());
           ${ga4Ids.map((id) => `gtag('config', '${id}');`).join('\n')}
         `}

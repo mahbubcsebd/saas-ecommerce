@@ -14,7 +14,8 @@ exports.getPublicSettings = async (req, res, next) => {
       order, // Needed for order rules like minAmount
       company,
       tax,
-      legal
+      legal,
+      integration
     ] = await Promise.all([
       prisma.generalSetting.findFirst(),
       prisma.currencySetting.findFirst(),
@@ -25,6 +26,7 @@ exports.getPublicSettings = async (req, res, next) => {
       prisma.companySetting.findFirst(),
       prisma.taxSetting.findFirst(),
       prisma.legalSetting.findFirst(),
+      prisma.integrationSetting.findFirst(),
     ]);
 
     // Note: Do NOT return Email or Payment settings publicly if they contain sensitive keys.
@@ -56,7 +58,8 @@ exports.getPublicSettings = async (req, res, next) => {
         } : null,
         company,
         tax,
-        legal
+        legal,
+        integration
       },
     });
   } catch (error) {
@@ -109,6 +112,21 @@ exports.updateSettings = async (req, res, next) => {
         const updateSingleton = async (model) => {
             const existing = await model.findFirst();
             const { id, createdAt, updatedAt, ...updateData } = data;
+
+            // Handle type mismatch for IntegrationSetting (Array of strings)
+            if (model === prisma.integrationSetting) {
+                const arrayFields = ['googleAnalyticsId', 'facebookPixelId', 'googleTagManagerId'];
+                arrayFields.forEach(field => {
+                    if (updateData[field] !== undefined) {
+                        if (typeof updateData[field] === 'string') {
+                            // Split by comma and trim, filter out empty strings
+                            updateData[field] = updateData[field].split(',').map(s => s.trim()).filter(s => s !== '');
+                        } else if (!Array.isArray(updateData[field])) {
+                            updateData[field] = [];
+                        }
+                    }
+                });
+            }
 
             if (existing) {
                 return await model.update({ where: { id: existing.id }, data: updateData });

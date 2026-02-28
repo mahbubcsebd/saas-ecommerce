@@ -2,6 +2,7 @@
 
 import { useTranslations } from '@/context/TranslationContext';
 import { useCurrency } from '@/hooks/useCurrency';
+import { trackAddToCart } from '@/lib/analytics';
 import { cn, getLocalized } from '@/lib/utils';
 import { useCartStore } from '@/store/useCartStore';
 import { Product } from '@/types/product';
@@ -40,6 +41,16 @@ export default function QuickViewModal({ product, children }: QuickViewModalProp
         setIsPending(true);
         try {
             await addToCart(product.id, quantity);
+
+            // Track AddToCart
+            trackAddToCart({
+                id: product.id,
+                name: localizedName,
+                price: product.sellingPrice,
+                quantity: quantity,
+                category: localizedCategory
+            });
+
             toast.success(t('common', 'addedToCart', { defaultValue: 'Added to cart successfully!' }));
         } catch (error) {
             toast.error(t('common', 'failedToAddToCart', { defaultValue: 'Failed to add to cart' }));

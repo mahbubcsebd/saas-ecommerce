@@ -6,6 +6,7 @@ const { successResponse } = require('../../utils/response');
 const customerAI = require('../../services/groqCustomerAI');
 const dashboardAI = require('../../services/groqDashboardAI');
 const prisma = require('../../config/prisma');
+const translationService = require('../../services/translation.service');
 
 // ==================== CUSTOMER AI ====================
 
@@ -97,7 +98,6 @@ router.get('/history/:sessionId',
     })
 );
 
-const translationService = require('../../services/translation.service');
 
 // ... existing code ...
 
@@ -116,6 +116,52 @@ router.post('/translate',
         return successResponse(res, {
             message: 'Translation generated',
             data: translations
+        });
+    })
+);
+
+/**
+ * Generate SEO content for category
+ */
+router.post('/seo/category-content',
+    authMiddleware,
+    asyncHandler(async (req, res) => {
+        const { categoryId, language = 'en' } = req.body;
+
+        const category = await prisma.category.findUnique({
+            where: { id: categoryId },
+            include: {
+                products: { take: 10, select: { name: true, slug: true } },
+                children: { take: 5, select: { name: true, slug: true } },
+                parent: {
+                    include: {
+                        children: {
+                            where: { id: { not: categoryId }, isActive: true },
+                            take: 5,
+                            select: { name: true, slug: true }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!category) {
+            return res.status(440).json({ success: false, message: 'Category not found' });
+        }
+
+        const productNames = category.products.map(p => p.name);
+
+        // Collect related categories for internal linking
+        const relatedCategories = [
+            ...(category.children || []),
+            ...(category.parent?.children || [])
+        ].map(c => ({ name: c.name, slug: c.slug }));
+
+        const content = await translationService.generateSEOContent(category.name, productNames, relatedCategories);
+
+        return successResponse(res, {
+            message: 'SEO content generated',
+            data: { content }
         });
     })
 );

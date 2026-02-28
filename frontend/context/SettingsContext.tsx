@@ -81,6 +81,13 @@ export interface TaxSetting {
   vatGstNumber?: string;
 }
 
+export interface IntegrationSetting {
+  googleAnalyticsId: string[];
+  facebookPixelId: string[];
+  googleTagManagerId: string[];
+  thirdPartyConfig?: any;
+}
+
 export interface SettingsData {
   general: GeneralSetting;
   currency: CurrencySetting;
@@ -89,6 +96,7 @@ export interface SettingsData {
   seo?: SeoSetting;
   tax?: TaxSetting;
   payment?: PaymentSetting;
+  integration?: IntegrationSetting;
 }
 
 interface SettingsContextType {

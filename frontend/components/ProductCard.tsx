@@ -3,6 +3,7 @@
 import { useTranslations } from '@/context/TranslationContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useCurrency } from '@/hooks/useCurrency';
+import { trackAddToCart } from '@/lib/analytics';
 import { cn, getLocalized } from '@/lib/utils';
 import { useCartStore } from '@/store/useCartStore';
 import { Product } from '@/types/product';
@@ -39,6 +40,16 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
     setIsAddingToCart(true);
     try {
         await addToCart(product.id, 1);
+
+        // Track AddToCart
+        trackAddToCart({
+            id: product.id,
+            name: localizedName,
+            price: product.sellingPrice,
+            quantity: 1,
+            category: localizedCategory
+        });
+
         toast.success(t('common', 'addedToCart', { defaultValue: 'Added to cart successfully!' }));
     } catch (error) {
         toast.error(t('common', 'failedToAddToCart', { defaultValue: 'Failed to add to cart' }));

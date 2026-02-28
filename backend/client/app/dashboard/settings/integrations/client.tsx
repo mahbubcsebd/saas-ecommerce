@@ -218,30 +218,68 @@ export default function IntegrationsClient() {
                         </CardHeader>
                         <CardContent className="p-8 space-y-8 bg-white">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="space-y-2">
-                                    <Label className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
-                                        <Globe className="w-3.5 h-3.5 text-blue-600" /> Google Analytics 4
-                                    </Label>
-                                    <p className="text-[10px] text-slate-400 italic mb-3">Measurement ID (G-XXXXXXXXXX)</p>
-                                    <Input
-                                        value={integrations.googleAnalyticsId || ''}
-                                        onChange={e => setIntegrations({...integrations, googleAnalyticsId: e.target.value})}
-                                        placeholder="G-XXXXXX"
-                                        className="h-11 bg-slate-50 border-slate-200 focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all font-mono text-sm"
-                                    />
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <Label className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
+                                            <Globe className="w-3.5 h-3.5 text-blue-600" /> Google Analytics 4
+                                        </Label>
+                                        <p className="text-[10px] text-slate-400 italic mb-1">Measurement ID (G-XXXXXXXXXX)</p>
+                                        <Input
+                                            value={integrations.googleAnalyticsId || ''}
+                                            onChange={e => setIntegrations({...integrations, googleAnalyticsId: e.target.value})}
+                                            placeholder="G-XXXXXX"
+                                            className="h-10 bg-slate-50 border-slate-200 focus:bg-white transition-all font-mono text-xs"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <p className="text-[10px] text-slate-400 italic mb-1">GA4 API Secret (Required for Purchase Tracking)</p>
+                                        <Input
+                                            type="password"
+                                            value={integrations.thirdPartyConfig?.ga4ApiSecret || ''}
+                                            onChange={e => setIntegrations({
+                                                ...integrations,
+                                                thirdPartyConfig: {
+                                                    ...(integrations.thirdPartyConfig || {}),
+                                                    ga4ApiSecret: e.target.value
+                                                }
+                                            })}
+                                            placeholder="Measurement Protocol API Secret"
+                                            className="h-10 bg-slate-50 border-slate-200 focus:bg-white transition-all font-mono text-xs"
+                                        />
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
-                                        <Facebook className="w-3.5 h-3.5 text-blue-800" /> Meta Pixel
-                                    </Label>
-                                    <p className="text-[10px] text-slate-400 italic mb-3">Pixel ID for ad tracking</p>
-                                    <Input
-                                        value={integrations.facebookPixelId || ''}
-                                        onChange={e => setIntegrations({...integrations, facebookPixelId: e.target.value})}
-                                        placeholder="1234567890"
-                                        className="h-11 bg-slate-50 border-slate-200 focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all font-mono text-sm"
-                                    />
+
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <Label className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
+                                            <Facebook className="w-3.5 h-3.5 text-blue-800" /> Meta Pixel
+                                        </Label>
+                                        <p className="text-[10px] text-slate-400 italic mb-1">Pixel ID for ad tracking</p>
+                                        <Input
+                                            value={integrations.facebookPixelId || ''}
+                                            onChange={e => setIntegrations({...integrations, facebookPixelId: e.target.value})}
+                                            placeholder="1234567890"
+                                            className="h-10 bg-slate-50 border-slate-200 focus:bg-white transition-all font-mono text-xs"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <p className="text-[10px] text-slate-400 italic mb-1">Conversion API Access Token</p>
+                                        <Input
+                                            type="password"
+                                            value={integrations.thirdPartyConfig?.facebookAccessToken || ''}
+                                            onChange={e => setIntegrations({
+                                                ...integrations,
+                                                thirdPartyConfig: {
+                                                    ...(integrations.thirdPartyConfig || {}),
+                                                    facebookAccessToken: e.target.value
+                                                }
+                                            })}
+                                            placeholder="EAAB..."
+                                            className="h-10 bg-slate-50 border-slate-200 focus:bg-white transition-all font-mono text-xs"
+                                        />
+                                    </div>
                                 </div>
+
                                 <div className="md:col-span-2 space-y-2">
                                     <Label className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
                                         <Code className="w-3.5 h-3.5 text-emerald-500" /> Google Tag Manager

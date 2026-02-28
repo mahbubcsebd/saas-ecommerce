@@ -51,3 +51,26 @@ export function generateProductMetadata(product: Product): Metadata {
     },
   };
 }
+export function generateCategoryMetadata(category: any): Metadata {
+  const title = category.metaTitle || `${category.name} - Mahbub Shop`;
+  const description = category.metaDescription || category.description?.slice(0, 155) || `Explore our ${category.name} collection at Mahbub Shop.`;
+  const image = category.image || '/placeholder.jpg';
+
+  return {
+    title,
+    description,
+    keywords: category.metaKeywords,
+    openGraph: {
+      title,
+      description,
+      images: [{ url: image }],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [image],
+    },
+  };
+}

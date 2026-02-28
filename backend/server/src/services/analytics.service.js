@@ -67,10 +67,10 @@ class AnalyticsService {
                 },
             });
 
-            // 2. Send to Google Analytics 4
+            // 2. Send to GA4
             await this.sendToGA4(eventData, deviceInfo, location);
 
-            // 3. Send to Meta Pixel (if e-commerce event)
+            // 3. Send to Meta Pixel
             if (this.isEcommerceEvent(eventName)) {
                 await this.sendToMetaPixel(eventData, deviceInfo, location);
             }
@@ -84,7 +84,44 @@ class AnalyticsService {
 
         } catch (error) {
             console.error('Analytics tracking error:', error);
-            // Don't throw - analytics shouldn't break app
+        }
+    }
+
+    /**
+     * Track Purchase (High-level helper for Order Controller)
+     */
+    async trackPurchase(order, req) {
+        try {
+            const userAgent = req.headers['user-agent'];
+            const ipAddress = req.ip || req.connection.remoteAddress;
+
+            const eventData = {
+                eventName: 'purchase',
+                eventType: 'ECOMMERCE',
+                userId: order.userId,
+                sessionId: order.sessionId || uuidv4(),
+                clientId: order.id,
+                revenue: order.total,
+                userAgent,
+                ipAddress,
+                pageUrl: req.headers.referer,
+                eventData: {
+                    transaction_id: order.orderNumber,
+                    shipping: order.shippingCost,
+                    tax: order.vatAmount,
+                    items: order.items.map(item => ({
+                        id: item.productId,
+                        name: item.productName,
+                        price: item.unitPrice,
+                        quantity: item.quantity,
+                        variant: item.variantId
+                    }))
+                }
+            };
+
+            return await this.trackEvent(eventData);
+        } catch (error) {
+            console.error('Track purchase error:', error);
         }
     }
 
@@ -109,10 +146,13 @@ class AnalyticsService {
                 eventData: customData,
             } = eventData;
 
-            const measurementId = process.env.GA4_MEASUREMENT_ID; // G-XXXXXXXXXX
-            const apiSecret = process.env.GA4_API_SECRET;
+            const integration = await prisma.integrationSetting.findFirst();
+            if (!integration || !integration.googleAnalyticsId || integration.googleAnalyticsId.length === 0) return;
 
-            if (!measurementId || !apiSecret) return;
+            const config = integration.thirdPartyConfig || {};
+            const apiSecret = config.ga4ApiSecret;
+
+            if (!apiSecret) return;
 
             const payload = {
                 client_id: clientId || 'unknown',
@@ -155,13 +195,15 @@ class AnalyticsService {
                 }],
             };
 
-            await axios.post(
-                `https://www.google-analytics.com/mp/collect?measurement_id=${measurementId}&api_secret=${apiSecret}`,
-                payload,
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                }
-            );
+            for (const measurementId of integration.googleAnalyticsId) {
+                await axios.post(
+                    `https://www.google-analytics.com/mp/collect?measurement_id=${measurementId}&api_secret=${apiSecret}`,
+                    payload,
+                    {
+                        headers: { 'Content-Type': 'application/json' },
+                    }
+                );
+            }
         } catch (error) {
             console.error('GA4 send error:', error.message);
         }
@@ -184,10 +226,13 @@ class AnalyticsService {
                 quantity,
             } = eventData;
 
-            const pixelId = process.env.META_PIXEL_ID;
-            const accessToken = process.env.META_ACCESS_TOKEN;
+            const integration = await prisma.integrationSetting.findFirst();
+            if (!integration || !integration.facebookPixelId || integration.facebookPixelId.length === 0) return;
 
-            if (!pixelId || !accessToken) return;
+            const config = integration.thirdPartyConfig || {};
+            const accessToken = config.facebookAccessToken;
+
+            if (!accessToken) return;
 
             // Map event names to Meta standard events
             const metaEventName = this.mapToMetaEvent(eventName);
@@ -227,14 +272,16 @@ class AnalyticsService {
                 }],
             };
 
-            await axios.post(
-                `https://graph.facebook.com/v18.0/${pixelId}/events`,
-                payload,
-                {
-                    params: { access_token: accessToken },
-                    headers: { 'Content-Type': 'application/json' },
-                }
-            );
+            for (const pixelId of integration.facebookPixelId) {
+                await axios.post(
+                    `https://graph.facebook.com/v18.0/${pixelId}/events`,
+                    payload,
+                    {
+                        params: { access_token: accessToken },
+                        headers: { 'Content-Type': 'application/json' },
+                    }
+                );
+            }
 
             // Store in DB for tracking
             await prisma.pixelEvent.create({
