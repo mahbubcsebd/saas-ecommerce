@@ -10,7 +10,7 @@ module.exports = [
     state: 'Dhaka Division',
     zipCode: '1212',
     country: 'Bangladesh',
-    isDefault: true
+    isDefault: true,
   },
   {
     userEmail: 'user@example.com',
@@ -22,7 +22,7 @@ module.exports = [
     state: 'Dhaka Division',
     zipCode: '1215',
     country: 'Bangladesh',
-    isDefault: false
+    isDefault: false,
   },
   {
     userEmail: 'admin@example.com',
@@ -34,6 +34,6 @@ module.exports = [
     state: 'Dhaka Division',
     zipCode: '1210',
     country: 'Bangladesh',
-    isDefault: true
+    isDefault: true,
   },
 ];

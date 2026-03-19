@@ -1,5 +1,8 @@
-import { Cpu, Dumbbell, Home, Leaf, type LucideIcon, Shirt, ShoppingBag } from "lucide-react";
-import Link from "next/link";
+'use client';
+
+import { useTranslations } from '@/context/TranslationContext';
+import { Cpu, Dumbbell, Home, Leaf, type LucideIcon, Shirt, ShoppingBag } from 'lucide-react';
+import Link from 'next/link';
 
 // Map string icon names to Lucide icons
 const iconMap: Record<string, LucideIcon> = {
@@ -8,7 +11,7 @@ const iconMap: Record<string, LucideIcon> = {
   Home,
   Dumbbell,
   Leaf,
-  ShoppingBag
+  ShoppingBag,
 };
 
 interface Category {
@@ -20,15 +23,18 @@ interface Category {
 }
 
 interface FeaturedCategoriesProps {
-    categories: Category[];
+  categories: Category[];
 }
 
 export default function FeaturedCategories({ categories }: FeaturedCategoriesProps) {
+  const { t } = useTranslations();
   if (!categories || categories.length === 0) return null;
 
   return (
     <section className="container py-12">
-      <h2 className="text-2xl font-bold mb-8 text-center md:text-left">Shop by Category</h2>
+      <h2 className="text-2xl font-bold mb-8 text-center md:text-left">
+        {t('home', 'featuredCategories', 'Featured Categories')}
+      </h2>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
         {categories.map((cat) => {
           const Icon = cat.icon && iconMap[cat.icon] ? iconMap[cat.icon] : ShoppingBag;

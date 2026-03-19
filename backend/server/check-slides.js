@@ -1,4 +1,3 @@
-
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
@@ -7,10 +6,10 @@ async function checkSlides() {
     const slides = await prisma.heroSlide.findMany({
       where: {
         isActive: true,
-        isFeatured: true
-      }
+        isFeatured: true,
+      },
     });
-    console.log("Found slides:", JSON.stringify(slides, null, 2));
+    console.log('Found slides:', JSON.stringify(slides, null, 2));
   } catch (e) {
     console.error(e);
   } finally {

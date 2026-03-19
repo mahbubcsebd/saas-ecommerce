@@ -1,12 +1,11 @@
-﻿
-const createError = require("http-errors");
+﻿const createError = require('http-errors');
 const prisma = require('../config/prisma');
-const slugify = require("slugify");
+const slugify = require('slugify');
 
 // --- Helper for A/B Variant Selection ---
 const selectVariant = (variants) => {
   if (!variants || variants.length === 0) return null;
-  const activeVariants = variants.filter(v => v.isActive);
+  const activeVariants = variants.filter((v) => v.isActive);
   if (activeVariants.length === 0) return null;
 
   const totalWeight = activeVariants.reduce((sum, v) => sum + v.weight, 0);
@@ -37,14 +36,14 @@ exports.createLandingPage = async (req, res, next) => {
       gjs_html,
       gjs_css,
       gjs_json,
-      variants // Array of { name, gjs_html, gjs_css, gjs_json, weight }
+      variants, // Array of { name, gjs_html, gjs_css, gjs_json, weight }
     } = req.body;
 
     const pageSlug = slug ? slugify(slug, { lower: true }) : slugify(title, { lower: true });
 
     // Check slug uniqueness
     const existing = await prisma.landingPage.findUnique({ where: { slug: pageSlug } });
-    if (existing) throw createError(400, "Slug already exists");
+    if (existing) throw createError(400, 'Slug already exists');
 
     const page = await prisma.landingPage.create({
       data: {
@@ -54,8 +53,8 @@ exports.createLandingPage = async (req, res, next) => {
         productId,
         isAbTestActive: isAbTestActive === 'true' || isAbTestActive === true,
         blocks: blocks ? (typeof blocks === 'string' ? JSON.parse(blocks) : blocks) : undefined,
-        themeColor: themeColor || "#3b82f6",
-        fontFamily: fontFamily || "Inter",
+        themeColor: themeColor || '#3b82f6',
+        fontFamily: fontFamily || 'Inter',
         metaTitle,
         metaDescription,
         metaKeywords,
@@ -63,17 +62,19 @@ exports.createLandingPage = async (req, res, next) => {
         gjs_html,
         gjs_css,
         gjs_json,
-        variants: variants ? {
-          create: (typeof variants === 'string' ? JSON.parse(variants) : variants).map(v => ({
-            name: v.name,
-            gjs_html: v.gjs_html,
-            gjs_css: v.gjs_css,
-            gjs_json: v.gjs_json,
-            weight: parseInt(v.weight) || 50
-          }))
-        } : undefined
+        variants: variants
+          ? {
+              create: (typeof variants === 'string' ? JSON.parse(variants) : variants).map((v) => ({
+                name: v.name,
+                gjs_html: v.gjs_html,
+                gjs_css: v.gjs_css,
+                gjs_json: v.gjs_json,
+                weight: parseInt(v.weight) || 50,
+              })),
+            }
+          : undefined,
       },
-      include: { variants: true }
+      include: { variants: true },
     });
 
     res.status(201).json({ success: true, data: page });
@@ -86,11 +87,11 @@ exports.createLandingPage = async (req, res, next) => {
 exports.getAllLandingPages = async (req, res, next) => {
   try {
     const pages = await prisma.landingPage.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
       include: {
         _count: { select: { variants: true } },
-        product: { select: { name: true, images: true } }
-      }
+        product: { select: { name: true, images: true } },
+      },
     });
     res.status(200).json({ success: true, data: pages });
   } catch (error) {
@@ -113,15 +114,15 @@ exports.getLandingPageBySlug = async (req, res, next) => {
             basePrice: true,
             sellingPrice: true,
             description: true,
-            variants: true
-          }
+            variants: true,
+          },
         },
-        variants: { where: { isActive: true } }
-      }
+        variants: { where: { isActive: true } },
+      },
     });
 
-    if (!page) throw createError(404, "Landing Page not found");
-    if (!page.isActive) throw createError(403, "This page is currently inactive");
+    if (!page) throw createError(404, 'Landing Page not found');
+    if (!page.isActive) throw createError(403, 'This page is currently inactive');
 
     let selectedVariant = null;
     if (page.isAbTestActive && page.variants.length > 0) {
@@ -129,25 +130,29 @@ exports.getLandingPageBySlug = async (req, res, next) => {
 
       // Increment variant views
       if (selectedVariant) {
-        prisma.landingPageVariant.update({
-          where: { id: selectedVariant.id },
-          data: { viewCount: { increment: 1 } }
-        }).catch(console.error);
+        prisma.landingPageVariant
+          .update({
+            where: { id: selectedVariant.id },
+            data: { viewCount: { increment: 1 } },
+          })
+          .catch(console.error);
       }
     }
 
     // Increment page views
-    prisma.landingPage.update({
-      where: { id: page.id },
-      data: { viewCount: { increment: 1 } }
-    }).catch(console.error);
+    prisma.landingPage
+      .update({
+        where: { id: page.id },
+        data: { viewCount: { increment: 1 } },
+      })
+      .catch(console.error);
 
     res.status(200).json({
       success: true,
       data: {
         ...page,
-        selectedVariant // Client will render this if provided
-      }
+        selectedVariant, // Client will render this if provided
+      },
     });
   } catch (error) {
     next(error);
@@ -160,9 +165,9 @@ exports.getLandingPageById = async (req, res, next) => {
     const { id } = req.params;
     const page = await prisma.landingPage.findUnique({
       where: { id },
-      include: { variants: true }
+      include: { variants: true },
     });
-    if (!page) throw createError(404, "Landing Page not found");
+    if (!page) throw createError(404, 'Landing Page not found');
     res.status(200).json({ success: true, data: page });
   } catch (error) {
     next(error);
@@ -190,15 +195,19 @@ exports.updateLandingPage = async (req, res, next) => {
       gjs_html,
       gjs_css,
       gjs_json,
-      variants // Array of { id, name, gjs_html, gjs_css, gjs_json, weight, isActive, shouldDelete }
+      variants, // Array of { id, name, gjs_html, gjs_css, gjs_json, weight, isActive, shouldDelete }
     } = req.body;
 
-    const parsedVariants = variants ? (typeof variants === 'string' ? JSON.parse(variants) : variants) : [];
+    const parsedVariants = variants
+      ? typeof variants === 'string'
+        ? JSON.parse(variants)
+        : variants
+      : [];
 
     // Separate variants by action
-    const variantsToUpdate = parsedVariants.filter(v => v.id && !v.shouldDelete);
-    const variantsToCreate = parsedVariants.filter(v => !v.id);
-    const variantsToDelete = parsedVariants.filter(v => v.id && v.shouldDelete);
+    const variantsToUpdate = parsedVariants.filter((v) => v.id && !v.shouldDelete);
+    const variantsToCreate = parsedVariants.filter((v) => !v.id);
+    const variantsToDelete = parsedVariants.filter((v) => v.id && v.shouldDelete);
 
     const updateData = {
       title,
@@ -225,7 +234,7 @@ exports.updateLandingPage = async (req, res, next) => {
       // 1. Delete variants
       if (variantsToDelete.length > 0) {
         await tx.landingPageVariant.deleteMany({
-          where: { id: { in: variantsToDelete.map(v => v.id) } }
+          where: { id: { in: variantsToDelete.map((v) => v.id) } },
         });
       }
 
@@ -239,23 +248,23 @@ exports.updateLandingPage = async (req, res, next) => {
             gjs_css: v.gjs_css,
             gjs_json: v.gjs_json,
             weight: parseInt(v.weight) || 50,
-            isActive: v.isActive !== false
-          }
+            isActive: v.isActive !== false,
+          },
         });
       }
 
       // 3. Create new variants
       if (variantsToCreate.length > 0) {
         await tx.landingPageVariant.createMany({
-          data: variantsToCreate.map(v => ({
+          data: variantsToCreate.map((v) => ({
             landingPageId: id,
             name: v.name,
             gjs_html: v.gjs_html,
             gjs_css: v.gjs_css,
             gjs_json: v.gjs_json,
             weight: parseInt(v.weight) || 50,
-            isActive: v.isActive !== false
-          }))
+            isActive: v.isActive !== false,
+          })),
         });
       }
 
@@ -263,7 +272,7 @@ exports.updateLandingPage = async (req, res, next) => {
       return tx.landingPage.update({
         where: { id },
         data: updateData,
-        include: { variants: true }
+        include: { variants: true },
       });
     });
 
@@ -279,10 +288,10 @@ exports.duplicateLandingPage = async (req, res, next) => {
     const { id } = req.params;
     const original = await prisma.landingPage.findUnique({
       where: { id },
-      include: { variants: true }
+      include: { variants: true },
     });
 
-    if (!original) throw createError(404, "Original landing page not found");
+    if (!original) throw createError(404, 'Original landing page not found');
 
     const newSlug = `${original.slug}-copy-${Date.now()}`;
     const duplicate = await prisma.landingPage.create({
@@ -301,18 +310,21 @@ exports.duplicateLandingPage = async (req, res, next) => {
         metaKeywords: original.metaKeywords,
         ogImage: original.ogImage,
         isActive: false, // Start as draft
-        variants: original.variants.length > 0 ? {
-          create: original.variants.map(v => ({
-            name: v.name,
-            gjs_html: v.gjs_html,
-            gjs_css: v.gjs_css,
-            gjs_json: v.gjs_json,
-            weight: v.weight,
-            isActive: v.isActive
-          }))
-        } : undefined
+        variants:
+          original.variants.length > 0
+            ? {
+                create: original.variants.map((v) => ({
+                  name: v.name,
+                  gjs_html: v.gjs_html,
+                  gjs_css: v.gjs_css,
+                  gjs_json: v.gjs_json,
+                  weight: v.weight,
+                  isActive: v.isActive,
+                })),
+              }
+            : undefined,
       },
-      include: { variants: true }
+      include: { variants: true },
     });
 
     res.status(201).json({ success: true, data: duplicate });
@@ -330,40 +342,40 @@ exports.trackConversion = async (req, res, next) => {
     await prisma.pageAnalytics.create({
       data: {
         pageId: id,
-        sessionId: sessionId || "anonymous",
-        event: event || "CONVERSION",
+        sessionId: sessionId || 'anonymous',
+        event: event || 'CONVERSION',
         elementId: elementId,
         ipAddress: req.ip,
-        userAgent: req.headers["user-agent"]
-      }
+        userAgent: req.headers['user-agent'],
+      },
     });
 
     // 2. Increment aggregated counts
-    if (event === "VIEW") {
+    if (event === 'VIEW') {
       await prisma.landingPage.update({
         where: { id },
-        data: { viewCount: { increment: 1 } }
+        data: { viewCount: { increment: 1 } },
       });
       if (variantId) {
         await prisma.landingPageVariant.update({
           where: { id: variantId },
-          data: { viewCount: { increment: 1 } }
+          data: { viewCount: { increment: 1 } },
         });
       }
-    } else if (event === "CONVERSION" || event === "SUBMIT") {
+    } else if (event === 'CONVERSION' || event === 'SUBMIT') {
       await prisma.landingPage.update({
         where: { id },
-        data: { orderCount: { increment: 1 } }
+        data: { orderCount: { increment: 1 } },
       });
       if (variantId) {
         await prisma.landingPageVariant.update({
           where: { id: variantId },
-          data: { orderCount: { increment: 1 } }
+          data: { orderCount: { increment: 1 } },
         });
       }
     }
 
-    res.status(200).json({ success: true, message: "Event tracked" });
+    res.status(200).json({ success: true, message: 'Event tracked' });
   } catch (error) {
     next(error);
   }
@@ -376,10 +388,10 @@ exports.getLandingPageAnalytics = async (req, res, next) => {
 
     const page = await prisma.landingPage.findUnique({
       where: { id },
-      include: { variants: true }
+      include: { variants: true },
     });
 
-    if (!page) throw createError(404, "Landing Page not found");
+    if (!page) throw createError(404, 'Landing Page not found');
 
     const totalEvents = await prisma.pageAnalytics.count({ where: { pageId: id } });
 
@@ -387,7 +399,7 @@ exports.getLandingPageAnalytics = async (req, res, next) => {
     const eventCounts = await prisma.pageAnalytics.groupBy({
       by: ['event'],
       where: { pageId: id },
-      _count: true
+      _count: true,
     });
 
     const conversionRate = page.viewCount > 0 ? (page.orderCount / page.viewCount) * 100 : 0;
@@ -398,8 +410,8 @@ exports.getLandingPageAnalytics = async (req, res, next) => {
         page,
         totalEvents,
         eventCounts,
-        conversionRate
-      }
+        conversionRate,
+      },
     });
   } catch (error) {
     next(error);
@@ -411,7 +423,7 @@ exports.deleteLandingPage = async (req, res, next) => {
   try {
     const { id } = req.params;
     await prisma.landingPage.delete({ where: { id } });
-    res.status(200).json({ success: true, message: "Deleted successfully" });
+    res.status(200).json({ success: true, message: 'Deleted successfully' });
   } catch (error) {
     next(error);
   }

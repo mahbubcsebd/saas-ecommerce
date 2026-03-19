@@ -17,11 +17,11 @@ const logFormat = winston.format.combine(
 );
 
 const consoleFormat = winston.format.combine(
-    winston.format.colorize(),
-    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    winston.format.printf(({ timestamp, level, message, stack }) => {
-        return `[${timestamp}] ${level}: ${message} ${stack ? `\n${stack}` : ''}`;
-    })
+  winston.format.colorize(),
+  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+  winston.format.printf(({ timestamp, level, message, stack }) => {
+    return `[${timestamp}] ${level}: ${message} ${stack ? `\n${stack}` : ''}`;
+  })
 );
 
 // Create the logger instance
@@ -32,25 +32,27 @@ const logger = winston.createLogger({
   transports: [
     // Write all errors to `error.log`
     new winston.transports.File({
-        filename: path.join(logDir, 'error.log'),
-        level: 'error',
-        maxsize: 5242880, // 5MB
-        maxFiles: 5,
+      filename: path.join(logDir, 'error.log'),
+      level: 'error',
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
     }),
     // Write all logs to `combined.log`
     new winston.transports.File({
-        filename: path.join(logDir, 'combined.log'),
-        maxsize: 5242880, // 5MB
-        maxFiles: 5,
+      filename: path.join(logDir, 'combined.log'),
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
     }),
   ],
 });
 
 // If we're not in production, also log to the console with colorized output
 if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: consoleFormat,
-  }));
+  logger.add(
+    new winston.transports.Console({
+      format: consoleFormat,
+    })
+  );
 }
 
 module.exports = logger;

@@ -2,12 +2,9 @@
 
 import dynamic from 'next/dynamic';
 
-const AnalyticsScripts = dynamic(
-  () => import('@/components/analytics/AnalyticsScripts'),
-  {
-    ssr: false,
-  },
-);
+const AnalyticsScripts = dynamic(() => import('@/components/analytics/AnalyticsScripts'), {
+  ssr: false,
+});
 
 const ChatWidget = dynamic(() => import('@/components/chat/ChatWidget'), {
   ssr: false,

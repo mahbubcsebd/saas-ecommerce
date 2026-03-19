@@ -1,4 +1,3 @@
-
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
@@ -8,8 +7,8 @@ async function updateSlides() {
       where: {},
       data: {
         isFeatured: true,
-        isActive: true
-      }
+        isActive: true,
+      },
     });
     console.log(`Updated ${result.count} slides to be Featured and Active.`);
   } catch (e) {

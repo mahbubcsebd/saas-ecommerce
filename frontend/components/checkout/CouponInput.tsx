@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useTranslations } from "@/context/TranslationContext";
-import { useCurrency } from "@/hooks/useCurrency";
+import { useTranslations } from '@/context/TranslationContext';
+import { useCurrency } from '@/hooks/useCurrency';
 import { api } from '@/lib/api-client';
 import { Loader2, Tag, X } from 'lucide-react';
 import { useState } from 'react';
@@ -15,13 +15,7 @@ interface CouponInputProps {
   appliedCoupon?: string;
 }
 
-export function CouponInput({
-  onApply,
-  onRemove,
-  cart,
-  country,
-  appliedCoupon
-}: CouponInputProps) {
+export function CouponInput({ onApply, onRemove, cart, country, appliedCoupon }: CouponInputProps) {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -38,7 +32,7 @@ export function CouponInput({
       const response = await api.post<any>('/coupons/validate', {
         code,
         cart,
-        country
+        country,
       });
 
       if (!response) {
@@ -49,11 +43,17 @@ export function CouponInput({
 
       onApply(response.discount, code.toUpperCase());
       setCode('');
-      toast.success(`${t('common', 'youSaved', { defaultValue: 'You saved' })} ${formatPrice(response.discount)}!`);
-
+      toast.success(
+        `${t('common', 'youSaved', { defaultValue: 'You saved' })} ${formatPrice(response.discount)}!`
+      );
     } catch (err: any) {
-      setError(err.message || t('common', 'couponApplyError', { defaultValue: 'Failed to apply coupon' }));
-      toast.error(err.message || t('common', 'somethingWrong', { defaultValue: 'Something went wrong. Please try again.' }));
+      setError(
+        err.message || t('common', 'couponApplyError', { defaultValue: 'Failed to apply coupon' })
+      );
+      toast.error(
+        err.message ||
+          t('common', 'somethingWrong', { defaultValue: 'Something went wrong. Please try again.' })
+      );
     } finally {
       setLoading(false);
     }
@@ -64,12 +64,11 @@ export function CouponInput({
       <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg p-3 mt-4">
         <div className="flex items-center gap-2 text-green-700">
           <Tag size={18} />
-          <span className="font-medium uppercase">{appliedCoupon} {t('common', 'applied', { defaultValue: 'applied' })}</span>
+          <span className="font-medium uppercase">
+            {appliedCoupon} {t('common', 'applied', { defaultValue: 'applied' })}
+          </span>
         </div>
-        <button
-          onClick={onRemove}
-          className="text-green-700 hover:text-green-900"
-        >
+        <button onClick={onRemove} className="text-green-700 hover:text-green-900">
           <X size={18} />
         </button>
       </div>
@@ -78,7 +77,9 @@ export function CouponInput({
 
   return (
     <div className="space-y-2 mt-4">
-      <label className="text-sm font-medium">{t('common', 'couponCode', { defaultValue: 'Coupon Code' })}</label>
+      <label className="text-sm font-medium">
+        {t('common', 'couponCode', { defaultValue: 'Coupon Code' })}
+      </label>
       <div className="flex gap-2">
         <input
           type="text"
@@ -97,9 +98,7 @@ export function CouponInput({
           {t('common', 'apply', { defaultValue: 'Apply' })}
         </button>
       </div>
-      {error && (
-        <p className="text-sm text-red-600">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-600">{error}</p>}
     </div>
   );
 }

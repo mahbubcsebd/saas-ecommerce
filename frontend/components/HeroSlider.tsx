@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
+import Image from 'next/image';
+import Link from 'next/link';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 // Interface for HeroSlide
 interface HeroSlide {
@@ -21,7 +21,7 @@ interface HeroSlide {
 }
 
 interface HeroSliderProps {
-    slides: HeroSlide[];
+  slides: HeroSlide[];
 }
 
 export default function HeroSlider({ slides }: HeroSliderProps) {
@@ -39,7 +39,7 @@ export default function HeroSlider({ slides }: HeroSliderProps) {
           disableOnInteraction: false,
         }}
         pagination={{
-            clickable: true,
+          clickable: true,
         }}
         navigation={true}
         modules={[Autoplay, Pagination, Navigation]}
@@ -51,7 +51,7 @@ export default function HeroSlider({ slides }: HeroSliderProps) {
               {/* Image */}
               <Image
                 src={slide.image}
-                alt={slide.title || "Hero Image"}
+                alt={slide.title || 'Hero Image'}
                 fill
                 className="object-cover"
                 priority={index === 0}
@@ -61,22 +61,20 @@ export default function HeroSlider({ slides }: HeroSliderProps) {
               {/* Overlay Content */}
               <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-center text-white p-4">
                 {slide.title && (
-                    <h2 className="text-3xl md:text-5xl font-bold mb-2 drop-shadow-lg">
-                        {slide.title}
-                    </h2>
+                  <h2 className="text-3xl md:text-5xl font-bold mb-2 drop-shadow-lg">
+                    {slide.title}
+                  </h2>
                 )}
                 {slide.subtitle && (
-                    <p className="text-lg md:text-2xl mb-6 drop-shadow-md">
-                        {slide.subtitle}
-                    </p>
+                  <p className="text-lg md:text-2xl mb-6 drop-shadow-md">{slide.subtitle}</p>
                 )}
                 {slide.link && (
-                    <Link
-                        href={slide.link}
-                        className="px-6 py-3 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold rounded-md transition-all shadow-lg"
-                    >
-                        Shop Now
-                    </Link>
+                  <Link
+                    href={slide.link}
+                    className="px-6 py-3 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold rounded-md transition-all shadow-lg"
+                  >
+                    Shop Now
+                  </Link>
                 )}
               </div>
             </div>

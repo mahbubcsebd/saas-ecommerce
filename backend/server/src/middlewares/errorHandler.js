@@ -8,83 +8,83 @@ const logger = require('../utils/logger');
  * Handles common Prisma errors and converts them to ApiError
  */
 const handlePrismaError = (error) => {
-    // P2002: Unique constraint violation
-    if (error.code === 'P2002') {
-        const field = error.meta?.target?.[0] || 'field';
-        return ApiError.conflict(`${field} already exists`);
-    }
+  // P2002: Unique constraint violation
+  if (error.code === 'P2002') {
+    const field = error.meta?.target?.[0] || 'field';
+    return ApiError.conflict(`${field} already exists`);
+  }
 
-    // P2025: Record not found
-    if (error.code === 'P2025') {
-        return ApiError.notFound('Record not found');
-    }
+  // P2025: Record not found
+  if (error.code === 'P2025') {
+    return ApiError.notFound('Record not found');
+  }
 
-    // P2003: Foreign key constraint violation
-    if (error.code === 'P2003') {
-        return ApiError.badRequest('Foreign key constraint failed');
-    }
+  // P2003: Foreign key constraint violation
+  if (error.code === 'P2003') {
+    return ApiError.badRequest('Foreign key constraint failed');
+  }
 
-    // P2014: Relation violation
-    if (error.code === 'P2014') {
-        return ApiError.badRequest('Required relation is missing');
-    }
+  // P2014: Relation violation
+  if (error.code === 'P2014') {
+    return ApiError.badRequest('Required relation is missing');
+  }
 
-    return ApiError.internal('Database error occurred');
+  return ApiError.internal('Database error occurred');
 };
 
 /**
  * JWT Error Handler
  */
 const handleJWTError = (error) => {
-    if (error.name === 'JsonWebTokenError') {
-        return ApiError.unauthorized('Invalid token');
-    }
-    if (error.name === 'TokenExpiredError') {
-        return ApiError.unauthorized('Token expired');
-    }
-    return error;
+  if (error.name === 'JsonWebTokenError') {
+    return ApiError.unauthorized('Invalid token');
+  }
+  if (error.name === 'TokenExpiredError') {
+    return ApiError.unauthorized('Token expired');
+  }
+  return error;
 };
 
 /**
  * Validation Error Handler (for express-validator)
  */
 const handleValidationError = (error) => {
-    if (error.array && typeof error.array === 'function') {
-        const errors = error.array().map(err => ({
-            field: err.path || err.param,
-            message: err.msg,
-            value: err.value,
-        }));
-        return ApiError.validationError('Validation failed', errors);
-    }
-    return error;
+  if (error.array && typeof error.array === 'function') {
+    const errors = error.array().map((err) => ({
+      field: err.path || err.param,
+      message: err.msg,
+      value: err.value,
+    }));
+    return ApiError.validationError('Validation failed', errors);
+  }
+  return error;
 };
 
 /**
  * Mongoose Error Handler (if using Mongoose)
  */
 const handleMongooseError = (error) => {
-    // Validation Error
-    if (error.name === 'ValidationError') {
-        const errors = Object.values(error.errors).map(err => ({
-            field: err.path,
-            message: err.message,
-        }));
-        return ApiError.validationError('Validation failed', errors);
-    }
+  // Validation Error
+  if (error.name === 'ValidationError') {
+    const errors = Object.values(error.errors).map((err) => ({
+      field: err.path,
+      message: err.message,
+    }));
+    return ApiError.validationError('Validation failed', errors);
+  }
 
-    // Duplicate Key Error
-    if (error.code === 11000) {
-        const field = Object.keys(error.keyPattern)[0];
-        return ApiError.conflict(`${field} already exists`);
-    }
+  // Duplicate Key Error
+  if (error.code === 11000) {
+    const field = Object.keys(error.keyPattern)[0];
+    return ApiError.conflict(`${field} already exists`);
+  }
 
-    // Cast Error
-    if (error.name === 'CastError') {
-        return ApiError.badRequest(`Invalid ${error.path}: ${error.value}`);
-    }
+  // Cast Error
+  if (error.name === 'CastError') {
+    return ApiError.badRequest(`Invalid ${error.path}: ${error.value}`);
+  }
 
-    return error;
+  return error;
 };
 
 /**
@@ -92,13 +92,13 @@ const handleMongooseError = (error) => {
  * Shows full error details including stack trace
  */
 const sendErrorDev = (err, res) => {
-    return errorResponse(res, {
-        statusCode: err.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR,
-        message: err.message,
-        errors: err.errors,
-        stack: err.stack,
-        error: err,
-    });
+  return errorResponse(res, {
+    statusCode: err.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR,
+    message: err.message,
+    errors: err.errors,
+    stack: err.stack,
+    error: err,
+  });
 };
 
 /**
@@ -106,22 +106,22 @@ const sendErrorDev = (err, res) => {
  * Only shows necessary error information
  */
 const sendErrorProd = (err, res) => {
-    // Operational errors (known/trusted errors)
-    if (err.isOperational) {
-        return errorResponse(res, {
-            statusCode: err.statusCode,
-            message: err.message,
-            errors: err.errors,
-        });
-    }
-
-    // Programming or unknown errors
-    logger.error(`💥 ERROR: ${err.message}\n${err.stack || JSON.stringify(err)}`);
-
+  // Operational errors (known/trusted errors)
+  if (err.isOperational) {
     return errorResponse(res, {
-        statusCode: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-        message: 'Something went wrong',
+      statusCode: err.statusCode,
+      message: err.message,
+      errors: err.errors,
     });
+  }
+
+  // Programming or unknown errors
+  logger.error(`💥 ERROR: ${err.message}\n${err.stack || JSON.stringify(err)}`);
+
+  return errorResponse(res, {
+    statusCode: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+    message: 'Something went wrong',
+  });
 };
 
 /**
@@ -132,33 +132,33 @@ const sendErrorProd = (err, res) => {
  * app.use(globalErrorHandler);
  */
 const globalErrorHandler = (err, req, res, next) => {
-    let error = { ...err };
-    error.message = err.message;
-    error.stack = err.stack;
+  let error = { ...err };
+  error.message = err.message;
+  error.stack = err.stack;
 
-    // Set default values
-    error.statusCode = error.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR;
-    error.isOperational = error.isOperational || false;
+  // Set default values
+  error.statusCode = error.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR;
+  error.isOperational = error.isOperational || false;
 
-    // Handle specific error types
-    if (err.name === 'PrismaClientKnownRequestError') {
-        error = handlePrismaError(err);
-    }
+  // Handle specific error types
+  if (err.name === 'PrismaClientKnownRequestError') {
+    error = handlePrismaError(err);
+  }
 
-    if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
-        error = handleJWTError(err);
-    }
+  if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
+    error = handleJWTError(err);
+  }
 
-    if (err.name === 'ValidationError' || err.name === 'CastError') {
-        error = handleMongooseError(err);
-    }
+  if (err.name === 'ValidationError' || err.name === 'CastError') {
+    error = handleMongooseError(err);
+  }
 
-    // Send error response
-    if (process.env.NODE_ENV === 'development') {
-        sendErrorDev(error, res);
-    } else {
-        sendErrorProd(error, res);
-    }
+  // Send error response
+  if (process.env.NODE_ENV === 'development') {
+    sendErrorDev(error, res);
+  } else {
+    sendErrorProd(error, res);
+  }
 };
 
 /**
@@ -166,26 +166,26 @@ const globalErrorHandler = (err, req, res, next) => {
  * Add this in your server.js/app.js
  */
 const unhandledRejectionHandler = () => {
-    process.on('unhandledRejection', (reason, promise) => {
-        logger.error('💥 UNHANDLED REJECTION! Shutting down...');
-        logger.error(`Reason: ${reason}\nPromise: ${promise}`);
-        process.exit(1);
-    });
+  process.on('unhandledRejection', (reason, promise) => {
+    logger.error('💥 UNHANDLED REJECTION! Shutting down...');
+    logger.error(`Reason: ${reason}\nPromise: ${promise}`);
+    process.exit(1);
+  });
 };
 
 /**
  * Uncaught Exception Handler
  */
 const uncaughtExceptionHandler = () => {
-    process.on('uncaughtException', (error) => {
-        logger.error('💥 UNCAUGHT EXCEPTION! Shutting down...');
-        logger.error(`${error.name}: ${error.message}\n${error.stack}`);
-        process.exit(1);
-    });
+  process.on('uncaughtException', (error) => {
+    logger.error('💥 UNCAUGHT EXCEPTION! Shutting down...');
+    logger.error(`${error.name}: ${error.message}\n${error.stack}`);
+    process.exit(1);
+  });
 };
 
 module.exports = {
-    globalErrorHandler,
-    unhandledRejectionHandler,
-    uncaughtExceptionHandler,
+  globalErrorHandler,
+  unhandledRejectionHandler,
+  uncaughtExceptionHandler,
 };

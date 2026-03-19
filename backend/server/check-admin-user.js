@@ -6,10 +6,7 @@ async function checkUser() {
   try {
     const user = await prisma.user.findFirst({
       where: {
-        OR: [
-            { email: email },
-            { username: email }
-        ]
+        OR: [{ email: email }, { username: email }],
       },
       select: {
         id: true,
@@ -17,8 +14,8 @@ async function checkUser() {
         role: true,
         status: true,
         isEmailVerified: true,
-        password: true
-      }
+        password: true,
+      },
     });
 
     if (user) {

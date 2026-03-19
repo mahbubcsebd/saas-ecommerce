@@ -2,17 +2,19 @@ const http = require('http');
 
 function fetch(url) {
   return new Promise((resolve, reject) => {
-    http.get(url, (res) => {
-      let data = '';
-      res.on('data', (chunk) => data += chunk);
-      res.on('end', () => {
-        try {
-          resolve({ status: res.statusCode, body: JSON.parse(data) });
-        } catch (e) {
-          resolve({ status: res.statusCode, body: data });
-        }
-      });
-    }).on('error', reject);
+    http
+      .get(url, (res) => {
+        let data = '';
+        res.on('data', (chunk) => (data += chunk));
+        res.on('end', () => {
+          try {
+            resolve({ status: res.statusCode, body: JSON.parse(data) });
+          } catch (e) {
+            resolve({ status: res.statusCode, body: data });
+          }
+        });
+      })
+      .on('error', reject);
   });
 }
 
@@ -28,7 +30,10 @@ async function checkSlug() {
       console.log('✅ Product Found:', res.body.data.name);
       console.log('📊 Stock:', res.body.data.stock);
       if (res.body.data.variants && res.body.data.variants.length > 0) {
-          console.log('🎨 Variants Stock:', res.body.data.variants.map(v => `${v.name}: ${v.stock}`).join(', '));
+        console.log(
+          '🎨 Variants Stock:',
+          res.body.data.variants.map((v) => `${v.name}: ${v.stock}`).join(', ')
+        );
       }
     } else {
       console.log('❌ Error:', res.body.message || res.body);

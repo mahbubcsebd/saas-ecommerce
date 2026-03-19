@@ -1,14 +1,21 @@
-"use client";
+'use client';
 
-import { deleteAddressAction } from "@/actions/address";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useConfirm } from "@/hooks/use-confirm";
-import { MapPin, Plus } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-import AddressCard from "./AddressCard";
-import AddressForm from "./AddressForm";
+import { deleteAddressAction } from '@/actions/address';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { useTranslations } from '@/context/TranslationContext';
+import { useConfirm } from '@/hooks/use-confirm';
+import { MapPin, Plus } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import AddressCard from './AddressCard';
+import AddressForm from './AddressForm';
 
 interface Address {
   id: string;
@@ -27,6 +34,7 @@ interface AddressListProps {
 }
 
 export default function AddressList({ initialAddresses }: AddressListProps) {
+  const { t } = useTranslations();
   const { confirm } = useConfirm();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
@@ -37,11 +45,16 @@ export default function AddressList({ initialAddresses }: AddressListProps) {
   };
 
   const handleDelete = async (id: string) => {
-    if (!await confirm({
-      title: "Delete Address",
-      message: "Are you sure you want to delete this address?",
-      type: "danger"
-    })) return;
+    if (
+      !(await confirm({
+        title: t('profile', 'deleteAddress', { defaultValue: 'Delete Address' }),
+        message: t('profile', 'deleteAddressConfirm', {
+          defaultValue: 'Are you sure you want to delete this address?',
+        }),
+        type: 'danger',
+      }))
+    )
+      return;
 
     const result = await deleteAddressAction(id);
     if (result.success) {
@@ -55,23 +68,36 @@ export default function AddressList({ initialAddresses }: AddressListProps) {
     <>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Address Book</h1>
-          <p className="text-muted-foreground mt-1">Manage your shipping addresses for faster checkout.</p>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {t('profile', 'addressBook', { defaultValue: 'Address Book' })}
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            {t('profile', 'addressSubtitle', {
+              defaultValue: 'Manage your shipping addresses for faster checkout.',
+            })}
+          </p>
         </div>
 
-        <Dialog open={isDialogOpen} onOpenChange={(open) => {
-          setIsDialogOpen(open);
-          if (!open) setEditingAddress(null);
-        }}>
+        <Dialog
+          open={isDialogOpen}
+          onOpenChange={(open) => {
+            setIsDialogOpen(open);
+            if (!open) setEditingAddress(null);
+          }}
+        >
           <DialogTrigger asChild>
             <Button className="shadow-sm">
               <Plus className="mr-2 h-4 w-4" />
-              Add New Address
+              {t('profile', 'addNewAddress', { defaultValue: 'Add New Address' })}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
-              <DialogTitle className="text-xl">{editingAddress ? "Edit Address" : "Add New Address"}</DialogTitle>
+              <DialogTitle className="text-xl">
+                {editingAddress
+                  ? t('profile', 'editAddress', { defaultValue: 'Edit Address' })
+                  : t('profile', 'addNewAddress', { defaultValue: 'Add New Address' })}
+              </DialogTitle>
             </DialogHeader>
             <AddressForm
               address={editingAddress}
@@ -86,20 +112,21 @@ export default function AddressList({ initialAddresses }: AddressListProps) {
         {initialAddresses.length === 0 ? (
           <div className="col-span-full flex flex-col items-center justify-center py-16 text-center border-2 border-dashed rounded-xl bg-muted/10">
             <MapPin className="h-10 w-10 text-muted-foreground mb-4 opacity-50" />
-            <h3 className="text-lg font-medium">No addresses yet</h3>
+            <h3 className="text-lg font-medium">
+              {t('profile', 'noAddresses', { defaultValue: 'No addresses yet' })}
+            </h3>
             <p className="text-muted-foreground mb-4 max-w-sm">
-              Add your shipping details to speed up checkout.
+              {t('profile', 'addFirstAddressDesc', {
+                defaultValue: 'Add your shipping details to speed up checkout.',
+              })}
             </p>
-            <Button onClick={() => setIsDialogOpen(true)}>Add Your First Address</Button>
+            <Button onClick={() => setIsDialogOpen(true)}>
+              {t('profile', 'addFirstAddressButton', { defaultValue: 'Add Your First Address' })}
+            </Button>
           </div>
         ) : (
           initialAddresses.map((addr) => (
-            <AddressCard
-                key={addr.id}
-                address={addr}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-            />
+            <AddressCard key={addr.id} address={addr} onEdit={handleEdit} onDelete={handleDelete} />
           ))
         )}
       </div>

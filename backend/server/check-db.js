@@ -17,12 +17,12 @@ async function main() {
     orders,
     reviews,
     shippingZones,
-    suppliers
+    suppliers,
   });
 }
 
 main()
-  .catch(e => console.error(e))
+  .catch((e) => console.error(e))
   .finally(async () => {
     await prisma.$disconnect();
   });

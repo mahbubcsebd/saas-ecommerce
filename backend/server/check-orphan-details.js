@@ -7,19 +7,19 @@ async function main() {
       userId: null,
     },
     select: {
-        id: true,
-        orderNumber: true,
-        guestInfo: true,
-        walkInName: true,
-        walkInPhone: true
-    }
+      id: true,
+      orderNumber: true,
+      guestInfo: true,
+      walkInName: true,
+      walkInPhone: true,
+    },
   });
 
   console.log(JSON.stringify(orphanOrders, null, 2));
 }
 
 main()
-  .catch(e => console.error(e))
+  .catch((e) => console.error(e))
   .finally(async () => {
     await prisma.$disconnect();
   });

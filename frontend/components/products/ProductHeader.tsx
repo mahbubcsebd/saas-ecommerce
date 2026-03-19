@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { useTranslations } from "@/context/TranslationContext";
-import { cn } from "@/lib/utils";
-import { LayoutGrid, List } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useTranslations } from '@/context/TranslationContext';
+import { cn } from '@/lib/utils';
+import { LayoutGrid, List } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface ProductHeaderProps {
   total: number;
-  view: "grid" | "list";
-  onViewChange: (view: "grid" | "list") => void;
+  view: 'grid' | 'list';
+  onViewChange: (view: 'grid' | 'list') => void;
 }
 
 export default function ProductHeader({ total, view, onViewChange }: ProductHeaderProps) {
@@ -24,21 +24,21 @@ export default function ProductHeader({ total, view, onViewChange }: ProductHead
   const searchParams = useSearchParams();
   const { t } = useTranslations();
 
-  const currentSort = searchParams.get("sort") || "newest";
+  const currentSort = searchParams.get('sort') || 'newest';
 
   const handleSortChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set("sort", value);
+    params.set('sort', value);
     router.push(`/products?${params.toString()}`);
   };
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
       <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-bold">{t('all_products', 'All Products')}</h1>
-          <p className="text-sm text-muted-foreground">
-            {t('common', 'showing_results', { count: total.toString() })}
-          </p>
+        <h1 className="text-3xl font-bold">{t('all_products', 'All Products')}</h1>
+        <p className="text-sm text-muted-foreground">
+          {t('common', 'showing_results', { count: total.toString() })}
+        </p>
       </div>
 
       <div className="flex items-center gap-4 w-full sm:w-auto">
@@ -58,7 +58,7 @@ export default function ProductHeader({ total, view, onViewChange }: ProductHead
           <Button
             variant="ghost"
             size="icon"
-            className={cn("rounded-none rounded-l-md px-2", view === 'grid' && "bg-secondary")}
+            className={cn('rounded-none rounded-l-md px-2', view === 'grid' && 'bg-secondary')}
             onClick={() => onViewChange('grid')}
           >
             <LayoutGrid className="h-4 w-4" />
@@ -67,7 +67,7 @@ export default function ProductHeader({ total, view, onViewChange }: ProductHead
           <Button
             variant="ghost"
             size="icon"
-            className={cn("rounded-none rounded-r-md px-2", view === 'list' && "bg-secondary")}
+            className={cn('rounded-none rounded-r-md px-2', view === 'list' && 'bg-secondary')}
             onClick={() => onViewChange('list')}
           >
             <List className="h-4 w-4" />

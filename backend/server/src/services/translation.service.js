@@ -1,26 +1,27 @@
 const prisma = require('../config/prisma');
+const cache = require('../utils/cache');
 
 class TranslationService {
-    constructor() {
-        this.apiKey = process.env.GROQ_API_KEY;
-        this.apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
-        this.model = 'llama-3.3-70b-versatile'; // Fast and capable enough for translation
-    }
+  constructor() {
+    this.apiKey = process.env.GROQ_API_KEY;
+    this.apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
+    this.model = 'llama-3.3-70b-versatile'; // Fast and capable enough for translation
+  }
 
-    /**
-     * Translate text to multiple languages
-     * @param {string} text - The text to translate
-     * @param {string[]} targetLangs - Array of language codes (e.g., ['bn', 'es'])
-     * @param {string} context - Optional context (e.g., "Product Name", "Product Description")
-     * @returns {Promise<Object>} - Object with language codes as keys and translated text as values
-     */
-    async translate(text, targetLangs, context = '') {
-        try {
-            if (!text || !targetLangs || targetLangs.length === 0) {
-                return {};
-            }
+  /**
+   * Translate text to multiple languages
+   * @param {string} text - The text to translate
+   * @param {string[]} targetLangs - Array of language codes (e.g., ['bn', 'es'])
+   * @param {string} context - Optional context (e.g., "Product Name", "Product Description")
+   * @returns {Promise<Object>} - Object with language codes as keys and translated text as values
+   */
+  async translate(text, targetLangs, context = '') {
+    try {
+      if (!text || !targetLangs || targetLangs.length === 0) {
+        return {};
+      }
 
-            const prompt = `You are a professional software localization expert specialized in premium e-commerce (like Apple, Shopify, or Farfetch).
+      const prompt = `You are a professional software localization expert specialized in premium e-commerce (like Apple, Shopify, or Farfetch).
 Translate the following "${context || 'UI text'}" into these languages: ${targetLangs.join(', ')}.
 
 Input Text: "${text}"
@@ -39,367 +40,430 @@ RULES:
 Return ONLY a valid JSON object. No explanations.
 Example: { "bn": "...", "es": "..." }`;
 
-            const response = await fetch(this.apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.apiKey}`,
-                },
-                body: JSON.stringify({
-                    model: this.model,
-                    messages: [
-                        { role: 'system', content: 'You are a helpful JSON translator.' },
-                        { role: 'user', content: prompt }
-                    ],
-                    temperature: 0.3, // Lower temperature for more deterministic output
-                    response_format: { type: "json_object" } // Force JSON mode
-                }),
-            });
+      const response = await fetch(this.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.apiKey}`,
+        },
+        body: JSON.stringify({
+          model: this.model,
+          messages: [
+            { role: 'system', content: 'You are a helpful JSON translator.' },
+            { role: 'user', content: prompt },
+          ],
+          temperature: 0.3, // Lower temperature for more deterministic output
+          response_format: { type: 'json_object' }, // Force JSON mode
+        }),
+      });
 
-            const data = await response.json();
+      const data = await response.json();
 
-            if (!response.ok) {
-                console.error('Groq Translation Error:', data);
-                throw new Error(data.error?.message || 'Translation failed');
-            }
+      if (!response.ok) {
+        console.error('Groq Translation Error:', data);
+        throw new Error(data.error?.message || 'Translation failed');
+      }
 
-            const content = data.choices?.[0]?.message?.content;
+      const content = data.choices?.[0]?.message?.content;
 
-            try {
-                const parsed = JSON.parse(content);
-                // Harden: Ensure all values are strings, not objects (fixes [object Object])
-                const hardened = {};
-                for (const [lang, val] of Object.entries(parsed)) {
-                    if (typeof val === 'object' && val !== null) {
-                        // If AI nested it like { "bn": { "text": "..." } }, try to find a string property
-                        hardened[lang] = val.text || val.value || val.translation || Object.values(val).find(v => typeof v === 'string') || JSON.stringify(val);
-                    } else {
-                        hardened[lang] = String(val);
-                    }
-                }
-                return hardened;
-            } catch (parseError) {
-                console.error('Failed to parse translation JSON:', content);
-                const match = content.match(/\{[\s\S]*\}/);
-                if (match) return JSON.parse(match[0]);
-                throw new Error('Invalid translation response format');
-            }
-
-        } catch (error) {
-            console.error('Translation Service Error:', error);
-            throw error;
+      try {
+        const parsed = JSON.parse(content);
+        // Harden: Ensure all values are strings, not objects (fixes [object Object])
+        const hardened = {};
+        for (const [lang, val] of Object.entries(parsed)) {
+          if (typeof val === 'object' && val !== null) {
+            // If AI nested it like { "bn": { "text": "..." } }, try to find a string property
+            hardened[lang] =
+              val.text ||
+              val.value ||
+              val.translation ||
+              Object.values(val).find((v) => typeof v === 'string') ||
+              JSON.stringify(val);
+          } else {
+            hardened[lang] = String(val);
+          }
         }
+        return hardened;
+      } catch (parseError) {
+        console.error('Failed to parse translation JSON:', content);
+        const match = content.match(/\{[\s\S]*\}/);
+        if (match) return JSON.parse(match[0]);
+        throw new Error('Invalid translation response format');
+      }
+    } catch (error) {
+      console.error('Translation Service Error:', error);
+      throw error;
     }
+  }
 
-    /**
-     * Get translations for a language
-     * @param {string} langCode
-     * @returns {Promise<Object>}
-     */
-    async getTranslations(langCode) {
-        const translations = await prisma.uiTranslation.findMany({
-            where: { langCode }
-        });
+  /**
+   * Get translations for a language with English fallback
+   * @param {string} langCode
+   * @returns {Promise<Object>}
+   */
+  async getTranslations(langCode) {
+    const cacheKey = `translations:${langCode}`;
 
-        const result = {};
-        translations.forEach(t => {
-            if (!result[t.namespace]) result[t.namespace] = {};
-            result[t.namespace][t.key] = t.value;
-        });
+    // 1. Try cache first
+    const cached = await cache.get(cacheKey);
+    if (cached) return cached;
 
-        return result;
-    }
+    // 2. Fetch English translations as base
+    const enTranslations = await prisma.uiTranslation.findMany({
+      where: { langCode: 'en' },
+    });
 
-    /**
-     * Auto translate translations for a new language
-     * @param {string} targetLangCode
-     */
-    async autoTranslateLanguage(targetLangCode) {
-        // 1. Get base translations (en)
-        const baseTranslations = await prisma.uiTranslation.findMany({
-            where: { langCode: 'en' } // Assuming 'en' is base
-        });
+    // 3. Fetch requested language translations
+    const targetTranslations =
+      langCode !== 'en' ? await prisma.uiTranslation.findMany({ where: { langCode } }) : [];
 
-        if (baseTranslations.length === 0) return;
+    const result = {};
 
-        // 2. Group by namespace for context
-        const byNamespace = {};
-        baseTranslations.forEach(t => {
-            if (!byNamespace[t.namespace]) byNamespace[t.namespace] = {};
-            byNamespace[t.namespace][t.key] = t.value;
-        });
+    // 4. Apply English base
+    enTranslations.forEach((t) => {
+      if (!result[t.namespace]) result[t.namespace] = {};
+      result[t.namespace][t.key] = t.value;
+    });
 
-        // 3. Translate and save
-        for (const [namespace, texts] of Object.entries(byNamespace)) {
-             // Translate object values
-             const translatedMap = await this.translate(JSON.stringify(texts), [targetLangCode], `UI Strings for ${namespace}`);
-             const translatedTexts = translatedMap[targetLangCode] || {};
+    // 5. Override with target language
+    targetTranslations.forEach((t) => {
+      if (!result[t.namespace]) result[t.namespace] = {};
+      result[t.namespace][t.key] = t.value;
+    });
 
-             if (typeof translatedTexts === 'object') {
-                 for (const [key, value] of Object.entries(translatedTexts)) {
-                     // Save to DB
-                     await prisma.uiTranslation.upsert({
-                         where: {
-                             langCode_namespace_key: {
-                                 langCode: targetLangCode,
-                                 namespace,
-                                 key
-                             }
-                         },
-                         update: { value: String(value) },
-                         create: {
-                             langCode: targetLangCode,
-                             namespace,
-                             key,
-                             value: String(value),
-                             isReviewed: false
-                         }
-                     });
-                 }
-             }
-        }
-    }
+    // 6. Store in cache (1 hour)
+    await cache.set(cacheKey, result, 3600);
 
-    /**
-     * Add a key to all languages (with auto-translation)
-     * @param {string} namespace
-     * @param {string} key
-     * @param {string} value (English value)
-     */
-    async addKey(namespace, key, value) {
-        // 1. Save Base (EN)
-        await prisma.uiTranslation.upsert({
+    return result;
+  }
+
+  /**
+   * Auto translate translations for a new language
+   * @param {string} targetLangCode
+   */
+  async autoTranslateLanguage(targetLangCode) {
+    // 1. Get base translations (en)
+    const baseTranslations = await prisma.uiTranslation.findMany({
+      where: { langCode: 'en' }, // Assuming 'en' is base
+    });
+
+    if (baseTranslations.length === 0) return;
+
+    // 2. Group by namespace for context
+    const byNamespace = {};
+    baseTranslations.forEach((t) => {
+      if (!byNamespace[t.namespace]) byNamespace[t.namespace] = {};
+      byNamespace[t.namespace][t.key] = t.value;
+    });
+
+    // 3. Translate and save
+    for (const [namespace, texts] of Object.entries(byNamespace)) {
+      // Translate object values
+      const translatedMap = await this.translate(
+        JSON.stringify(texts),
+        [targetLangCode],
+        `UI Strings for ${namespace}`
+      );
+      const translatedTexts = translatedMap[targetLangCode] || {};
+
+      if (typeof translatedTexts === 'object') {
+        for (const [key, value] of Object.entries(translatedTexts)) {
+          // Save to DB
+          await prisma.uiTranslation.upsert({
             where: {
-                langCode_namespace_key: { langCode: 'en', namespace, key }
-            },
-            update: { value },
-            create: { langCode: 'en', namespace, key, value, isReviewed: true }
-        });
-
-        // 2. Get other active languages
-        const languages = await prisma.language.findMany({
-            where: { isActive: true, code: { not: 'en' } }
-        });
-
-        if (languages.length === 0) return;
-
-        const targetCodes = languages.map(l => l.code);
-
-        // 3. Translate
-        const translations = await this.translate(value, targetCodes, `UI Label: ${namespace}.${key}`);
-
-        // 4. Save Translations
-        for (const [code, translatedValue] of Object.entries(translations)) {
-             await prisma.uiTranslation.upsert({
-                where: {
-                    langCode_namespace_key: { langCode: code, namespace, key }
-                },
-                update: { value: String(translatedValue) }, // Only update if explicitly re-adding
-                create: {
-                    langCode: code,
-                    namespace,
-                    key,
-                    value: String(translatedValue),
-                    isReviewed: false // Needs review since it's AI
-                }
-            });
-        }
-    }
-
-    /**
-     * Translate only missing keys for all active languages in a namespace
-     * @param {string} namespace
-     */
-    async translateMissingKeys(namespace) {
-        // 1. Get all languages
-        const languages = await prisma.language.findMany({ where: { isActive: true } });
-        const langCodes = languages.map(l => l.code);
-
-        // 2. Get base records (EN) for this namespace
-        const baseRecords = await prisma.uiTranslation.findMany({
-            where: { langCode: 'en', namespace }
-        });
-
-        const results = { updated: 0, errors: [] };
-
-        for (const record of baseRecords) {
-            // Find which languages are missing OR have empty values for this key
-            const existingEntries = await prisma.uiTranslation.findMany({
-                where: { namespace, key: record.key, langCode: { in: langCodes } }
-            });
-
-            // A language is "missing" if no record exists OR the value is empty/whitespace
-            const missingCodes = langCodes.filter(code => {
-                const entry = existingEntries.find(e => e.langCode === code);
-                return !entry || !entry.value || entry.value.trim() === "";
-            });
-
-            if (missingCodes.length > 0) {
-                try {
-                    const translations = await this.translate(record.value, missingCodes, `Namespace: ${namespace}`);
-                    for (const [code, val] of Object.entries(translations)) {
-                        await prisma.uiTranslation.upsert({
-                            where: {
-                                langCode_namespace_key: {
-                                    langCode: code,
-                                    namespace,
-                                    key: record.key
-                                }
-                            },
-                            update: {
-                                value: String(val),
-                                isReviewed: false
-                            },
-                            create: {
-                                langCode: code,
-                                namespace,
-                                key: record.key,
-                                value: String(val),
-                                isReviewed: false
-                            }
-                        });
-                        results.updated++;
-                    }
-                } catch (e) {
-                    results.errors.push(`${record.key}: ${e.message}`);
-                }
-            }
-        }
-        return results;
-    }
-
-    async resetNamespaceTranslations(namespace) {
-        // 1. Delete all non-English translations for this namespace
-        await prisma.uiTranslation.deleteMany({
-            where: {
+              langCode_namespace_key: {
+                langCode: targetLangCode,
                 namespace,
-                langCode: { not: 'en' }
-            }
-        });
-
-        // 2. Trigger bulk translation for missing keys
-        return await this.translateMissingKeys(namespace);
+                key,
+              },
+            },
+            update: { value: String(value) },
+            create: {
+              langCode: targetLangCode,
+              namespace,
+              key,
+              value: String(value),
+              isReviewed: false,
+            },
+          });
+        }
+      }
     }
 
-    /**
-     * Delete a key from all languages
-     * @param {string} namespace
-     * @param {string} key
-     */
-    async deleteKey(namespace, key) {
-        await prisma.uiTranslation.deleteMany({
-            where: { namespace, key }
-        });
+    // Invalidate cache
+    await cache.delByPattern('translations:*');
+  }
+
+  /**
+   * Add a key to all languages (with auto-translation)
+   * @param {string} namespace
+   * @param {string} key
+   * @param {string} value (English value)
+   */
+  async addKey(namespace, key, value) {
+    // 1. Save Base (EN)
+    await prisma.uiTranslation.upsert({
+      where: {
+        langCode_namespace_key: { langCode: 'en', namespace, key },
+      },
+      update: { value },
+      create: { langCode: 'en', namespace, key, value, isReviewed: true },
+    });
+
+    // 2. Get other active languages
+    const languages = await prisma.language.findMany({
+      where: { isActive: true, code: { not: 'en' } },
+    });
+
+    if (languages.length === 0) return;
+
+    const targetCodes = languages.map((l) => l.code);
+
+    // 3. Translate
+    const translations = await this.translate(value, targetCodes, `UI Label: ${namespace}.${key}`);
+
+    // 4. Save Translations
+    for (const [code, translatedValue] of Object.entries(translations)) {
+      await prisma.uiTranslation.upsert({
+        where: {
+          langCode_namespace_key: { langCode: code, namespace, key },
+        },
+        update: { value: String(translatedValue) }, // Only update if explicitly re-adding
+        create: {
+          langCode: code,
+          namespace,
+          key,
+          value: String(translatedValue),
+          isReviewed: false, // Needs review since it's AI
+        },
+      });
     }
 
-    /**
-     * Rename a key across all languages
-     */
-    async renameKey(namespace, oldKey, newKey) {
-        if (oldKey === newKey) return;
+    // Invalidate cache
+    await cache.delByPattern('translations:*');
+  }
 
-        // Prisma doesn't support updating a field that is part of a composite ID directly in 'updateMany'
-        // We have to iterate or use raw query. Since key/namespace/langCode is the ID, we need to create new and delete old.
-        const records = await prisma.uiTranslation.findMany({
-            where: { namespace, key: oldKey }
-        });
+  /**
+   * Translate only missing keys for all active languages in a namespace
+   * @param {string} namespace
+   */
+  async translateMissingKeys(namespace) {
+    // 1. Get all languages
+    const languages = await prisma.language.findMany({ where: { isActive: true } });
+    const langCodes = languages.map((l) => l.code);
 
-        for (const record of records) {
-            await prisma.uiTranslation.create({
-                data: {
-                    langCode: record.langCode,
-                    namespace,
-                    key: newKey,
-                    value: record.value,
-                    isReviewed: record.isReviewed
-                }
-            });
-        }
+    // 2. Get base records (EN) for this namespace
+    const baseRecords = await prisma.uiTranslation.findMany({
+      where: { langCode: 'en', namespace },
+    });
 
-        await prisma.uiTranslation.deleteMany({
-            where: { namespace, key: oldKey }
-        });
-    }
+    const results = { updated: 0, errors: [] };
 
-    /**
-     * Translate a specific key into all missing active languages
-     * @param {string} namespace
-     * @param {string} key
-     * @param {boolean} [force=false] - If true, deletes existing non-English translations for the key before re-translating.
-     */
-    async translateSingleKey(namespace, key, force = false) {
-        // 1. Get base record (EN)
-        const baseRecord = await prisma.uiTranslation.findFirst({
-            where: { langCode: 'en', namespace, key }
-        });
+    for (const record of baseRecords) {
+      // Find which languages are missing OR have empty values for this key
+      const existingEntries = await prisma.uiTranslation.findMany({
+        where: { namespace, key: record.key, langCode: { in: langCodes } },
+      });
 
-        if (!baseRecord) {
-            throw new Error(`Base 'en' record not found for key: ${key}`);
-        }
+      // A language is "missing" if no record exists OR the value is empty/whitespace
+      const missingCodes = langCodes.filter((code) => {
+        const entry = existingEntries.find((e) => e.langCode === code);
+        return !entry || !entry.value || entry.value.trim() === '';
+      });
 
-        // 2. If force is true, delete existing non-English entries first
-        if (force) {
-            await prisma.uiTranslation.deleteMany({
-                where: {
-                    namespace,
-                    key,
-                    langCode: { not: 'en' }
-                }
-            });
-        }
-
-        // 3. Get all languages
-        const languages = await prisma.language.findMany({ where: { isActive: true } });
-        const langCodes = languages.map(l => l.code);
-
-        // 4. Get existing entries for this key across all active languages (after potential deletion)
-        const existingEntries = await prisma.uiTranslation.findMany({
-            where: { namespace, key, langCode: { in: langCodes } }
-        });
-
-        // 5. Determine which languages are missing or have empty values
-        const missingCodes = langCodes.filter(code => {
-            const entry = existingEntries.find(e => e.langCode === code);
-            return !entry || !entry.value || entry.value.trim() === "";
-        });
-
-        if (missingCodes.length > 0) {
-            const translations = await this.translate(baseRecord.value, missingCodes, `Namespace: ${namespace}, Key: ${key}`);
-            for (const [code, val] of Object.entries(translations)) {
-                await prisma.uiTranslation.upsert({
-                    where: {
-                        langCode_namespace_key: {
-                            langCode: code,
-                            namespace,
-                            key
-                        }
-                    },
-                    update: {
-                        value: String(val),
-                        isReviewed: false
-                    },
-                    create: {
-                        langCode: code,
-                        namespace,
-                        key,
-                        value: String(val),
-                        isReviewed: false
-                    }
-                });
-            }
-        }
-        return { success: true };
-    }
-    /**
-     * Generate SEO-optimized category description using AI with internal links
-     * @param {string} categoryName - Name of the category
-     * @param {string[]} productNames - List of representative products
-     * @param {Object[]} relatedCategories - List of {name, slug} for internal linking
-     * @returns {Promise<string>} - Generated HTML description
-     */
-    async generateSEOContent(categoryName, productNames, relatedCategories = []) {
+      if (missingCodes.length > 0) {
         try {
-            const prompt = `You are a premium e-commerce SEO expert.
+          const translations = await this.translate(
+            record.value,
+            missingCodes,
+            `Namespace: ${namespace}`
+          );
+          for (const [code, val] of Object.entries(translations)) {
+            await prisma.uiTranslation.upsert({
+              where: {
+                langCode_namespace_key: {
+                  langCode: code,
+                  namespace,
+                  key: record.key,
+                },
+              },
+              update: {
+                value: String(val),
+                isReviewed: false,
+              },
+              create: {
+                langCode: code,
+                namespace,
+                key: record.key,
+                value: String(val),
+                isReviewed: false,
+              },
+            });
+            results.updated++;
+          }
+        } catch (e) {
+          results.errors.push(`${record.key}: ${e.message}`);
+        }
+      }
+    }
+
+    // Invalidate cache
+    await cache.delByPattern('translations:*');
+
+    return results;
+  }
+
+  async resetNamespaceTranslations(namespace) {
+    // 1. Delete all non-English translations for this namespace
+    await prisma.uiTranslation.deleteMany({
+      where: {
+        namespace,
+        langCode: { not: 'en' },
+      },
+    });
+
+    // 2. Trigger bulk translation for missing keys
+    const results = await this.translateMissingKeys(namespace);
+
+    // Invalidate cache
+    await cache.delByPattern('translations:*');
+
+    return results;
+  }
+
+  /**
+   * Delete a key from all languages
+   * @param {string} namespace
+   * @param {string} key
+   */
+  async deleteKey(namespace, key) {
+    await prisma.uiTranslation.deleteMany({
+      where: { namespace, key },
+    });
+
+    // Invalidate cache
+    await cache.delByPattern('translations:*');
+  }
+
+  /**
+   * Rename a key across all languages
+   */
+  async renameKey(namespace, oldKey, newKey) {
+    if (oldKey === newKey) return;
+
+    // Prisma doesn't support updating a field that is part of a composite ID directly in 'updateMany'
+    // We have to iterate or use raw query. Since key/namespace/langCode is the ID, we need to create new and delete old.
+    const records = await prisma.uiTranslation.findMany({
+      where: { namespace, key: oldKey },
+    });
+
+    for (const record of records) {
+      await prisma.uiTranslation.create({
+        data: {
+          langCode: record.langCode,
+          namespace,
+          key: newKey,
+          value: record.value,
+          isReviewed: record.isReviewed,
+        },
+      });
+    }
+
+    await prisma.uiTranslation.deleteMany({
+      where: { namespace, key: oldKey },
+    });
+
+    // Invalidate cache
+    await cache.delByPattern('translations:*');
+  }
+
+  /**
+   * Translate a specific key into all missing active languages
+   * @param {string} namespace
+   * @param {string} key
+   * @param {boolean} [force=false] - If true, deletes existing non-English translations for the key before re-translating.
+   */
+  async translateSingleKey(namespace, key, force = false) {
+    // 1. Get base record (EN)
+    const baseRecord = await prisma.uiTranslation.findFirst({
+      where: { langCode: 'en', namespace, key },
+    });
+
+    if (!baseRecord) {
+      throw new Error(`Base 'en' record not found for key: ${key}`);
+    }
+
+    // 2. If force is true, delete existing non-English entries first
+    if (force) {
+      await prisma.uiTranslation.deleteMany({
+        where: {
+          namespace,
+          key,
+          langCode: { not: 'en' },
+        },
+      });
+    }
+
+    // 3. Get all languages
+    const languages = await prisma.language.findMany({ where: { isActive: true } });
+    const langCodes = languages.map((l) => l.code);
+
+    // 4. Get existing entries for this key across all active languages (after potential deletion)
+    const existingEntries = await prisma.uiTranslation.findMany({
+      where: { namespace, key, langCode: { in: langCodes } },
+    });
+
+    // 5. Determine which languages are missing or have empty values
+    const missingCodes = langCodes.filter((code) => {
+      const entry = existingEntries.find((e) => e.langCode === code);
+      return !entry || !entry.value || entry.value.trim() === '';
+    });
+
+    if (missingCodes.length > 0) {
+      const translations = await this.translate(
+        baseRecord.value,
+        missingCodes,
+        `Namespace: ${namespace}, Key: ${key}`
+      );
+      for (const [code, val] of Object.entries(translations)) {
+        await prisma.uiTranslation.upsert({
+          where: {
+            langCode_namespace_key: {
+              langCode: code,
+              namespace,
+              key,
+            },
+          },
+          update: {
+            value: String(val),
+            isReviewed: false,
+          },
+          create: {
+            langCode: code,
+            namespace,
+            key,
+            value: String(val),
+            isReviewed: false,
+          },
+        });
+      }
+    }
+
+    // Invalidate cache
+    await cache.delByPattern('translations:*');
+
+    return { success: true };
+  }
+  /**
+   * Generate SEO-optimized category description using AI with internal links
+   * @param {string} categoryName - Name of the category
+   * @param {string[]} productNames - List of representative products
+   * @param {Object[]} relatedCategories - List of {name, slug} for internal linking
+   * @returns {Promise<string>} - Generated HTML description
+   */
+  async generateSEOContent(categoryName, productNames, relatedCategories = []) {
+    try {
+      const prompt = `You are a premium e-commerce SEO expert.
 Generate a comprehensive, high-quality SEO description for the category "${categoryName}".
 The description should be professional, engaging, and optimized for search engines (Google).
 
@@ -426,31 +490,31 @@ Return ONLY the HTML content (use <p>, <h2>, <strong>, <ul>, <li>, <a> tags).
 
 Output Format: HTML string.`;
 
-            const response = await fetch(this.apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.apiKey}`,
-                },
-                body: JSON.stringify({
-                    model: this.model,
-                    messages: [
-                        { role: 'system', content: 'You are an SEO content generator.' },
-                        { role: 'user', content: prompt }
-                    ],
-                    temperature: 0.7,
-                }),
-            });
+      const response = await fetch(this.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.apiKey}`,
+        },
+        body: JSON.stringify({
+          model: this.model,
+          messages: [
+            { role: 'system', content: 'You are an SEO content generator.' },
+            { role: 'user', content: prompt },
+          ],
+          temperature: 0.7,
+        }),
+      });
 
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error?.message || 'Generation failed');
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error?.message || 'Generation failed');
 
-            return data.choices?.[0]?.message?.content || '';
-        } catch (error) {
-            console.error('SEO Generation Error:', error);
-            throw error;
-        }
+      return data.choices?.[0]?.message?.content || '';
+    } catch (error) {
+      console.error('SEO Generation Error:', error);
+      throw error;
     }
+  }
 }
 
 module.exports = new TranslationService();

@@ -13,7 +13,7 @@ exports.createReview = async (req, res, next) => {
     }
 
     // Extract uploaded images
-    const images = req.files ? req.files.map(file => file.path) : [];
+    const images = req.files ? req.files.map((file) => file.path) : [];
 
     // Create review
     const review = await prisma.review.create({
@@ -53,8 +53,8 @@ exports.getProductReviews = async (req, res, next) => {
       where: { productId, status: 'APPROVED' }, // Only show approved reviews to public
       include: {
         user: {
-            select: { firstName: true, lastName: true, avatar: true }
-        }
+          select: { firstName: true, lastName: true, avatar: true },
+        },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -103,7 +103,9 @@ exports.getAllReviews = async (req, res, next) => {
         skip,
         take: limit,
         include: {
-          user: { select: { id: true, firstName: true, lastName: true, email: true, avatar: true } },
+          user: {
+            select: { id: true, firstName: true, lastName: true, email: true, avatar: true },
+          },
           product: { select: { id: true, name: true, images: true } },
         },
         orderBy: { createdAt: 'desc' },
@@ -143,19 +145,20 @@ exports.updateReviewStatus = async (req, res, next) => {
 
     // Re-calculate product ratings if status changes to or from APPROVED
     if (status) {
-        const productReviews = await prisma.review.findMany({
-            where: { productId: review.productId, status: 'APPROVED' },
-        });
+      const productReviews = await prisma.review.findMany({
+        where: { productId: review.productId, status: 'APPROVED' },
+      });
 
-        const numReviews = productReviews.length;
-        const avgRating = numReviews > 0
-            ? productReviews.reduce((acc, curr) => acc + curr.rating, 0) / numReviews
-            : 0;
+      const numReviews = productReviews.length;
+      const avgRating =
+        numReviews > 0
+          ? productReviews.reduce((acc, curr) => acc + curr.rating, 0) / numReviews
+          : 0;
 
-        await prisma.product.update({
-            where: { id: review.productId },
-            data: { numReviews, rating: avgRating },
-        });
+      await prisma.product.update({
+        where: { id: review.productId },
+        data: { numReviews, rating: avgRating },
+      });
     }
 
     res.status(200).json({ success: true, data: review });
@@ -188,24 +191,23 @@ exports.deleteReview = async (req, res, next) => {
 
     const review = await prisma.review.findUnique({ where: { id } });
     if (!review) {
-        return errorResponse(res, { statusCode: 404, message: 'Review not found' });
+      return errorResponse(res, { statusCode: 404, message: 'Review not found' });
     }
 
     await prisma.review.delete({ where: { id } });
 
     // Re-calculate product ratings
     const productReviews = await prisma.review.findMany({
-        where: { productId: review.productId, status: 'APPROVED' },
+      where: { productId: review.productId, status: 'APPROVED' },
     });
 
     const numReviews = productReviews.length;
-    const avgRating = numReviews > 0
-        ? productReviews.reduce((acc, curr) => acc + curr.rating, 0) / numReviews
-        : 0;
+    const avgRating =
+      numReviews > 0 ? productReviews.reduce((acc, curr) => acc + curr.rating, 0) / numReviews : 0;
 
     await prisma.product.update({
-        where: { id: review.productId },
-        data: { numReviews, rating: avgRating },
+      where: { id: review.productId },
+      data: { numReviews, rating: avgRating },
     });
 
     res.status(200).json({ success: true, message: 'Review deleted successfully' });

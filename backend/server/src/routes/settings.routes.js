@@ -2,8 +2,15 @@ const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
 const validate = require('../middlewares/validate');
-const { updateSettings, getPublicSettings, getSettingsByType } = require('../controllers/settings.controller'); // Using controller functions
-const { authMiddleware: protect, adminMiddleware: admin } = require('../middlewares/auth.middleware');
+const {
+  updateSettings,
+  getPublicSettings,
+  getSettingsByType,
+} = require('../controllers/settings.controller'); // Using controller functions
+const {
+  authMiddleware: protect,
+  adminMiddleware: admin,
+} = require('../middlewares/auth.middleware');
 
 // Get Public Settings
 router.get('/public', getPublicSettings);
@@ -17,24 +24,31 @@ router.get('/public', getPublicSettings);
 router.get('/:type', protect, getSettingsByType);
 
 // Update settings by type
-router.put('/:type',
-    protect,
-    // admin, // Enable if you have admin middleware working
-    [
-        body('email').optional({ checkFalsy: true }).isEmail().withMessage('Invalid email format'),
-    ],
-    validate,
-    updateSettings
+router.put(
+  '/:type',
+  protect,
+  // admin, // Enable if you have admin middleware working
+  [body('email').optional({ checkFalsy: true }).isEmail().withMessage('Invalid email format')],
+  validate,
+  updateSettings
 );
 
 // Test Email Connection
-router.post('/email-test', protect, require('../controllers/settings.controller').testEmailConnection);
+router.post(
+  '/email-test',
+  protect,
+  require('../controllers/settings.controller').testEmailConnection
+);
 
 // Test SMS Connection
 router.post('/sms-test', protect, require('../controllers/settings.controller').testSmsConnection);
 
 // Webhooks CRUD
-const { createWebhook, updateWebhook, deleteWebhook } = require('../controllers/settings.controller');
+const {
+  createWebhook,
+  updateWebhook,
+  deleteWebhook,
+} = require('../controllers/settings.controller');
 router.post('/webhooks', protect, createWebhook);
 router.put('/webhooks/:id', protect, updateWebhook);
 router.delete('/webhooks/:id', protect, deleteWebhook);

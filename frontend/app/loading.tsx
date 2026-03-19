@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Loading() {
   return (
@@ -10,7 +10,10 @@ export default function Loading() {
       <section className="container">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 py-8 border rounded-lg bg-card shadow-sm">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="flex items-center justify-center gap-3 p-4 border-r last:border-r-0">
+            <div
+              key={i}
+              className="flex items-center justify-center gap-3 p-4 border-r last:border-r-0"
+            >
               <Skeleton className="w-8 h-8 rounded-full" />
               <div className="space-y-2">
                 <Skeleton className="h-4 w-24" />

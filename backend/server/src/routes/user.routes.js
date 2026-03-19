@@ -7,15 +7,20 @@ const {
   toggleUserStatus,
   roleUpdate,
   sendEmailToUser,
-  exportCustomers
+  exportCustomers,
 } = require('../controllers/user.controller');
-const { authMiddleware, isAdmin, canManageUser, isStaff } = require('../middlewares/auth.middleware');
+const {
+  authMiddleware,
+  isAdmin,
+  canManageUser,
+  isStaff,
+} = require('../middlewares/auth.middleware');
 const validate = require('../middlewares/validate');
 const { singleImageUpload } = require('../middlewares/upload.middleware');
 const {
   updateUserValidation,
   roleUpdateValidation,
-  userIdValidation
+  userIdValidation,
 } = require('../validators/userValidator');
 
 const userRouter = express.Router();
@@ -42,7 +47,14 @@ userRouter.get('/', authMiddleware, isStaff, getAllUsers);
 
 // Profile (Current User)
 userRouter.get('/profile', authMiddleware, getUserById);
-userRouter.put('/profile', authMiddleware, singleImageUpload('ecommerce/users', 'avatar'), updateUserValidation, validate, updateUser);
+userRouter.put(
+  '/profile',
+  authMiddleware,
+  singleImageUpload('ecommerce/users', 'avatar'),
+  updateUserValidation,
+  validate,
+  updateUser
+);
 
 // Export Customers
 userRouter.get('/export', authMiddleware, isStaff, exportCustomers);
@@ -50,9 +62,33 @@ userRouter.get('/export', authMiddleware, isStaff, exportCustomers);
 // Specific User Operations (Admin/Manager)
 userRouter.get('/:userId', authMiddleware, userIdValidation, validate, getUserById);
 userRouter.post('/:userId/send-email', authMiddleware, isStaff, sendEmailToUser);
-userRouter.patch('/:userId', authMiddleware, userIdValidation, singleImageUpload('ecommerce/users', 'avatar'), updateUserValidation, validate, canManageUser, updateUser);
-userRouter.delete('/:userId', authMiddleware, userIdValidation, validate, canManageUser, deleteUser);
-userRouter.patch('/:userId/role', authMiddleware, isAdmin, roleUpdateValidation, validate, canManageUser, roleUpdate);
+userRouter.patch(
+  '/:userId',
+  authMiddleware,
+  userIdValidation,
+  singleImageUpload('ecommerce/users', 'avatar'),
+  updateUserValidation,
+  validate,
+  canManageUser,
+  updateUser
+);
+userRouter.delete(
+  '/:userId',
+  authMiddleware,
+  userIdValidation,
+  validate,
+  canManageUser,
+  deleteUser
+);
+userRouter.patch(
+  '/:userId/role',
+  authMiddleware,
+  isAdmin,
+  roleUpdateValidation,
+  validate,
+  canManageUser,
+  roleUpdate
+);
 
 // Special route fix for toggle status which used :id
 // Let's change it to :userId to match validator if we want to validate ID.

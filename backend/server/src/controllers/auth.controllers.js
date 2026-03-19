@@ -8,10 +8,7 @@ const { excludeFields } = require('../utils/exclude');
 const asyncHandler = require('../middlewares/asyncHandler');
 const ApiError = require('../utils/ApiError');
 const { successResponse, createdResponse } = require('../utils/response');
-const {
-  sendVerificationEmail,
-  sendPasswordResetEmail,
-} = require('../services/emailService'); // Added email service
+const { sendVerificationEmail, sendPasswordResetEmail } = require('../services/emailService'); // Added email service
 const NotificationService = require('../services/notification.service');
 const StaffService = require('../services/staff.service');
 
@@ -19,16 +16,14 @@ const StaffService = require('../services/staff.service');
 const generateTokens = (userId) => {
   const accessToken = jwt.sign(
     { userId },
-    process.env.JWT_ACCESS_SECRET ||
-      process.env.JWT_ACCESS_KEY ||
-      'FHDJKFHDJKSHFJKFHJKDSHF',
-    { expiresIn: '24h' },
+    process.env.JWT_ACCESS_SECRET || process.env.JWT_ACCESS_KEY || 'FHDJKFHDJKSHFJKFHJKDSHF',
+    { expiresIn: '24h' }
   );
 
   const refreshToken = jwt.sign(
     { userId },
     process.env.JWT_REFRESH_SECRET || 'JGFJKGKJDGSJKFGISDGFGFUIGi',
-    { expiresIn: '7d' },
+    { expiresIn: '7d' }
   );
 
   return { accessToken, refreshToken };
@@ -36,8 +31,7 @@ const generateTokens = (userId) => {
 
 exports.register = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, username, password } = req.body;
-  const requireEmailVerification =
-    process.env.ENFORCE_EMAIL_VERIFICATION === 'true';
+  const requireEmailVerification = process.env.ENFORCE_EMAIL_VERIFICATION === 'true';
 
   // Check if email already exists
   const existingEmail = await prisma.user.findUnique({
@@ -63,9 +57,7 @@ exports.register = asyncHandler(async (req, res) => {
 
   // Generate verification token
   const emailVerificationToken = crypto.randomBytes(32).toString('hex');
-  const emailVerificationTokenExpiry = new Date(
-    Date.now() + 24 * 60 * 60 * 1000,
-  ); // 24 hours
+  const emailVerificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
   // Default avatar
   const defaultAvatar = `https://ui-avatars.com/api/?name=${firstName}+${lastName}&background=random`;
@@ -115,8 +107,7 @@ exports.register = asyncHandler(async (req, res) => {
     }
 
     return createdResponse(res, {
-      message:
-        'Registration successful! Please check your email to verify your account.',
+      message: 'Registration successful! Please check your email to verify your account.',
       data: newUser,
     });
   } else {
@@ -137,11 +128,11 @@ exports.register = asyncHandler(async (req, res) => {
 
     // Send Welcome Notification
     await NotificationService.notifyUser(
-        created.id,
-        'WELCOME',
-        'Welcome to Mahbub Shop!',
-        'Thank you for joining us. We are excited to have you on board.',
-        { url: '/profile' }
+      created.id,
+      'WELCOME',
+      'Welcome to Mahbub Shop!',
+      'Thank you for joining us. We are excited to have you on board.',
+      { url: '/profile' }
     );
 
     // Generate tokens for immediate login
@@ -298,11 +289,7 @@ exports.login = asyncHandler(async (req, res) => {
   }
   // If not enforcing verification, auto-activate user if needed
   if (!enforceVerify) {
-    if (
-      !user.isEmailVerified ||
-      user.status !== 'ACTIVE' ||
-      user.isActive === false
-    ) {
+    if (!user.isEmailVerified || user.status !== 'ACTIVE' || user.isActive === false) {
       await prisma.user.update({
         where: { id: user.id },
         data: {
@@ -334,44 +321,44 @@ exports.login = asyncHandler(async (req, res) => {
         });
 
         if (!userCart) {
-           // If user has no existing cart, just take over the guest cart
-           await prisma.cart.update({
-             where: { id: guestCart.id },
-             data: { userId: user.id, sessionId: null }
-           });
+          // If user has no existing cart, just take over the guest cart
+          await prisma.cart.update({
+            where: { id: guestCart.id },
+            data: { userId: user.id, sessionId: null },
+          });
         } else {
-           // User has a cart, need to merge
-           for (const guestItem of guestCart.items) {
-              const existingItem = userCart.items.find(ui =>
-                  ui.productId === guestItem.productId && ui.variantId === guestItem.variantId
-              );
+          // User has a cart, need to merge
+          for (const guestItem of guestCart.items) {
+            const existingItem = userCart.items.find(
+              (ui) => ui.productId === guestItem.productId && ui.variantId === guestItem.variantId
+            );
 
-              if (existingItem) {
-                 // Add quantities if the same item exists
-                 await prisma.cartItem.update({
-                    where: { id: existingItem.id },
-                    data: { quantity: existingItem.quantity + guestItem.quantity }
-                 });
-                 // Delete the duplicate item from the guest cart
-                 await prisma.cartItem.delete({
-                     where: { id: guestItem.id }
-                 });
-              } else {
-                 // Transfer the item to the user's cart
-                 await prisma.cartItem.update({
-                    where: { id: guestItem.id },
-                    data: { cartId: userCart.id }
-                 });
-              }
-           }
-           // Delete the now empty guest cart
-           await prisma.cart.delete({
-              where: { id: guestCart.id }
-           });
+            if (existingItem) {
+              // Add quantities if the same item exists
+              await prisma.cartItem.update({
+                where: { id: existingItem.id },
+                data: { quantity: existingItem.quantity + guestItem.quantity },
+              });
+              // Delete the duplicate item from the guest cart
+              await prisma.cartItem.delete({
+                where: { id: guestItem.id },
+              });
+            } else {
+              // Transfer the item to the user's cart
+              await prisma.cartItem.update({
+                where: { id: guestItem.id },
+                data: { cartId: userCart.id },
+              });
+            }
+          }
+          // Delete the now empty guest cart
+          await prisma.cart.delete({
+            where: { id: guestCart.id },
+          });
         }
       }
     } catch (cartError) {
-      console.error("Cart merge error during login:", cartError);
+      console.error('Cart merge error during login:', cartError);
       // Suppress cart errors to not block login
     }
   }
@@ -414,31 +401,31 @@ exports.login = asyncHandler(async (req, res) => {
       'New Login Detected',
       `Login from ${req.headers['user-agent'] || 'Unknown Device'}`,
       { time: new Date() }
-    ).catch(err => console.error('Login notification error:', err));
+    ).catch((err) => console.error('Login notification error:', err));
 
     // Also notify admins if it's a staff member login
     if (['ADMIN', 'SUPER_ADMIN', 'MANAGER'].includes(user.role)) {
-       NotificationService.notifyAdmins(
-         'STAFF_LOGIN',
-         'Staff Login',
-         `${user.firstName} ${user.lastName} logged in.`,
-         { userId: user.id, role: user.role }
-       ).catch(err => console.error('Staff login notify error:', err));
+      NotificationService.notifyAdmins(
+        'STAFF_LOGIN',
+        'Staff Login',
+        `${user.firstName} ${user.lastName} logged in.`,
+        { userId: user.id, role: user.role }
+      ).catch((err) => console.error('Staff login notify error:', err));
     }
 
     // Global Activity Logging
     StaffService.logActivity({
-       userId: user.id,
-       action: 'LOGIN',
-       target: 'System: Auth Session',
-       metadata: {
-           method: 'CREDENTIALS',
-           device: req.headers['user-agent'],
-           ip: req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress
-       },
-       ipAddress: req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress,
-       userAgent: req.headers['user-agent']
-    }).catch(err => console.error('Activity log error:', err));
+      userId: user.id,
+      action: 'LOGIN',
+      target: 'System: Auth Session',
+      metadata: {
+        method: 'CREDENTIALS',
+        device: req.headers['user-agent'],
+        ip: req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+      },
+      ipAddress: req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+      userAgent: req.headers['user-agent'],
+    }).catch((err) => console.error('Activity log error:', err));
   });
 
   return successResponse(res, {
@@ -468,13 +455,13 @@ exports.logout = asyncHandler(async (req, res) => {
 
     // Global Activity Logging
     StaffService.logActivity({
-       userId: userId,
-       action: 'LOGOUT',
-       target: 'System: Auth Session',
-       metadata: { device: req.headers['user-agent'] },
-       ipAddress: req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress,
-       userAgent: req.headers['user-agent']
-    }).catch(err => console.error('Activity log error:', err));
+      userId: userId,
+      action: 'LOGOUT',
+      target: 'System: Auth Session',
+      metadata: { device: req.headers['user-agent'] },
+      ipAddress: req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+      userAgent: req.headers['user-agent'],
+    }).catch((err) => console.error('Activity log error:', err));
   }
 
   // Clear refresh token cookie (always do this)
@@ -511,7 +498,7 @@ exports.refreshToken = asyncHandler(async (req, res) => {
   try {
     decoded = jwt.verify(
       refreshToken,
-      process.env.JWT_REFRESH_SECRET || 'JGFJKGKJDGSJKFGISDGFGFUIGi',
+      process.env.JWT_REFRESH_SECRET || 'JGFJKGKJDGSJKFGISDGFGFUIGi'
     );
   } catch (err) {
     // Clear invalid refresh token cookie
@@ -521,9 +508,7 @@ exports.refreshToken = asyncHandler(async (req, res) => {
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       path: '/',
     });
-    throw ApiError.unauthorized(
-      'Your session has expired. Please log in again.',
-    );
+    throw ApiError.unauthorized('Your session has expired. Please log in again.');
   }
 
   // Find user and validate refresh token
@@ -549,15 +534,11 @@ exports.refreshToken = asyncHandler(async (req, res) => {
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       path: '/',
     });
-    throw ApiError.unauthorized(
-      'Invalid session. Please log in again for security.',
-    );
+    throw ApiError.unauthorized('Invalid session. Please log in again for security.');
   }
 
   // Generate new tokens
-  const { accessToken, refreshToken: newRefreshToken } = generateTokens(
-    user.id,
-  );
+  const { accessToken, refreshToken: newRefreshToken } = generateTokens(user.id);
 
   // Update refresh token in database
   await prisma.user.update({
@@ -785,8 +766,7 @@ exports.forgotPassword = asyncHandler(async (req, res) => {
   }
 
   return successResponse(res, {
-    message:
-      'If your email exists in our system, you will receive a password reset link shortly.',
+    message: 'If your email exists in our system, you will receive a password reset link shortly.',
   });
 });
 
@@ -825,7 +805,51 @@ exports.resetPassword = asyncHandler(async (req, res) => {
   });
 
   return successResponse(res, {
-    message:
-      'Password has been reset successfully. You can now login with your new password.',
+    message: 'Password has been reset successfully. You can now login with your new password.',
+  });
+});
+
+/**
+ * Change password (authenticated)
+ */
+exports.changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+  const userId = req.user.id;
+
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    throw ApiError.badRequest('All password fields are required');
+  }
+
+  if (newPassword !== confirmPassword) {
+    throw ApiError.badRequest('New passwords do not match');
+  }
+
+  if (newPassword.length < 6) {
+    throw ApiError.badRequest('New password must be at least 6 characters');
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user || !user.password) {
+    throw ApiError.notFound('User not found');
+  }
+
+  // Verify current password
+  const isMatch = await bcrypt.compare(currentPassword, user.password);
+  if (!isMatch) {
+    throw ApiError.unauthorized('Incorrect current password');
+  }
+
+  // Hash and save new password
+  const hashedPassword = await bcrypt.hash(newPassword, 12);
+  await prisma.user.update({
+    where: { id: userId },
+    data: { password: hashedPassword },
+  });
+
+  return successResponse(res, {
+    message: 'Password changed successfully',
   });
 });

@@ -10,8 +10,8 @@ async function main() {
     await prisma.generalSetting.create({
       data: {
         siteName: 'Mahbub Shop',
-        shopType: 'GADGET' // Default
-      }
+        shopType: 'GADGET', // Default
+      },
     });
   } else {
     // Toggle or ensure it's set
@@ -24,8 +24,8 @@ async function main() {
 
     // Let's set it to 'CLOTHING' to show the Aarong style as requested/discussed.
     const updated = await prisma.generalSetting.update({
-        where: { id: settings.id },
-        data: { shopType: 'CLOTHING' }
+      where: { id: settings.id },
+      data: { shopType: 'CLOTHING' },
     });
     console.log('Updated Settings:', updated);
   }

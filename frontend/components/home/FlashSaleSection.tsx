@@ -1,5 +1,5 @@
-import FlashSale from "@/components/home/FlashSale";
-import { getFlashSale } from "@/lib/fetchers";
+import FlashSale from '@/components/home/FlashSale';
+import { getFlashSale } from '@/lib/fetchers';
 
 export default async function FlashSaleSection() {
   const result = await getFlashSale();

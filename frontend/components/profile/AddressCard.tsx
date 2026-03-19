@@ -1,7 +1,10 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building, Home, MapPin, Pencil, Phone, Trash2, User } from "lucide-react";
+'use client';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useTranslations } from '@/context/TranslationContext';
+import { Building, Home, MapPin, Pencil, Phone, Trash2, User } from 'lucide-react';
 
 interface Address {
   id: string;
@@ -22,20 +25,29 @@ interface AddressCardProps {
 }
 
 export default function AddressCard({ address: addr, onEdit, onDelete }: AddressCardProps) {
+  const { t } = useTranslations();
   const getIcon = (type: string) => {
     switch (type?.toLowerCase()) {
-      case 'home': return <Home className="h-5 w-5 text-primary" />;
-      case 'office': return <Building className="h-5 w-5 text-primary" />;
-      default: return <MapPin className="h-5 w-5 text-primary" />;
+      case 'home':
+        return <Home className="h-5 w-5 text-primary" />;
+      case 'office':
+        return <Building className="h-5 w-5 text-primary" />;
+      default:
+        return <MapPin className="h-5 w-5 text-primary" />;
     }
   };
 
   return (
-    <Card className={`group relative overflow-hidden transition-all hover:shadow-md ${addr.isDefault ? 'border-primary ring-1 ring-primary/20 bg-primary/5' : ''}`}>
+    <Card
+      className={`group relative overflow-hidden transition-all hover:shadow-md ${addr.isDefault ? 'border-primary ring-1 ring-primary/20 bg-primary/5' : ''}`}
+    >
       {addr.isDefault && (
         <div className="absolute top-0 right-0 z-10">
-          <Badge variant="default" className="rounded-none rounded-bl-lg px-3 py-1 text-xs uppercase font-medium shadow-sm">
-            Default
+          <Badge
+            variant="default"
+            className="rounded-none rounded-bl-lg px-3 py-1 text-xs uppercase font-medium shadow-sm"
+          >
+            {t('common', 'default', { defaultValue: 'Default' })}
           </Badge>
         </div>
       )}
@@ -43,7 +55,9 @@ export default function AddressCard({ address: addr, onEdit, onDelete }: Address
       <CardHeader className="pb-3 pt-5">
         <CardTitle className="flex items-center gap-2 text-lg">
           {getIcon(addr.type)}
-          <span>{addr.type}</span>
+          <span>
+            {t('profile', addr.type?.toLowerCase() || 'other', { defaultValue: addr.type })}
+          </span>
         </CardTitle>
       </CardHeader>
 
@@ -58,7 +72,8 @@ export default function AddressCard({ address: addr, onEdit, onDelete }: Address
           <div className="space-y-0.5">
             <p className="font-medium text-foreground">{addr.street}</p>
             <p className="text-muted-foreground">
-              {addr.city}{addr.state ? `, ${addr.state}` : ''} - {addr.zipCode}
+              {addr.city}
+              {addr.state ? `, ${addr.state}` : ''} - {addr.zipCode}
             </p>
           </div>
         </div>
@@ -72,11 +87,16 @@ export default function AddressCard({ address: addr, onEdit, onDelete }: Address
       <CardFooter className="pt-3 border-t bg-background/50 flex justify-end gap-2 px-4 py-3">
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => onEdit(addr)}>
           <Pencil className="h-4 w-4" />
-          <span className="sr-only">Edit</span>
+          <span className="sr-only">{t('common', 'edit')}</span>
         </Button>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => onDelete(addr.id)}>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+          onClick={() => onDelete(addr.id)}
+        >
           <Trash2 className="h-4 w-4" />
-          <span className="sr-only">Delete</span>
+          <span className="sr-only">{t('common', 'delete')}</span>
         </Button>
       </CardFooter>
     </Card>

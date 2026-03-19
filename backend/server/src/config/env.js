@@ -6,9 +6,7 @@ const MONGO_URI =
   'mongodb+srv://mahbubcseme:cWwytaDk58VukOfR@cluster0.o6a5qyq.mongodb.net/ecommerce';
 
 // Allow origins for cors
-const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',')
-  : [];
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
 // SMTP nodemailer
 const SMTP_USER_NAME = process.env.SMTP_USER_NAME || '';
@@ -17,10 +15,8 @@ const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 
 // JWT keys
 const JWT_REG_KEY = process.env.JWT_REG_KEY || 'GHJDKJDSHKJAHDKYHU*I$45454';
-const JWT_ACCESS_KEY =
-  process.env.JWT_ACCESS_KEY || 'GHJDKJDSHKJAHDKYHU*I$45454';
-const JWT_REFRESH_KEY =
-  process.env.JWT_REFRESH_KEY || 'GHJDKJDSHKJAHDKYHU*I$45454';
+const JWT_ACCESS_KEY = process.env.JWT_ACCESS_KEY || 'GHJDKJDSHKJAHDKYHU*I$45454';
+const JWT_REFRESH_KEY = process.env.JWT_REFRESH_KEY || 'GHJDKJDSHKJAHDKYHU*I$45454';
 
 // Cloudinary
 const { CLOUDINARY_CLOUD_NAME } = process.env;

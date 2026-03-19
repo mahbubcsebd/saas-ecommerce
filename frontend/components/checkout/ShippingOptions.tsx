@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useTranslations } from "@/context/TranslationContext";
+import { useTranslations } from '@/context/TranslationContext';
 import { useCurrency } from '@/hooks/useCurrency';
 import { api } from '@/lib/api-client';
 import { Loader2, Truck } from 'lucide-react';
@@ -17,9 +17,9 @@ export interface ShippingOption {
 }
 
 interface ShippingZone {
-    id: string;
-    name: string;
-    rates: any[]; // We'll map these to options
+  id: string;
+  name: string;
+  rates: any[]; // We'll map these to options
 }
 
 interface ShippingOptionsProps {
@@ -33,7 +33,7 @@ export function ShippingOptions({
   cartTotal,
   cartWeight,
   onSelect,
-  selectedId
+  selectedId,
 }: ShippingOptionsProps) {
   const { formatPrice } = useCurrency();
   const { t } = useTranslations();
@@ -50,8 +50,8 @@ export function ShippingOptions({
         const response = await api.get<any[]>('/shipping/zones');
 
         if (!response) {
-            setError('Failed to load shipping areas');
-            return;
+          setError('Failed to load shipping areas');
+          return;
         }
 
         const validZones = response;
@@ -59,39 +59,38 @@ export function ShippingOptions({
 
         // Flatten zones and rates into selectable options
         validZones.forEach((zone: any) => {
-            zone.rates.forEach((rate: any) => {
-                let cost = 0;
-                if (rate.calculationType === 'FLAT') {
-                    cost = rate.flatRate || 0;
-                } else if (rate.calculationType === 'WEIGHT_BASED') {
-                    cost = (rate.baseRate || 0) + (cartWeight * (rate.perKgRate || 0));
-                } else if (rate.calculationType === 'ORDER_VALUE') {
-                    if (rate.freeShippingThreshold && cartTotal >= rate.freeShippingThreshold) {
-                        cost = 0;
-                    } else {
-                        cost = rate.flatRate || 0;
-                    }
-                }
+          zone.rates.forEach((rate: any) => {
+            let cost = 0;
+            if (rate.calculationType === 'FLAT') {
+              cost = rate.flatRate || 0;
+            } else if (rate.calculationType === 'WEIGHT_BASED') {
+              cost = (rate.baseRate || 0) + cartWeight * (rate.perKgRate || 0);
+            } else if (rate.calculationType === 'ORDER_VALUE') {
+              if (rate.freeShippingThreshold && cartTotal >= rate.freeShippingThreshold) {
+                cost = 0;
+              } else {
+                cost = rate.flatRate || 0;
+              }
+            }
 
-                 allOptions.push({
-                    id: rate.id,
-                    method: `${zone.name}`,
-                    carrier: rate.method,
-                    cost: cost,
-                    estimatedDays: rate.estimatedDays,
-                    isFree: cost === 0,
-                    zoneId: zone.id
-                });
+            allOptions.push({
+              id: rate.id,
+              method: `${zone.name}`,
+              carrier: rate.method,
+              cost: cost,
+              estimatedDays: rate.estimatedDays,
+              isFree: cost === 0,
+              zoneId: zone.id,
             });
+          });
         });
 
         setOptions(allOptions);
 
         // Auto-select first if none selected
         if (allOptions.length > 0 && !selectedId) {
-             onSelect(allOptions[0]);
+          onSelect(allOptions[0]);
         }
-
       } catch (err: any) {
         setError(err.message || 'Failed to load shipping options');
       } finally {
@@ -129,44 +128,45 @@ export function ShippingOptions({
   return (
     <div className="space-y-3 mt-6">
       <h3 className="font-semibold text-lg flex items-center gap-2">
-          <Truck className="h-5 w-5" /> {t('common', 'shippingArea', { defaultValue: 'Shipping Area' })}
+        <Truck className="h-5 w-5" />{' '}
+        {t('common', 'shippingArea', { defaultValue: 'Shipping Area' })}
       </h3>
       <div className="grid gap-3">
-      {options.map((option) => (
-        <label
-          key={option.id}
-          className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-colors ${
-            selectedId === option.id
-              ? 'border-primary bg-primary/5 ring-1 ring-primary'
-              : 'border-border hover:border-gray-400'
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            <input
-              type="radio"
-              name="shipping"
-              checked={selectedId === option.id}
-              onChange={() => onSelect(option)}
-              className="w-4 h-4 text-primary focus:ring-primary"
-            />
-            <div>
-              <div className="font-medium text-sm">
-                {option.method}
-              </div>
-               <div className="text-xs text-muted-foreground">
+        {options.map((option) => (
+          <label
+            key={option.id}
+            className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer transition-colors ${
+              selectedId === option.id
+                ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                : 'border-border hover:border-gray-400'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <input
+                type="radio"
+                name="shipping"
+                checked={selectedId === option.id}
+                onChange={() => onSelect(option)}
+                className="w-4 h-4 text-primary focus:ring-primary"
+              />
+              <div>
+                <div className="font-medium text-sm">{option.method}</div>
+                <div className="text-xs text-muted-foreground">
                   {option.carrier} {option.estimatedDays && `(${option.estimatedDays} days)`}
-               </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="font-semibold text-sm">
-            {option.isFree ? (
-              <span className="text-green-600 font-bold uppercase">{t('common', 'free', { defaultValue: 'FREE' })}</span>
-            ) : (
-              formatPrice(option.cost)
-            )}
-          </div>
-        </label>
-      ))}
+            <div className="font-semibold text-sm">
+              {option.isFree ? (
+                <span className="text-green-600 font-bold uppercase">
+                  {t('common', 'free', { defaultValue: 'FREE' })}
+                </span>
+              ) : (
+                formatPrice(option.cost)
+              )}
+            </div>
+          </label>
+        ))}
       </div>
     </div>
   );

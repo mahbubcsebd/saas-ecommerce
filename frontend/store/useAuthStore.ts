@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -35,9 +35,10 @@ export const useAuthStore = create<AuthState>()(
 
       clearAuth: () => set({ user: null, token: null, isAuthenticated: false }),
 
-      updateUser: (updatedFields) => set((state) => ({
-        user: state.user ? { ...state.user, ...updatedFields } : null
-      })),
+      updateUser: (updatedFields) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, ...updatedFields } : null,
+        })),
     }),
     {
       name: 'auth-storage',

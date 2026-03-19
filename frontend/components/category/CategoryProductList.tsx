@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import ProductView from "@/components/ProductView";
-import SidebarFilter from "@/components/SidebarFilter";
-import { useTranslations } from "@/context/TranslationContext";
-import { cn, getLocalized } from "@/lib/utils";
-import { Suspense } from "react";
+import ProductView from '@/components/ProductView';
+import SidebarFilter from '@/components/SidebarFilter';
+import { useTranslations } from '@/context/TranslationContext';
+import { cn, getLocalized } from '@/lib/utils';
+import { Suspense } from 'react';
 
 interface CategoryProductListProps {
   products: any[];
@@ -12,7 +12,11 @@ interface CategoryProductListProps {
   category: any;
 }
 
-export default function CategoryProductList({ products, allCategories, category }: CategoryProductListProps) {
+export default function CategoryProductList({
+  products,
+  allCategories,
+  category,
+}: CategoryProductListProps) {
   const { locale } = useTranslations();
   // Logic:
   // 1. If category has children, show them.
@@ -22,17 +26,25 @@ export default function CategoryProductList({ products, allCategories, category 
   let sidebarCategories = [];
 
   if (category.children && category.children.length > 0) {
-      sidebarCategories = category.children;
+    sidebarCategories = category.children;
   } else if (category.parentId) {
-      sidebarCategories = allCategories;
+    sidebarCategories = allCategories;
   } else {
-      sidebarCategories = allCategories;
+    sidebarCategories = allCategories;
   }
 
   // Revised Logic based on User Request: "jodi imidiate child category thake tahole segula show korano thik hobe ki?" -> YES.
-  const displayCategories = (category.children && category.children.length > 0) ? category.children : allCategories;
+  const displayCategories =
+    category.children && category.children.length > 0 ? category.children : allCategories;
   const localizedCategoryName = getLocalized(category, locale, 'name');
-  const sidebarTitle = (category.children && category.children.length > 0) ? `Explore ${localizedCategoryName}` : "Categories";
+  const { t } = useTranslations();
+  const sidebarTitle =
+    category.children && category.children.length > 0
+      ? t('home', 'explore', {
+          name: localizedCategoryName,
+          defaultValue: `Explore ${localizedCategoryName}`,
+        })
+      : t('filters', 'categories', 'Categories');
 
   return (
     <div className="container py-8">
@@ -57,16 +69,26 @@ export default function CategoryProductList({ products, allCategories, category 
               {localizedCategoryName}
             </h1>
             <p className="text-white/90 text-sm md:text-base font-medium line-clamp-2 drop-shadow-md">
-              {getLocalized(category, locale, 'description') || `Explore the finest selection of ${localizedCategoryName} at Mahbub Shop.`}
+              {getLocalized(category, locale, 'description') ||
+                t('home', 'exploreDesc', {
+                  name: localizedCategoryName,
+                  defaultValue: `Explore the finest selection of ${localizedCategoryName} at Mahbub Shop.`,
+                })}
             </p>
             <div className="mt-6 flex items-center gap-4">
               <span className="bg-white/90 text-slate-900 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg">
-                {products.length} Products
+                {t('home', 'productsCount', {
+                  count: String(products.length),
+                  defaultValue: `${products.length} Products`,
+                })}
               </span>
               {category.parent && (
-                 <span className="text-white/80 text-xs font-bold uppercase tracking-widest">
-                   Part of {getLocalized(category.parent, locale, 'name')}
-                 </span>
+                <span className="text-white/80 text-xs font-bold uppercase tracking-widest">
+                  {t('home', 'partOf', {
+                    name: getLocalized(category.parent, locale, 'name'),
+                    defaultValue: `Part of ${getLocalized(category.parent, locale, 'name')}`,
+                  })}
+                </span>
               )}
             </div>
           </div>
@@ -76,45 +98,51 @@ export default function CategoryProductList({ products, allCategories, category 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Sidebar */}
         <aside className="lg:col-span-1">
-          <Suspense fallback={<div>Loading filters...</div>}>
+          <Suspense fallback={<div>{t('filters', 'loadingFilters', 'Loading filters...')}</div>}>
             <div className="space-y-6">
-                 {/* Specific Sidebar Logic */}
-                 <div className="border rounded-lg p-4">
-                    <h3 className="font-semibold mb-4">{sidebarTitle}</h3>
-                    <SidebarFilter
-                        categories={displayCategories}
-                        baseUrl={category.children?.length > 0 ? `/${category.slug}` : '/categories'}
-                        categoryMode="link"
-                    />
-                 </div>
+              {/* Specific Sidebar Logic */}
+              <div className="border rounded-lg p-4">
+                <h3 className="font-semibold mb-4">{sidebarTitle}</h3>
+                <SidebarFilter
+                  categories={displayCategories}
+                  baseUrl={category.children?.length > 0 ? `/${category.slug}` : '/categories'}
+                  categoryMode="link"
+                />
+              </div>
             </div>
           </Suspense>
         </aside>
 
         {/* Product Grid & Sort */}
         <div className="lg:col-span-3">
-             <ProductView products={products} />
+          <ProductView products={products} />
         </div>
       </div>
 
       {/* SEO Section (Price List & Long Description) */}
       <div className="mt-20 pt-16 border-slate-200/60 transition-all duration-500">
         <div className="max-w-5xl mx-auto space-y-20">
-
           {/* 1. Price List Table */}
           {products && products.length > 0 && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
               <div className="space-y-3 text-center md:text-left">
                 <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest mb-2 border border-primary/20">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                  Live Price Update
+                  {t('home', 'livePriceUpdate', 'Live Price Update')}
                 </div>
                 <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic">
-                  Latest {localizedCategoryName} Price in BD {new Date().getFullYear()}
+                  {t('home', 'latestPriceBD', {
+                    name: localizedCategoryName,
+                    year: String(new Date().getFullYear()),
+                    defaultValue: `Latest ${localizedCategoryName} Price in BD ${new Date().getFullYear()}`,
+                  })}
                 </h2>
                 <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base font-medium max-w-2xl">
-                  Discover the most competitive prices for <strong>{localizedCategoryName}</strong> in Bangladesh.
-                  Updated daily at Mahbub Shop.
+                  {t('home', 'discoverCompetitive', {
+                    name: localizedCategoryName,
+                    defaultValue: `Discover the most competitive prices for ${localizedCategoryName} in Bangladesh.`,
+                  })}{' '}
+                  {t('home', 'updatedDaily', 'Updated daily at Mahbub Shop.')}
                 </p>
               </div>
 
@@ -122,23 +150,30 @@ export default function CategoryProductList({ products, allCategories, category 
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-900 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-                      <th className="px-8 py-5 text-xs font-black uppercase tracking-[0.2em] text-white italic">Model / Name</th>
-                      <th className="px-8 py-5 text-xs font-black uppercase tracking-[0.2em] text-white text-right italic">BDT Price</th>
+                      <th className="px-8 py-5 text-xs font-black uppercase tracking-[0.2em] text-white italic">
+                        {t('home', 'modelName', 'Model / Name')}
+                      </th>
+                      <th className="px-8 py-5 text-xs font-black uppercase tracking-[0.2em] text-white text-right italic">
+                        {t('home', 'bdtPrice', 'BDT Price')}
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {products.slice(0, 15).map((p, idx) => (
-                      <tr key={p.id} className={cn(
-                        "group transition-all duration-300",
-                        idx % 2 === 0 ? "bg-transparent" : "bg-slate-50/30 dark:bg-slate-800/20",
-                        "border-b border-slate-100 dark:border-slate-800/50 last:border-0 hover:bg-slate-100/50 dark:hover:bg-slate-800/40"
-                      )}>
+                      <tr
+                        key={p.id}
+                        className={cn(
+                          'group transition-all duration-300',
+                          idx % 2 === 0 ? 'bg-transparent' : 'bg-slate-50/30 dark:bg-slate-800/20',
+                          'border-b border-slate-100 dark:border-slate-800/50 last:border-0 hover:bg-slate-100/50 dark:hover:bg-slate-800/40'
+                        )}
+                      >
                         <td className="px-8 py-5 text-sm font-bold text-slate-700 dark:text-slate-300 group-hover:text-primary transition-colors cursor-pointer capitalize">
                           {getLocalized(p, locale, 'name')}
                         </td>
                         <td className="px-8 py-5 text-sm font-black text-slate-900 dark:text-white text-right tabular-nums">
-                           <span className="text-primary mr-1">৳</span>
-                           {p.sellingPrice > 0 ? (p.sellingPrice).toLocaleString() : "0.00"}
+                          <span className="text-primary mr-1">৳</span>
+                          {p.sellingPrice > 0 ? p.sellingPrice.toLocaleString() : '0.00'}
                         </td>
                       </tr>
                     ))}
@@ -166,11 +201,18 @@ export default function CategoryProductList({ products, allCategories, category 
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-[1px] bg-primary" />
                   <p className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
-                    Content Verified by Mahbub Shop SEO Team
+                    {t('home', 'seoVerified', 'Content Verified by Mahbub Shop SEO Team')}
                   </p>
                 </div>
                 <p className="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
-                  Last Sync: {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                  {t('home', 'lastSync', {
+                    date: new Date().toLocaleDateString(locale === 'en' ? 'en-GB' : 'bn-BD', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    }),
+                    defaultValue: `Last Sync: ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}`,
+                  })}
                 </p>
               </div>
             </div>

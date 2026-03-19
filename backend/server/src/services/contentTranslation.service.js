@@ -1,23 +1,22 @@
-﻿const { PrismaClient } = require("@prisma/client");
+﻿const { PrismaClient } = require('@prisma/client');
 const prisma = require('../config/prisma');
 
 class ContentTranslationService {
-
   /**
    * Auto-translate Category content
    */
   async autoTranslateCategory(categoryId, targetLangCode, forceUpdate = false) {
     const category = await prisma.category.findUnique({
       where: { id: categoryId },
-      include: { translations: true }
+      include: { translations: true },
     });
 
     if (!category) {
-      throw new Error("Category not found");
+      throw new Error('Category not found');
     }
 
     // Check if translation already exists
-    const existing = category.translations.find(t => t.langCode === targetLangCode);
+    const existing = category.translations.find((t) => t.langCode === targetLangCode);
     if (existing && !forceUpdate) {
       console.log(`Translation for ${targetLangCode} already exists`);
       return existing;
@@ -25,7 +24,7 @@ class ContentTranslationService {
 
     // Get target language
     const targetLanguage = await prisma.language.findUnique({
-      where: { code: targetLangCode }
+      where: { code: targetLangCode },
     });
 
     if (!targetLanguage) {
@@ -36,7 +35,7 @@ class ContentTranslationService {
     const translated = await this.translateWithAI(
       [
         { key: 'name', text: category.name },
-        { key: 'description', text: category.description || '' }
+        { key: 'description', text: category.description || '' },
       ],
       targetLanguage.name
     );
@@ -44,24 +43,26 @@ class ContentTranslationService {
     // Create or update translation
     let translation;
     if (existing) {
-        translation = await prisma.categoryTranslation.update({
-            where: { id: existing.id },
-            data: {
-                name: translated.find(t => t.key === 'name')?.translated || category.name,
-                description: translated.find(t => t.key === 'description')?.translated || category.description,
-                isAutoTranslated: true
-            }
-        });
+      translation = await prisma.categoryTranslation.update({
+        where: { id: existing.id },
+        data: {
+          name: translated.find((t) => t.key === 'name')?.translated || category.name,
+          description:
+            translated.find((t) => t.key === 'description')?.translated || category.description,
+          isAutoTranslated: true,
+        },
+      });
     } else {
-        translation = await prisma.categoryTranslation.create({
-          data: {
-            categoryId: category.id,
-            langCode: targetLangCode,
-            name: translated.find(t => t.key === 'name')?.translated || category.name,
-            description: translated.find(t => t.key === 'description')?.translated || category.description,
-            isAutoTranslated: true
-          }
-        });
+      translation = await prisma.categoryTranslation.create({
+        data: {
+          categoryId: category.id,
+          langCode: targetLangCode,
+          name: translated.find((t) => t.key === 'name')?.translated || category.name,
+          description:
+            translated.find((t) => t.key === 'description')?.translated || category.description,
+          isAutoTranslated: true,
+        },
+      });
     }
 
     return translation;
@@ -73,15 +74,15 @@ class ContentTranslationService {
   async autoTranslateProduct(productId, targetLangCode, forceUpdate = false) {
     const product = await prisma.product.findUnique({
       where: { id: productId },
-      include: { translations: true }
+      include: { translations: true },
     });
 
     if (!product) {
-      throw new Error("Product not found");
+      throw new Error('Product not found');
     }
 
     // Check if translation already exists
-    const existing = product.translations.find(t => t.langCode === targetLangCode);
+    const existing = product.translations.find((t) => t.langCode === targetLangCode);
     if (existing && !forceUpdate) {
       console.log(`Translation for ${targetLangCode} already exists`);
       return existing;
@@ -89,7 +90,7 @@ class ContentTranslationService {
 
     // Get target language
     const targetLanguage = await prisma.language.findUnique({
-      where: { code: targetLangCode }
+      where: { code: targetLangCode },
     });
 
     if (!targetLanguage) {
@@ -100,7 +101,7 @@ class ContentTranslationService {
     const translated = await this.translateWithAI(
       [
         { key: 'name', text: product.name },
-        { key: 'description', text: product.description || '' }
+        { key: 'description', text: product.description || '' },
       ],
       targetLanguage.name
     );
@@ -108,24 +109,26 @@ class ContentTranslationService {
     // Create or update translation
     let translation;
     if (existing) {
-        translation = await prisma.productTranslation.update({
-            where: { id: existing.id },
-            data: {
-                name: translated.find(t => t.key === 'name')?.translated || product.name,
-                description: translated.find(t => t.key === 'description')?.translated || product.description,
-                isAutoTranslated: true
-            }
-        });
+      translation = await prisma.productTranslation.update({
+        where: { id: existing.id },
+        data: {
+          name: translated.find((t) => t.key === 'name')?.translated || product.name,
+          description:
+            translated.find((t) => t.key === 'description')?.translated || product.description,
+          isAutoTranslated: true,
+        },
+      });
     } else {
-        translation = await prisma.productTranslation.create({
-          data: {
-            productId: product.id,
-            langCode: targetLangCode,
-            name: translated.find(t => t.key === 'name')?.translated || product.name,
-            description: translated.find(t => t.key === 'description')?.translated || product.description,
-            isAutoTranslated: true
-          }
-        });
+      translation = await prisma.productTranslation.create({
+        data: {
+          productId: product.id,
+          langCode: targetLangCode,
+          name: translated.find((t) => t.key === 'name')?.translated || product.name,
+          description:
+            translated.find((t) => t.key === 'description')?.translated || product.description,
+          isAutoTranslated: true,
+        },
+      });
     }
 
     return translation;
@@ -137,15 +140,15 @@ class ContentTranslationService {
   async autoTranslateHeroSlide(heroSlideId, targetLangCode, forceUpdate = false) {
     const heroSlide = await prisma.heroSlide.findUnique({
       where: { id: heroSlideId },
-      include: { translations: true }
+      include: { translations: true },
     });
 
     if (!heroSlide) {
-      throw new Error("HeroSlide not found");
+      throw new Error('HeroSlide not found');
     }
 
     // Check if translation already exists
-    const existing = heroSlide.translations.find(t => t.langCode === targetLangCode);
+    const existing = heroSlide.translations.find((t) => t.langCode === targetLangCode);
     if (existing && !forceUpdate) {
       console.log(`Translation for ${targetLangCode} already exists`);
       return existing;
@@ -153,7 +156,7 @@ class ContentTranslationService {
 
     // Get target language
     const targetLanguage = await prisma.language.findUnique({
-      where: { code: targetLangCode }
+      where: { code: targetLangCode },
     });
 
     if (!targetLanguage) {
@@ -166,7 +169,7 @@ class ContentTranslationService {
     if (heroSlide.subtitle) textsToTranslate.push({ key: 'subtitle', text: heroSlide.subtitle });
 
     if (textsToTranslate.length === 0) {
-      console.log("No text to translate");
+      console.log('No text to translate');
       return null;
     }
 
@@ -175,24 +178,24 @@ class ContentTranslationService {
     // Create or update translation
     let translation;
     if (existing) {
-        translation = await prisma.heroSlideTranslation.update({
-            where: { id: existing.id },
-            data: {
-                title: translated.find(t => t.key === 'title')?.translated || heroSlide.title,
-                subtitle: translated.find(t => t.key === 'subtitle')?.translated || heroSlide.subtitle,
-                isAutoTranslated: true
-            }
-        });
+      translation = await prisma.heroSlideTranslation.update({
+        where: { id: existing.id },
+        data: {
+          title: translated.find((t) => t.key === 'title')?.translated || heroSlide.title,
+          subtitle: translated.find((t) => t.key === 'subtitle')?.translated || heroSlide.subtitle,
+          isAutoTranslated: true,
+        },
+      });
     } else {
-        translation = await prisma.heroSlideTranslation.create({
-          data: {
-            heroSlideId: heroSlide.id,
-            langCode: targetLangCode,
-            title: translated.find(t => t.key === 'title')?.translated || heroSlide.title,
-            subtitle: translated.find(t => t.key === 'subtitle')?.translated || heroSlide.subtitle,
-            isAutoTranslated: true
-          }
-        });
+      translation = await prisma.heroSlideTranslation.create({
+        data: {
+          heroSlideId: heroSlide.id,
+          langCode: targetLangCode,
+          title: translated.find((t) => t.key === 'title')?.translated || heroSlide.title,
+          subtitle: translated.find((t) => t.key === 'subtitle')?.translated || heroSlide.subtitle,
+          isAutoTranslated: true,
+        },
+      });
     }
 
     return translation;
@@ -207,7 +210,7 @@ class ContentTranslationService {
     const openaiApiKey = process.env.OPENAI_API_KEY;
 
     if (!groqApiKey && !grokApiKey && !openaiApiKey) {
-      throw new Error("No AI API keys found (GROQ_API_KEY, GROK_API_KEY, or OPENAI_API_KEY)");
+      throw new Error('No AI API keys found (GROQ_API_KEY, GROK_API_KEY, or OPENAI_API_KEY)');
     }
 
     const prompt = `Translate the following e-commerce content to ${targetLanguageName}.
@@ -240,15 +243,15 @@ class ContentTranslationService {
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         model: model,
         messages: [{ role: 'user', content: prompt }],
         response_format: { type: 'json_object' },
-        temperature: 0.3
-      })
+        temperature: 0.3,
+      }),
     });
 
     const data = await response.json();
@@ -259,13 +262,13 @@ class ContentTranslationService {
     }
 
     if (!data.choices || !data.choices[0]) {
-      throw new Error("Invalid API response");
+      throw new Error('Invalid API response');
     }
 
     const content = data.choices[0].message.content;
     const parsed = JSON.parse(content);
 
-    return Array.isArray(parsed) ? parsed : (parsed.translations || []);
+    return Array.isArray(parsed) ? parsed : parsed.translations || [];
   }
 
   /**
@@ -315,7 +318,7 @@ class ContentTranslationService {
    */
   async autoTranslateCategoryForAll(categoryId, forceUpdate = false) {
     const languages = await prisma.language.findMany({
-      where: { isActive: true, code: { not: 'en' } }
+      where: { isActive: true, code: { not: 'en' } },
     });
     for (const lang of languages) {
       try {
@@ -331,7 +334,7 @@ class ContentTranslationService {
    */
   async autoTranslateProductForAll(productId, forceUpdate = false) {
     const languages = await prisma.language.findMany({
-      where: { isActive: true, code: { not: 'en' } }
+      where: { isActive: true, code: { not: 'en' } },
     });
     for (const lang of languages) {
       try {
@@ -347,13 +350,16 @@ class ContentTranslationService {
    */
   async autoTranslateHeroSlideForAll(heroSlideId, forceUpdate = false) {
     const languages = await prisma.language.findMany({
-      where: { isActive: true, code: { not: 'en' } }
+      where: { isActive: true, code: { not: 'en' } },
     });
     for (const lang of languages) {
       try {
         await this.autoTranslateHeroSlide(heroSlideId, lang.code, forceUpdate);
       } catch (error) {
-        console.error(`Error translating hero slide ${heroSlideId} to ${lang.code}:`, error.message);
+        console.error(
+          `Error translating hero slide ${heroSlideId} to ${lang.code}:`,
+          error.message
+        );
       }
     }
   }

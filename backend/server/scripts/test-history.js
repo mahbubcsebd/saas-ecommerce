@@ -8,9 +8,9 @@ async function test() {
       take: 1,
       include: {
         creator: {
-          select: { id: true, firstName: true, lastName: true, email: true }
-        }
-      }
+          select: { id: true, firstName: true, lastName: true, email: true },
+        },
+      },
     });
     console.log('Success:', JSON.stringify(data, null, 2));
   } catch (error) {

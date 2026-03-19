@@ -2,12 +2,7 @@
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useSocket } from '@/context/SocketContext';
 import { format } from 'date-fns';
@@ -77,31 +72,21 @@ const ChatWidget = () => {
     };
 
     const handleUpdated = (message: any) => {
-      setMessages((prev) =>
-        prev.map((m) => (m.id === message.id ? message : m)),
-      );
+      setMessages((prev) => prev.map((m) => (m.id === message.id ? message : m)));
     };
 
     const handleDeleted = ({ messageId }: any) => {
       setMessages((prev) =>
-        prev.map((m) =>
-          m.id === messageId
-            ? { ...m, isDeleted: true, message: 'Deleted' }
-            : m,
-        ),
+        prev.map((m) => (m.id === messageId ? { ...m, isDeleted: true, message: 'Deleted' } : m))
       );
     };
 
     const handleReacted = ({ messageId, reactions }: any) => {
-      setMessages((prev) =>
-        prev.map((m) => (m.id === messageId ? { ...m, reactions } : m)),
-      );
+      setMessages((prev) => prev.map((m) => (m.id === messageId ? { ...m, reactions } : m)));
     };
 
     const handleReadStatus = ({ messageId }: any) => {
-      setMessages((prev) =>
-        prev.map((m) => (m.id === messageId ? { ...m, isRead: true } : m)),
-      );
+      setMessages((prev) => prev.map((m) => (m.id === messageId ? { ...m, isRead: true } : m)));
     };
 
     socket.on('chat:message:new', handleNewMessage);
@@ -137,11 +122,9 @@ const ChatWidget = () => {
 
   useEffect(() => {
     const handler = () => setIsOpen(true);
-    if (typeof window !== 'undefined')
-      window.addEventListener('open-chat', handler as any);
+    if (typeof window !== 'undefined') window.addEventListener('open-chat', handler as any);
     return () => {
-      if (typeof window !== 'undefined')
-        window.removeEventListener('open-chat', handler as any);
+      if (typeof window !== 'undefined') window.removeEventListener('open-chat', handler as any);
     };
   }, []);
 
@@ -154,12 +137,10 @@ const ChatWidget = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            ...(session?.accessToken
-              ? { Authorization: `Bearer ${session.accessToken}` }
-              : {}),
+            ...(session?.accessToken ? { Authorization: `Bearer ${session.accessToken}` } : {}),
           },
           body: JSON.stringify({}),
-        },
+        }
       );
       const data = await res.json();
       if (data.success) {
@@ -179,11 +160,9 @@ const ChatWidget = () => {
         `${process.env.NEXT_PUBLIC_API_URL}/chat/conversations/${id}/messages`,
         {
           headers: {
-            ...(session?.accessToken
-              ? { Authorization: `Bearer ${session.accessToken}` }
-              : {}),
+            ...(session?.accessToken ? { Authorization: `Bearer ${session.accessToken}` } : {}),
           },
-        },
+        }
       );
       const data = await res.json();
       if (data.success) {
@@ -218,12 +197,7 @@ const ChatWidget = () => {
   };
 
   const sendMessage = async () => {
-    if (
-      (!input.trim() && pendingFiles.length === 0) ||
-      !socket ||
-      !conversation
-    )
-      return;
+    if ((!input.trim() && pendingFiles.length === 0) || !socket || !conversation) return;
 
     if (editingId) {
       socket.emit('chat:edit', { messageId: editingId, message: input });
@@ -253,10 +227,7 @@ const ChatWidget = () => {
           socket.emit('chat:message', {
             conversationId: conversation.id,
             message:
-              input ||
-              (attachments.length === 1
-                ? pendingFiles[0].name
-                : 'Sent multiple files'),
+              input || (attachments.length === 1 ? pendingFiles[0].name : 'Sent multiple files'),
             replyToId: replyTo?.id || null,
             attachments: attachments,
             type:
@@ -322,9 +293,7 @@ const ChatWidget = () => {
                 ></span>
               </div>
               <div>
-                <h3 className="font-bold text-sm leading-none mb-1">
-                  Live Support
-                </h3>
+                <h3 className="font-bold text-sm leading-none mb-1">Live Support</h3>
                 <p className="text-[10px] opacity-80 uppercase tracking-wider font-semibold">
                   {isConnected ? 'Active Now' : 'Reconnecting...'}
                 </p>
@@ -354,10 +323,7 @@ const ChatWidget = () => {
                 </div>
               </div>
             )}
-            <div
-              ref={scrollRef}
-              className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
-            >
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
               {loading ? (
                 <div className="flex items-center justify-center h-full">
                   <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
@@ -374,8 +340,7 @@ const ChatWidget = () => {
               ) : (
                 messages.map((m, index) => {
                   const isOwn = m.senderId === session.user.id;
-                  const showSeen =
-                    isOwn && m.isRead && index === messages.length - 1;
+                  const showSeen = isOwn && m.isRead && index === messages.length - 1;
                   return (
                     <div
                       key={m.id}
@@ -469,9 +434,7 @@ const ChatWidget = () => {
                                       variant="ghost"
                                       size="icon"
                                       className="h-7 w-7 rounded-full hover:bg-red-50 text-red-500"
-                                      onClick={() =>
-                                        socket?.emit('chat:delete', m.id)
-                                      }
+                                      onClick={() => socket?.emit('chat:delete', m.id)}
                                     >
                                       <Trash2 className="h-3 w-3" />
                                     </Button>
@@ -515,9 +478,7 @@ const ChatWidget = () => {
             <div className="flex flex-col w-full gap-2">
               {replyTo && (
                 <div className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-l-4 border-blue-600 text-[11px] shadow-inner mb-2 animate-in slide-in-from-bottom-2">
-                  <span className="truncate flex-1">
-                    Replying to: {replyTo.message}
-                  </span>
+                  <span className="truncate flex-1">Replying to: {replyTo.message}</span>
                   <X
                     className="h-3 w-3 cursor-pointer ml-2 hover:text-red-500"
                     onClick={() => setReplyTo(null)}

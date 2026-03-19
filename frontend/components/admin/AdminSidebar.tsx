@@ -1,100 +1,100 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import {
-    FolderTree,
-    Image as ImageIcon,
-    LayoutDashboard,
-    LogOut,
-    Package,
-    Settings,
-    ShoppingBag,
-    ShoppingCart,
-    Star,
-    Store,
-    Tags,
-    Ticket,
-    Truck,
-    TruckIcon,
-    Users,
-} from "lucide-react";
+  FolderTree,
+  Image as ImageIcon,
+  LayoutDashboard,
+  LogOut,
+  Package,
+  Settings,
+  ShoppingBag,
+  ShoppingCart,
+  Star,
+  Store,
+  Tags,
+  Ticket,
+  Truck,
+  TruckIcon,
+  Users,
+} from 'lucide-react';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const sidebarItems = [
   {
-    title: "Dashboard",
-    href: "/admin",
+    title: 'Dashboard',
+    href: '/admin',
     icon: LayoutDashboard,
   },
   {
-    title: "POS",
-    href: "/admin/pos",
+    title: 'POS',
+    href: '/admin/pos',
     icon: Store,
   },
   {
-    title: "Products",
-    href: "/admin/products",
+    title: 'Products',
+    href: '/admin/products',
     icon: Package,
   },
   {
-    title: "Orders",
-    href: "/admin/orders",
+    title: 'Orders',
+    href: '/admin/orders',
     icon: ShoppingCart,
   },
   {
-    title: "Users",
-    href: "/admin/users",
+    title: 'Users',
+    href: '/admin/users',
     icon: Users,
   },
 
   {
-    title: "Categories",
-    href: "/admin/categories",
+    title: 'Categories',
+    href: '/admin/categories',
     icon: FolderTree,
   },
   {
-    title: "Discounts",
-    href: "/admin/discounts",
+    title: 'Discounts',
+    href: '/admin/discounts',
     icon: Tags,
   },
   {
-      title: "Coupons",
-      href: "/admin/coupons",
-      icon: Ticket
+    title: 'Coupons',
+    href: '/admin/coupons',
+    icon: Ticket,
   },
   {
-      title: "Hero Slides",
-      href: "/admin/hero-slides",
-      icon: ImageIcon
+    title: 'Hero Slides',
+    href: '/admin/hero-slides',
+    icon: ImageIcon,
   },
   {
-      title: "Reviews",
-      href: "/admin/reviews",
-      icon: Star
+    title: 'Reviews',
+    href: '/admin/reviews',
+    icon: Star,
   },
   {
-      title: "Shipping",
-      href: "/admin/shipping",
-      icon: Truck
+    title: 'Shipping',
+    href: '/admin/shipping',
+    icon: Truck,
   },
   {
-      title: "Suppliers",
-      href: "/admin/suppliers",
-      icon: TruckIcon
+    title: 'Suppliers',
+    href: '/admin/suppliers',
+    icon: TruckIcon,
   },
   {
-      title: "Purchases",
-      href: "/admin/purchases",
-      icon: ShoppingBag
+    title: 'Purchases',
+    href: '/admin/purchases',
+    icon: ShoppingBag,
   },
   {
-      title: "Settings",
-      href: "/admin/settings",
-      icon: Settings
-  }
+    title: 'Settings',
+    href: '/admin/settings',
+    icon: Settings,
+  },
 ];
 
 export function AdminSidebar() {
@@ -115,10 +115,8 @@ export function AdminSidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary",
-                pathname === item.href
-                  ? "bg-muted text-primary"
-                  : "text-muted-foreground"
+                'flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary',
+                pathname === item.href ? 'bg-muted text-primary' : 'text-muted-foreground'
               )}
             >
               <item.icon className="h-4 w-4" />
@@ -128,12 +126,12 @@ export function AdminSidebar() {
         </nav>
       </div>
       <div className="mt-auto p-4 border-t">
-         <Link href="/">
-            <Button variant="outline" className="w-full gap-2">
-                <LogOut className="h-4 w-4" />
-                Back to Store
-            </Button>
-         </Link>
+        <Link href="/">
+          <Button variant="outline" className="w-full gap-2">
+            <LogOut className="h-4 w-4" />
+            Back to Store
+          </Button>
+        </Link>
       </div>
     </div>
   );

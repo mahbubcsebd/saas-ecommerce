@@ -18,10 +18,7 @@ export interface CurrencySettings {
  * @param settings - Currency settings from backend
  * @returns Formatted price string
  */
-export function formatPrice(
-  amount: number | string,
-  settings?: CurrencySettings
-): string {
+export function formatPrice(amount: number | string, settings?: CurrencySettings): string {
   const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
 
   if (isNaN(numAmount)) return '0';
@@ -32,15 +29,13 @@ export function formatPrice(
     symbolPosition = 'LEFT',
     decimalPlaces = 2,
     decimalSeparator = '.',
-    thousandSeparator = ','
+    thousandSeparator = ',',
   } = settings || {};
 
   // Format number with separators
   const parts = numAmount.toFixed(decimalPlaces).split('.');
   const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
-  const formattedAmount = parts[1]
-    ? `${integerPart}${decimalSeparator}${parts[1]}`
-    : integerPart;
+  const formattedAmount = parts[1] ? `${integerPart}${decimalSeparator}${parts[1]}` : integerPart;
 
   // Apply symbol position
   if (symbolPosition === 'RIGHT') {
@@ -52,24 +47,15 @@ export function formatPrice(
 /**
  * Format currency without symbol (just number formatting)
  */
-export function formatNumber(
-  amount: number | string,
-  settings?: CurrencySettings
-): string {
+export function formatNumber(amount: number | string, settings?: CurrencySettings): string {
   const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
 
   if (isNaN(numAmount)) return '0';
 
-  const {
-    decimalPlaces = 2,
-    decimalSeparator = '.',
-    thousandSeparator = ','
-  } = settings || {};
+  const { decimalPlaces = 2, decimalSeparator = '.', thousandSeparator = ',' } = settings || {};
 
   const parts = numAmount.toFixed(decimalPlaces).split('.');
   const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
 
-  return parts[1]
-    ? `${integerPart}${decimalSeparator}${parts[1]}`
-    : integerPart;
+  return parts[1] ? `${integerPart}${decimalSeparator}${parts[1]}` : integerPart;
 }

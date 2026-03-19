@@ -1,10 +1,10 @@
-import ProductBreadcrumbs from "@/components/product/ProductBreadcrumbs";
-import ProductDetailsClient from "@/components/product/ProductDetailsClient";
-import RelatedProducts from "@/components/product/RelatedProducts";
-import { generateProductMetadata, generateProductSchema } from "@/lib/seo-utils";
-import { Product } from "@/types/product";
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import ProductBreadcrumbs from '@/components/product/ProductBreadcrumbs';
+import ProductDetailsClient from '@/components/product/ProductDetailsClient';
+import RelatedProducts from '@/components/product/RelatedProducts';
+import { generateProductMetadata, generateProductSchema } from '@/lib/seo-utils';
+import { Product } from '@/types/product';
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
 async function getProduct(slug: string): Promise<Product | null> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
@@ -15,39 +15,43 @@ async function getProduct(slug: string): Promise<Product | null> {
 
   try {
     const res = await fetch(`${apiUrl}/products/${slug}`, {
-      cache: "no-store",
+      cache: 'no-store',
     });
 
     if (!res.ok) {
-        console.error(`Fetch failed: ${res.status} ${res.statusText}`);
-        // Try reading body for more info
-        const text = await res.text();
-        console.error(`Response body: ${text}`);
-        return null;
+      console.error(`Fetch failed: ${res.status} ${res.statusText}`);
+      // Try reading body for more info
+      const text = await res.text();
+      console.error(`Response body: ${text}`);
+      return null;
     }
 
     const data = await res.json();
     if (!data.success) {
-        console.error(`API Error: ${data.message}`);
-        return null;
+      console.error(`API Error: ${data.message}`);
+      return null;
     }
 
     return data.data || null;
   } catch (error) {
-    console.error("Error fetching product:", error);
+    console.error('Error fetching product:', error);
     return null;
   }
 }
 
 // Generate metadata for SEO
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);
 
   if (!product) {
     return {
-      title: "Product Not Found",
-      description: "The requested product could not be found."
+      title: 'Product Not Found',
+      description: 'The requested product could not be found.',
     };
   }
 
@@ -81,7 +85,9 @@ export default async function ProductDetailsPage({ params }: PageProps) {
 
       {/* Related Products */}
       <RelatedProducts
-        categoryId={typeof product.category === 'object' ? (product.category as any).id : product.categoryId}
+        categoryId={
+          typeof product.category === 'object' ? (product.category as any).id : product.categoryId
+        }
         currentProductId={product.id}
       />
     </div>

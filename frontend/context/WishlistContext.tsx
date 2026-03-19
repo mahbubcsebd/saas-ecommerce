@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useSession } from "next-auth/react";
-import { createContext, useContext, useEffect, useState } from "react";
-import { toast } from "sonner";
+import { useSession } from 'next-auth/react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface WishlistItem {
   id: string;
@@ -38,8 +38,8 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
 
   const fetchWishlist = async () => {
     if (!session?.accessToken) {
-        setWishlist([]);
-        return;
+      setWishlist([]);
+      return;
     }
     setLoading(true);
     try {
@@ -53,7 +53,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
         setWishlist(data.data || []);
       }
     } catch (error) {
-      console.error("Failed to fetch wishlist", error);
+      console.error('Failed to fetch wishlist', error);
     } finally {
       setLoading(false);
     }
@@ -65,15 +65,15 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
 
   const toggleWishlist = async (productId: string) => {
     if (!session?.accessToken) {
-        toast.error("Please login to use wishlist");
-        return;
+      toast.error('Please login to use wishlist');
+      return;
     }
 
     try {
       const res = await fetch(`${API_URL}/wishlist/toggle`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${session.accessToken}`,
         },
         body: JSON.stringify({ productId }),
@@ -82,23 +82,24 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       if (res.ok) {
         const data = await res.json();
         if (data.isWishlisted) {
-            toast.success("Added to wishlist");
+          toast.success('Added to wishlist');
         } else {
-            toast.success("Removed from wishlist");
+          toast.success('Removed from wishlist');
         }
         await fetchWishlist();
       } else {
-          const data = await res.json();
-          toast.error(data.message || "Failed to toggle wishlist");
+        const data = await res.json();
+        toast.error(data.message || 'Failed to toggle wishlist');
       }
     } catch (error) {
-      console.error("Failed to toggle wishlist", error);
-      toast.error("Something went wrong");
+      console.error('Failed to toggle wishlist', error);
+      toast.error('Something went wrong');
     }
   };
 
   const isInWishlist = (productId: string) => {
-    return wishlist.some((item) =>
+    return wishlist.some(
+      (item) =>
         String(item.productId) === String(productId) ||
         String(item.product?.id) === String(productId)
     );
@@ -122,7 +123,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
 export function useWishlist() {
   const context = useContext(WishlistContext);
   if (context === undefined) {
-    throw new Error("useWishlist must be used within a WishlistProvider");
+    throw new Error('useWishlist must be used within a WishlistProvider');
   }
   return context;
 }

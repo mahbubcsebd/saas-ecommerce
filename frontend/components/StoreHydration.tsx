@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useCartStore } from "@/store/useCartStore";
-import { useEffect, useState } from "react";
+import { useCartStore } from '@/store/useCartStore';
+import { useEffect, useState } from 'react';
 
 export default function StoreHydration() {
   const [hydrated, setHydrated] = useState(false);
@@ -9,10 +9,10 @@ export default function StoreHydration() {
 
   useEffect(() => {
     // Initialize Guest ID if not present
-    let storedGuestId = localStorage.getItem("guestId");
+    let storedGuestId = localStorage.getItem('guestId');
     if (!storedGuestId) {
       storedGuestId = crypto.randomUUID();
-      localStorage.setItem("guestId", storedGuestId);
+      localStorage.setItem('guestId', storedGuestId);
     }
 
     const { setGuestId } = useCartStore.getState();

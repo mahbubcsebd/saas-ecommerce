@@ -28,9 +28,7 @@ function initializeSocket(server) {
       }
 
       const secret =
-        process.env.JWT_ACCESS_SECRET ||
-        process.env.JWT_ACCESS_KEY ||
-        'FHDJKFHDJKSHFJKFHJKDSHF';
+        process.env.JWT_ACCESS_SECRET || process.env.JWT_ACCESS_KEY || 'FHDJKFHDJKSHFJKFHJKDSHF';
       const decoded = jwt.verify(token, secret);
 
       const user = await prisma.user.findUnique({

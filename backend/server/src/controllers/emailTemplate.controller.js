@@ -1,4 +1,4 @@
-const createError = require("http-errors");
+const createError = require('http-errors');
 const prisma = require('../config/prisma');
 
 // Get all email templates
@@ -10,7 +10,7 @@ exports.getAllEmailTemplates = async (req, res, next) => {
 
     const templates = await prisma.emailTemplate.findMany({
       where: filter,
-      orderBy: { createdAt: "desc" }
+      orderBy: { createdAt: 'desc' },
     });
     res.status(200).json({ success: true, data: templates });
   } catch (error) {
@@ -23,9 +23,9 @@ exports.getEmailTemplateById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const template = await prisma.emailTemplate.findUnique({
-      where: { id }
+      where: { id },
     });
-    if (!template) throw createError(404, "Email template not found");
+    if (!template) throw createError(404, 'Email template not found');
     res.status(200).json({ success: true, data: template });
   } catch (error) {
     next(error);
@@ -35,35 +35,27 @@ exports.getEmailTemplateById = async (req, res, next) => {
 // Create email template
 exports.createEmailTemplate = async (req, res, next) => {
   try {
-    const {
-      name,
-      subject,
-      type,
-      body,
-      design,
-      variables,
-      isActive
-    } = req.body;
+    const { name, subject, type, body, design, variables, isActive } = req.body;
 
     // Check if name already exists
     const existing = await prisma.emailTemplate.findFirst({
-      where: { name }
+      where: { name },
     });
 
     if (existing) {
-      throw createError(400, "Template name already exists");
+      throw createError(400, 'Template name already exists');
     }
 
     const template = await prisma.emailTemplate.create({
       data: {
         name,
-        subject: subject || "No Subject",
+        subject: subject || 'No Subject',
         type: type || null,
-        body: body || "",
+        body: body || '',
         design: design || {},
         variables: variables || [],
-        isActive: isActive !== false
-      }
+        isActive: isActive !== false,
+      },
     });
 
     res.status(201).json({ success: true, data: template });
@@ -76,15 +68,7 @@ exports.createEmailTemplate = async (req, res, next) => {
 exports.updateEmailTemplate = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const {
-      name,
-      subject,
-      type,
-      body,
-      design,
-      variables,
-      isActive
-    } = req.body;
+    const { name, subject, type, body, design, variables, isActive } = req.body;
 
     const template = await prisma.emailTemplate.update({
       where: { id },
@@ -95,8 +79,8 @@ exports.updateEmailTemplate = async (req, res, next) => {
         body,
         design,
         variables,
-        isActive: isActive === undefined ? undefined : (isActive === true || isActive === 'true')
-      }
+        isActive: isActive === undefined ? undefined : isActive === true || isActive === 'true',
+      },
     });
 
     res.status(200).json({ success: true, data: template });
@@ -110,9 +94,9 @@ exports.deleteEmailTemplate = async (req, res, next) => {
   try {
     const { id } = req.params;
     await prisma.emailTemplate.delete({
-      where: { id }
+      where: { id },
     });
-    res.status(200).json({ success: true, message: "Template deleted successfully" });
+    res.status(200).json({ success: true, message: 'Template deleted successfully' });
   } catch (error) {
     next(error);
   }
@@ -123,7 +107,7 @@ exports.duplicateEmailTemplate = async (req, res, next) => {
   try {
     const { id } = req.params;
     const original = await prisma.emailTemplate.findUnique({ where: { id } });
-    if (!original) throw createError(404, "Original template not found");
+    if (!original) throw createError(404, 'Original template not found');
 
     const duplicate = await prisma.emailTemplate.create({
       data: {
@@ -133,8 +117,8 @@ exports.duplicateEmailTemplate = async (req, res, next) => {
         body: original.body,
         design: original.design,
         variables: original.variables,
-        isActive: false
-      }
+        isActive: false,
+      },
     });
 
     res.status(201).json({ success: true, data: duplicate });

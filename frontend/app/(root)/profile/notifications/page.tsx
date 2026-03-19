@@ -1,9 +1,9 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import NotificationList from "@/components/profile/NotificationList";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { api } from "@/lib/api-client";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import NotificationList from '@/components/profile/NotificationList';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { api } from '@/lib/api-client';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
 
 interface PageProps {
   searchParams: Promise<{ unreadOnly?: string }>;
@@ -12,21 +12,21 @@ interface PageProps {
 export default async function NotificationsPage({ searchParams }: PageProps) {
   const session = await getServerSession(authOptions);
   const { unreadOnly } = await searchParams;
-  const isUnreadOnly = unreadOnly === "true";
+  const isUnreadOnly = unreadOnly === 'true';
 
   if (!session) {
-    redirect("/auth/login?callbackUrl=/profile/notifications");
+    redirect('/auth/login?callbackUrl=/profile/notifications');
   }
 
   let notifications = [];
   try {
     const data = await api.get<any>(`/notifications?limit=50&unreadOnly=${isUnreadOnly}`, {
       headers: { Authorization: `Bearer ${session.accessToken}` },
-      revalidate: 0
+      revalidate: 0,
     });
     notifications = data?.notifications || [];
   } catch (error) {
-    console.error("Failed to fetch notifications:", error);
+    console.error('Failed to fetch notifications:', error);
   }
 
   return (
@@ -43,8 +43,8 @@ export default async function NotificationsPage({ searchParams }: PageProps) {
             // but for this component we'll pass a function that client can handle
             // or just use a link to refresh the RSC
             onToggleUnread={async () => {
-                "use server";
-                redirect(`/profile/notifications?unreadOnly=${!isUnreadOnly}`);
+              'use server';
+              redirect(`/profile/notifications?unreadOnly=${!isUnreadOnly}`);
             }}
           />
         </CardContent>

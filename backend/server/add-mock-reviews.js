@@ -2,14 +2,16 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("Adding mock reviews...");
+  console.log('Adding mock reviews...');
 
   // Find a product and a user
   const product = await prisma.product.findFirst();
   const user = await prisma.user.findFirst();
 
   if (!product || !user) {
-    console.error("No users or products found in the database. Please create a user and a product first.");
+    console.error(
+      'No users or products found in the database. Please create a user and a product first.'
+    );
     process.exit(1);
   }
 
@@ -41,10 +43,12 @@ async function main() {
         status: 'APPROVED',
         isFlagged: false,
       },
-    ]
+    ],
   });
 
-  console.log("Mock reviews added successfully!");
+  console.log('Mock reviews added successfully!');
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main()
+  .catch(console.error)
+  .finally(() => prisma.$disconnect());

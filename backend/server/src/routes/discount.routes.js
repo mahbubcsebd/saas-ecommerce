@@ -6,11 +6,13 @@ const { authMiddleware: protect, isAdmin: admin } = require('../middlewares/auth
 // Public: None? Maybe specific check for validity
 // Admin: CRUD
 
-router.route('/')
+router
+  .route('/')
   .post(protect, admin, discountController.createDiscount)
   .get(protect, admin, discountController.getDiscounts);
 
-router.route('/:id')
+router
+  .route('/:id')
   .get(protect, admin, discountController.getDiscount)
   .put(protect, admin, discountController.updateDiscount)
   .delete(protect, admin, discountController.deleteDiscount);

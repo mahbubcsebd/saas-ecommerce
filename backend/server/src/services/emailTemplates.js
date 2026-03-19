@@ -42,12 +42,16 @@ exports.welcome = ({ firstName, shopUrl = '#', couponCode = null }) => {
     </div>
     <div style="padding:32px;">
       <p style="font-size:15px;line-height:1.7;color:#374151;">We're thrilled to have you with us. Explore thousands of products, enjoy fast delivery, and get great deals every week.</p>
-      ${couponCode ? `
+      ${
+        couponCode
+          ? `
       <div style="background:#eff6ff;border:2px dashed #93c5fd;border-radius:12px;padding:20px;text-align:center;margin:24px 0;">
         <p style="margin:0 0 6px;font-size:12px;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:1px;">Your Welcome Gift</p>
         <p style="margin:0;font-size:26px;font-weight:900;color:#1e3a8a;letter-spacing:3px;">${couponCode}</p>
         <p style="margin:8px 0 0;font-size:12px;color:#6b7280;">Use this code at checkout.</p>
-      </div>` : ''}
+      </div>`
+          : ''
+      }
       <div style="text-align:center;margin-top:28px;">
         <a href="${shopUrl}" style="background:#4f46e5;color:#ffffff;text-decoration:none;font-weight:700;padding:14px 36px;border-radius:8px;font-size:15px;display:inline-block;">Start Shopping →</a>
       </div>
@@ -77,14 +81,24 @@ exports.forgotPassword = ({ firstName, resetLink, expiryMinutes = 60 }) => {
 };
 
 // ─── Order Confirmation Email ─────────────────────────────────────────────────
-exports.orderConfirmation = ({ firstName, orderNumber, orderTotal, items = [], downloadUrl = null }) => {
-  const itemsHtml = items.map(it => `
+exports.orderConfirmation = ({
+  firstName,
+  orderNumber,
+  orderTotal,
+  items = [],
+  downloadUrl = null,
+}) => {
+  const itemsHtml = items
+    .map(
+      (it) => `
     <tr>
       <td style="padding:10px 8px;font-size:13px;border-bottom:1px solid #f3f4f6;">${it.name}${it.variant ? ` <span style="color:#9ca3af;font-size:11px;">(${it.variant})</span>` : ''}</td>
       <td style="padding:10px 8px;font-size:13px;text-align:center;border-bottom:1px solid #f3f4f6;">${it.qty}</td>
       <td style="padding:10px 8px;font-size:13px;text-align:right;font-weight:700;border-bottom:1px solid #f3f4f6;">${it.total} ৳</td>
     </tr>
-  `).join('');
+  `
+    )
+    .join('');
 
   return emailWrapper(`
     <div style="background:#1e293b;padding:32px;text-align:center;">
@@ -112,17 +126,27 @@ exports.orderConfirmation = ({ firstName, orderNumber, orderTotal, items = [], d
         </tfoot>
       </table>
 
-      ${downloadUrl ? `
+      ${
+        downloadUrl
+          ? `
       <div style="text-align:center;margin:24px 0;">
         <a href="${downloadUrl}" style="background:#1e293b;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 28px;border-radius:8px;font-size:14px;display:inline-block;">⬇️ Download Invoice (PDF)</a>
-      </div>` : ''}
+      </div>`
+          : ''
+      }
       ${footer()}
     </div>
   `);
 };
 
 // ─── Shipping Notification Email ──────────────────────────────────────────────
-exports.shippingNotification = ({ firstName, orderNumber, trackingNumber, trackingUrl, estimatedDelivery }) => {
+exports.shippingNotification = ({
+  firstName,
+  orderNumber,
+  trackingNumber,
+  trackingUrl,
+  estimatedDelivery,
+}) => {
   return emailWrapper(`
     <div style="background:linear-gradient(135deg,#059669,#10b981);padding:32px;text-align:center;">
       <div style="font-size:40px;margin-bottom:8px;">🚚</div>
@@ -138,10 +162,14 @@ exports.shippingNotification = ({ firstName, orderNumber, trackingNumber, tracki
         ${estimatedDelivery ? `<p style="margin:8px 0 0;font-size:12px;color:#6b7280;">Estimated delivery: <strong>${estimatedDelivery}</strong></p>` : ''}
       </div>
 
-      ${trackingUrl ? `
+      ${
+        trackingUrl
+          ? `
       <div style="text-align:center;">
         <a href="${trackingUrl}" style="background:#059669;color:#ffffff;text-decoration:none;font-weight:700;padding:14px 32px;border-radius:8px;font-size:15px;display:inline-block;">Track My Package</a>
-      </div>` : ''}
+      </div>`
+          : ''
+      }
       ${footer()}
     </div>
   `);

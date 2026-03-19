@@ -13,7 +13,8 @@ const getSessionId = () => {
 
   let sessionId = localStorage.getItem('analytics_session_id');
   if (!sessionId) {
-    sessionId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    sessionId =
+      Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     localStorage.setItem('analytics_session_id', sessionId);
   }
   return sessionId;
@@ -76,8 +77,9 @@ export const trackAddToCart = (product: Product) => {
   });
 
   // GA4
-  if (typeof window !== 'undefined' && window.gtag) {
-    window.gtag('event', 'add_to_cart', {
+  const gtag = typeof window !== 'undefined' ? window.gtag : undefined;
+  if (gtag) {
+    gtag('event', 'add_to_cart', {
       currency: 'BDT',
       value: product.price * (product.quantity || 1),
       items: [
@@ -94,8 +96,9 @@ export const trackAddToCart = (product: Product) => {
   }
 
   // Meta Pixel
-  if (typeof window !== 'undefined' && window.fbq) {
-    window.fbq('track', 'AddToCart', {
+  const fbq = typeof window !== 'undefined' ? window.fbq : undefined;
+  if (fbq) {
+    fbq('track', 'AddToCart', {
       content_ids: [product.id],
       content_name: product.name,
       content_type: 'product',
@@ -127,8 +130,9 @@ export const trackBeginCheckout = (items: Product[], total: number) => {
   });
 
   // GA4
-  if (typeof window !== 'undefined' && window.gtag) {
-    window.gtag('event', 'begin_checkout', {
+  const gtag = typeof window !== 'undefined' ? window.gtag : undefined;
+  if (gtag) {
+    gtag('event', 'begin_checkout', {
       currency: 'BDT',
       value: total,
       items: items.map((item) => ({
@@ -143,8 +147,9 @@ export const trackBeginCheckout = (items: Product[], total: number) => {
   }
 
   // Meta Pixel
-  if (typeof window !== 'undefined' && window.fbq) {
-    window.fbq('track', 'InitiateCheckout', {
+  const fbq = typeof window !== 'undefined' ? window.fbq : undefined;
+  if (fbq) {
+    fbq('track', 'InitiateCheckout', {
       content_ids: items.map((i) => i.id),
       content_type: 'product',
       value: total,
@@ -177,8 +182,9 @@ export const trackViewContent = (product: Product) => {
   });
 
   // GA4
-  if (typeof window !== 'undefined' && window.gtag) {
-    window.gtag('event', 'view_item', {
+  const gtag = typeof window !== 'undefined' ? window.gtag : undefined;
+  if (gtag) {
+    gtag('event', 'view_item', {
       currency: 'BDT',
       value: product.price,
       items: [
@@ -194,8 +200,9 @@ export const trackViewContent = (product: Product) => {
   }
 
   // Meta Pixel
-  if (typeof window !== 'undefined' && window.fbq) {
-    window.fbq('track', 'ViewContent', {
+  const fbq = typeof window !== 'undefined' ? window.fbq : undefined;
+  if (fbq) {
+    fbq('track', 'ViewContent', {
       content_ids: [product.id],
       content_name: product.name,
       content_type: 'product',

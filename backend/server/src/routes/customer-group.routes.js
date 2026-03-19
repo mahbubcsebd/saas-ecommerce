@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const {
-    createCustomerGroup,
-    getAllCustomerGroups,
-    getCustomerGroup,
-    updateCustomerGroup,
-    deleteCustomerGroup,
-    assignUsersToGroup,
-    removeUserFromGroup,
+  createCustomerGroup,
+  getAllCustomerGroups,
+  getCustomerGroup,
+  updateCustomerGroup,
+  deleteCustomerGroup,
+  assignUsersToGroup,
+  removeUserFromGroup,
 } = require('../controllers/customer-group.controller');
 const { authMiddleware, isManager } = require('../middlewares/auth.middleware');
 

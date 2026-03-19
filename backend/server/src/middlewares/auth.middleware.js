@@ -57,8 +57,8 @@ const authenticate = async (req, res, next) => {
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
       include: {
-        customRole: true
-      }
+        customRole: true,
+      },
     });
 
     if (!user) {
@@ -70,11 +70,11 @@ const authenticate = async (req, res, next) => {
     }
 
     if (user.status !== 'ACTIVE' && user.isActive === false) {
-       return res.status(403).json({
-         success: false,
-         message: 'Account is inactive',
-         code: 'USER_INACTIVE',
-       });
+      return res.status(403).json({
+        success: false,
+        message: 'Account is inactive',
+        code: 'USER_INACTIVE',
+      });
     }
 
     req.user = excludeFields(user, ['password']);
@@ -92,125 +92,132 @@ const authenticate = async (req, res, next) => {
 
 // Super Admin Only
 const isSuperAdmin = (req, res, next) => {
-    if (req.user.role !== 'SUPER_ADMIN') {
-        return res.status(403).json({ success: false, message: 'Super Admin access required', code: 'FORBIDDEN' });
-    }
-    next();
+  if (req.user.role !== 'SUPER_ADMIN') {
+    return res
+      .status(403)
+      .json({ success: false, message: 'Super Admin access required', code: 'FORBIDDEN' });
+  }
+  next();
 };
 
 // Admin or above (SUPER_ADMIN, ADMIN)
 const isAdmin = (req, res, next) => {
-    if (!['SUPER_ADMIN', 'ADMIN'].includes(req.user.role)) {
-        return res.status(403).json({ success: false, message: 'Admin access required', code: 'FORBIDDEN' });
-    }
-    next();
+  if (!['SUPER_ADMIN', 'ADMIN'].includes(req.user.role)) {
+    return res
+      .status(403)
+      .json({ success: false, message: 'Admin access required', code: 'FORBIDDEN' });
+  }
+  next();
 };
 
 // Manager or above (SUPER_ADMIN, ADMIN, MANAGER)
 const isManager = (req, res, next) => {
-    if (!['SUPER_ADMIN', 'ADMIN', 'MANAGER'].includes(req.user.role)) {
-        return res.status(403).json({ success: false, message: 'Manager access required', code: 'FORBIDDEN' });
-    }
-    next();
+  if (!['SUPER_ADMIN', 'ADMIN', 'MANAGER'].includes(req.user.role)) {
+    return res
+      .status(403)
+      .json({ success: false, message: 'Manager access required', code: 'FORBIDDEN' });
+  }
+  next();
 };
 
 // Staff or above (SUPER_ADMIN, ADMIN, MANAGER, STAFF)
 const isStaff = (req, res, next) => {
-    if (!['SUPER_ADMIN', 'ADMIN', 'MANAGER', 'STAFF'].includes(req.user.role)) {
-        return res.status(403).json({ success: false, message: 'Staff access required', code: 'FORBIDDEN' });
-    }
-    next();
+  if (!['SUPER_ADMIN', 'ADMIN', 'MANAGER', 'STAFF'].includes(req.user.role)) {
+    return res
+      .status(403)
+      .json({ success: false, message: 'Staff access required', code: 'FORBIDDEN' });
+  }
+  next();
 };
 
 // 3. Special Permissions
 
 // Can Manage User
 const canManageUser = async (req, res, next) => {
-    try {
-        const targetUserId = req.params.id || req.params.userId || req.body.userId;
+  try {
+    const targetUserId = req.params.id || req.params.userId || req.body.userId;
 
-        if (!targetUserId) return next();
+    if (!targetUserId) return next();
 
-        // If managing self, allow? Usually user management is by others.
-        // Let's assume this is for Admin actions.
+    // If managing self, allow? Usually user management is by others.
+    // Let's assume this is for Admin actions.
 
-        const targetUser = await prisma.user.findUnique({
-            where: { id: targetUserId },
-            select: { role: true }
-        });
+    const targetUser = await prisma.user.findUnique({
+      where: { id: targetUserId },
+      select: { role: true },
+    });
 
-        if (!targetUser) {
-            return res.status(404).json({ success: false, message: 'User not found' });
-        }
-
-        const currentUserRole = req.user.role;
-
-        // Super Admin can manage everyone
-        if (currentUserRole === 'SUPER_ADMIN') return next();
-
-
-
-        // Admin cannot manage Super Admin
-        if (currentUserRole === 'ADMIN') {
-            if (targetUser.role === 'SUPER_ADMIN') {
-                return res.status(403).json({ success: false, message: 'Cannot manage Super Admin' });
-            }
-            return next();
-        }
-
-        // Managers/Staff cannot manage users (handled by isAdmin guard usually, but double check)
-        return res.status(403).json({ success: false, message: 'Insufficient permissions to manage users' });
-
-    } catch (error) {
-        next(error);
+    if (!targetUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
     }
+
+    const currentUserRole = req.user.role;
+
+    // Super Admin can manage everyone
+    if (currentUserRole === 'SUPER_ADMIN') return next();
+
+    // Admin cannot manage Super Admin
+    if (currentUserRole === 'ADMIN') {
+      if (targetUser.role === 'SUPER_ADMIN') {
+        return res.status(403).json({ success: false, message: 'Cannot manage Super Admin' });
+      }
+      return next();
+    }
+
+    // Managers/Staff cannot manage users (handled by isAdmin guard usually, but double check)
+    return res
+      .status(403)
+      .json({ success: false, message: 'Insufficient permissions to manage users' });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // 4. Permission-based Guard
 const hasPermission = (permission) => {
-    return (req, res, next) => {
-        const user = req.user;
+  return (req, res, next) => {
+    const user = req.user;
 
-        // Admins and Super Admins have all permissions
-        if (['SUPER_ADMIN', 'ADMIN'].includes(user.role)) {
-            return next();
-        }
+    // Admins and Super Admins have all permissions
+    if (['SUPER_ADMIN', 'ADMIN'].includes(user.role)) {
+      return next();
+    }
 
-        // Aggregate permissions from user and custom role
-        const userPermissions = user.permissions || [];
-        const rolePermissions = user.customRole?.permissions || [];
-        const allPermissions = [...new Set([...userPermissions, ...rolePermissions])];
+    // Aggregate permissions from user and custom role
+    const userPermissions = user.permissions || [];
+    const rolePermissions = user.customRole?.permissions || [];
+    const allPermissions = [...new Set([...userPermissions, ...rolePermissions])];
 
-        // Check if user has required permission
-        // Supports wildcard check, e.g., 'product.*' includes 'product.read'
-        const hasDirectPermission = allPermissions.includes(permission);
-        const hasWildcardPermission = allPermissions.some(p => {
-            if (p.endsWith('.*')) {
-                const module = p.split('.')[0];
-                return permission.startsWith(`${module}.`);
-            }
-            if (p === '*') return true;
-            return false;
-        });
+    // Check if user has required permission
+    // Supports wildcard check, e.g., 'product.*' includes 'product.read'
+    const hasDirectPermission = allPermissions.includes(permission);
+    const hasWildcardPermission = allPermissions.some((p) => {
+      if (p.endsWith('.*')) {
+        const module = p.split('.')[0];
+        return permission.startsWith(`${module}.`);
+      }
+      if (p === '*') return true;
+      return false;
+    });
 
-        if (hasDirectPermission || hasWildcardPermission) {
-            return next();
-        }
+    if (hasDirectPermission || hasWildcardPermission) {
+      return next();
+    }
 
-        return res.status(403).json({
-            success: false,
-            message: `Insufficient permissions: ${permission} required`,
-            code: 'INSUFFICIENT_PERMISSIONS'
-        });
-    };
+    return res.status(403).json({
+      success: false,
+      message: `Insufficient permissions: ${permission} required`,
+      code: 'INSUFFICIENT_PERMISSIONS',
+    });
+  };
 };
 
 module.exports = {
-    authenticate,
-    authMiddleware: authenticate, // Alias for backward compatibility if needed
-    isAdmin,
-    isManager,
-    isStaff,
-    canManageUser,
-    hasPermission
+  authenticate,
+  authMiddleware: authenticate, // Alias for backward compatibility if needed
+  isAdmin,
+  isManager,
+  isStaff,
+  canManageUser,
+  hasPermission,
 };

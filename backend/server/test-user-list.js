@@ -15,20 +15,20 @@ async function runTest() {
   const adminEmail = 'temp_admin_list_test@example.com';
 
   try {
-      // Upsert admin
-      const user = await prisma.user.upsert({
-        where: { email: adminEmail },
-        update: { role: 'ADMIN', status: 'ACTIVE' },
-        create: {
-          email: adminEmail,
-          username: 'temp_admin_list',
-          firstName: 'Temp',
-          lastName: 'Admin',
-          password: 'password123',
-          role: 'ADMIN',
-          status: 'ACTIVE'
-        }
-      });
+    // Upsert admin
+    const user = await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: { role: 'ADMIN', status: 'ACTIVE' },
+      create: {
+        email: adminEmail,
+        username: 'temp_admin_list',
+        firstName: 'Temp',
+        lastName: 'Admin',
+        password: 'password123',
+        role: 'ADMIN',
+        status: 'ACTIVE',
+      },
+    });
 
     console.log('Test admin created.');
 
@@ -39,7 +39,7 @@ async function runTest() {
     console.log('\nrequesting GET /user ...');
     try {
       const res = await axios.get(`${API_URL}/user`, {
-         headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       console.log('✅ PASS: Got user list');
       console.log('Count:', res.data.data.length);
@@ -48,16 +48,15 @@ async function runTest() {
       console.log('❌ FAIL: Get user list failed', e.response?.status, e.response?.data?.message);
       if (e.response?.data) console.log(e.response.data);
     }
-
   } catch (error) {
     console.error('Test Setup Error:', error);
   } finally {
     console.log('\nCleaning up...');
     try {
-        await prisma.user.delete({ where: { email: adminEmail } });
-        console.log('Cleanup done.');
+      await prisma.user.delete({ where: { email: adminEmail } });
+      console.log('Cleanup done.');
     } catch (cleanupError) {
-        console.log('Cleanup failed (maybe user not created):', cleanupError.message);
+      console.log('Cleanup failed (maybe user not created):', cleanupError.message);
     }
     await prisma.$disconnect();
   }

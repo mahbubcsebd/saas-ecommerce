@@ -1,5 +1,5 @@
-﻿const { PrismaClient } = require("@prisma/client");
-const createError = require("http-errors");
+﻿const { PrismaClient } = require('@prisma/client');
+const createError = require('http-errors');
 const prisma = require('../config/prisma');
 const contentTranslationService = require('../services/contentTranslation.service');
 
@@ -15,10 +15,10 @@ exports.getAllSlides = async (req, res, next) => {
           { startDate: null, endDate: null },
           { startDate: { lte: now }, endDate: { gte: now } },
           { startDate: { lte: now }, endDate: null },
-          { startDate: null, endDate: { gte: now } }
-        ]
+          { startDate: null, endDate: { gte: now } },
+        ],
       },
-      orderBy: { order: "asc" },
+      orderBy: { order: 'asc' },
     });
 
     res.status(200).json({
@@ -32,19 +32,19 @@ exports.getAllSlides = async (req, res, next) => {
 
 // Admin: Get all slides (including inactive)
 exports.getAdminSlides = async (req, res, next) => {
-    try {
-      const slides = await prisma.heroSlide.findMany({
-        orderBy: { order: "asc" },
-      });
+  try {
+    const slides = await prisma.heroSlide.findMany({
+      orderBy: { order: 'asc' },
+    });
 
-      res.status(200).json({
-        success: true,
-        data: slides,
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
+    res.status(200).json({
+      success: true,
+      data: slides,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Create Slide (Admin) - Now handles multiple image uploads
 exports.createSlide = async (req, res, next) => {
@@ -53,7 +53,7 @@ exports.createSlide = async (req, res, next) => {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "No images uploaded",
+        message: 'No images uploaded',
       });
     }
 
@@ -84,12 +84,21 @@ exports.createSlide = async (req, res, next) => {
             subtitle: slideMetadata.subtitle || req.body.subtitle || '',
             linkType: slideMetadata.linkType || req.body.linkType || 'NONE',
             linkValue: slideMetadata.linkValue || req.body.linkValue || '',
-            isActive: slideMetadata.isActive !== undefined
-              ? slideMetadata.isActive
-              : (req.body.isActive !== 'false' && req.body.isActive !== false),
+            isActive:
+              slideMetadata.isActive !== undefined
+                ? slideMetadata.isActive
+                : req.body.isActive !== 'false' && req.body.isActive !== false,
             order: startOrder + index,
-            startDate: slideMetadata.startDate ? new Date(slideMetadata.startDate) : (req.body.startDate ? new Date(req.body.startDate) : null),
-            endDate: slideMetadata.endDate ? new Date(slideMetadata.endDate) : (req.body.endDate ? new Date(req.body.endDate) : null),
+            startDate: slideMetadata.startDate
+              ? new Date(slideMetadata.startDate)
+              : req.body.startDate
+                ? new Date(req.body.startDate)
+                : null,
+            endDate: slideMetadata.endDate
+              ? new Date(slideMetadata.endDate)
+              : req.body.endDate
+                ? new Date(req.body.endDate)
+                : null,
           },
         });
       })
@@ -102,10 +111,10 @@ exports.createSlide = async (req, res, next) => {
     });
 
     // Trigger background auto-translation
-    slides.forEach(slide => {
-        if (slide.title || slide.subtitle) {
-             contentTranslationService.autoTranslateHeroSlideForAll(slide.id).catch(console.error);
-        }
+    slides.forEach((slide) => {
+      if (slide.title || slide.subtitle) {
+        contentTranslationService.autoTranslateHeroSlideForAll(slide.id).catch(console.error);
+      }
     });
   } catch (error) {
     next(error);
@@ -116,16 +125,7 @@ exports.createSlide = async (req, res, next) => {
 exports.updateSlide = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const {
-      title,
-      subtitle,
-      linkType,
-      linkValue,
-      isActive,
-      order,
-      startDate,
-      endDate
-    } = req.body;
+    const { title, subtitle, linkType, linkValue, isActive, order, startDate, endDate } = req.body;
 
     const slide = await prisma.heroSlide.update({
       where: { id },
@@ -134,10 +134,15 @@ exports.updateSlide = async (req, res, next) => {
         subtitle,
         linkType,
         linkValue,
-        isActive: isActive !== undefined ? (typeof isActive === 'string' ? isActive === 'true' : isActive) : undefined,
+        isActive:
+          isActive !== undefined
+            ? typeof isActive === 'string'
+              ? isActive === 'true'
+              : isActive
+            : undefined,
         order: order !== undefined ? parseInt(order) : undefined,
-        startDate: startDate ? new Date(startDate) : (startDate === null ? null : undefined),
-        endDate: endDate ? new Date(endDate) : (endDate === null ? null : undefined),
+        startDate: startDate ? new Date(startDate) : startDate === null ? null : undefined,
+        endDate: endDate ? new Date(endDate) : endDate === null ? null : undefined,
       },
     });
 
@@ -148,7 +153,7 @@ exports.updateSlide = async (req, res, next) => {
 
     // Trigger background auto-translation if content changed
     if (title !== undefined || subtitle !== undefined) {
-        contentTranslationService.autoTranslateHeroSlideForAll(slide.id, true).catch(console.error);
+      contentTranslationService.autoTranslateHeroSlideForAll(slide.id, true).catch(console.error);
     }
   } catch (error) {
     next(error);
@@ -168,7 +173,7 @@ exports.deleteSlide = async (req, res, next) => {
     if (!slide) {
       return res.status(404).json({
         success: false,
-        message: "Slide not found",
+        message: 'Slide not found',
       });
     }
 
@@ -185,7 +190,7 @@ exports.deleteSlide = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: "Slide deleted successfully",
+      message: 'Slide deleted successfully',
     });
   } catch (error) {
     next(error);
@@ -200,7 +205,7 @@ exports.updateSlideOrders = async (req, res, next) => {
     if (!Array.isArray(slides)) {
       return res.status(400).json({
         success: false,
-        message: "slides must be an array",
+        message: 'slides must be an array',
       });
     }
 
@@ -216,7 +221,7 @@ exports.updateSlideOrders = async (req, res, next) => {
 
     // Return updated slides
     const updatedSlides = await prisma.heroSlide.findMany({
-      orderBy: { order: "asc" },
+      orderBy: { order: 'asc' },
     });
 
     res.status(200).json({

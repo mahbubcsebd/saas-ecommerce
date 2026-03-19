@@ -1,49 +1,49 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
-import { Suspense, useState } from "react";
-import { toast } from "sonner";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { Suspense, useState } from 'react';
+import { toast } from 'sonner';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
 function ResetPasswordContent() {
   const router = useRouter();
   const params = useSearchParams();
-  const token = params.get("token") || "";
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
+  const token = params.get('token') || '';
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+      toast.error('Password must be at least 6 characters');
       return;
     }
     if (password !== confirm) {
-      toast.error("Passwords do not match");
+      toast.error('Passwords do not match');
       return;
     }
     setLoading(true);
     try {
       const res = await fetch(`${API_URL}/auth/reset-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, password }),
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        toast.success("Password reset successful. Please login.");
-        router.push("/auth/login");
+        toast.success('Password reset successful. Please login.');
+        router.push('/auth/login');
       } else {
-        toast.error(data.message || "Invalid or expired reset link.");
+        toast.error(data.message || 'Invalid or expired reset link.');
       }
     } catch {
-      toast.error("Network error. Please try again later.");
+      toast.error('Network error. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -93,11 +93,11 @@ function ResetPasswordContent() {
           />
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Resetting..." : "Reset Password"}
+          {loading ? 'Resetting...' : 'Reset Password'}
         </Button>
       </form>
       <div className="text-center text-sm">
-        Changed your mind?{" "}
+        Changed your mind?{' '}
         <Link href="/auth/login" className="underline underline-offset-4">
           Back to Login
         </Link>

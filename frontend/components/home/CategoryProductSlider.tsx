@@ -1,14 +1,15 @@
-"use client";
+'use client';
 
-import { Skeleton } from "@/components/ui/skeleton";
-import { Product } from "@/types/product";
-import Link from "next/link";
-import { Autoplay, Navigation } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
-import ProductCard from "../ProductCard";
+import { Skeleton } from '@/components/ui/skeleton';
+import { useTranslations } from '@/context/TranslationContext';
+import { Product } from '@/types/product';
+import Link from 'next/link';
+import { Autoplay, Navigation } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import ProductCard from '../ProductCard';
 
-import "swiper/css";
-import "swiper/css/navigation";
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 interface CategoryProductSliderProps {
   categorySlug: string;
@@ -21,8 +22,9 @@ export default function CategoryProductSlider({
   categorySlug,
   categoryName,
   title,
-  products
+  products,
 }: CategoryProductSliderProps) {
+  const { t } = useTranslations();
 
   console.log('CategoryProductSlider props:', products);
   if (!products || products.length === 0) return null;
@@ -31,11 +33,8 @@ export default function CategoryProductSlider({
     <section className="container py-12">
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-2xl font-bold">{categoryName}</h2>
-        <Link
-          href={`/${categorySlug}`}
-          className="text-primary hover:underline font-medium"
-        >
-          View All
+        <Link href={`/${categorySlug}`} className="text-primary hover:underline font-medium">
+          {t('common', 'viewAll', 'View All')}
         </Link>
       </div>
 

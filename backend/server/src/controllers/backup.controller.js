@@ -14,12 +14,35 @@ if (!fs.existsSync(BACKUP_DIR)) {
 
 // Prisma model names that actually exist in the schema
 const BACKUP_TABLES = [
-  'user', 'product', 'productVariant', 'category', 'order', 'orderItem',
-  'cart', 'cartItem', 'discount', 'review', 'supplier', 'purchase',
-  'purchaseItem', 'returnRequest', 'invoice', 'address', 'wishlist',
-  'stockMovement', 'damageReport', 'shippingZone', 'shippingRate',
-  'courier', 'campaign', 'notification', 'conversation', 'chatMessage',
-  'heroSlide', 'emailTemplate', 'landingPage'
+  'user',
+  'product',
+  'productVariant',
+  'category',
+  'order',
+  'orderItem',
+  'cart',
+  'cartItem',
+  'discount',
+  'review',
+  'supplier',
+  'purchase',
+  'purchaseItem',
+  'returnRequest',
+  'invoice',
+  'address',
+  'wishlist',
+  'stockMovement',
+  'damageReport',
+  'shippingZone',
+  'shippingRate',
+  'courier',
+  'campaign',
+  'notification',
+  'conversation',
+  'chatMessage',
+  'heroSlide',
+  'emailTemplate',
+  'landingPage',
 ];
 
 // ─── Create database backup ───
@@ -33,7 +56,7 @@ const createDatabaseBackup = async (req, res) => {
       timestamp: new Date().toISOString(),
       version: '1.0',
       type: 'manual',
-      data: {}
+      data: {},
     };
 
     // Export data from each table
@@ -41,7 +64,7 @@ const createDatabaseBackup = async (req, res) => {
       try {
         if (prisma[table]) {
           const data = await prisma[table].findMany({
-            take: 10000 // Limit to prevent memory issues
+            take: 10000, // Limit to prevent memory issues
           });
           backupData.data[table] = data;
         }
@@ -63,8 +86,8 @@ const createDatabaseBackup = async (req, res) => {
         type: 'database',
         size: fileSize,
         status: 'completed',
-        createdBy: req.user?.id || null
-      }
+        createdBy: req.user?.id || null,
+      },
     });
 
     return successResponse(res, {
@@ -73,14 +96,14 @@ const createDatabaseBackup = async (req, res) => {
         fileName: backupFileName,
         size: fileSize,
         tablesBackedUp: Object.keys(backupData.data).length,
-        totalRecords: Object.values(backupData.data).reduce((sum, arr) => sum + arr.length, 0)
-      }
+        totalRecords: Object.values(backupData.data).reduce((sum, arr) => sum + arr.length, 0),
+      },
     });
   } catch (error) {
     console.error('Database backup error:', error);
     return errorResponse(res, {
       statusCode: 500,
-      message: 'Failed to create database backup'
+      message: 'Failed to create database backup',
     });
   }
 };
@@ -100,8 +123,8 @@ const exportData = async (req, res) => {
         data = await prisma.product.findMany({
           include: {
             category: true,
-            variants: true
-          }
+            variants: true,
+          },
         });
         fileName = `products-export-${dateStr}`;
         break;
@@ -115,8 +138,8 @@ const exportData = async (req, res) => {
                 firstName: true,
                 lastName: true,
                 email: true,
-                phone: true
-              }
+                phone: true,
+              },
             },
             items: {
               include: {
@@ -124,12 +147,12 @@ const exportData = async (req, res) => {
                   select: {
                     id: true,
                     name: true,
-                    sku: true
-                  }
-                }
-              }
-            }
-          }
+                    sku: true,
+                  },
+                },
+              },
+            },
+          },
         });
         fileName = `orders-export-${dateStr}`;
         break;
@@ -152,10 +175,10 @@ const exportData = async (req, res) => {
                 orderNumber: true,
                 total: true,
                 status: true,
-                createdAt: true
-              }
-            }
-          }
+                createdAt: true,
+              },
+            },
+          },
         });
         fileName = `customers-export-${dateStr}`;
         break;
@@ -163,8 +186,8 @@ const exportData = async (req, res) => {
       case 'categories':
         data = await prisma.category.findMany({
           include: {
-            children: true
-          }
+            children: true,
+          },
         });
         fileName = `categories-export-${dateStr}`;
         break;
@@ -178,10 +201,10 @@ const exportData = async (req, res) => {
                 purchaseNumber: true,
                 total: true,
                 status: true,
-                createdAt: true
-              }
-            }
-          }
+                createdAt: true,
+              },
+            },
+          },
         });
         fileName = `suppliers-export-${dateStr}`;
         break;
@@ -204,10 +227,10 @@ const exportData = async (req, res) => {
                 name: true,
                 sku: true,
                 stock: true,
-                minStockLevel: true
-              }
-            }
-          }
+                minStockLevel: true,
+              },
+            },
+          },
         });
         fileName = `inventory-export-${dateStr}`;
         break;
@@ -215,7 +238,7 @@ const exportData = async (req, res) => {
       default:
         return errorResponse(res, {
           statusCode: 400,
-          message: `Invalid export type: ${type}. Available types: products, orders, customers, categories, suppliers, inventory`
+          message: `Invalid export type: ${type}. Available types: products, orders, customers, categories, suppliers, inventory`,
         });
     }
 
@@ -233,7 +256,7 @@ const exportData = async (req, res) => {
     console.error('Export data error:', error);
     return errorResponse(res, {
       statusCode: 500,
-      message: 'Failed to export data'
+      message: 'Failed to export data',
     });
   }
 };
@@ -247,7 +270,12 @@ const convertToCSV = (data) => {
     const result = {};
     for (const [key, value] of Object.entries(obj)) {
       const newKey = prefix ? `${prefix}_${key}` : key;
-      if (value !== null && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Date)) {
+      if (
+        value !== null &&
+        typeof value === 'object' &&
+        !Array.isArray(value) &&
+        !(value instanceof Date)
+      ) {
         Object.assign(result, flattenObj(value, newKey));
       } else if (Array.isArray(value)) {
         result[newKey] = JSON.stringify(value);
@@ -258,17 +286,19 @@ const convertToCSV = (data) => {
     return result;
   };
 
-  const flatData = data.map(item => flattenObj(item));
-  const headers = [...new Set(flatData.flatMap(obj => Object.keys(obj)))];
+  const flatData = data.map((item) => flattenObj(item));
+  const headers = [...new Set(flatData.flatMap((obj) => Object.keys(obj)))];
   const csvHeaders = headers.join(',');
 
-  const csvRows = flatData.map(row => {
-    return headers.map(header => {
-      const value = row[header];
-      if (value === null || value === undefined) return '""';
-      const str = String(value).replace(/"/g, '""');
-      return `"${str}"`;
-    }).join(',');
+  const csvRows = flatData.map((row) => {
+    return headers
+      .map((header) => {
+        const value = row[header];
+        if (value === null || value === undefined) return '""';
+        const str = String(value).replace(/"/g, '""');
+        return `"${str}"`;
+      })
+      .join(',');
   });
 
   return [csvHeaders, ...csvRows].join('\n');
@@ -291,37 +321,39 @@ const getBackupHistory = async (req, res) => {
         take: limitNum,
         include: {
           creator: {
-            select: { id: true, firstName: true, lastName: true, email: true }
-          }
-        }
+            select: { id: true, firstName: true, lastName: true, email: true },
+          },
+        },
       }),
-      prisma.backup.count({ where })
+      prisma.backup.count({ where }),
     ]);
 
     return successResponse(res, {
       message: 'Backup history retrieved',
       data: {
-        backups: backups.map(b => ({
+        backups: backups.map((b) => ({
           ...b,
-          creator: b.creator ? {
-            id: b.creator.id,
-            name: `${b.creator.firstName} ${b.creator.lastName}`,
-            email: b.creator.email
-          } : null
+          creator: b.creator
+            ? {
+                id: b.creator.id,
+                name: `${b.creator.firstName} ${b.creator.lastName}`,
+                email: b.creator.email,
+              }
+            : null,
         })),
         pagination: {
           page: pageNum,
           limit: limitNum,
           total,
-          pages: Math.ceil(total / limitNum)
-        }
-      }
+          pages: Math.ceil(total / limitNum),
+        },
+      },
     });
   } catch (error) {
     console.error('Get backup history error:', error);
     return errorResponse(res, {
       statusCode: 500,
-      message: 'Failed to get backup history'
+      message: 'Failed to get backup history',
     });
   }
 };
@@ -332,7 +364,7 @@ const downloadBackup = async (req, res) => {
     const { id } = req.params;
 
     const backup = await prisma.backup.findUnique({
-      where: { id }
+      where: { id },
     });
 
     if (!backup) {
@@ -348,7 +380,7 @@ const downloadBackup = async (req, res) => {
     console.error('Download backup error:', error);
     return errorResponse(res, {
       statusCode: 500,
-      message: 'Failed to download backup'
+      message: 'Failed to download backup',
     });
   }
 };
@@ -359,7 +391,7 @@ const deleteBackup = async (req, res) => {
     const { id } = req.params;
 
     const backup = await prisma.backup.findUnique({
-      where: { id }
+      where: { id },
     });
 
     if (!backup) {
@@ -373,7 +405,7 @@ const deleteBackup = async (req, res) => {
 
     // Delete record from DB
     await prisma.backup.delete({
-      where: { id }
+      where: { id },
     });
 
     return successResponse(res, { message: 'Backup deleted successfully' });
@@ -381,7 +413,7 @@ const deleteBackup = async (req, res) => {
     console.error('Delete backup error:', error);
     return errorResponse(res, {
       statusCode: 500,
-      message: 'Failed to delete backup'
+      message: 'Failed to delete backup',
     });
   }
 };
@@ -392,7 +424,7 @@ const restoreFromBackup = async (req, res) => {
     const { id } = req.params;
 
     const backup = await prisma.backup.findUnique({
-      where: { id }
+      where: { id },
     });
 
     if (!backup) {
@@ -400,7 +432,10 @@ const restoreFromBackup = async (req, res) => {
     }
 
     if (backup.type !== 'database' && backup.type !== 'scheduled') {
-      return errorResponse(res, { statusCode: 400, message: 'Only database/scheduled backups can be restored' });
+      return errorResponse(res, {
+        statusCode: 400,
+        message: 'Only database/scheduled backups can be restored',
+      });
     }
 
     if (!fs.existsSync(backup.filePath)) {
@@ -459,20 +494,20 @@ const restoreFromBackup = async (req, res) => {
           restoredFrom: backup.id,
           restoredAt: new Date().toISOString(),
           tablesRestored: restored,
-          tablesFailed: failed
-        }
-      }
+          tablesFailed: failed,
+        },
+      },
     });
 
     return successResponse(res, {
       message: 'Database restored successfully',
-      data: { restored, failed }
+      data: { restored, failed },
     });
   } catch (error) {
     console.error('Restore backup error:', error);
     return errorResponse(res, {
       statusCode: 500,
-      message: 'Failed to restore database'
+      message: 'Failed to restore database',
     });
   }
 };
@@ -487,7 +522,7 @@ const scheduleBackup = async (req, res) => {
     if (!frequency || !time) {
       return errorResponse(res, {
         statusCode: 400,
-        message: 'Frequency and time are required'
+        message: 'Frequency and time are required',
       });
     }
 
@@ -498,11 +533,11 @@ const scheduleBackup = async (req, res) => {
     if (existing) {
       schedule = await prisma.backupSchedule.update({
         where: { id: existing.id },
-        data: { frequency, time, enabled: !!enabled }
+        data: { frequency, time, enabled: !!enabled },
       });
     } else {
       schedule = await prisma.backupSchedule.create({
-        data: { frequency, time, enabled: !!enabled }
+        data: { frequency, time, enabled: !!enabled },
       });
     }
 
@@ -511,19 +546,19 @@ const scheduleBackup = async (req, res) => {
       setupScheduledBackup(frequency, time);
     } else {
       // Stop existing jobs
-      Object.values(scheduledJobs).forEach(job => job.stop());
+      Object.values(scheduledJobs).forEach((job) => job.stop());
       scheduledJobs = {};
     }
 
     return successResponse(res, {
       message: 'Backup schedule updated successfully',
-      data: schedule
+      data: schedule,
     });
   } catch (error) {
     console.error('Schedule backup error:', error);
     return errorResponse(res, {
       statusCode: 500,
-      message: 'Failed to schedule backup'
+      message: 'Failed to schedule backup',
     });
   }
 };
@@ -531,7 +566,7 @@ const scheduleBackup = async (req, res) => {
 // ─── Setup cron job for scheduled backups ───
 const setupScheduledBackup = (frequency, time) => {
   // Clear existing jobs
-  Object.values(scheduledJobs).forEach(job => job.stop());
+  Object.values(scheduledJobs).forEach((job) => job.stop());
   scheduledJobs = {};
 
   const [hours, minutes] = time.split(':');
@@ -551,51 +586,55 @@ const setupScheduledBackup = (frequency, time) => {
       return;
   }
 
-  const job = cron.schedule(cronExpression, async () => {
-    try {
-      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-      const backupFileName = `auto-backup-${timestamp}.json`;
-      const backupPath = path.join(BACKUP_DIR, backupFileName);
+  const job = cron.schedule(
+    cronExpression,
+    async () => {
+      try {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const backupFileName = `auto-backup-${timestamp}.json`;
+        const backupPath = path.join(BACKUP_DIR, backupFileName);
 
-      const backupData = {
-        timestamp: new Date().toISOString(),
-        version: '1.0',
-        type: 'scheduled',
-        data: {}
-      };
-
-      for (const table of BACKUP_TABLES) {
-        try {
-          if (prisma[table]) {
-            const data = await prisma[table].findMany({ take: 10000 });
-            backupData.data[table] = data;
-          }
-        } catch (error) {
-          console.log(`Auto-backup: skipping ${table}:`, error.message);
-        }
-      }
-
-      fs.writeFileSync(backupPath, JSON.stringify(backupData, null, 2));
-
-      await prisma.backup.create({
-        data: {
-          fileName: backupFileName,
-          filePath: backupPath,
+        const backupData = {
+          timestamp: new Date().toISOString(),
+          version: '1.0',
           type: 'scheduled',
-          size: fs.statSync(backupPath).size,
-          status: 'completed',
-          createdBy: null
-        }
-      });
+          data: {},
+        };
 
-      console.log('Scheduled backup completed:', backupFileName);
-    } catch (error) {
-      console.error('Scheduled backup failed:', error);
+        for (const table of BACKUP_TABLES) {
+          try {
+            if (prisma[table]) {
+              const data = await prisma[table].findMany({ take: 10000 });
+              backupData.data[table] = data;
+            }
+          } catch (error) {
+            console.log(`Auto-backup: skipping ${table}:`, error.message);
+          }
+        }
+
+        fs.writeFileSync(backupPath, JSON.stringify(backupData, null, 2));
+
+        await prisma.backup.create({
+          data: {
+            fileName: backupFileName,
+            filePath: backupPath,
+            type: 'scheduled',
+            size: fs.statSync(backupPath).size,
+            status: 'completed',
+            createdBy: null,
+          },
+        });
+
+        console.log('Scheduled backup completed:', backupFileName);
+      } catch (error) {
+        console.error('Scheduled backup failed:', error);
+      }
+    },
+    {
+      scheduled: true,
+      timezone: 'Asia/Dhaka',
     }
-  }, {
-    scheduled: true,
-    timezone: 'Asia/Dhaka'
-  });
+  );
 
   scheduledJobs[frequency] = job;
 };
@@ -610,14 +649,14 @@ const getBackupSettings = async (req, res) => {
       data: schedule || {
         frequency: 'daily',
         time: '02:00',
-        enabled: false
-      }
+        enabled: false,
+      },
     });
   } catch (error) {
     console.error('Get backup settings error:', error);
     return errorResponse(res, {
       statusCode: 500,
-      message: 'Failed to get backup settings'
+      message: 'Failed to get backup settings',
     });
   }
 };
@@ -646,5 +685,5 @@ module.exports = {
   deleteBackup,
   restoreFromBackup,
   scheduleBackup,
-  getBackupSettings
+  getBackupSettings,
 };

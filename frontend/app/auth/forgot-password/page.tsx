@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { useState } from "react";
-import { toast } from "sonner";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import Link from 'next/link';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,18 +18,18 @@ export default function ForgotPasswordPage() {
     setLoading(true);
     try {
       const res = await fetch(`${API_URL}/auth/forgot-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        toast.success(data.message || "If the account exists, a reset link has been sent.");
+        toast.success(data.message || 'If the account exists, a reset link has been sent.');
       } else {
-        toast.success("If the account exists, a reset link has been sent.");
+        toast.success('If the account exists, a reset link has been sent.');
       }
     } catch {
-      toast.error("Network error. Please try again later.");
+      toast.error('Network error. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -54,11 +54,11 @@ export default function ForgotPasswordPage() {
           />
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Sending..." : "Send Reset Link"}
+          {loading ? 'Sending...' : 'Send Reset Link'}
         </Button>
       </form>
       <div className="text-center text-sm">
-        Remembered your password?{" "}
+        Remembered your password?{' '}
         <Link href="/auth/login" className="underline underline-offset-4">
           Back to Login
         </Link>

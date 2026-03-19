@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 async function main() {
   const targetEmail = 'mahbubcseme@gmail.com';
   const user = await prisma.user.findUnique({
-    where: { email: targetEmail }
+    where: { email: targetEmail },
   });
 
   if (!user) {
@@ -23,7 +23,7 @@ async function main() {
       console.log(`Linking order ${order.orderNumber} (${order.id})`);
       await prisma.order.update({
         where: { id: order.id },
-        data: { userId: user.id }
+        data: { userId: user.id },
       });
       count++;
     }
@@ -33,7 +33,7 @@ async function main() {
 }
 
 main()
-  .catch(e => console.error(e))
+  .catch((e) => console.error(e))
   .finally(async () => {
     await prisma.$disconnect();
   });

@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const taxController = require('../controllers/tax.controller');
-const { authMiddleware: protect, adminMiddleware: admin } = require('../middlewares/auth.middleware');
+const {
+  authMiddleware: protect,
+  adminMiddleware: admin,
+} = require('../middlewares/auth.middleware');
 
 // Tax Rates
 router.get('/rates', protect, taxController.getTaxRates);

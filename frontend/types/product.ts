@@ -15,15 +15,15 @@ export interface ProductVariant {
 }
 
 export interface Discount {
-    id: string;
-    name: string;
-    code?: string;
-    description?: string;
-    type: 'PERCENTAGE' | 'FLAT' | 'BUY_X_GET_Y' | 'FREE_SHIPPING';
-    value: number;
-    startDate: string;
-    endDate?: string;
-    isActive: boolean;
+  id: string;
+  name: string;
+  code?: string;
+  description?: string;
+  type: 'PERCENTAGE' | 'FLAT' | 'BUY_X_GET_Y' | 'FREE_SHIPPING';
+  value: number;
+  startDate: string;
+  endDate?: string;
+  isActive: boolean;
 }
 
 export interface Product {

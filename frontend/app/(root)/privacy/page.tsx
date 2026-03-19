@@ -1,13 +1,13 @@
-import { Metadata } from "next";
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Read our Privacy Policy",
+  title: 'Privacy Policy',
+  description: 'Read our Privacy Policy',
 };
 
 async function getPrivacyPolicy() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-  const apiUrl = baseUrl.endsWith("/api") ? baseUrl : `${baseUrl}/api`;
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+  const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
 
   try {
     const res = await fetch(`${apiUrl}/settings/public`, {
@@ -19,7 +19,7 @@ async function getPrivacyPolicy() {
     const data = await res.json();
     return data?.data?.legal?.privacyPolicy || null;
   } catch (error) {
-    console.error("Error fetching privacy policy:", error);
+    console.error('Error fetching privacy policy:', error);
     return null;
   }
 }

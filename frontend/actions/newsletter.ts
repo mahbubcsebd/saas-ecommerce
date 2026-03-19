@@ -1,7 +1,7 @@
-"use server";
+'use server';
 
-import { api } from "@/lib/api-client";
-import { revalidatePath } from "next/cache";
+import { api } from '@/lib/api-client';
+import { revalidatePath } from 'next/cache';
 
 export type NewsletterState = {
   success?: boolean;
@@ -15,32 +15,35 @@ export async function subscribeToNewsletter(
   prevState: NewsletterState,
   formData: FormData
 ): Promise<NewsletterState> {
-  const email = formData.get("email") as string;
+  const email = formData.get('email') as string;
 
-  if (!email || !email.includes("@")) {
+  if (!email || !email.includes('@')) {
     return {
       success: false,
-      message: "Please enter a valid email address.",
+      message: 'Please enter a valid email address.',
       errors: {
-        email: ["Invalid email format"],
+        email: ['Invalid email format'],
       },
     };
   }
 
   try {
-    await api.post("/newsletter/subscribe", { email });
+    await api.post('/newsletter/subscribe', { email });
 
-    revalidatePath("/");
+    revalidatePath('/');
     return {
       success: true,
-      message: "Thank you for subscribing to our newsletter!",
+      message: 'Thank you for subscribing to our newsletter!',
     };
   } catch (error: any) {
-    console.error("Newsletter Subscription Error:", error);
+    console.error('Newsletter Subscription Error:', error);
 
     return {
       success: false,
-      message: error?.response?.data?.message || error.message || "Failed to subscribe. Please try again later.",
+      message:
+        error?.response?.data?.message ||
+        error.message ||
+        'Failed to subscribe. Please try again later.',
     };
   }
 }

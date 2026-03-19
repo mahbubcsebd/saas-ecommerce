@@ -1,9 +1,9 @@
-"use server";
+'use server';
 
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { api } from "@/lib/api-client";
-import { getServerSession } from "next-auth";
-import { revalidatePath } from "next/cache";
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { api } from '@/lib/api-client';
+import { getServerSession } from 'next-auth';
+import { revalidatePath } from 'next/cache';
 
 export type AddressState = {
   success?: boolean;
@@ -16,21 +16,21 @@ export async function saveAddressAction(
   formData: FormData
 ): Promise<AddressState> {
   const session = await getServerSession(authOptions);
-  if (!session) return { success: false, message: "Unauthorized" };
+  if (!session) return { success: false, message: 'Unauthorized' };
 
-  const id = formData.get("id") as string;
+  const id = formData.get('id') as string;
   const isEditing = !!id;
 
   const data = {
-    name: formData.get("name"),
-    phone: formData.get("phone"),
-    street: formData.get("street"),
-    city: formData.get("city"),
-    state: formData.get("state"),
-    zipCode: formData.get("zipCode"),
-    type: formData.get("type"),
-    isDefault: formData.get("isDefault") === "on",
-    country: "Bangladesh",
+    name: formData.get('name'),
+    phone: formData.get('phone'),
+    street: formData.get('street'),
+    city: formData.get('city'),
+    state: formData.get('state'),
+    zipCode: formData.get('zipCode'),
+    type: formData.get('type'),
+    isDefault: formData.get('isDefault') === 'on',
+    country: 'Bangladesh',
   };
 
   try {
@@ -39,29 +39,29 @@ export async function saveAddressAction(
         headers: { Authorization: `Bearer ${session.accessToken}` },
       });
     } else {
-      await api.post("/addresses", data, {
+      await api.post('/addresses', data, {
         headers: { Authorization: `Bearer ${session.accessToken}` },
       });
     }
 
-    revalidatePath("/profile/address");
-    return { success: true, message: `Address ${isEditing ? "updated" : "saved"} successfully.` };
+    revalidatePath('/profile/address');
+    return { success: true, message: `Address ${isEditing ? 'updated' : 'saved'} successfully.` };
   } catch (error: any) {
-    return { success: false, message: error.message || "Failed to save address." };
+    return { success: false, message: error.message || 'Failed to save address.' };
   }
 }
 
 export async function deleteAddressAction(id: string) {
   const session = await getServerSession(authOptions);
-  if (!session) return { success: false, message: "Unauthorized" };
+  if (!session) return { success: false, message: 'Unauthorized' };
 
   try {
     await api.delete(`/addresses/${id}`, {
       headers: { Authorization: `Bearer ${session.accessToken}` },
     });
-    revalidatePath("/profile/address");
-    return { success: true, message: "Address deleted successfully." };
+    revalidatePath('/profile/address');
+    return { success: true, message: 'Address deleted successfully.' };
   } catch (error: any) {
-    return { success: false, message: error.message || "Failed to delete address." };
+    return { success: false, message: error.message || 'Failed to delete address.' };
   }
 }

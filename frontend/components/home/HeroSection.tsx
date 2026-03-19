@@ -1,7 +1,7 @@
-import { getHeroSlides } from "@/lib/fetchers";
-import nextDynamic from "next/dynamic";
+import { getHeroSlides } from '@/lib/fetchers';
+import nextDynamic from 'next/dynamic';
 
-const HeroSlider = nextDynamic(() => import("@/components/HeroSlider"), {
+const HeroSlider = nextDynamic(() => import('@/components/HeroSlider'), {
   ssr: true, // Keep initial HTML for better SEO/LCP, but JS will load later
 });
 

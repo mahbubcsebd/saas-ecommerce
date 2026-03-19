@@ -33,12 +33,13 @@ export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoSettings();
 
   const title = seo?.metaTitle || 'Mahbub Shop - Premium Ecommerce';
-  const description = seo?.metaDescription || 'Experience the best online shopping with Mahbub Shop.';
+  const description =
+    seo?.metaDescription || 'Experience the best online shopping with Mahbub Shop.';
 
   return {
     title: {
       default: title,
-      template: `%s | Mahbub Shop`
+      template: `%s | Mahbub Shop`,
     },
     description,
     keywords: seo?.metaKeywords,
@@ -54,7 +55,7 @@ export async function generateMetadata(): Promise<Metadata> {
     robots: {
       index: seo?.allowIndexing !== false,
       follow: seo?.allowIndexing !== false,
-    }
+    },
   };
 }
 
@@ -67,9 +68,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
           <ClientWidgets />
           <StoreHydration />

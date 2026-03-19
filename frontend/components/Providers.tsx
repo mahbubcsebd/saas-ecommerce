@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { SettingsProvider } from "@/context/SettingsContext";
-import { SessionProvider } from "next-auth/react";
+import { SettingsProvider } from '@/context/SettingsContext';
+import { SessionProvider } from 'next-auth/react';
 
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from '@/components/theme-provider';
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useState } from 'react';
 
-import { ConfirmationProvider } from "@/context/ConfirmationContext";
-import { SocketProvider } from "@/context/SocketContext";
-import { TranslationProvider } from "@/context/TranslationContext";
-import { WishlistProvider } from "@/context/WishlistContext";
-import { CartProvider } from "@/lib/cart-context";
+import { ConfirmationProvider } from '@/context/ConfirmationContext';
+import { SocketProvider } from '@/context/SocketContext';
+import { TranslationProvider } from '@/context/TranslationContext';
+import { WishlistProvider } from '@/context/WishlistContext';
+import { CartProvider } from '@/lib/cart-context';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -26,9 +26,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
               <TranslationProvider>
                 <CartProvider>
                   <WishlistProvider>
-                    <ConfirmationProvider>
-                        {children}
-                    </ConfirmationProvider>
+                    <ConfirmationProvider>{children}</ConfirmationProvider>
                   </WishlistProvider>
                 </CartProvider>
               </TranslationProvider>

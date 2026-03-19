@@ -73,11 +73,11 @@ exports.updateAddress = async (req, res, next) => {
 
     // Verify ownership
     const existing = await prisma.address.findFirst({
-        where: { id, userId }
+      where: { id, userId },
     });
 
     if (!existing) {
-        return errorResponse(res, { statusCode: 404, message: 'Address not found or unauthorized' });
+      return errorResponse(res, { statusCode: 404, message: 'Address not found or unauthorized' });
     }
 
     if (isDefault) {
@@ -122,11 +122,11 @@ exports.deleteAddress = async (req, res, next) => {
 
     // Verify ownership
     const existing = await prisma.address.findFirst({
-        where: { id, userId }
+      where: { id, userId },
     });
 
     if (!existing) {
-        return errorResponse(res, { statusCode: 404, message: 'Address not found or unauthorized' });
+      return errorResponse(res, { statusCode: 404, message: 'Address not found or unauthorized' });
     }
 
     await prisma.address.delete({ where: { id } });

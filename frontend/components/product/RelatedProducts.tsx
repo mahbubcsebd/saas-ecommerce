@@ -1,12 +1,15 @@
-import ProductCard from "@/components/ProductCard";
-import { Product } from "@/types/product";
+import ProductCard from '@/components/ProductCard';
+import { Product } from '@/types/product';
 
 interface RelatedProductsProps {
   categoryId: string;
   currentProductId: string;
 }
 
-export default async function RelatedProducts({ categoryId, currentProductId }: RelatedProductsProps) {
+export default async function RelatedProducts({
+  categoryId,
+  currentProductId,
+}: RelatedProductsProps) {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
   const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
 
@@ -14,7 +17,7 @@ export default async function RelatedProducts({ categoryId, currentProductId }: 
 
   try {
     const res = await fetch(`${apiUrl}/products/related/${currentProductId}?limit=4`, {
-      cache: 'no-store'
+      cache: 'no-store',
     });
 
     if (res.ok) {
@@ -24,7 +27,7 @@ export default async function RelatedProducts({ categoryId, currentProductId }: 
       }
     }
   } catch (error) {
-    console.error("Failed to fetch related products:", error);
+    console.error('Failed to fetch related products:', error);
   }
 
   if (relatedProducts.length === 0) {

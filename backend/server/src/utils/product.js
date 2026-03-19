@@ -11,7 +11,7 @@ async function generateSKU(productName, categoryId) {
     if (categoryId) {
       const category = await prisma.category.findUnique({
         where: { id: categoryId },
-        select: { name: true }
+        select: { name: true },
       });
       if (category) {
         categoryCode = category.name.substring(0, 3).toUpperCase();
@@ -21,7 +21,7 @@ async function generateSKU(productName, categoryId) {
     // Get product initials
     const productInitials = productName
       .split(' ')
-      .map(word => word.charAt(0))
+      .map((word) => word.charAt(0))
       .join('')
       .substring(0, 3)
       .toUpperCase();
@@ -34,7 +34,7 @@ async function generateSKU(productName, categoryId) {
 
     // Check uniqueness
     const existing = await prisma.product.findFirst({
-      where: { sku }
+      where: { sku },
     });
 
     if (existing) {
@@ -100,7 +100,7 @@ async function generateBarcodes(count) {
 
     // Check uniqueness in database
     const existing = await prisma.product.findFirst({
-      where: { barcode }
+      where: { barcode },
     });
 
     if (!existing) {
@@ -130,7 +130,7 @@ function calculateProfit(sellingPrice, costPrice) {
   return {
     profit: Math.round(profit * 100) / 100,
     margin: Math.round(margin * 100) / 100,
-    marginPercentage: `${Math.round(margin)}%`
+    marginPercentage: `${Math.round(margin)}%`,
   };
 }
 
@@ -168,7 +168,7 @@ function calculateInventoryValue(products) {
   let totalValue = 0;
   let totalCost = 0;
 
-  products.forEach(product => {
+  products.forEach((product) => {
     const value = product.sellingPrice * product.stock;
     const cost = (product.costPrice || 0) * product.stock;
 
@@ -179,7 +179,7 @@ function calculateInventoryValue(products) {
   return {
     totalValue: Math.round(totalValue * 100) / 100,
     totalCost: Math.round(totalCost * 100) / 100,
-    potentialProfit: Math.round((totalValue - totalCost) * 100) / 100
+    potentialProfit: Math.round((totalValue - totalCost) * 100) / 100,
   };
 }
 
@@ -192,5 +192,5 @@ module.exports = {
   calculateProfit,
   isLowStock,
   getStockStatus,
-  calculateInventoryValue
+  calculateInventoryValue,
 };

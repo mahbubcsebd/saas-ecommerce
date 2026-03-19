@@ -4,13 +4,13 @@ const prisma = new PrismaClient();
 const defaultTemplates = [
   // --- WELCOME EMAILS ---
   {
-    name: "Modern Welcome with Coupon",
-    type: "WELCOME_EMAIL",
-    subject: "Welcome to Mahbub Shop! Unlock your 10% discount.",
+    name: 'Modern Welcome with Coupon',
+    type: 'WELCOME_EMAIL',
+    subject: 'Welcome to Mahbub Shop! Unlock your 10% discount.',
     variables: [
-      { key: "customer_name", label: "Customer Name" },
-      { key: "coupon_code", label: "Coupon Code" },
-      { key: "shop_link", label: "Shop Link" }
+      { key: 'customer_name', label: 'Customer Name' },
+      { key: 'coupon_code', label: 'Coupon Code' },
+      { key: 'shop_link', label: 'Shop Link' },
     ],
     body: `
       <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: auto; padding: 40px; background: #ffffff; border: 1px solid #f1f5f9; border-radius: 16px;">
@@ -25,13 +25,13 @@ const defaultTemplates = [
         </div>
       </div>
     `,
-    design: {}
+    design: {},
   },
   {
-    name: "Minimalist Welcome",
-    type: "WELCOME_EMAIL",
+    name: 'Minimalist Welcome',
+    type: 'WELCOME_EMAIL',
     subject: "G'day from Mahbub Shop!",
-    variables: [{ key: "customer_name", label: "Customer Name" }],
+    variables: [{ key: 'customer_name', label: 'Customer Name' }],
     body: `
       <div style="font-family: serif; max-width: 600px; margin: auto; padding: 40px; color: #334155;">
         <p>Dear {{customer_name}},</p>
@@ -39,19 +39,19 @@ const defaultTemplates = [
         <p>Best,<br>The Team</p>
       </div>
     `,
-    design: {}
+    design: {},
   },
 
   // --- ORDER EMAILS ---
   {
-    name: "Visual Order Confirmation",
-    type: "ORDER_CONFIRMATION",
-    subject: "Order Confirmed: #{{order_number}}",
+    name: 'Visual Order Confirmation',
+    type: 'ORDER_CONFIRMATION',
+    subject: 'Order Confirmed: #{{order_number}}',
     variables: [
-      { key: "customer_name", label: "Customer Name" },
-      { key: "order_number", label: "Order Number" },
-      { key: "order_items", label: "Order Items (HTML)" },
-      { key: "order_total", label: "Order Total" }
+      { key: 'customer_name', label: 'Customer Name' },
+      { key: 'order_number', label: 'Order Number' },
+      { key: 'order_items', label: 'Order Items (HTML)' },
+      { key: 'order_total', label: 'Order Total' },
     ],
     body: `
       <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
@@ -68,18 +68,18 @@ const defaultTemplates = [
         </div>
       </div>
     `,
-    design: {}
+    design: {},
   },
 
   // --- PROMOTIONAL ---
   {
-    name: "Flash Sale Alert",
-    type: "PROMOTION",
-    subject: "🔥 FLASH SALE IS LIVE!",
+    name: 'Flash Sale Alert',
+    type: 'PROMOTION',
+    subject: '🔥 FLASH SALE IS LIVE!',
     variables: [
-      { key: "sale_title", label: "Sale Title" },
-      { key: "discount_percentage", label: "Discount %" },
-      { key: "shop_link", label: "Shop Link" }
+      { key: 'sale_title', label: 'Sale Title' },
+      { key: 'discount_percentage', label: 'Discount %' },
+      { key: 'shop_link', label: 'Shop Link' },
     ],
     body: `
       <div style="font-family: 'Arial Black', sans-serif; max-width: 600px; margin: auto; text-align: center; background: #000; color: #fff; padding: 50px 20px;">
@@ -89,18 +89,18 @@ const defaultTemplates = [
         <a href="{{shop_link}}" style="background: #ffffff; color: #000; padding: 15px 40px; border-radius: 4px; text-decoration: none; font-weight: bold; text-transform: uppercase;">Shop Now</a>
       </div>
     `,
-    design: {}
+    design: {},
   },
 
   // --- USER SPECIFIC (DIRECT COMMUNICATION) ---
   {
-    name: "Direct Message from Support",
-    type: "USER_DIRECT",
-    subject: "Regarding your recent query",
+    name: 'Direct Message from Support',
+    type: 'USER_DIRECT',
+    subject: 'Regarding your recent query',
     variables: [
-      { key: "customer_name", label: "Customer Name" },
-      { key: "support_message", label: "Support Message Content" },
-      { key: "ticket_id", label: "Ticket ID" }
+      { key: 'customer_name', label: 'Customer Name' },
+      { key: 'support_message', label: 'Support Message Content' },
+      { key: 'ticket_id', label: 'Ticket ID' },
     ],
     body: `
       <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 30px; border-left: 4px solid #3b82f6; background: #f8fafc;">
@@ -109,15 +109,15 @@ const defaultTemplates = [
         <p style="font-size: 11px; color: #94a3b8; margin-top: 40px;">Reference Ticket: #{{ticket_id}}</p>
       </div>
     `,
-    design: {}
+    design: {},
   },
   {
-    name: "Account Status Update",
-    type: "USER_DIRECT",
-    subject: "Important update about your account",
+    name: 'Account Status Update',
+    type: 'USER_DIRECT',
+    subject: 'Important update about your account',
     variables: [
-      { key: "customer_name", label: "Customer Name" },
-      { key: "status_message", label: "Status Update Description" }
+      { key: 'customer_name', label: 'Customer Name' },
+      { key: 'status_message', label: 'Status Update Description' },
     ],
     body: `
       <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 30px; text-align: center;">
@@ -127,17 +127,17 @@ const defaultTemplates = [
         </div>
       </div>
     `,
-    design: {}
+    design: {},
   },
 
   // --- PASSWORD RESET ---
   {
-    name: "Secure Password Reset",
-    type: "PASSWORD_RESET",
-    subject: "Reset your password",
+    name: 'Secure Password Reset',
+    type: 'PASSWORD_RESET',
+    subject: 'Reset your password',
     variables: [
-      { key: "customer_name", label: "Customer Name" },
-      { key: "reset_link", label: "Reset Link" }
+      { key: 'customer_name', label: 'Customer Name' },
+      { key: 'reset_link', label: 'Reset Link' },
     ],
     body: `
       <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px;">
@@ -147,23 +147,25 @@ const defaultTemplates = [
         <p style="margin-top: 20px; font-size: 12px; color: #999;">If you didn't request this, you can safely ignore this email.</p>
       </div>
     `,
-    design: {}
-  }
+    design: {},
+  },
 ];
 
 async function seed() {
-  console.log("Seeding email templates...");
+  console.log('Seeding email templates...');
   for (const template of defaultTemplates) {
     await prisma.emailTemplate.upsert({
       where: { name: template.name },
       update: template,
-      create: template
+      create: template,
     });
   }
-  console.log("Done!");
+  console.log('Done!');
 }
 
-seed().catch(err => {
-  console.error(err);
-  process.exit(1);
-}).finally(() => prisma.$disconnect());
+seed()
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  })
+  .finally(() => prisma.$disconnect());

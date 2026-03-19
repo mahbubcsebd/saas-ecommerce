@@ -6,10 +6,10 @@ async function main() {
 
   // 1. Clear existing discounts
   try {
-      await prisma.discount.deleteMany();
-      console.log('🗑️  Cleared existing discounts.');
+    await prisma.discount.deleteMany();
+    console.log('🗑️  Cleared existing discounts.');
   } catch (e) {
-      console.log('⚠️  No discounts to clear.');
+    console.log('⚠️  No discounts to clear.');
   }
 
   // 2. Get some IDs for targeting
@@ -27,7 +27,7 @@ async function main() {
       startDate: new Date(),
       endDate: new Date('2026-12-31'),
       isActive: true,
-      categoryId: electronicsParams?.id
+      categoryId: electronicsParams?.id,
     },
     {
       code: 'FLAT50',
@@ -36,7 +36,7 @@ async function main() {
       value: 50,
       startDate: new Date(),
       isActive: true,
-      productId: iphone?.id
+      productId: iphone?.id,
     },
     {
       code: 'NIKE20',
@@ -45,30 +45,30 @@ async function main() {
       value: 20,
       startDate: new Date(),
       isActive: true,
-      brand: 'Nike' // Ensure we have products with brand 'Nike' or change to 'Apple' for testing
+      brand: 'Nike', // Ensure we have products with brand 'Nike' or change to 'Apple' for testing
     },
     {
-       code: 'APPLE15',
-       description: '15% Off All Apple Products',
-       type: 'PERCENTAGE',
-       value: 15,
-       startDate: new Date(),
-       isActive: true,
-       brand: 'Apple'
-    }
+      code: 'APPLE15',
+      description: '15% Off All Apple Products',
+      type: 'PERCENTAGE',
+      value: 15,
+      startDate: new Date(),
+      isActive: true,
+      brand: 'Apple',
+    },
   ];
 
   for (const discount of discounts) {
     if ((discount.categoryId && !electronicsParams) || (discount.productId && !iphone)) {
-        console.log(`⚠️  Skipping discount ${discount.code} due to missing target.`);
-        continue;
+      console.log(`⚠️  Skipping discount ${discount.code} due to missing target.`);
+      continue;
     }
 
     try {
-        await prisma.discount.create({ data: discount });
-        console.log(`✅ Created discount: ${discount.code} (${discount.description})`);
+      await prisma.discount.create({ data: discount });
+      console.log(`✅ Created discount: ${discount.code} (${discount.description})`);
     } catch (e) {
-        console.error(`❌ Failed to create ${discount.code}:`, e.message);
+      console.error(`❌ Failed to create ${discount.code}:`, e.message);
     }
   }
 
@@ -76,7 +76,7 @@ async function main() {
 }
 
 main()
-  .catch(e => {
+  .catch((e) => {
     console.error(e);
     process.exit(1);
   })

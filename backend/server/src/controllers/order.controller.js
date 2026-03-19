@@ -3,10 +3,7 @@ const asyncHandler = require('../middlewares/asyncHandler');
 const ApiError = require('../utils/ApiError');
 const { successResponse, createdResponse } = require('../utils/response');
 const { getIO } = require('../socket');
-const {
-  emitOrderUpdate,
-  emitStaffOrderPlaced,
-} = require('../socket/handlers/orderHandler');
+const { emitOrderUpdate, emitStaffOrderPlaced } = require('../socket/handlers/orderHandler');
 
 // Order Include Helper
 const orderInclude = {
@@ -94,8 +91,10 @@ exports.createOrder = asyncHandler(async (req, res) => {
         variant = product.variants.find((v) => v.id === item.variantId);
       }
 
-      const basePrice = variant ? (variant.basePrice || product.basePrice) : product.basePrice;
-      const salePrice = variant ? (variant.sellingPrice || product.sellingPrice) : product.sellingPrice;
+      const basePrice = variant ? variant.basePrice || product.basePrice : product.basePrice;
+      const salePrice = variant
+        ? variant.sellingPrice || product.sellingPrice
+        : product.sellingPrice;
       const sku = variant ? variant.sku : product.sku;
       const name = product.name + (variant ? ` - ${variant.name}` : '');
 
@@ -106,7 +105,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
       const currentStock = variant ? variant.stock : product.stock;
       if (currentStock < item.quantity) {
         throw ApiError.badRequest(
-          `Insufficient stock for ${name}. Available: ${currentStock}, Requested: ${item.quantity}`,
+          `Insufficient stock for ${name}. Available: ${currentStock}, Requested: ${item.quantity}`
         );
       }
 
@@ -140,8 +139,8 @@ exports.createOrder = asyncHandler(async (req, res) => {
         include: { items: { include: { product: true, variant: true } } },
       });
       if (guestCart && guestCart.items.length > 0) {
-         cart = guestCart;
-         // We could optionally link it to the user here, but it's fine since it will be cleared soon anyway
+        cart = guestCart;
+        // We could optionally link it to the user here, but it's fine since it will be cleared soon anyway
       }
     }
 
@@ -158,15 +157,14 @@ exports.createOrder = asyncHandler(async (req, res) => {
     }
 
     for (const item of selectedCartItems) {
-      const itemSellingPrice =
-        item.variant?.sellingPrice || item.product.sellingPrice;
+      const itemSellingPrice = item.variant?.sellingPrice || item.product.sellingPrice;
       const availableStock = item.variant?.stock || item.product.stock;
       const isPreOrder = item.variant?.isPreOrder || item.product.isPreOrder;
       const warranty = item.variant?.warranty || item.product.warranty;
 
       if (availableStock < item.quantity && !isPreOrder) {
         throw ApiError.badRequest(
-          `Insufficient stock for ${item.product.name}. Available: ${availableStock}, Requested: ${item.quantity}`,
+          `Insufficient stock for ${item.product.name}. Available: ${availableStock}, Requested: ${item.quantity}`
         );
       }
 
@@ -176,8 +174,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
       orderItemsData.push({
         productId: item.productId,
         variantId: item.variantId || undefined,
-        productName:
-          item.product.name + (item.variant ? ` - ${item.variant.name}` : ''),
+        productName: item.product.name + (item.variant ? ` - ${item.variant.name}` : ''),
         sku: item.variant?.sku || item.product.slug,
         unitPrice: itemSellingPrice,
         quantity: item.quantity,
@@ -320,7 +317,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
         where: { id: item.productId },
         data: {
           stock: { decrement: item.quantity },
-          soldCount: { increment: item.quantity }
+          soldCount: { increment: item.quantity },
         },
       });
       newQty = previousQty - item.quantity;
@@ -333,7 +330,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
         where: { id: item.productId },
         data: {
           stock: { decrement: item.quantity },
-          soldCount: { increment: item.quantity }
+          soldCount: { increment: item.quantity },
         },
       });
       newQty = previousQty - item.quantity;
@@ -358,7 +355,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
     const selectedItemIds = frontendOrderItems.map((item) => item.id);
 
     await prisma.cartItem.deleteMany({
-        where: { id: { in: selectedItemIds } }
+      where: { id: { in: selectedItemIds } },
     });
 
     // We don't necessarily reset the whole cart's coupon/totals because other items might still exist.
@@ -369,7 +366,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
         isRecovered: cart.recoveryEmailCount > 0,
         appliedCoupon: null, // Reset coupon since it was used on this order
         discountAmount: 0,
-      }
+      },
     });
   }
 
@@ -396,10 +393,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
       });
     }
   } catch (emailErr) {
-    console.warn(
-      'Failed to send order confirmation email:',
-      emailErr?.message || emailErr,
-    );
+    console.warn('Failed to send order confirmation email:', emailErr?.message || emailErr);
   }
 
   // ---------------------------------------------------------
@@ -443,7 +437,16 @@ exports.getMyOrders = asyncHandler(async (req, res) => {
  * Get All Orders (Admin)
  */
 exports.getAllOrders = asyncHandler(async (req, res) => {
-  const { status, search, startDate, endDate, paymentMethod, userId, page = 1, limit = 10 } = req.query;
+  const {
+    status,
+    search,
+    startDate,
+    endDate,
+    paymentMethod,
+    userId,
+    page = 1,
+    limit = 10,
+  } = req.query;
   const query = {};
 
   if (status && status !== 'ALL') {
@@ -473,7 +476,7 @@ exports.getAllOrders = asyncHandler(async (req, res) => {
       { user: { firstName: { contains: search, mode: 'insensitive' } } },
       { user: { lastName: { contains: search, mode: 'insensitive' } } },
       { user: { email: { contains: search, mode: 'insensitive' } } },
-      { walkInPhone: { contains: search, mode: 'insensitive' } }
+      { walkInPhone: { contains: search, mode: 'insensitive' } },
     ];
   }
 
@@ -514,7 +517,7 @@ exports.updateOrderStatus = asyncHandler(async (req, res) => {
   // Get current order with items to check if we need to revert stock
   const currentOrder = await prisma.order.findUnique({
     where: { id },
-    include: { items: true }
+    include: { items: true },
   });
 
   if (!currentOrder) {
@@ -534,15 +537,15 @@ exports.updateOrderStatus = asyncHandler(async (req, res) => {
           where: { id: item.productId },
           data: {
             stock: { increment: item.quantity },
-            soldCount: { decrement: item.quantity }
-          }
+            soldCount: { decrement: item.quantity },
+          },
         });
 
         // Also update variant stock if applicable
         if (item.variantId) {
           await prisma.productVariant.update({
             where: { id: item.variantId },
-            data: { stock: { increment: item.quantity } }
+            data: { stock: { increment: item.quantity } },
           });
         }
       }
@@ -600,10 +603,7 @@ exports.updatePaymentStatus = asyncHandler(async (req, res) => {
       });
     }
   } catch (notifyErr) {
-    console.warn(
-      'Payment status notify error:',
-      notifyErr?.message || notifyErr,
-    );
+    console.warn('Payment status notify error:', notifyErr?.message || notifyErr);
   }
 
   return successResponse(res, {
@@ -667,14 +667,14 @@ exports.bulkUpdateStatus = asyncHandler(async (req, res) => {
       // Re-using the logic from updateOrderStatus or similar
       const currentOrder = await prisma.order.findUnique({
         where: { id },
-        include: { items: true }
+        include: { items: true },
       });
 
       if (!currentOrder) continue;
 
       const updated = await prisma.order.update({
         where: { id },
-        data: { status }
+        data: { status },
       });
 
       // Stock Reversal for CANCELLED
@@ -685,13 +685,13 @@ exports.bulkUpdateStatus = asyncHandler(async (req, res) => {
               where: { id: item.productId },
               data: {
                 stock: { increment: item.quantity },
-                soldCount: { decrement: item.quantity }
-              }
+                soldCount: { decrement: item.quantity },
+              },
             });
             if (item.variantId) {
               await prisma.productVariant.update({
                 where: { id: item.variantId },
-                data: { stock: { increment: item.quantity } }
+                data: { stock: { increment: item.quantity } },
               });
             }
           }

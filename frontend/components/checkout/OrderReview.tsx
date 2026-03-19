@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useSettings } from "@/context/SettingsContext";
-import { useTranslations } from "@/context/TranslationContext";
-import { useCurrency } from "@/hooks/useCurrency";
-import Image from "next/image";
-import { CouponInput } from "./CouponInput";
+import { useSettings } from '@/context/SettingsContext';
+import { useTranslations } from '@/context/TranslationContext';
+import { useCurrency } from '@/hooks/useCurrency';
+import Image from 'next/image';
+import { CouponInput } from './CouponInput';
 
 interface OrderReviewProps {
   cartItems: any[];
@@ -27,7 +27,7 @@ export default function OrderReview({
   onApplyCoupon,
   onRemoveCoupon,
   session,
-  isBuyNow
+  isBuyNow,
 }: OrderReviewProps) {
   const { formatPrice } = useCurrency();
   const { t } = useTranslations();
@@ -48,7 +48,14 @@ export default function OrderReview({
 
   return (
     <div className="rounded-lg border bg-card p-6 sticky top-20">
-      <h2 className="text-xl font-semibold mb-4">{t('common', 'yourOrder', { defaultValue: 'Your Order' })} {isBuyNow && <span className="text-xs ml-2 px-2 py-0.5 bg-primary/10 text-primary rounded-full">Buy Now</span>}</h2>
+      <h2 className="text-xl font-semibold mb-4">
+        {t('common', 'yourOrder', 'Your Order')}{' '}
+        {isBuyNow && (
+          <span className="text-xs ml-2 px-2 py-0.5 bg-primary/10 text-primary rounded-full">
+            {t('product', 'buyNow', 'Buy Now')}
+          </span>
+        )}
+      </h2>
       <div className="space-y-4 max-h-[400px] overflow-auto pr-2">
         {cartItems.map((item: any) => {
           const price = item.variant?.sellingPrice || item.product.sellingPrice;
@@ -57,12 +64,7 @@ export default function OrderReview({
             <div key={item.id} className="flex gap-4 text-sm border-b pb-4 last:border-0 last:pb-0">
               <div className="relative w-16 h-16 shrink-0 overflow-hidden rounded bg-muted">
                 {displayImage && (
-                  <Image
-                    src={displayImage}
-                    alt={item.product.name}
-                    fill
-                    className="object-cover"
-                  />
+                  <Image src={displayImage} alt={item.product.name} fill className="object-cover" />
                 )}
               </div>
               <div className="font-medium flex-1 flex flex-col justify-between">
@@ -70,17 +72,19 @@ export default function OrderReview({
                   <p className="line-clamp-2 leading-snug">{item.product.name}</p>
                   {item.variant && (
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      Variant: {item.variant.name}
+                      {t('common', 'variant', 'Variant')}: {item.variant.name}
                     </p>
                   )}
                 </div>
 
                 <div className="flex items-center text-sm text-muted-foreground gap-1.5 mt-2">
-                    <span>{formatPrice(price)}</span>
-                    <span className="text-[10px]">×</span>
-                    <span>{item.quantity}</span>
-                    <span className="text-[10px]">=</span>
-                    <span className="font-bold text-foreground">{formatPrice(price * item.quantity)}</span>
+                  <span>{formatPrice(price)}</span>
+                  <span className="text-[10px]">×</span>
+                  <span>{item.quantity}</span>
+                  <span className="text-[10px]">=</span>
+                  <span className="font-bold text-foreground">
+                    {formatPrice(price * item.quantity)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -94,11 +98,11 @@ export default function OrderReview({
             productId: item.productId,
             categoryId: item.product.categoryId,
             price: item.variant?.sellingPrice || item.product.sellingPrice,
-            quantity: item.quantity
+            quantity: item.quantity,
           })),
           subtotal: subtotal,
-          userId: session?.user?.id || "",
-          country: "BD"
+          userId: session?.user?.id || '',
+          country: 'BD',
         }}
         country="BD"
         onApply={onApplyCoupon}
@@ -114,7 +118,9 @@ export default function OrderReview({
 
         {discount > 0 && (
           <div className="flex justify-between text-green-600 font-medium">
-            <span>{t('common', 'discount', { defaultValue: 'Discount' })} ({couponCode})</span>
+            <span>
+              {t('common', 'discount', { defaultValue: 'Discount' })} ({couponCode})
+            </span>
             <span>-{formatPrice(discount)}</span>
           </div>
         )}
@@ -122,22 +128,30 @@ export default function OrderReview({
         <div className="flex justify-between text-muted-foreground">
           <span>{t('common', 'shipping', { defaultValue: 'Shipping' })}</span>
           <span className="font-medium text-foreground">
-            {shippingCost > 0 ? formatPrice(shippingCost) : <span className="text-xs">{t('common', 'calculatedAtCheckout', { defaultValue: 'Calculated at checkout' })}</span>}
+            {shippingCost > 0 ? (
+              formatPrice(shippingCost)
+            ) : (
+              <span className="text-xs">
+                {t('common', 'calculatedAtCheckout', { defaultValue: 'Calculated at checkout' })}
+              </span>
+            )}
           </span>
         </div>
 
         {isTaxEnabled && vatAmount > 0 && (
-            <div className="flex justify-between text-muted-foreground">
-              <span>{t('common', 'vat', { defaultValue: 'VAT/Tax' })} ({vatPercent}%)</span>
-              <span className="font-medium text-foreground">{formatPrice(vatAmount)}</span>
-            </div>
+          <div className="flex justify-between text-muted-foreground">
+            <span>
+              {t('common', 'vat', { defaultValue: 'VAT/Tax' })} ({vatPercent}%)
+            </span>
+            <span className="font-medium text-foreground">{formatPrice(vatAmount)}</span>
+          </div>
         )}
 
         {codExtraCharge > 0 && (
-            <div className="flex justify-between text-muted-foreground">
-              <span>COD Extra Charge</span>
-              <span className="font-medium text-foreground">{formatPrice(codExtraCharge)}</span>
-            </div>
+          <div className="flex justify-between text-muted-foreground">
+            <span>{t('common', 'codExtraCharge', 'COD Extra Charge')}</span>
+            <span className="font-medium text-foreground">{formatPrice(codExtraCharge)}</span>
+          </div>
         )}
 
         <div className="border-t pt-3 mt-3 flex justify-between items-center text-lg font-bold">

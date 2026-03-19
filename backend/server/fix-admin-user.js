@@ -9,8 +9,8 @@ async function fixUser() {
   try {
     const user = await prisma.user.findFirst({
       where: {
-        OR: [{ email: email }, { username: email }]
-      }
+        OR: [{ email: email }, { username: email }],
+      },
     });
 
     if (!user) {
@@ -29,8 +29,8 @@ async function fixUser() {
           role: 'ADMIN',
           password: hashedPassword,
           emailVerificationToken: null,
-          emailVerificationTokenExpiry: null
-        }
+          emailVerificationTokenExpiry: null,
+        },
       });
 
       console.log('User updated successfully:');

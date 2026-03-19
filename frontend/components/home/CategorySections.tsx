@@ -1,7 +1,7 @@
-import { getHomeSections } from "@/lib/fetchers";
-import nextDynamic from "next/dynamic";
+import { getHomeSections } from '@/lib/fetchers';
+import nextDynamic from 'next/dynamic';
 
-const CategoryProductSlider = nextDynamic(() => import("@/components/home/CategoryProductSlider"), {
+const CategoryProductSlider = nextDynamic(() => import('@/components/home/CategoryProductSlider'), {
   ssr: true,
 });
 

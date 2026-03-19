@@ -1,5 +1,5 @@
 ﻿const translationService = require('../services/translation.service');
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require('@prisma/client');
 const prisma = require('../config/prisma');
 
 // Get translations for a specific language
@@ -21,7 +21,7 @@ exports.getLanguages = async (req, res, next) => {
   try {
     const languages = await prisma.language.findMany({
       where: { isActive: true },
-      orderBy: { isDefault: 'desc' }
+      orderBy: { isDefault: 'desc' },
     });
     res.status(200).json({ success: true, data: languages });
   } catch (error) {
@@ -35,16 +35,16 @@ exports.addLanguage = async (req, res, next) => {
     const { code, name, nativeName, flag, isRtl } = req.body;
 
     const language = await prisma.language.create({
-      data: { code, name, nativeName, flag, isRtl }
+      data: { code, name, nativeName, flag, isRtl },
     });
 
     // Trigger auto-translation in background
     translationService.autoTranslateLanguage(code).catch(console.error);
 
     res.status(201).json({
-        success: true,
-        data: language,
-        message: 'Language added. Auto-translation started.'
+      success: true,
+      data: language,
+      message: 'Language added. Auto-translation started.',
     });
   } catch (error) {
     next(error);
@@ -58,10 +58,10 @@ exports.updateTranslation = async (req, res, next) => {
 
     const translation = await prisma.uiTranslation.upsert({
       where: {
-        langCode_namespace_key: { langCode, namespace, key }
+        langCode_namespace_key: { langCode, namespace, key },
       },
       update: { value, isReviewed: true },
-      create: { langCode, namespace, key, value, isReviewed: true }
+      create: { langCode, namespace, key, value, isReviewed: true },
     });
 
     res.status(200).json({ success: true, data: translation });
@@ -76,13 +76,13 @@ exports.getVersions = async (req, res, next) => {
     const versions = await prisma.uiTranslation.groupBy({
       by: ['langCode'],
       _max: {
-        updatedAt: true
-      }
+        updatedAt: true,
+      },
     });
 
     const versionMap = {};
-    versions.forEach(v => {
-        versionMap[v.langCode] = v._max.updatedAt.getTime();
+    versions.forEach((v) => {
+      versionMap[v.langCode] = v._max.updatedAt.getTime();
     });
 
     res.status(200).json({ success: true, data: versionMap });
@@ -164,9 +164,9 @@ exports.bulkAutoTranslate = async (req, res, next) => {
     }
 
     res.status(200).json({
-        success: true,
-        message: `Bulk translation completed. ${results.updated} values updated.`,
-        data: results
+      success: true,
+      message: `Bulk translation completed. ${results.updated} values updated.`,
+      data: results,
     });
   } catch (error) {
     next(error);
@@ -176,7 +176,7 @@ exports.bulkAutoTranslate = async (req, res, next) => {
 exports.getNamespaces = async (req, res, next) => {
   try {
     const namespaces = await prisma.translationNamespace.findMany({
-      orderBy: { name: 'asc' }
+      orderBy: { name: 'asc' },
     });
     res.status(200).json({ success: true, data: namespaces });
   } catch (error) {
@@ -188,12 +188,12 @@ exports.addNamespace = async (req, res, next) => {
   try {
     const { name } = req.body;
     const namespace = await prisma.translationNamespace.create({
-      data: { name }
+      data: { name },
     });
     res.status(201).json({ success: true, data: namespace });
   } catch (error) {
     if (error.code === 'P2002') {
-        return res.status(400).json({ success: false, message: 'Namespace already exists' });
+      return res.status(400).json({ success: false, message: 'Namespace already exists' });
     }
     next(error);
   }
@@ -203,7 +203,7 @@ exports.deleteNamespace = async (req, res, next) => {
   try {
     const { id } = req.params;
     await prisma.translationNamespace.delete({
-      where: { id }
+      where: { id },
     });
     res.status(200).json({ success: true, message: 'Namespace deleted' });
   } catch (error) {
@@ -217,7 +217,7 @@ exports.updateNamespace = async (req, res, next) => {
     const { name } = req.body;
 
     const oldNamespace = await prisma.translationNamespace.findUnique({
-      where: { id }
+      where: { id },
     });
 
     if (!oldNamespace) {
@@ -227,21 +227,23 @@ exports.updateNamespace = async (req, res, next) => {
     // Update the namespace name
     const updated = await prisma.translationNamespace.update({
       where: { id },
-      data: { name }
+      data: { name },
     });
 
     // Cascade update to all keys using the old namespace
     if (oldNamespace.name !== name) {
       await prisma.uiTranslation.updateMany({
         where: { namespace: oldNamespace.name },
-        data: { namespace: name }
+        data: { namespace: name },
       });
     }
 
-    res.status(200).json({ success: true, data: updated, message: 'Namespace updated and keys synced.' });
+    res
+      .status(200)
+      .json({ success: true, data: updated, message: 'Namespace updated and keys synced.' });
   } catch (error) {
     if (error.code === 'P2002') {
-        return res.status(400).json({ success: false, message: 'Namespace name already exists' });
+      return res.status(400).json({ success: false, message: 'Namespace name already exists' });
     }
     next(error);
   }

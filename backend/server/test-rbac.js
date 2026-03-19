@@ -9,7 +9,17 @@ async function testRBAC() {
     console.log('--- Starting RBAC Test ---');
 
     // Cleanup first
-    await prisma.user.deleteMany({ where: { email: { in: ['newadmin_fail@example.com', 'newadmin_success@example.com', 'newcustomer_success@example.com'] } } });
+    await prisma.user.deleteMany({
+      where: {
+        email: {
+          in: [
+            'newadmin_fail@example.com',
+            'newadmin_success@example.com',
+            'newcustomer_success@example.com',
+          ],
+        },
+      },
+    });
     console.log('Cleanup previous test users done.');
 
     // 1. Get Super Admin and Admin tokens (assuming they exist from seed)
@@ -20,16 +30,16 @@ async function testRBAC() {
 
     console.log('Logging in as Super Admin...');
     const superAdminRes = await axios.post(`${API_URL}/auth/login`, {
-        email: 'superadmin@example.com',
-        password: 'password123'
+      email: 'superadmin@example.com',
+      password: 'password123',
     });
     const superAdminToken = superAdminRes.data.data.accessToken;
     console.log('Super Admin logged in.');
 
     console.log('Logging in as Admin...');
     const adminRes = await axios.post(`${API_URL}/auth/login`, {
-        email: 'admin@example.com',
-        password: 'password123'
+      email: 'admin@example.com',
+      password: 'password123',
     });
     const adminToken = adminRes.data.data.accessToken;
     console.log('Admin logged in.');
@@ -62,24 +72,31 @@ async function testRBAC() {
     console.log('Sending request...');
     let newAdminId;
     try {
-        const res = await axios.post(`${API_URL}/admin/users`, {
-            email: 'newadmin_success@example.com',
-            firstName: 'Success',
-            lastName: 'Admin',
-            role: 'ADMIN',
-            password: 'password123',
-            isActive: true
-        }, {
-            headers: { Authorization: `Bearer ${superAdminToken}` }
-        });
-        console.log('Response received:', res.status);
-        if (res.status === 201) {
-            console.log('✅ PASSED: Super Admin created Admin.');
-            newAdminId = res.data.data.id;
+      const res = await axios.post(
+        `${API_URL}/admin/users`,
+        {
+          email: 'newadmin_success@example.com',
+          firstName: 'Success',
+          lastName: 'Admin',
+          role: 'ADMIN',
+          password: 'password123',
+          isActive: true,
+        },
+        {
+          headers: { Authorization: `Bearer ${superAdminToken}` },
         }
+      );
+      console.log('Response received:', res.status);
+      if (res.status === 201) {
+        console.log('✅ PASSED: Super Admin created Admin.');
+        newAdminId = res.data.data.id;
+      }
     } catch (error) {
-        console.log('Catch block entered');
-        console.error('❌ FAILED: Super Admin failed to create Admin:', error.response ? JSON.stringify(error.response.data) : error.message);
+      console.log('Catch block entered');
+      console.error(
+        '❌ FAILED: Super Admin failed to create Admin:',
+        error.response ? JSON.stringify(error.response.data) : error.message
+      );
     }
     console.log('Test 2 finished');
 
@@ -106,14 +123,23 @@ async function testRBAC() {
 
     // Clean up
     if (newAdminId) {
-        await prisma.user.deleteMany({ where: { email: { in: ['newadmin_fail@example.com', 'newadmin_success@example.com', 'newcustomer_success@example.com'] } } });
-        console.log('\nCleanup done.');
+      await prisma.user.deleteMany({
+        where: {
+          email: {
+            in: [
+              'newadmin_fail@example.com',
+              'newadmin_success@example.com',
+              'newcustomer_success@example.com',
+            ],
+          },
+        },
+      });
+      console.log('\nCleanup done.');
     }
-
   } catch (error) {
     console.error('Test Script Error:', error);
   } finally {
-      await prisma.$disconnect();
+    await prisma.$disconnect();
   }
 }
 

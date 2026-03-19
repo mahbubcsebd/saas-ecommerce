@@ -6,24 +6,24 @@ async function fixRoles() {
   try {
     // RAW MongoDB update to bypass Prisma Enum validation
     const result = await prisma.$runCommandRaw({
-        update: "User",
-        updates: [
-            {
-                q: { role: "USER" },
-                u: { $set: { role: "CUSTOMER" } },
-                multi: true
-            },
-            {
-                q: { role: "SUPERADMIN" },
-                u: { $set: { role: "SUPER_ADMIN" } },
-                multi: true
-            },
-             {
-                q: { role: "MODERATOR" },
-                u: { $set: { role: "MANAGER" } },
-                multi: true
-            }
-        ]
+      update: 'User',
+      updates: [
+        {
+          q: { role: 'USER' },
+          u: { $set: { role: 'CUSTOMER' } },
+          multi: true,
+        },
+        {
+          q: { role: 'SUPERADMIN' },
+          u: { $set: { role: 'SUPER_ADMIN' } },
+          multi: true,
+        },
+        {
+          q: { role: 'MODERATOR' },
+          u: { $set: { role: 'MANAGER' } },
+          multi: true,
+        },
+      ],
     });
     console.dir(result, { depth: null });
     console.log('Role migration completed.');

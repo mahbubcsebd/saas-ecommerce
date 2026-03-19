@@ -49,30 +49,30 @@ async function seedUsers() {
       lastName: 'Customer',
       role: 'CUSTOMER',
       phone: '+8801700000005',
-    }
+    },
   ];
 
   for (const userData of users) {
     try {
-        const user = await prisma.user.upsert({
-            where: { email: userData.email },
-            update: {
-                role: userData.role,
-                isActive: true,
-                isEmailVerified: true, // Fix login blocker
-                password: hashedPassword
-            },
-            create: {
-                ...userData,
-                password: hashedPassword,
-                isActive: true,
-                isEmailVerified: true, // Fix login blocker
-                bio: `Seeded ${userData.role}`
-            }
-        });
-        console.log(`✅  ${user.role}: ${user.email} (Password: password123)`);
+      const user = await prisma.user.upsert({
+        where: { email: userData.email },
+        update: {
+          role: userData.role,
+          isActive: true,
+          isEmailVerified: true, // Fix login blocker
+          password: hashedPassword,
+        },
+        create: {
+          ...userData,
+          password: hashedPassword,
+          isActive: true,
+          isEmailVerified: true, // Fix login blocker
+          bio: `Seeded ${userData.role}`,
+        },
+      });
+      console.log(`✅  ${user.role}: ${user.email} (Password: password123)`);
     } catch (e) {
-        console.error(`❌ Failed to seed ${userData.email}:`, e.message);
+      console.error(`❌ Failed to seed ${userData.email}:`, e.message);
     }
   }
 

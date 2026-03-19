@@ -16,13 +16,12 @@ async function checkSettings() {
       languages,
       translations: {
         en: enTranslationsCount,
-        bn: bnTranslationsCount
-      }
+        bn: bnTranslationsCount,
+      },
     };
 
     fs.writeFileSync('settings-results.json', JSON.stringify(results, null, 2));
     console.log('Results written to settings-results.json');
-
   } catch (error) {
     console.error('Error checking settings:', error);
   } finally {

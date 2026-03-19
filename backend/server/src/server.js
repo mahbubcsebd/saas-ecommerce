@@ -16,49 +16,48 @@ app.set('io', io);
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
-    logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
-    logger.error(`${err.name}: ${err.message}\n${err.stack}`);
-    setTimeout(() => {
-        process.exit(1);
-    }, 500);
+  logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+  logger.error(`${err.name}: ${err.message}\n${err.stack}`);
+  setTimeout(() => {
+    process.exit(1);
+  }, 500);
 });
 
 const port = process.env.PORT || 8000;
 
 const startServer = async () => {
-    try {
-        console.log('🚀 Starting application...');
-        console.log(`- Node version: ${process.version}`);
+  try {
+    console.log('🚀 Starting application...');
+    console.log(`- Node version: ${process.version}`);
 
-        console.log('📦 Loading database config...');
-        console.log('✅ Database config loaded successfully');
+    console.log('📦 Loading database config...');
+    console.log('✅ Database config loaded successfully');
 
-        console.log('🔄 Attempting database connection...');
-        await prisma.$connect();
-        console.log('✅ Database connected successfully');
+    console.log('🔄 Attempting database connection...');
+    await prisma.$connect();
+    console.log('✅ Database connected successfully');
 
-        console.log(`🔄 Starting server on port ${port}`);
-        server.listen(port, () => {
-            console.log(`🚀 Server is running on port ${port}`);
-            console.log(`🌐 Server URL: http://localhost:${port}`);
-            console.log(`🔌 Socket.IO ready`);
-        });
+    console.log(`🔄 Starting server on port ${port}`);
+    server.listen(port, () => {
+      console.log(`🚀 Server is running on port ${port}`);
+      console.log(`🌐 Server URL: http://localhost:${port}`);
+      console.log(`🔌 Socket.IO ready`);
+    });
 
-        // Handle unhandled rejections
-        process.on('unhandledRejection', (err) => {
-            logger.error('UNHANDLED REJECTION! 💥 Shutting down...');
-            logger.error(err);
+    // Handle unhandled rejections
+    process.on('unhandledRejection', (err) => {
+      logger.error('UNHANDLED REJECTION! 💥 Shutting down...');
+      logger.error(err);
 
-            // Give logger time to write before exiting
-            server.close(() => {
-                process.exit(1);
-            });
-        });
-
-    } catch (error) {
-        logger.error('❌ Failed to start server:', error);
+      // Give logger time to write before exiting
+      server.close(() => {
         process.exit(1);
-    }
+      });
+    });
+  } catch (error) {
+    logger.error('❌ Failed to start server:', error);
+    process.exit(1);
+  }
 };
 
 startServer();

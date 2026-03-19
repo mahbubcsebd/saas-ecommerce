@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -66,11 +66,12 @@ export const useCartStore = create<CartState>()(
       setLoading: (loading) => set({ loading }),
       setGuestId: (guestId) => set({ guestId }),
 
-      toggleSelectItem: (itemId) => set((state) => ({
-         selectedItemIds: state.selectedItemIds.includes(itemId)
-            ? state.selectedItemIds.filter(id => id !== itemId)
-            : [...state.selectedItemIds, itemId]
-      })),
+      toggleSelectItem: (itemId) =>
+        set((state) => ({
+          selectedItemIds: state.selectedItemIds.includes(itemId)
+            ? state.selectedItemIds.filter((id) => id !== itemId)
+            : [...state.selectedItemIds, itemId],
+        })),
 
       selectAllItems: (itemIds) => set({ selectedItemIds: itemIds }),
       clearSelection: () => set({ selectedItemIds: [] }),
@@ -78,7 +79,9 @@ export const useCartStore = create<CartState>()(
 
       fetchCart: async (id) => {
         const guestId = id || get().guestId;
-        console.log(`[useCartStore] fetchCart called with id: ${id || 'none'}, current guestId: ${get().guestId || 'none'}`);
+        console.log(
+          `[useCartStore] fetchCart called with id: ${id || 'none'}, current guestId: ${get().guestId || 'none'}`
+        );
         if (!guestId) {
           console.log(`[useCartStore] No guestId, skipping fetch`);
           return;
@@ -87,10 +90,12 @@ export const useCartStore = create<CartState>()(
         set({ loading: true });
         try {
           const data = await api.get<any>(`/cart?guestId=${guestId}`);
-          console.log(`[useCartStore] Cart fetched successfully, items: ${data?.items?.length || 0}`);
+          console.log(
+            `[useCartStore] Cart fetched successfully, items: ${data?.items?.length || 0}`
+          );
           set({ cart: data });
         } catch (error) {
-          console.error("Failed to fetch cart", error);
+          console.error('Failed to fetch cart', error);
         } finally {
           set({ loading: false });
         }
@@ -98,7 +103,9 @@ export const useCartStore = create<CartState>()(
 
       addToCart: async (productId, quantity, variantId) => {
         const { guestId } = get();
-        console.log(`[useCartStore] Adding to cart: productId=${productId}, guestId=${guestId || 'none'}`);
+        console.log(
+          `[useCartStore] Adding to cart: productId=${productId}, guestId=${guestId || 'none'}`
+        );
         // Allow if we have either a guestId OR a user might be logged in
         // (api client will handle auth headers/cookies)
 
@@ -107,9 +114,11 @@ export const useCartStore = create<CartState>()(
             guestId: guestId || undefined,
             productId,
             quantity,
-            variantId
+            variantId,
           });
-          console.log(`[useCartStore] Add to cart success, new items count: ${data?.items?.length || 0}`);
+          console.log(
+            `[useCartStore] Add to cart success, new items count: ${data?.items?.length || 0}`
+          );
           set({ cart: data });
           // Re-fetch to ensure data consistency and derived fields
           if (guestId) {
@@ -117,40 +126,42 @@ export const useCartStore = create<CartState>()(
             await get().fetchCart(guestId);
           }
         } catch (error) {
-          console.error("Failed to add to cart", error);
+          console.error('Failed to add to cart', error);
         }
       },
 
       removeFromCart: async (itemId) => {
         const { guestId } = get();
         try {
-          const data = await api.delete<any>(`/cart/items/${itemId}?guestId=${guestId || ""}`);
+          const data = await api.delete<any>(`/cart/items/${itemId}?guestId=${guestId || ''}`);
           set({ cart: data });
           if (guestId) await get().fetchCart(guestId);
         } catch (error) {
-          console.error("Failed to remove item", error);
+          console.error('Failed to remove item', error);
         }
       },
 
       updateQuantity: async (itemId, quantity) => {
         const { guestId } = get();
         try {
-          const data = await api.put<any>(`/cart/items/${itemId}?guestId=${guestId || ""}`, { quantity });
+          const data = await api.put<any>(`/cart/items/${itemId}?guestId=${guestId || ''}`, {
+            quantity,
+          });
           set({ cart: data });
           if (guestId) await get().fetchCart(guestId);
         } catch (error) {
-          console.error("Failed to update quantity", error);
+          console.error('Failed to update quantity', error);
         }
       },
 
       clearCart: async () => {
         const { guestId } = get();
         try {
-          const data = await api.delete<any>(`/cart?guestId=${guestId || ""}`);
+          const data = await api.delete<any>(`/cart?guestId=${guestId || ''}`);
           set({ cart: data, selectedItemIds: [] });
           if (guestId) await get().fetchCart(guestId);
         } catch (error) {
-          console.error("Failed to clear cart", error);
+          console.error('Failed to clear cart', error);
         }
       },
     }),

@@ -15,7 +15,13 @@ const router = express.Router();
 router.get('/', getAllSlides); // Public
 router.get('/admin', authMiddleware, isAdmin, getAdminSlides); // Admin
 
-router.post('/', authMiddleware, isAdmin, multipleImageUpload('ecommerce/hero', 'images', 10), createSlide);
+router.post(
+  '/',
+  authMiddleware,
+  isAdmin,
+  multipleImageUpload('ecommerce/hero', 'images', 10),
+  createSlide
+);
 router.put('/:id', authMiddleware, isAdmin, updateSlide);
 router.patch('/reorder', authMiddleware, isAdmin, updateSlideOrders);
 router.delete('/:id', authMiddleware, isAdmin, deleteSlide);

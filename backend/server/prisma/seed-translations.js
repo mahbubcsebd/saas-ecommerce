@@ -15,8 +15,8 @@ async function main() {
       flag: '🇺🇸',
       isDefault: true,
       isActive: true,
-      isRtl: false
-    }
+      isRtl: false,
+    },
   });
   console.log('Language created:', en);
 
@@ -56,7 +56,7 @@ async function main() {
     // Cart
     { key: 'shoppingCart', value: 'Shopping Cart' },
     { key: 'cartEmpty', value: 'Your Cart is Empty' },
-    { key: 'cartEmptyDesc', value: 'Looks like you haven\'t added anything yet.' },
+    { key: 'cartEmptyDesc', value: "Looks like you haven't added anything yet." },
     { key: 'continueShopping', value: 'Continue Shopping' },
     { key: 'subtotal', value: 'Subtotal' },
     { key: 'shipping', value: 'Shipping' },
@@ -80,7 +80,7 @@ async function main() {
     { key: 'processing', value: 'Processing...' },
     { key: 'yourOrder', value: 'Your Order' },
     { key: 'discount', value: 'Discount' },
-    { key: 'apply', value: 'Apply' }
+    { key: 'apply', value: 'Apply' },
   ];
 
   // 3. Create Bangla Language
@@ -94,8 +94,8 @@ async function main() {
       flag: '🇧🇩',
       isDefault: false,
       isActive: true,
-      isRtl: false
-    }
+      isRtl: false,
+    },
   });
   console.log('Language created:', bn);
 
@@ -159,17 +159,17 @@ async function main() {
     { key: 'processing', value: 'প্রক্রিয়াকরণ হচ্ছে...' },
     { key: 'yourOrder', value: 'আপনার অর্ডার' },
     { key: 'discount', value: 'ছাড়' },
-    { key: 'apply', value: 'প্রয়োগ করুন' }
+    { key: 'apply', value: 'প্রয়োগ করুন' },
   ];
 
   for (const t of bnTranslations) {
     await prisma.uiTranslation.upsert({
       where: {
         langCode_namespace_key: {
-            langCode: 'bn',
-            namespace: 'common',
-            key: t.key
-        }
+          langCode: 'bn',
+          namespace: 'common',
+          key: t.key,
+        },
       },
       update: { value: t.value },
       create: {
@@ -177,8 +177,8 @@ async function main() {
         namespace: 'common',
         key: t.key,
         value: t.value,
-        isReviewed: true
-      }
+        isReviewed: true,
+      },
     });
   }
   console.log(`Seeded ${bnTranslations.length} translations for 'bn' - common.`);
@@ -187,10 +187,10 @@ async function main() {
     await prisma.uiTranslation.upsert({
       where: {
         langCode_namespace_key: {
-            langCode: 'en',
-            namespace: 'common',
-            key: t.key
-        }
+          langCode: 'en',
+          namespace: 'common',
+          key: t.key,
+        },
       },
       update: { value: t.value },
       create: {
@@ -198,8 +198,8 @@ async function main() {
         namespace: 'common',
         key: t.key,
         value: t.value,
-        isReviewed: true
-      }
+        isReviewed: true,
+      },
     });
   }
 

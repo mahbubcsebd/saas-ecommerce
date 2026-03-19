@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const {
-    getAllInventory,
-    getStockHistory,
-    adjustStock,
-    getStockMovements,
-    getLowStockReport
+  getAllInventory,
+  getStockHistory,
+  adjustStock,
+  getStockMovements,
+  getLowStockReport,
 } = require('../controllers/inventory.controller');
 const { authMiddleware, isManager } = require('../middlewares/auth.middleware');
 

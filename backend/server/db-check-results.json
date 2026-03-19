@@ -103,7 +103,5 @@
     }
   ],
   "ordersWithNoUser": 7,
-  "userIdsInOrders": [
-    "698ce71b968aa380591fb889"
-  ]
+  "userIdsInOrders": ["698ce71b968aa380591fb889"]
 }

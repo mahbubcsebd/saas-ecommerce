@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { useState } from "react";
+import Image from 'next/image';
+import { useState } from 'react';
 import type { Swiper as SwiperType } from 'swiper';
 import { FreeMode, Navigation, Pagination, Thumbs } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -67,7 +67,10 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
           className="w-full"
         >
           {images.map((img, index) => (
-            <SwiperSlide key={index} className="opacity-60 [&.swiper-slide-thumb-active]:opacity-100 transition-opacity">
+            <SwiperSlide
+              key={index}
+              className="opacity-60 [&.swiper-slide-thumb-active]:opacity-100 transition-opacity"
+            >
               <div className="relative aspect-square overflow-hidden rounded-lg border-2 border-transparent [&.swiper-slide-thumb-active]:border-primary hover:border-primary/50 transition-all cursor-pointer bg-muted">
                 <Image
                   src={img}

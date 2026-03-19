@@ -37,10 +37,11 @@ const getTransporter = async () => {
  * Get Sender Info (From Name/Email) from DB or Environment
  */
 const getSenderInfo = async (settings) => {
-  const dbSettings = settings || await prisma.emailSetting.findFirst();
+  const dbSettings = settings || (await prisma.emailSetting.findFirst());
   const company = await prisma.companySetting.findFirst();
 
-  const fromName = dbSettings?.fromName || process.env.COMPANY_NAME || company?.name || 'Mahbub Shop';
+  const fromName =
+    dbSettings?.fromName || process.env.COMPANY_NAME || company?.name || 'Mahbub Shop';
   const fromEmail = dbSettings?.fromEmail || process.env.SMTP_FROM || process.env.SMTP_USER_NAME;
 
   return `"${fromName}" <${fromEmail}>`;
@@ -49,12 +50,7 @@ const getSenderInfo = async (settings) => {
 /**
  * Send invitation email
  */
-exports.sendInvitationEmail = async ({
-  to,
-  name,
-  invitationLink,
-  expiryDays,
-}) => {
+exports.sendInvitationEmail = async ({ to, name, invitationLink, expiryDays }) => {
   const transporter = await getTransporter();
   const mailOptions = {
     from: await getSenderInfo(),
@@ -387,11 +383,15 @@ exports.sendOrderConfirmationEmail = async ({ to, name, order }) => {
                                 <span style="font-size:12px; color:#555;">Subtotal</span>
                                 <span style="font-size:12px; font-weight:bold;">${order.subtotal.toFixed(2)}</span>
                             </div>
-                            ${order.discountAmount > 0 ? `
+                            ${
+                              order.discountAmount > 0
+                                ? `
                             <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #f3f4f6;">
                                 <span style="font-size:12px; color:#555;">Discount</span>
                                 <span style="font-size:12px; color:red;">-${order.discountAmount.toFixed(2)}</span>
-                            </div>` : ''}
+                            </div>`
+                                : ''
+                            }
                             <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #f3f4f6;">
                                 <span style="font-size:12px; color:#555;">Shipping</span>
                                 <span style="font-size:12px;">${(order.shippingCost || 0).toFixed(2)}</span>
@@ -433,11 +433,11 @@ exports.sendOrderConfirmationEmail = async ({ to, name, order }) => {
  * Send email with Invoice PDF attachment
  */
 exports.sendInvoicePdfEmail = async ({ to, name, invoiceNumber, pdfBuffer }) => {
-    const mailOptions = {
-        from: `"${process.env.COMPANY_NAME || 'Mahbub Shop'}" <${process.env.SMTP_FROM || process.env.SMTP_USER_NAME}>`,
-        to,
-        subject: `Invoice for your order - ${invoiceNumber}`,
-        html: `
+  const mailOptions = {
+    from: `"${process.env.COMPANY_NAME || 'Mahbub Shop'}" <${process.env.SMTP_FROM || process.env.SMTP_USER_NAME}>`,
+    to,
+    subject: `Invoice for your order - ${invoiceNumber}`,
+    html: `
             <div style="font-family: Arial, sans-serif; padding: 20px; line-height: 1.6;">
                 <h2>Hello ${name},</h2>
                 <p>Thank you for your business! Please find attached the invoice <strong>#${invoiceNumber}</strong> for your recent order.</p>
@@ -445,22 +445,22 @@ exports.sendInvoicePdfEmail = async ({ to, name, invoiceNumber, pdfBuffer }) => 
                 <p>Best regards,<br>${process.env.COMPANY_NAME || 'Mahbub Shop'} Team</p>
             </div>
         `,
-        attachments: [
-            {
-                filename: `Invoice-${invoiceNumber}.pdf`,
-                content: pdfBuffer,
-                contentType: 'application/pdf'
-            }
-        ]
-    };
+    attachments: [
+      {
+        filename: `Invoice-${invoiceNumber}.pdf`,
+        content: pdfBuffer,
+        contentType: 'application/pdf',
+      },
+    ],
+  };
 
-    try {
-        await transporter.sendMail(mailOptions);
-        console.log(`Invoice email sent to: ${to} for invoice ${invoiceNumber}`);
-    } catch (error) {
-        console.error('Email sending error:', error);
-        throw error;
-    }
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Invoice email sent to: ${to} for invoice ${invoiceNumber}`);
+  } catch (error) {
+    console.error('Email sending error:', error);
+    throw error;
+  }
 };
 const juice = require('juice');
 
@@ -468,14 +468,15 @@ const juice = require('juice');
  * Send custom email to user
  */
 exports.sendCustomEmail = async ({ to, subject, message }) => {
-    // Check if the message seems to be a full HTML document (with body/html tags)
-    const isFullHtml = message.toLowerCase().includes('<html') || message.toLowerCase().includes('<body');
+  // Check if the message seems to be a full HTML document (with body/html tags)
+  const isFullHtml =
+    message.toLowerCase().includes('<html') || message.toLowerCase().includes('<body');
 
-    let rawHtml = message;
+  let rawHtml = message;
 
-    // Hardcoded subset of Tailwind CSS for email templates to avoid external compilation issues
-    // and missing Node.js dependencies during runtime.
-    const generatedCss = `
+  // Hardcoded subset of Tailwind CSS for email templates to avoid external compilation issues
+  // and missing Node.js dependencies during runtime.
+  const generatedCss = `
         /* Typography */
         .text-xs { font-size: 0.75rem; line-height: 1rem; }
         .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
@@ -562,8 +563,8 @@ exports.sendCustomEmail = async ({ to, subject, message }) => {
         .decoration-none { text-decoration: none; }
     `;
 
-    if (!isFullHtml) {
-        rawHtml = `
+  if (!isFullHtml) {
+    rawHtml = `
             <!DOCTYPE html>
             <html>
             <head>
@@ -577,31 +578,31 @@ exports.sendCustomEmail = async ({ to, subject, message }) => {
             </body>
             </html>
         `;
+  } else {
+    if (rawHtml.toLowerCase().includes('</head>')) {
+      rawHtml = rawHtml.replace(/<\/head>/i, `<style>${generatedCss}</style></head>`);
     } else {
-        if (rawHtml.toLowerCase().includes('</head>')) {
-            rawHtml = rawHtml.replace(/<\/head>/i, `<style>${generatedCss}</style></head>`);
-        } else {
-            rawHtml = `<style>${generatedCss}</style>\n` + rawHtml;
-        }
+      rawHtml = `<style>${generatedCss}</style>\n` + rawHtml;
     }
+  }
 
-    // Convert Tailwind/CSS classes to inline styles
-    const inlinedHtml = juice(rawHtml);
+  // Convert Tailwind/CSS classes to inline styles
+  const inlinedHtml = juice(rawHtml);
 
-    const mailOptions = {
-        from: `"${process.env.COMPANY_NAME || 'Mahbub Shop'}" <${process.env.SMTP_FROM || process.env.SMTP_USER_NAME}>`,
-        to,
-        subject,
-        html: inlinedHtml,
-    };
+  const mailOptions = {
+    from: `"${process.env.COMPANY_NAME || 'Mahbub Shop'}" <${process.env.SMTP_FROM || process.env.SMTP_USER_NAME}>`,
+    to,
+    subject,
+    html: inlinedHtml,
+  };
 
-    try {
-        await transporter.sendMail(mailOptions);
-        console.log(`Custom email sent to: ${to}`);
-    } catch (error) {
-        console.error('Email sending error:', error);
-        throw error;
-    }
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Custom email sent to: ${to}`);
+  } catch (error) {
+    console.error('Email sending error:', error);
+    throw error;
+  }
 };
 /**
  * Replace {{variable.key}} placeholders in a string.
@@ -637,7 +638,7 @@ exports.sendCampaignEmail = async ({ to, subject, html, attachments = [] }) => {
   const isFullHtml = html.toLowerCase().includes('<html') || html.toLowerCase().includes('<body');
   let rawHtml = html;
   if (!isFullHtml) {
-    rawHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${tailwindCss}</style></head><body style="font-family:Arial,sans-serif;padding:20px;line-height:1.6;color:#333;background:#f9fafb;">${html}<hr style="border:0;border-top:1px solid #eee;margin:20px 0;"><p style="font-size:11px;color:#888;">Sent by ${process.env.COMPANY_NAME||'Mahbub Shop'}</p></body></html>`;
+    rawHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${tailwindCss}</style></head><body style="font-family:Arial,sans-serif;padding:20px;line-height:1.6;color:#333;background:#f9fafb;">${html}<hr style="border:0;border-top:1px solid #eee;margin:20px 0;"><p style="font-size:11px;color:#888;">Sent by ${process.env.COMPANY_NAME || 'Mahbub Shop'}</p></body></html>`;
   } else {
     rawHtml = rawHtml.replace(/<\/head>/i, `<style>${tailwindCss}</style></head>`);
   }

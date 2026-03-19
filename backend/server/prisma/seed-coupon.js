@@ -1,4 +1,3 @@
-
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
@@ -6,9 +5,9 @@ async function main() {
   const coupon = await prisma.discount.upsert({
     where: { code: 'WELCOME10' },
     update: {
-        isActive: true,
-        usageLimit: 1000,
-        minOrderValue: 500,
+      isActive: true,
+      usageLimit: 1000,
+      minOrderValue: 500,
     },
     create: {
       name: 'Welcome Discount',

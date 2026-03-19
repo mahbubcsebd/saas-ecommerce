@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
 type FetchOptions = RequestInit & {
   tags?: string[];
@@ -6,50 +6,56 @@ type FetchOptions = RequestInit & {
 };
 
 class ApiError extends Error {
-  constructor(public status: number, message: string, public data?: any) {
+  constructor(
+    public status: number,
+    message: string,
+    public data?: any
+  ) {
     super(message);
-    this.name = "ApiError";
+    this.name = 'ApiError';
   }
 }
 
-async function apiClient<T>(
-  endpoint: string,
-  options: FetchOptions = {}
-): Promise<T> {
+async function apiClient<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
   const { tags, revalidate, ...rest } = options;
 
-  const url = `${BASE_URL}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
+  const url = `${BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
   const headers = new Headers(rest.headers);
-  const isFormData = rest.body instanceof FormData;
+  const isFormData =
+    rest.body instanceof FormData ||
+    (rest.body && typeof rest.body === 'object' && rest.body.constructor?.name === 'FormData') ||
+    (rest.body && typeof (rest.body as any).append === 'function');
 
-  if (!headers.has("Content-Type") && !isFormData) {
-    headers.set("Content-Type", "application/json");
+  if (!headers.has('Content-Type') && !isFormData) {
+    headers.set('Content-Type', 'application/json');
   }
 
   // Inject locale header
   if (typeof window === 'undefined') {
     try {
       // Dynamic import to avoid client-side bundling issues
-      const { cookies } = await import("next/headers");
+      const { cookies } = await import('next/headers');
       const cookieStore = await cookies();
-      const locale = cookieStore.get("next-locale")?.value || "en";
-      headers.set("x-lang", locale);
+      const locale = cookieStore.get('next-locale')?.value || 'en';
+      headers.set('x-lang', locale);
     } catch (e) {
-      console.error("Failed to read cookies on server", e);
+      console.error('Failed to read cookies on server', e);
     }
   } else {
     // Client-side: read from document.cookie
     if (typeof document !== 'undefined') {
       const match = document.cookie.match(/next-locale=([^;]+)/);
-      if (match) headers.set("x-lang", match[1]);
+      if (match) headers.set('x-lang', match[1]);
     }
   }
 
   const response = await fetch(url, {
     ...rest,
+    method: rest.method || 'GET',
     headers,
-    credentials: "include",
+    body: isFormData ? (rest.body as any) : JSON.stringify(rest.body),
+    credentials: 'include',
     next: {
       tags,
       revalidate,
@@ -61,13 +67,9 @@ async function apiClient<T>(
     try {
       errorData = await response.json();
     } catch {
-      errorData = { message: "Unknown error" };
+      errorData = { message: 'Unknown error' };
     }
-    throw new ApiError(
-      response.status,
-      errorData.message || "Something went wrong",
-      errorData
-    );
+    throw new ApiError(response.status, errorData.message || 'Something went wrong', errorData);
   }
 
   const json = await response.json();
@@ -76,29 +78,29 @@ async function apiClient<T>(
 
 export const api = {
   get: <T>(endpoint: string, options?: FetchOptions) =>
-    apiClient<T>(endpoint, { ...options, method: "GET" }),
+    apiClient<T>(endpoint, { ...options, method: 'GET' }),
 
   post: <T>(endpoint: string, body: any, options?: FetchOptions) =>
     apiClient<T>(endpoint, {
       ...options,
-      method: "POST",
-      body: body instanceof FormData ? body : JSON.stringify(body),
+      method: 'POST',
+      body,
     }),
 
   put: <T>(endpoint: string, body: any, options?: FetchOptions) =>
     apiClient<T>(endpoint, {
       ...options,
-      method: "PUT",
-      body: body instanceof FormData ? body : JSON.stringify(body),
+      method: 'PUT',
+      body,
     }),
 
   patch: <T>(endpoint: string, body: any, options?: FetchOptions) =>
     apiClient<T>(endpoint, {
       ...options,
-      method: "PATCH",
-      body: body instanceof FormData ? body : JSON.stringify(body),
+      method: 'PATCH',
+      body,
     }),
 
   delete: <T>(endpoint: string, options?: FetchOptions) =>
-    apiClient<T>(endpoint, { ...options, method: "DELETE" }),
+    apiClient<T>(endpoint, { ...options, method: 'DELETE' }),
 };

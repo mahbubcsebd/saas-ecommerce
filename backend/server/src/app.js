@@ -3,8 +3,6 @@ const express = require('express'); // Server entry point
 const app = express();
 // require('./utils/cronBackup');
 
-
-
 // http-errors is a middleware which creates an error object
 const createError = require('http-errors');
 // morgan is a middleware which logs all the requests to the console
@@ -78,11 +76,7 @@ app.use(compression()); // Enable Gzip/Brotli compression for responses
 // app.use(mongoSanitize()); // Middleware to sanitize user input
 
 // Swagger UI
-app.use(
-  '/api-docs',
-  swaggerUI.serve,
-  swaggerUI.setup(swaggerSpec, { explorer: true })
-);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec, { explorer: true }));
 
 // const corsOptions = {
 //   origin: (origin, callback) => {
@@ -102,7 +96,6 @@ app.use(
 //     credentials: true,
 //   })
 // );
-
 
 app.get('/', (req, res) => {
   res.status(200).json({

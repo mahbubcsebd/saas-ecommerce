@@ -42,28 +42,41 @@ async function emitOrderUpdate(io, orderId) {
       let message = `Your order #${order.orderNumber} is now ${order.status}`;
 
       switch (order.status) {
-          case 'PROCESSING': type = 'ORDER_PROCESSING'; message = `Your order #${order.orderNumber} is being packed.`; break;
-          case 'SHIPPED': type = 'ORDER_SHIPPED'; message = `Your order #${order.orderNumber} has been shipped.`; break;
-          case 'DELIVERED': type = 'ORDER_DELIVERED'; message = `Your order #${order.orderNumber} has been delivered.`; break;
-          case 'COMPLETED': type = 'ORDER_DELIVERED'; message = `Your order #${order.orderNumber} is completed.`; break;
-          case 'CANCELLED': type = 'ORDER_CANCELLED'; message = `Your order #${order.orderNumber} was cancelled.`; break;
-          case 'REFUNDED': type = 'ORDER_REFUND_COMPLETED'; message = `Refund for #${order.orderNumber} completed.`; break;
+        case 'PROCESSING':
+          type = 'ORDER_PROCESSING';
+          message = `Your order #${order.orderNumber} is being packed.`;
+          break;
+        case 'SHIPPED':
+          type = 'ORDER_SHIPPED';
+          message = `Your order #${order.orderNumber} has been shipped.`;
+          break;
+        case 'DELIVERED':
+          type = 'ORDER_DELIVERED';
+          message = `Your order #${order.orderNumber} has been delivered.`;
+          break;
+        case 'COMPLETED':
+          type = 'ORDER_DELIVERED';
+          message = `Your order #${order.orderNumber} is completed.`;
+          break;
+        case 'CANCELLED':
+          type = 'ORDER_CANCELLED';
+          message = `Your order #${order.orderNumber} was cancelled.`;
+          break;
+        case 'REFUNDED':
+          type = 'ORDER_REFUND_COMPLETED';
+          message = `Refund for #${order.orderNumber} completed.`;
+          break;
       }
 
-      await NotificationService.notifyUser(
-          order.userId,
-          type,
-          'Order Update',
-          message,
-          { orderId: order.id, url: `/orders/${order.id}` }
-      );
+      await NotificationService.notifyUser(order.userId, type, 'Order Update', message, {
+        orderId: order.id,
+        url: `/orders/${order.id}`,
+      });
     }
 
     // Broadcast order update to staff roles for real-time table updates (no persistent staff notifications here)
     const staffRoles = ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'STAFF', 'STAFFER'];
-    staffRoles.forEach((role) =>
-      io.to(`role:${role}`).emit('order:update', order),
-    );
+    staffRoles.forEach((role) => io.to(`role:${role}`).emit('order:update', order));
   } catch (error) {
     console.error('Emit order update error:', error);
   }
@@ -83,26 +96,21 @@ async function emitStaffOrderPlaced(io, orderId) {
     });
     if (!order) return;
 
-    const productNames = order.items
-      .map((i) => i.product?.name || 'Item')
-      .slice(0, 3);
+    const productNames = order.items.map((i) => i.product?.name || 'Item').slice(0, 3);
     const productList =
-      productNames.join(', ') +
-      (order.items.length > 3 ? ` +${order.items.length - 3} more` : '');
+      productNames.join(', ') + (order.items.length > 3 ? ` +${order.items.length - 3} more` : '');
 
     // Notify Admins
     await NotificationService.notifyAdmins(
-        'NEW_ORDER',
-        'New Order Received',
-        `#${order.orderNumber} · ${productList}`,
-        { orderId: order.id },
-        ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'STAFF']
+      'NEW_ORDER',
+      'New Order Received',
+      `#${order.orderNumber} · ${productList}`,
+      { orderId: order.id },
+      ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'STAFF']
     );
 
     // Real-time broadcast for staff dashboards/tables
-    staffRoles.forEach((role) =>
-      io.to(`role:${role}`).emit('order:new', order),
-    );
+    staffRoles.forEach((role) => io.to(`role:${role}`).emit('order:new', order));
   } catch (e) {
     console.error('Emit staff order placed error:', e);
   }

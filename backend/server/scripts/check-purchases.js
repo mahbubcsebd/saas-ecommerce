@@ -5,7 +5,7 @@ async function main() {
   const purchases = await prisma.analyticsEvent.findMany({
     where: { eventName: 'purchase' },
     orderBy: { createdAt: 'desc' },
-    take: 5
+    take: 5,
   });
   console.log('Recent Purchase Events:');
   console.log(JSON.stringify(purchases, null, 2));

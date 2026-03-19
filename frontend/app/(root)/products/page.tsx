@@ -1,9 +1,9 @@
-import ProductView from "@/components/ProductView";
-import SidebarFilter from "@/components/SidebarFilter";
-import { getCategories, getProducts } from "@/lib/fetchers";
-import { Suspense } from "react";
+import ProductView from '@/components/ProductView';
+import SidebarFilter from '@/components/SidebarFilter';
+import { getCategories, getProducts } from '@/lib/fetchers';
+import { Suspense } from 'react';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export default async function ProductsPage({
   searchParams,
@@ -24,7 +24,9 @@ export default async function ProductsPage({
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Sidebar */}
         <aside className="lg:col-span-1">
-          <Suspense fallback={<div className="h-[400px] w-full bg-muted animate-pulse rounded-lg" />}>
+          <Suspense
+            fallback={<div className="h-[400px] w-full bg-muted animate-pulse rounded-lg" />}
+          >
             <SidebarFilter categories={categories} />
           </Suspense>
         </aside>

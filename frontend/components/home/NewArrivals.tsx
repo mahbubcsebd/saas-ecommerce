@@ -1,26 +1,30 @@
-import { Product } from "@/types/product";
-import Link from "next/link";
-import ProductCard from "../ProductCard";
+'use client';
+
+import { useTranslations } from '@/context/TranslationContext';
+import { Product } from '@/types/product';
+import Link from 'next/link';
+import ProductCard from '../ProductCard';
 
 interface NewArrivalsProps {
-    products: Product[];
+  products: Product[];
 }
 
 export default function NewArrivals({ products }: NewArrivalsProps) {
+  const { t } = useTranslations();
   if (!products || products.length === 0) return null;
 
   return (
     <section className="container py-12 bg-secondary/5">
       <div className="flex justify-between items-center mb-8">
-        <h2 className="text-2xl font-bold">New Arrivals</h2>
+        <h2 className="text-2xl font-bold">{t('home', 'newArrivals', 'New Arrivals')}</h2>
         <Link href="/products?sort=createdAt_desc" className="text-primary hover:underline">
-            View All
+          {t('common', 'viewAll', 'View All')}
         </Link>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {products.map((product) => (
-           <ProductCard key={product.id} product={product} />
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </section>

@@ -1,10 +1,9 @@
-
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
   const coupon = await prisma.discount.findFirst({
-    where: { code: 'WELCOME10' }
+    where: { code: 'WELCOME10' },
   });
   console.log('Coupon in DB:', coupon);
 }

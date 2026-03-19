@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -123,7 +123,6 @@
     @apply bg-background text-foreground;
   }
 }
-
 
 /* Proper Container Implementation */
 @layer components {
@@ -273,7 +272,8 @@
   }
 
   /* Show only the invoice section */
-  #invoice-section, #invoice-section * {
+  #invoice-section,
+  #invoice-section * {
     visibility: visible;
   }
 
@@ -307,6 +307,6 @@
   This happens when Radix UI (Shadcn) overlays fail to remove
   the pointer-events: none style from the body during navigation or errors.
 */
-body[style*="pointer-events: none"] {
+body[style*='pointer-events: none'] {
   pointer-events: auto !important;
 }

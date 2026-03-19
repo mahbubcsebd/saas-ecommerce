@@ -20,42 +20,42 @@ async function main() {
   await prisma.product.deleteMany({});
 
   // 3. Delete Categories (Iterative loop)
-  console.log("3. Deleting Categories (Iterative leaf-first)...");
+  console.log('3. Deleting Categories (Iterative leaf-first)...');
 
   let count = await prisma.category.count();
   let loops = 0;
 
   while (count > 0 && loops < 20) {
-      console.log(`   Loop ${loops + 1}: ${count} categories remaining...`);
-      try {
-          // Attempt to delete leaf nodes
-          const result = await prisma.category.deleteMany({
-              where: {
-                  children: {
-                      none: {}
-                  }
-              }
-          });
-          console.log(`      Deleted ${result.count} leaf categories.`);
+    console.log(`   Loop ${loops + 1}: ${count} categories remaining...`);
+    try {
+      // Attempt to delete leaf nodes
+      const result = await prisma.category.deleteMany({
+        where: {
+          children: {
+            none: {},
+          },
+        },
+      });
+      console.log(`      Deleted ${result.count} leaf categories.`);
 
-          if (result.count === 0) {
-              console.log("      No leaves found? Detaching relations...");
-              await prisma.category.updateMany({
-                  data: { parentId: null }
-              });
-              await prisma.category.deleteMany({});
-              break;
-          }
-      } catch (e) {
-          console.log(`      Error in loop: ${e.message}`);
-           await prisma.category.updateMany({
-              data: { parentId: null }
-          });
-          await prisma.category.deleteMany({});
-          break;
+      if (result.count === 0) {
+        console.log('      No leaves found? Detaching relations...');
+        await prisma.category.updateMany({
+          data: { parentId: null },
+        });
+        await prisma.category.deleteMany({});
+        break;
       }
-      count = await prisma.category.count();
-      loops++;
+    } catch (e) {
+      console.log(`      Error in loop: ${e.message}`);
+      await prisma.category.updateMany({
+        data: { parentId: null },
+      });
+      await prisma.category.deleteMany({});
+      break;
+    }
+    count = await prisma.category.count();
+    loops++;
   }
 
   // 4. Delete others if needed
@@ -74,5 +74,5 @@ async function main() {
 }
 
 main()
-  .catch(e => console.error(e))
+  .catch((e) => console.error(e))
   .finally(() => prisma.$disconnect());

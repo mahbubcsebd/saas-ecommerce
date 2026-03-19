@@ -6,11 +6,11 @@ const { authMiddleware: protect, isAdmin } = require('../middlewares/auth.middle
 router.use(protect);
 router.use(isAdmin);
 
-router.route('/')
-    .get(purchaseReturnController.getPurchaseReturns)
-    .post(purchaseReturnController.createPurchaseReturn);
+router
+  .route('/')
+  .get(purchaseReturnController.getPurchaseReturns)
+  .post(purchaseReturnController.createPurchaseReturn);
 
-router.route('/:id')
-    .get(purchaseReturnController.getPurchaseReturn);
+router.route('/:id').get(purchaseReturnController.getPurchaseReturn);
 
 module.exports = router;

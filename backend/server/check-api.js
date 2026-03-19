@@ -2,17 +2,19 @@ const http = require('http');
 
 function fetch(url) {
   return new Promise((resolve, reject) => {
-    http.get(url, (res) => {
-      let data = '';
-      res.on('data', (chunk) => data += chunk);
-      res.on('end', () => {
-        try {
-          resolve(JSON.parse(data));
-        } catch (e) {
-          resolve({ error: 'Invalid JSON', raw: data });
-        }
-      });
-    }).on('error', reject);
+    http
+      .get(url, (res) => {
+        let data = '';
+        res.on('data', (chunk) => (data += chunk));
+        res.on('end', () => {
+          try {
+            resolve(JSON.parse(data));
+          } catch (e) {
+            resolve({ error: 'Invalid JSON', raw: data });
+          }
+        });
+      })
+      .on('error', reject);
   });
 }
 

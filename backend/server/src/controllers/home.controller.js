@@ -32,7 +32,7 @@ exports.getHomeSections = async (req, res, next) => {
     const sections = await Promise.all(
       categories.map(async (category) => {
         // Get IDs of this category and all its children
-        const categoryIds = [category.id, ...category.children.map(c => c.id)];
+        const categoryIds = [category.id, ...category.children.map((c) => c.id)];
 
         const products = await prisma.product.findMany({
           where: {
@@ -71,7 +71,7 @@ exports.getHomeSections = async (req, res, next) => {
     );
 
     // Filter out sections with no products
-    const sectionsWithProducts = sections.filter(s => s.products.length > 0);
+    const sectionsWithProducts = sections.filter((s) => s.products.length > 0);
 
     res.status(200).json({
       success: true,

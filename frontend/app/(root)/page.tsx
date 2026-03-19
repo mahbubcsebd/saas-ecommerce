@@ -1,13 +1,13 @@
-import CategorySections from "@/components/home/CategorySections";
-import FeaturedCategoriesSection from "@/components/home/FeaturedCategoriesSection";
-import FlashSaleSection from "@/components/home/FlashSaleSection";
-import HeroSection from "@/components/home/HeroSection";
-import NewArrivalsSection from "@/components/home/NewArrivalsSection";
-import Newsletter from "@/components/home/Newsletter";
-import SectionSkeleton from "@/components/home/SectionSkeleton";
-import TopSellingSection from "@/components/home/TopSellingSection";
-import TrustSignals from "@/components/home/TrustSignals";
-import { Suspense } from "react";
+import CategorySections from '@/components/home/CategorySections';
+import FeaturedCategoriesSection from '@/components/home/FeaturedCategoriesSection';
+import FlashSaleSection from '@/components/home/FlashSaleSection';
+import HeroSection from '@/components/home/HeroSection';
+import NewArrivalsSection from '@/components/home/NewArrivalsSection';
+import Newsletter from '@/components/home/Newsletter';
+import SectionSkeleton from '@/components/home/SectionSkeleton';
+import TopSellingSection from '@/components/home/TopSellingSection';
+import TrustSignals from '@/components/home/TrustSignals';
+import { Suspense } from 'react';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,7 +34,7 @@ export default async function Home() {
 
       {/* 5. Top Selling (Streaming) */}
       <Suspense fallback={<SectionSkeleton />}>
-         <TopSellingSection />
+        <TopSellingSection />
       </Suspense>
 
       {/* 6. New Arrivals (Streaming) */}

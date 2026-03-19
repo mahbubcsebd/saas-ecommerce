@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { AlertCircle } from "lucide-react";
-import { useEffect } from "react";
+import { Button } from '@/components/ui/button';
+import { AlertCircle } from 'lucide-react';
+import { useEffect } from 'react';
 
 export default function ErrorBoundary({
   error,
@@ -12,7 +12,7 @@ export default function ErrorBoundary({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("Root Error Boundary caught:", error);
+    console.error('Root Error Boundary caught:', error);
   }, [error]);
 
   return (

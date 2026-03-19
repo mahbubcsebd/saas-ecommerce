@@ -13,9 +13,7 @@ export default function NotFound() {
         The page you are looking for doesn't exist or has been moved.
       </p>
       <Button asChild>
-        <Link href="/">
-          Return Home
-        </Link>
+        <Link href="/">Return Home</Link>
       </Button>
     </div>
   );

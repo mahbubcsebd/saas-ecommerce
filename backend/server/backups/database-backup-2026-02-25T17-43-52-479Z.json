@@ -139,12 +139,7 @@
         ],
         "categoryId": "69994c235990556e9a7fdbf6",
         "brand": "Apple",
-        "tags": [
-          "iphone",
-          "apple",
-          "5g",
-          "titanium"
-        ],
+        "tags": ["iphone", "apple", "5g", "titanium"],
         "weight": null,
         "length": null,
         "width": null,
@@ -3392,9 +3387,7 @@
         "perUserLimit": 1,
         "minOrderValue": 0,
         "maxDiscountCap": null,
-        "categoryIds": [
-          "69994c225990556e9a7fdbf5"
-        ],
+        "categoryIds": ["69994c225990556e9a7fdbf5"],
         "brandNames": [],
         "allowedCountries": [],
         "excludedProducts": [],
@@ -3484,9 +3477,7 @@
         "perUserLimit": 1,
         "minOrderValue": 0,
         "maxDiscountCap": null,
-        "categoryIds": [
-          "69994c245990556e9a7fdbfa"
-        ],
+        "categoryIds": ["69994c245990556e9a7fdbfa"],
         "brandNames": [],
         "allowedCountries": [],
         "excludedProducts": [],
@@ -4419,12 +4410,8 @@
       {
         "id": "69994c215990556e9a7fdbeb",
         "name": "Inside Dhaka",
-        "countries": [
-          "BD"
-        ],
-        "regions": [
-          "Dhaka"
-        ],
+        "countries": ["BD"],
+        "regions": ["Dhaka"],
         "isActive": true,
         "priority": 1,
         "createdAt": "2026-02-21T06:09:37.048Z",
@@ -4433,9 +4420,7 @@
       {
         "id": "69994c215990556e9a7fdbee",
         "name": "Outside Dhaka",
-        "countries": [
-          "BD"
-        ],
+        "countries": ["BD"],
         "regions": [],
         "isActive": true,
         "priority": 0,
@@ -4445,11 +4430,7 @@
       {
         "id": "69994c215990556e9a7fdbf0",
         "name": "International",
-        "countries": [
-          "US",
-          "GB",
-          "CA"
-        ],
+        "countries": ["US", "GB", "CA"],
         "regions": [],
         "isActive": true,
         "priority": 0,

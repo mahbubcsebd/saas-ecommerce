@@ -18,27 +18,33 @@ export default function AnalyticsScripts() {
     return [ids];
   };
 
-  const gtmIds = getIds(settings?.integration?.googleTagManagerId || settings?.seo?.googleTagManagerId);
-  const ga4Ids = getIds(settings?.integration?.googleAnalyticsId || settings?.seo?.googleAnalyticsId);
+  const gtmIds = getIds(
+    settings?.integration?.googleTagManagerId || settings?.seo?.googleTagManagerId
+  );
+  const ga4Ids = getIds(
+    settings?.integration?.googleAnalyticsId || settings?.seo?.googleAnalyticsId
+  );
   const pixelIds = getIds(settings?.integration?.facebookPixelId || settings?.seo?.facebookPixelId);
 
   useEffect(() => {
     if (pathname) {
       // GA4 Page Views
-      if (window.gtag && ga4Ids.length > 0) {
+      const gtag = window.gtag;
+      if (gtag && ga4Ids.length > 0) {
         ga4Ids.forEach((id) => {
-          window.gtag('config', id, {
+          gtag('config', id, {
             page_path: pathname,
           });
         });
       }
 
       // Meta Pixel Page Views
-      if (window.fbq && pixelIds.length > 0) {
+      const fbq = window.fbq;
+      if (fbq && pixelIds.length > 0) {
         // Facebook Pixel automatically tracks for all initialized IDs if you call track
         // But let's be explicit if needed, though standard 'track' calls send to all initialized pixels.
         // Actually, fbq('track', 'PageView') sends to all initialized IDs.
-        window.fbq('track', 'PageView');
+        fbq('track', 'PageView');
       }
       // Internal analytics
       trackPageView(pathname);
@@ -69,8 +75,8 @@ export default function AnalyticsScripts() {
               You just need to config each one. One script tag is enough usually, but to be safe and simple:
           */}
           <Script
-             src={`https://www.googletagmanager.com/gtag/js?id=${ga4Ids[0]}`}
-             strategy="afterInteractive"
+            src={`https://www.googletagmanager.com/gtag/js?id=${ga4Ids[0]}`}
+            strategy="afterInteractive"
           />
           <Script id="google-analytics-init" strategy="afterInteractive">
             {`

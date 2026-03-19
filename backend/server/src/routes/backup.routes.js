@@ -9,7 +9,7 @@ const {
   deleteBackup,
   restoreFromBackup,
   scheduleBackup,
-  getBackupSettings
+  getBackupSettings,
 } = require('../controllers/backup.controller');
 
 // All backup routes require admin access

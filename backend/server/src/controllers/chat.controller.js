@@ -61,10 +61,10 @@ exports.getMessages = asyncHandler(async (req, res) => {
       replyTo: {
         include: {
           sender: {
-            select: { id: true, firstName: true, lastName: true }
-          }
-        }
-      }
+            select: { id: true, firstName: true, lastName: true },
+          },
+        },
+      },
     },
     orderBy: {
       createdAt: 'desc',

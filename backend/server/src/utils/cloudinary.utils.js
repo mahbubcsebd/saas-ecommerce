@@ -17,7 +17,8 @@ const deleteImageFromCloudinary = async (imageUrl) => {
     if (uploadIndex !== -1 && uploadIndex < urlParts.length - 1) {
       // Get everything after 'upload/' and before the file extension
       const publicIdWithExt = urlParts.slice(uploadIndex + 1).join('/');
-      const publicId = publicIdWithExt.substring(0, publicIdWithExt.lastIndexOf('.')) || publicIdWithExt;
+      const publicId =
+        publicIdWithExt.substring(0, publicIdWithExt.lastIndexOf('.')) || publicIdWithExt;
 
       const result = await cloudinary.uploader.destroy(publicId);
       return result.result === 'ok';

@@ -60,22 +60,17 @@ async function calculateCartTotals(cartItems, couponCode = null) {
               where: {
                 isActive: true,
                 startDate: { lte: new Date() },
-                OR: [
-                  { endDate: null },
-                  { endDate: { gte: new Date() } }
-                ]
-              }
-            }
-          }
-        }
-      }
+                OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!product) continue;
 
-    const activeDiscounts = product.discounts
-      .map(pd => pd.discount)
-      .filter(d => d);
+    const activeDiscounts = product.discounts.map((pd) => pd.discount).filter((d) => d);
 
     const productDiscount = calculateProductDiscount(product, activeDiscounts);
     const itemPrice = product.sellingPrice - productDiscount;
@@ -89,7 +84,7 @@ async function calculateCartTotals(cartItems, couponCode = null) {
       unitPrice: product.sellingPrice,
       discount: productDiscount,
       finalPrice: itemPrice,
-      total: itemTotal
+      total: itemTotal,
     });
   }
 
@@ -101,11 +96,8 @@ async function calculateCartTotals(cartItems, couponCode = null) {
         isActive: true,
         applicableOn: { in: ['CART', 'PRODUCT', 'CATEGORY', 'BRAND'] },
         startDate: { lte: new Date() },
-        OR: [
-          { endDate: null },
-          { endDate: { gte: new Date() } }
-        ]
-      }
+        OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
+      },
     });
 
     if (coupon) {
@@ -145,7 +137,7 @@ async function calculateCartTotals(cartItems, couponCode = null) {
     totalDiscount: Math.round(totalDiscount * 100) / 100,
     couponDiscount: Math.round(couponDiscount * 100) / 100,
     total: Math.max(0, Math.round(total * 100) / 100),
-    appliedCoupon: couponCode
+    appliedCoupon: couponCode,
   };
 }
 
@@ -158,11 +150,8 @@ async function validateCoupon(couponCode, userId, cartTotal) {
       code: couponCode,
       isActive: true,
       startDate: { lte: new Date() },
-      OR: [
-        { endDate: null },
-        { endDate: { gte: new Date() } }
-      ]
-    }
+      OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
+    },
   });
 
   if (!coupon) {
@@ -179,8 +168,8 @@ async function validateCoupon(couponCode, userId, cartTotal) {
     const userUsage = await prisma.discountUsage.count({
       where: {
         userId,
-        discountId: coupon.id
-      }
+        discountId: coupon.id,
+      },
     });
 
     if (userUsage >= coupon.perUserLimit) {
@@ -200,13 +189,13 @@ async function validateCoupon(couponCode, userId, cartTotal) {
  * Apply Buy X Get Y discount
  */
 function applyBuyXGetY(items, discount) {
-  const eligibleItems = items.filter(item => {
+  const eligibleItems = items.filter((item) => {
     // Check if item matches discount criteria
     return true; // Implement your logic
   });
 
   let freeItems = 0;
-  eligibleItems.forEach(item => {
+  eligibleItems.forEach((item) => {
     const sets = Math.floor(item.quantity / discount.buyQuantity);
     freeItems += sets * discount.getQuantity;
   });
@@ -228,45 +217,36 @@ async function getActiveDiscountsForProduct(productId) {
             where: {
               isActive: true,
               startDate: { lte: new Date() },
-              OR: [
-                { endDate: null },
-                { endDate: { gte: new Date() } }
-              ]
-            }
-          }
-        }
-      }
-    }
+              OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!product) return [];
 
-  const discounts = product.discounts.map(pd => pd.discount).filter(d => d);
+  const discounts = product.discounts.map((pd) => pd.discount).filter((d) => d);
 
   // Also get category-wide and brand-wide discounts
   const additionalDiscounts = await prisma.discount.findMany({
     where: {
       isActive: true,
       startDate: { lte: new Date() },
-      OR: [
-        { endDate: null },
-        { endDate: { gte: new Date() } }
-      ],
+      OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
       AND: [
         {
           OR: [
             { categoryIds: { has: product.categoryId } },
             { brandNames: { has: product.brand } },
             {
-              AND: [
-                { categoryIds: { isEmpty: true } },
-                { brandNames: { isEmpty: true } }
-              ]
-            }
-          ]
-        }
-      ]
-    }
+              AND: [{ categoryIds: { isEmpty: true } }, { brandNames: { isEmpty: true } }],
+            },
+          ],
+        },
+      ],
+    },
   });
 
   return [...discounts, ...additionalDiscounts];
@@ -277,5 +257,5 @@ module.exports = {
   calculateCartTotals,
   validateCoupon,
   applyBuyXGetY,
-  getActiveDiscountsForProduct
+  getActiveDiscountsForProduct,
 };

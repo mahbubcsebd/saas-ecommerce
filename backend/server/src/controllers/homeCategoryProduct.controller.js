@@ -31,9 +31,10 @@ exports.getHomeCategoryWiseProduct = async (req, res, next) => {
     console.log('DEBUG: Total categories fetched:', allCategories.length);
 
     // Filter for root categories (no parentId) and isHomeShown
-    const categories = allCategories.filter(c => {
+    const categories = allCategories.filter((c) => {
       const isRoot = !c.parentId;
-      const shouldShow = c.isHomeShown === true || ['electronics', 'fashion', 'home-living'].includes(c.slug);
+      const shouldShow =
+        c.isHomeShown === true || ['electronics', 'fashion', 'home-living'].includes(c.slug);
       return isRoot && shouldShow;
     });
 
@@ -43,23 +44,17 @@ exports.getHomeCategoryWiseProduct = async (req, res, next) => {
     const result = await Promise.all(
       categories.map(async (category) => {
         // Get IDs: category + all children
-        const categoryIds = [category.id, ...category.children.map(c => c.id)];
+        const categoryIds = [category.id, ...category.children.map((c) => c.id)];
 
         // Fetch products from this category and subcategories
         const products = await prisma.product.findMany({
           where: {
             categoryId: { in: categoryIds },
             status: 'PUBLISHED',
-            OR: [
-              { isFeatured: true },
-              { isNewArrival: true }
-            ]
+            OR: [{ isFeatured: true }, { isNewArrival: true }],
           },
           take: 8,
-          orderBy: [
-            { isFeatured: 'desc' },
-            { createdAt: 'desc' }
-          ],
+          orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
           include: {
             category: {
               select: {
@@ -69,8 +64,8 @@ exports.getHomeCategoryWiseProduct = async (req, res, next) => {
             },
             discounts: {
               include: {
-                  discount: true // Get actual discount details
-              }
+                discount: true, // Get actual discount details
+              },
             },
             variants: {
               where: { isActive: true },
@@ -81,12 +76,12 @@ exports.getHomeCategoryWiseProduct = async (req, res, next) => {
         });
 
         // Map products to match frontend expectation
-        const mappedProducts = products.map(p => ({
-            ...p,
-            price: p.sellingPrice,
-            originalPrice: p.basePrice,
-            discounts: p.discounts ? p.discounts.map(d => d.discount) : [],
-            discount: p.discounts && p.discounts.length > 0 ? p.discounts[0].discount : null
+        const mappedProducts = products.map((p) => ({
+          ...p,
+          price: p.sellingPrice,
+          originalPrice: p.basePrice,
+          discounts: p.discounts ? p.discounts.map((d) => d.discount) : [],
+          discount: p.discounts && p.discounts.length > 0 ? p.discounts[0].discount : null,
         }));
 
         return {
@@ -99,7 +94,7 @@ exports.getHomeCategoryWiseProduct = async (req, res, next) => {
     );
 
     // Filter out categories with no products
-    const categoriesWithProducts = result.filter(cat => cat.products.length > 0);
+    const categoriesWithProducts = result.filter((cat) => cat.products.length > 0);
 
     res.status(200).json({
       success: true,

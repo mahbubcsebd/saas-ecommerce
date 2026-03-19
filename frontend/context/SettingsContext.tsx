@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 // Define Types based on Backend Models
 export interface GeneralSetting {
@@ -12,14 +12,14 @@ export interface GeneralSetting {
   footerLogo?: string;
   favicon?: string;
   maintenanceMode: boolean;
-  shopType: "GADGET" | "CLOTHING";
+  shopType: 'GADGET' | 'CLOTHING';
   copyrightText?: string;
 }
 
 export interface CurrencySetting {
   code: string;
   symbol: string;
-  symbolPosition: "LEFT" | "RIGHT";
+  symbolPosition: 'LEFT' | 'RIGHT';
   decimalPlaces: number;
 }
 
@@ -113,9 +113,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   const fetchSettings = async () => {
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
       const res = await fetch(`${API_URL}/settings/public`, { cache: 'no-store' });
-        // Use no-store to ensure we get fresh settings if they change
+      // Use no-store to ensure we get fresh settings if they change
       if (res.ok) {
         const data = await res.json();
         if (data.success) {
@@ -123,7 +123,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         }
       }
     } catch (error) {
-      console.error("Failed to fetch settings:", error);
+      console.error('Failed to fetch settings:', error);
     } finally {
       setLoading(false);
     }
@@ -143,7 +143,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 export function useSettings() {
   const context = useContext(SettingsContext);
   if (context === undefined) {
-    throw new Error("useSettings must be used within a SettingsProvider");
+    throw new Error('useSettings must be used within a SettingsProvider');
   }
   return context;
 }

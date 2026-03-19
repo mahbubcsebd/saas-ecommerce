@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const {
-    createReview,
-    getProductReviews,
-    getAllReviews,
-    updateReviewStatus,
-    replyToReview,
-    deleteReview
+  createReview,
+  getProductReviews,
+  getAllReviews,
+  updateReviewStatus,
+  replyToReview,
+  deleteReview,
 } = require('../controllers/review.controller');
 const { authMiddleware: protect, isManager } = require('../middlewares/auth.middleware');
 const { anyImageUpload } = require('../middlewares/upload.middleware');
