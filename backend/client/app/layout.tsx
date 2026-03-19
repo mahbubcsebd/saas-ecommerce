@@ -1,10 +1,11 @@
-import AnalyticsScripts from "@/components/analytics/AnalyticsScripts";
-import SiteAnalyticsTracker from "@/components/analytics/SiteAnalyticsTracker";
+import AnalyticsScripts from '@/components/analytics/AnalyticsScripts';
+import SiteAnalyticsTracker from '@/components/analytics/SiteAnalyticsTracker';
 import { LanguageProvider } from '@/components/providers/LanguageProvider';
 import AuthProvider from '@/components/providers/SessionProvider';
 import { ConfirmationProvider } from '@/context/ConfirmationContext';
-import { SocketProvider } from "@/context/SocketContext";
-import { Toaster } from "sonner";
+import { SocketProvider } from '@/context/SocketContext';
+import { Suspense } from 'react';
+import { Toaster } from 'sonner';
 import './globals.css';
 
 export const metadata = {
@@ -21,10 +22,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
         {/* Analytics Scripts (Google Analytics, Meta Pixel, etc.) */}
-        <AnalyticsScripts />
+        <Suspense fallback={null}>
+          <AnalyticsScripts />
+        </Suspense>
 
         {/* Internal Site Tracking */}
-        <SiteAnalyticsTracker />
+        <Suspense fallback={null}>
+          <SiteAnalyticsTracker />
+        </Suspense>
 
         {/* Providers Hierarchy */}
         <AuthProvider>
@@ -35,14 +40,14 @@ export default function RootLayout({
 
                 {/* Toast Notifications */}
                 <Toaster
-                    position="top-right"
-                    expand={false}
-                    richColors
-                    closeButton
-                    toastOptions={{
+                  position="top-right"
+                  expand={false}
+                  richColors
+                  closeButton
+                  toastOptions={{
                     duration: 4000,
                     className: 'text-sm',
-                    }}
+                  }}
                 />
               </ConfirmationProvider>
             </LanguageProvider>

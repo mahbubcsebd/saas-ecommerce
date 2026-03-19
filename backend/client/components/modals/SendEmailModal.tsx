@@ -3,20 +3,20 @@
 import GlobalInput from '@/components/forms/GlobalInput';
 import { Button } from '@/components/ui/button';
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
@@ -34,13 +34,13 @@ interface SendEmailModalProps {
 
 // Predefined Tailwind Marketing Templates
 const EMAIL_TEMPLATES = {
-    custom: {
-        name: 'Custom / Blank',
-        content: `<div>\n  <p>Write your HTML/Tailwind here...</p>\n</div>`,
-    },
-    welcome: {
-        name: 'Welcome Series (Tailwind)',
-        content: `<div class="max-w-md mx-auto bg-white p-8 rounded-lg outline outline-1 outline-gray-200 shadow-sm mt-8">
+  custom: {
+    name: 'Custom / Blank',
+    content: `<div>\n  <p>Write your HTML/Tailwind here...</p>\n</div>`,
+  },
+  welcome: {
+    name: 'Welcome Series (Tailwind)',
+    content: `<div class="max-w-md mx-auto bg-white p-8 rounded-lg outline outline-1 outline-gray-200 shadow-sm mt-8">
   <div class="text-center mb-6">
     <h1 class="text-2xl font-bold text-blue-600 mb-2">Welcome to Mahbub Shop!</h1>
     <p class="text-gray-600">We're thrilled to have you here.</p>
@@ -56,10 +56,10 @@ const EMAIL_TEMPLATES = {
     <a href="https://example.com" class="inline-block bg-blue-600 text-white font-medium px-6 py-3 rounded-md decoration-none">Shop Now</a>
   </div>
 </div>`,
-    },
-    saleAlert: {
-        name: 'Flash Sale Alert (Tailwind)',
-        content: `<div class="max-w-md mx-auto bg-slate-900 border border-slate-700 p-8 rounded-lg mt-8 text-center">
+  },
+  saleAlert: {
+    name: 'Flash Sale Alert (Tailwind)',
+    content: `<div class="max-w-md mx-auto bg-slate-900 border border-slate-700 p-8 rounded-lg mt-8 text-center">
   <div class="inline-block bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">Flash Sale</div>
   <h1 class="text-3xl font-extrabold text-white mb-2">Up to 50% OFF!</h1>
   <p class="text-slate-300 mb-8">Our biggest sale of the season is happening right now. Don't miss out on premium gear.</p>
@@ -78,13 +78,13 @@ const EMAIL_TEMPLATES = {
   <a href="https://example.com" class="block w-full bg-white text-slate-900 font-bold px-6 py-4 rounded-md decoration-none text-lg">Shop The Sale</a>
   <p class="text-slate-500 text-xs mt-4">Offer ends in 24 hours. Terms apply.</p>
 </div>`,
-    }
+  },
 };
 
 export const SendEmailModal: React.FC<SendEmailModalProps> = ({
   isOpen,
   onClose,
-  user
+  user,
 }) => {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
@@ -95,8 +95,8 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
 
   // Attempt to load Tailwind via CDN for preview iframe ONLY
   const getPreviewHtml = () => {
-      // Basic wrapper to render Tailwind CDN in preview
-      return `
+    // Basic wrapper to render Tailwind CDN in preview
+    return `
         <!DOCTYPE html>
         <html>
           <head>
@@ -110,22 +110,22 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
   };
 
   const handleTemplateChange = (val: string) => {
-      setSelectedTemplate(val);
-      setMessage(EMAIL_TEMPLATES[val as keyof typeof EMAIL_TEMPLATES].content);
-      // Auto-set a relevant subject if empty
-      if (!subject) {
-          if (val === 'welcome') setSubject('Welcome to Mahbub Shop!');
-          if (val === 'saleAlert') setSubject('🚨 Flash Sale: Up to 50% OFF!');
-      }
+    setSelectedTemplate(val);
+    setMessage(EMAIL_TEMPLATES[val as keyof typeof EMAIL_TEMPLATES].content);
+    // Auto-set a relevant subject if empty
+    if (!subject) {
+      if (val === 'welcome') setSubject('Welcome to Mahbub Shop!');
+      if (val === 'saleAlert') setSubject('🚨 Flash Sale: Up to 50% OFF!');
+    }
   };
 
   const handleClose = () => {
     onClose();
     setTimeout(() => {
-        setSubject('');
-        setMessage(EMAIL_TEMPLATES.custom.content);
-        setSelectedTemplate('custom');
-        setActiveTab('write');
+      setSubject('');
+      setMessage(EMAIL_TEMPLATES.custom.content);
+      setSelectedTemplate('custom');
+      setActiveTab('write');
     }, 200);
   };
 
@@ -139,15 +139,16 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
     try {
       setLoading(true);
       const token = (session as any)?.accessToken;
-      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+      const BACKEND_URL =
+        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
       const res = await fetch(`${BACKEND_URL}/user/${user.id}/send-email`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ subject, message })
+        body: JSON.stringify({ subject, message }),
       });
       const data = await res.json();
 
@@ -171,8 +172,12 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
         <DialogHeader>
           <DialogTitle>Send Email to User</DialogTitle>
           <DialogDescription>
-            Send a custom HTML/Tailwind email to {user?.firstName} {user?.lastName} ({user?.email}).
-            <br/><span className="text-xs text-blue-600 font-medium">Backend automatically inlines Tailwind CSS for email clients.</span>
+            Send a custom HTML/Tailwind email to {user?.firstName}{' '}
+            {user?.lastName} ({user?.email}).
+            <br />
+            <span className="text-xs text-blue-600 font-medium">
+              Backend automatically inlines Tailwind CSS for email clients.
+            </span>
           </DialogDescription>
         </DialogHeader>
 
@@ -188,27 +193,36 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
               />
             </div>
             <div className="col-span-1 space-y-2">
-                <Label>Template</Label>
-                <Select value={selectedTemplate} onValueChange={handleTemplateChange}>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {Object.entries(EMAIL_TEMPLATES).map(([key, tpl]) => (
-                             <SelectItem key={key} value={key}>{tpl.name}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+              <Label>Template</Label>
+              <Select
+                value={selectedTemplate}
+                onValueChange={handleTemplateChange}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(EMAIL_TEMPLATES).map(([key, tpl]) => (
+                    <SelectItem key={key} value={key}>
+                      {tpl.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-full flex flex-col">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full h-full flex flex-col"
+          >
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="write" className="flex items-center gap-2">
-                 <Code className="h-4 w-4" /> Code Editor
+                <Code className="h-4 w-4" /> Code Editor
               </TabsTrigger>
               <TabsTrigger value="preview" className="flex items-center gap-2">
-                 <Eye className="h-4 w-4" /> Live Preview
+                <Eye className="h-4 w-4" /> Live Preview
               </TabsTrigger>
             </TabsList>
 
@@ -224,20 +238,20 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
             </TabsContent>
 
             <TabsContent value="preview" className="flex-1 mt-4">
-               <div className="rounded-md border min-h-[350px] bg-gray-50 overflow-hidden relative">
-                   {message ? (
-                       <iframe
-                         srcDoc={getPreviewHtml()}
-                         className="w-full h-full min-h-[350px] absolute inset-0 border-0"
-                         title="Email Preview"
-                         sandbox="allow-same-origin allow-scripts"
-                       />
-                   ) : (
-                       <div className="flex items-center justify-center h-full text-muted-foreground">
-                           No content to preview
-                       </div>
-                   )}
-               </div>
+              <div className="rounded-md border min-h-[350px] bg-gray-50 overflow-hidden relative">
+                {message ? (
+                  <iframe
+                    srcDoc={getPreviewHtml()}
+                    className="w-full h-full min-h-[350px] absolute inset-0 border-0"
+                    title="Email Preview"
+                    sandbox="allow-same-origin allow-scripts"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-muted-foreground">
+                    No content to preview
+                  </div>
+                )}
+              </div>
             </TabsContent>
           </Tabs>
         </div>
@@ -246,7 +260,11 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
           <Button variant="outline" onClick={handleClose} disabled={loading}>
             Cancel
           </Button>
-          <Button onClick={onSend} disabled={loading} className="bg-blue-600 hover:bg-blue-700">
+          <Button
+            onClick={onSend}
+            disabled={loading}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             Send Email
           </Button>

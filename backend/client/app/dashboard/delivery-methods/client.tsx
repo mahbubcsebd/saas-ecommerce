@@ -100,7 +100,7 @@ export default function DeliveryMethodsClient() {
         if (!session?.accessToken) return;
         setIsLoading(true);
         try {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
             // Fetch Zones to get rates
             const zonesRes = await fetch(`${BACKEND_URL}/shipping/zones`, {
@@ -155,7 +155,7 @@ export default function DeliveryMethodsClient() {
         };
 
         try {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
             const res = await fetch(`${BACKEND_URL}/shipping/rates/${editingRate.id}`, {
                 method: 'PUT',
                 headers: {

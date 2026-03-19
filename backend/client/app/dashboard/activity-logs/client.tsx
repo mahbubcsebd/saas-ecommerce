@@ -82,7 +82,7 @@ export default function ActivityLogsClient() {
         if (!session?.accessToken) return;
         setIsLoading(true);
         try {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
             const params = new URLSearchParams({
                 page: page.toString(),
                 limit: '15',
@@ -117,7 +117,7 @@ export default function ActivityLogsClient() {
         if (!session?.accessToken) return;
         setIsExporting(true);
         try {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
             const params = new URLSearchParams({
                 ...(search && { search }),
                 ...(userId !== 'ALL' && { userId }),

@@ -30,11 +30,14 @@ export const UserClient: React.FC<UserClientProps> = ({ initialData }) => {
       }
 
       setExporting(true);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/user/export`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api'}/user/export`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
       if (!res.ok) throw new Error('Export failed');
 
@@ -59,20 +62,20 @@ export const UserClient: React.FC<UserClientProps> = ({ initialData }) => {
   return (
     <>
       <div className="flex items-center justify-between">
-         <div>
-            <h2 className="text-3xl font-bold tracking-tight">Users ({initialData.length})</h2>
-            <p className="text-sm text-muted-foreground">
-              Manage users
-            </p>
-         </div>
-         <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={onExport} disabled={exporting}>
-              <Download className="mr-2 h-4 w-4" /> Export CSV
-            </Button>
-            <Button onClick={() => router.push(`/dashboard/users/new`)}>
-              <Plus className="mr-2 h-4 w-4" /> Add New
-            </Button>
-         </div>
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">
+            Users ({initialData.length})
+          </h2>
+          <p className="text-sm text-muted-foreground">Manage users</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={onExport} disabled={exporting}>
+            <Download className="mr-2 h-4 w-4" /> Export CSV
+          </Button>
+          <Button onClick={() => router.push(`/dashboard/users/new`)}>
+            <Plus className="mr-2 h-4 w-4" /> Add New
+          </Button>
+        </div>
       </div>
       <Separator />
       <DataTable searchKey="firstName" columns={columns} data={initialData} />

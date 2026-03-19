@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
 export interface Order {
   id: string;
@@ -6,7 +6,14 @@ export interface Order {
   invoiceNumber?: string;
   userId?: string;
   source: 'ONLINE' | 'POS';
-  status: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED' | 'COMPLETED' | 'REFUNDED';
+  status:
+    | 'PENDING'
+    | 'PROCESSING'
+    | 'SHIPPED'
+    | 'DELIVERED'
+    | 'CANCELLED'
+    | 'COMPLETED'
+    | 'REFUNDED';
   paymentStatus: 'PENDING' | 'PAID' | 'FAILED';
   paymentMethod: string;
   total: number;
@@ -67,73 +74,76 @@ export const OrderService = {
     const query = new URLSearchParams();
     if (params.page) query.append('page', params.page.toString());
     if (params.limit) query.append('limit', params.limit.toString());
-    if (params.status && params.status !== 'ALL') query.append('status', params.status);
+    if (params.status && params.status !== 'ALL')
+      query.append('status', params.status);
     if (params.search) query.append('search', params.search);
     if (params.startDate) query.append('startDate', params.startDate);
     if (params.endDate) query.append('endDate', params.endDate);
-    if (params.paymentMethod) query.append('paymentMethod', params.paymentMethod);
+    if (params.paymentMethod)
+      query.append('paymentMethod', params.paymentMethod);
 
     const res = await fetch(`${API_URL}/orders/admin/all?${query.toString()}`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     });
     return res.json();
   },
 
   getOrder: async (token: string, id: string) => {
     const res = await fetch(`${API_URL}/orders/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     });
     return res.json();
   },
 
   updateStatus: async (token: string, id: string, status: string) => {
     const res = await fetch(`${API_URL}/orders/admin/${id}/status`, {
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ status })
+      body: JSON.stringify({ status }),
     });
     return res.json();
   },
 
   getMyOrders: async (token: string) => {
-      const res = await fetch(`${API_URL}/orders/my-orders`, {
-          headers: { Authorization: `Bearer ${token}` }
-      });
-      return res.json();
+    const res = await fetch(`${API_URL}/orders/my-orders`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.json();
   },
 
   downloadInvoice: async (token: string, orderId: string) => {
-      const res = await fetch(`${API_URL}/invoices/${orderId}/download`, { // Correct endpoint based on invoice.routes.js
-          headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!res.ok) throw new Error("Failed to download invoice");
-      return res.blob();
+    const res = await fetch(`${API_URL}/invoices/${orderId}/download`, {
+      // Correct endpoint based on invoice.routes.js
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error('Failed to download invoice');
+    return res.blob();
   },
 
   bulkUpdateStatus: async (token: string, ids: string[], status: string) => {
     const res = await fetch(`${API_URL}/orders/admin/bulk-status`, {
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ ids, status })
+      body: JSON.stringify({ ids, status }),
     });
     return res.json();
   },
 
   createOrder: async (token: string, payload: any) => {
     const res = await fetch(`${API_URL}/orders`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
     return res.json();
-  }
+  },
 };

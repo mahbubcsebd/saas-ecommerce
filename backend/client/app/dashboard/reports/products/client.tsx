@@ -102,7 +102,7 @@ export default function ProductReportClient() {
         try {
             const startStr = dateRange.start.toISOString();
             const endStr = dateRange.end.toISOString();
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
             const response = await fetch(`${BACKEND_URL}/analytics/products?startDate=${startStr}&endDate=${endStr}`, {
                 headers: { 'Authorization': `Bearer ${session.accessToken}` }

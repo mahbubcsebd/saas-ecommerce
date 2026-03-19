@@ -23,7 +23,8 @@ export default function AnalyticsScripts() {
     const fetchSettings = async () => {
       try {
         // Use relative URL or ensure NEXT_PUBLIC_API_URL is available
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+        const API_URL =
+          process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
         const res = await fetch(`${API_URL}/settings/public`);
         const data = await res.json();
 
@@ -42,7 +43,7 @@ export default function AnalyticsScripts() {
           });
         }
       } catch (error) {
-        console.error("Failed to fetch analytics settings", error);
+        console.error('Failed to fetch analytics settings', error);
       }
     };
 
@@ -73,7 +74,11 @@ export default function AnalyticsScripts() {
     <>
       {/* Google Tag Manager - Base */}
       {gtmIds.map((id) => (
-        <Script key={id} id={`google-tag-manager-${id}`} strategy="afterInteractive">
+        <Script
+          key={id}
+          id={`google-tag-manager-${id}`}
+          strategy="afterInteractive"
+        >
           {`
         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -88,8 +93,8 @@ export default function AnalyticsScripts() {
       {ga4Ids.length > 0 && (
         <>
           <Script
-             src={`https://www.googletagmanager.com/gtag/js?id=${ga4Ids[0]}`}
-             strategy="afterInteractive"
+            src={`https://www.googletagmanager.com/gtag/js?id=${ga4Ids[0]}`}
+            strategy="afterInteractive"
           />
           <Script id="google-analytics-init" strategy="afterInteractive">
             {`

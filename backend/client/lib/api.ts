@@ -1,14 +1,18 @@
 // lib/api.ts
-import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth";
+import { authOptions } from '@/lib/auth';
+import { getServerSession } from 'next-auth';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
 type FetchOptions = Omit<RequestInit, 'headers'> & {
   headers?: Record<string, string>;
 };
 
-export async function fetchApi<T>(path: string, options: FetchOptions = {}): Promise<T> {
+export async function fetchApi<T>(
+  path: string,
+  options: FetchOptions = {},
+): Promise<T> {
   const session = await getServerSession(authOptions);
   // Extract token from session. Ensure your session callback puts accessToken in session.accessToken
   const token = (session as any)?.accessToken;
@@ -33,7 +37,11 @@ export async function fetchApi<T>(path: string, options: FetchOptions = {}): Pro
       console.warn('Unauthorized request to', path);
     }
     const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.message ? `${errorData.message} (${JSON.stringify(errorData.error)})` : `API Error: ${res.statusText}`);
+    throw new Error(
+      errorData.message
+        ? `${errorData.message} (${JSON.stringify(errorData.error)})`
+        : `API Error: ${res.statusText}`,
+    );
   }
 
   const responseFull = await res.json();

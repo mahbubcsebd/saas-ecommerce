@@ -106,7 +106,7 @@ export default function CouriersClient() {
         if (!session?.accessToken) return;
         setIsLoading(true);
         try {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
             const res = await fetch(`${BACKEND_URL}/couriers`, {
                 headers: { 'Authorization': `Bearer ${session.accessToken}` }
             });
@@ -146,7 +146,7 @@ export default function CouriersClient() {
         };
 
         try {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
             const method = editingCourier ? 'PUT' : 'POST';
             const url = editingCourier
                 ? `${BACKEND_URL}/couriers/${editingCourier.id}`
@@ -184,7 +184,7 @@ export default function CouriersClient() {
         if (!session?.accessToken) return;
 
         try {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
             const res = await fetch(`${BACKEND_URL}/couriers/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${session.accessToken}` }
@@ -203,7 +203,7 @@ export default function CouriersClient() {
 
     const openModal = async (courierId?: string) => {
         if (courierId) {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
             const res = await fetch(`${BACKEND_URL}/couriers/${courierId}`, {
                 headers: { 'Authorization': `Bearer ${session?.accessToken}` }
             });
