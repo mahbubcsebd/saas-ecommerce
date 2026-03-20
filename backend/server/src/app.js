@@ -50,7 +50,7 @@ app.use(
         'http://127.0.0.1:3001',
         'https://shop-kappa-lac.vercel.app',
         'https://saas-ecommerce-seven.vercel.app',
-        'https://saas-ecommerce-bmfd.vercel.app',
+        'https://shop-dashboard-olive.vercel.app',
       ];
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
