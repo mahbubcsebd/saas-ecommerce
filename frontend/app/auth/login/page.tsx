@@ -17,8 +17,8 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
 
-  const [email, setEmail] = useState('mahbub');
-  const [password, setPassword] = useState('12345678');
+  const [email, setEmail] = useState('customer@mahbubshop.com');
+  const [password, setPassword] = useState('password123@!');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {

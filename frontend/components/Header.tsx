@@ -40,7 +40,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-visible">
       <div className="container mx-auto flex h-16 items-center gap-4">
         {/* Logo */}
-        <Link className="flex items-center space-x-2 shrink-0" href="/">
+        <Link className="flex items-center space-x-2 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm" href="/">
           {settings?.general?.headerLogo || settings?.general?.logoUrl ? (
             <img
               src={settings.general.headerLogo || settings.general.logoUrl}
@@ -104,24 +104,21 @@ export default function Header() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => signOut({ callbackUrl: '/' })}
-                  className="text-red-500"
+                  className="text-red-500 cursor-pointer"
                 >
-                  <LogOut className="mr-2 h-4 w-4" />
+                  <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
                   <span>{t('common', 'logout')}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
-              <Button asChild variant="ghost" size="sm" className="hidden md:flex">
+              <Button asChild variant="outline" size="sm" className="hidden md:flex">
                 <Link href="/auth/login">{t('common', 'login')}</Link>
               </Button>
-              <Button asChild size="sm" className="hidden md:flex">
-                <Link href="/auth/register">{t('common', 'register')}</Link>
-              </Button>
               <Button variant="ghost" size="icon" className="md:hidden" asChild>
-                <Link href="/auth/login">
-                  <User className="h-5 w-5" />
+                <Link href="/auth/login" aria-label={t('common', 'login', { defaultValue: 'Login' })}>
+                  <User className="h-5 w-5" aria-hidden="true" />
                 </Link>
               </Button>
             </div>
@@ -130,7 +127,7 @@ export default function Header() {
           {/* Wishlist */}
           <Button variant="ghost" size="icon" className="relative" asChild>
             <Link href="/wishlist">
-              <Heart className="h-6 w-6" />
+              <Heart className="h-6 w-6" aria-hidden="true" />
               <span className="sr-only">{t('common', 'wishlist')}</span>
               {wishlist && wishlist.length > 0 && (
                 <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-[11px] font-bold text-primary-foreground flex items-center justify-center animate-in zoom-in">
@@ -143,7 +140,7 @@ export default function Header() {
           {/* Cart */}
           <Button variant="ghost" size="icon" className="relative" asChild>
             <Link href="/cart">
-              <ShoppingCart className="h-6 w-6" />
+              <ShoppingCart className="h-6 w-6" aria-hidden="true" />
               <span className="sr-only">{t('common', 'cart')}</span>
               {cart?.items && cart.items.length > 0 && (
                 <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-[11px] font-bold text-primary-foreground flex items-center justify-center animate-in zoom-in">
@@ -156,8 +153,8 @@ export default function Header() {
           {/* Mobile Menu */}
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-6 w-6" />
+              <Button variant="ghost" size="icon" className="md:hidden" aria-label={t('common', 'menu', { defaultValue: 'Menu' })}>
+                <Menu className="h-6 w-6" aria-hidden="true" />
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] sm:w-[400px]">

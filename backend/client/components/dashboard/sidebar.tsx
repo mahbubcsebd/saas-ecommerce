@@ -16,6 +16,7 @@ import {
   Bot,
   ChevronDown,
   ChevronRight,
+  CircleDollarSign,
   CreditCard,
   Download,
   FileBarChart,
@@ -48,6 +49,7 @@ import {
   Star,
   Store,
   Tag,
+  Trash2,
   TrendingUp,
   Truck,
   UserCog,
@@ -70,7 +72,7 @@ interface SidebarItem {
   children?: SidebarItem[];
 }
 
-const sidebarItems: SidebarItem[] = [
+const getSidebarItems = (counts: any): SidebarItem[] => [
   {
     title: 'Dashboard',
     href: '/dashboard',
@@ -86,7 +88,7 @@ const sidebarItems: SidebarItem[] = [
         title: 'Orders',
         href: '/dashboard/orders',
         icon: ShoppingBag,
-        badge: '12',
+        badge: counts?.pendingOrders > 0 ? String(counts.pendingOrders) : undefined,
       },
       {
         title: 'POS',
@@ -99,10 +101,15 @@ const sidebarItems: SidebarItem[] = [
         icon: FileText,
       },
       {
+        title: 'Payments',
+        href: '/dashboard/payments',
+        icon: CreditCard,
+      },
+      {
         title: 'Returns',
         href: '/dashboard/returns',
         icon: RotateCcw,
-        badge: '3',
+        badge: counts?.pendingReturns > 0 ? String(counts.pendingReturns) : undefined,
       },
     ],
   },
@@ -131,12 +138,17 @@ const sidebarItems: SidebarItem[] = [
         title: 'Reviews',
         href: '/dashboard/reviews',
         icon: Star,
-        badge: '5',
+        badge: counts?.pendingReviews > 0 ? String(counts.pendingReviews) : undefined,
       },
       {
         title: 'Inventory',
         href: '/dashboard/inventory',
         icon: Wallet,
+      },
+      {
+        title: 'Wastage & Damage',
+        href: '/dashboard/inventory/damage',
+        icon: Trash2,
       },
       {
         title: 'Purchases',
@@ -213,7 +225,7 @@ const sidebarItems: SidebarItem[] = [
         title: 'Abandoned Carts',
         href: '/dashboard/abandoned-carts',
         icon: ShoppingCart,
-        badge: '8',
+        badge: counts?.abandonedCarts > 0 ? String(counts.abandonedCarts) : undefined,
       },
     ],
   },
@@ -237,6 +249,24 @@ const sidebarItems: SidebarItem[] = [
         title: 'Media Library',
         href: '/dashboard/media',
         icon: FolderOpen,
+      },
+    ],
+  },
+  {
+    title: 'Finance',
+    href: '#finance',
+    icon: CircleDollarSign,
+    roles: ['ADMIN', 'MANAGER'],
+    children: [
+      {
+        title: 'Expenses',
+        href: '/dashboard/expenses',
+        icon: Receipt,
+      },
+      {
+        title: 'Expense Categories',
+        href: '/dashboard/expenses/categories',
+        icon: FolderTree,
       },
     ],
   },
@@ -284,18 +314,19 @@ const sidebarItems: SidebarItem[] = [
         title: 'Live Chat',
         href: '/dashboard/chat',
         icon: MessageCircle,
-        badge: '3',
+        badge: counts?.openChats > 0 ? String(counts.openChats) : undefined,
       },
       {
         title: 'Support Tickets',
         href: '/dashboard/tickets',
         icon: LifeBuoy,
-        badge: '2',
+        badge: counts?.openTickets > 0 ? String(counts.openTickets) : undefined,
       },
       {
         title: 'Notifications',
         href: '/dashboard/notifications',
         icon: Bell,
+        badge: counts?.unreadNotifications > 0 ? String(counts.unreadNotifications) : undefined,
       },
     ],
   },
@@ -426,8 +457,46 @@ export function Sidebar({
   const pathname = usePathname();
   const { data: session } = useSession();
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [counts, setCounts] = useState<any>(null);
 
   const user = session?.user;
+
+  const sidebarItems = getSidebarItems(counts);
+
+  const fetchCounts = async () => {
+    try {
+      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${BACKEND_URL}/analytics/overview`, {
+        headers: {
+          'Authorization': `Bearer ${session?.accessToken || ''}`,
+        }
+      });
+      const result = await response.json();
+      if (result.success) {
+        setCounts(result.data.sidebar);
+      }
+    } catch (error) {
+      console.error('Failed to fetch sidebar counts:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (session?.accessToken) {
+      fetchCounts();
+
+      // Poll every 60 seconds
+      const interval = setInterval(fetchCounts, 60000);
+
+      // Listen for custom refresh event
+      const handleRefresh = () => fetchCounts();
+      window.addEventListener('refresh-sidebar-counts', handleRefresh);
+
+      return () => {
+        clearInterval(interval);
+        window.removeEventListener('refresh-sidebar-counts', handleRefresh);
+      };
+    }
+  }, [session]);
 
   // Helper to check if a route is active
   const isPathActive = (href: string) => {
@@ -470,7 +539,7 @@ export function Sidebar({
   const handleLogout = async () => {
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       await fetch(`${BACKEND_URL}/auth/logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

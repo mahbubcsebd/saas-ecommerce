@@ -60,7 +60,7 @@ export default function SettingsClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
       const [genRes, curRes, conRes] = await Promise.all([
         fetch(`${BACKEND_URL}/settings/general`, {
@@ -99,7 +99,7 @@ export default function SettingsClient() {
     setIsSaving(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${BACKEND_URL}/settings/${type}`, {
         method: 'PUT',
         headers: {

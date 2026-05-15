@@ -75,6 +75,7 @@ export const NotificationBell = () => {
 
     socket.on('notification:new', (notification: any) => {
       setNotifications((prev) => [notification, ...prev].slice(0, 10));
+      window.dispatchEvent(new CustomEvent('refresh-sidebar-counts'));
       toast.info(notification.title, {
         description: notification.message,
       });
@@ -111,6 +112,7 @@ export const NotificationBell = () => {
                   prev.map((n) => ({ ...n, isRead: true })),
                 );
                 socket?.emit('notification:read-all');
+                window.dispatchEvent(new CustomEvent('refresh-sidebar-counts'));
               }}
             >
               Mark all as read
@@ -166,6 +168,7 @@ export const NotificationBell = () => {
                       ),
                     );
                     socket?.emit('notification:read', n.id);
+                    window.dispatchEvent(new CustomEvent('refresh-sidebar-counts'));
                   }
 
                   if (n.type === 'NEW_MESSAGE' && n.data?.conversationId) {

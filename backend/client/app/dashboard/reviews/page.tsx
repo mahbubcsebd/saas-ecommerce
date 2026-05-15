@@ -58,7 +58,7 @@ export default function ReviewsPage() {
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
   const fetchReviews = async () => {
     setLoading(true);

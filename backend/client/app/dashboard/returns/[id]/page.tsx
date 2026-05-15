@@ -77,6 +77,7 @@ export default function ReturnDetailPage() {
       if (res.success) {
         toast.success(`Return request ${newStatus.toLowerCase()} successfully`);
         fetchReturnDetails();
+        window.dispatchEvent(new CustomEvent('refresh-sidebar-counts'));
       } else {
         toast.error(res.message || "Failed to update status");
       }

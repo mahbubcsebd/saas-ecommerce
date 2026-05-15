@@ -38,45 +38,50 @@ export default function Footer() {
                 <Link
                   href={settings.contact.facebook}
                   target="_blank"
-                  className="text-muted-foreground hover:text-primary"
+                  className="text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm transition-colors"
+                  aria-label="Facebook"
                 >
-                  <Facebook className="h-5 w-5" />
+                  <Facebook className="h-5 w-5" aria-hidden="true" />
                 </Link>
               )}
               {settings?.contact?.instagram && (
                 <Link
                   href={settings.contact.instagram}
                   target="_blank"
-                  className="text-muted-foreground hover:text-primary"
+                  className="text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm transition-colors"
+                  aria-label="Instagram"
                 >
-                  <Instagram className="h-5 w-5" />
+                  <Instagram className="h-5 w-5" aria-hidden="true" />
                 </Link>
               )}
               {settings?.contact?.twitter && (
                 <Link
                   href={settings.contact.twitter}
                   target="_blank"
-                  className="text-muted-foreground hover:text-primary"
+                  className="text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm transition-colors"
+                  aria-label="Twitter"
                 >
-                  <Twitter className="h-5 w-5" />
+                  <Twitter className="h-5 w-5" aria-hidden="true" />
                 </Link>
               )}
               {settings?.contact?.youtube && (
                 <Link
                   href={settings.contact.youtube}
                   target="_blank"
-                  className="text-muted-foreground hover:text-primary"
+                  className="text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm transition-colors"
+                  aria-label="YouTube"
                 >
-                  <Youtube className="h-5 w-5" />
+                  <Youtube className="h-5 w-5" aria-hidden="true" />
                 </Link>
               )}
               {settings?.contact?.linkedin && (
                 <Link
                   href={settings.contact.linkedin}
                   target="_blank"
-                  className="text-muted-foreground hover:text-primary"
+                  className="text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm transition-colors"
+                  aria-label="LinkedIn"
                 >
-                  <Linkedin className="h-5 w-5" />
+                  <Linkedin className="h-5 w-5" aria-hidden="true" />
                 </Link>
               )}
               {/* Note: Lucide React might not have TikTok/Pinterest icons in older versions, using text fallback if needed or generic icons */}
@@ -84,7 +89,7 @@ export default function Footer() {
                 <Link
                   href={settings.contact.tiktok}
                   target="_blank"
-                  className="text-muted-foreground hover:text-primary"
+                  className="text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm transition-colors"
                 >
                   {t('common', 'tiktok', { defaultValue: 'TikTok' })}
                 </Link>
@@ -93,7 +98,7 @@ export default function Footer() {
                 <Link
                   href={settings.contact.pinterest}
                   target="_blank"
-                  className="text-muted-foreground hover:text-primary"
+                  className="text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm transition-colors"
                 >
                   {t('common', 'pinterest', { defaultValue: 'Pinterest' })}
                 </Link>

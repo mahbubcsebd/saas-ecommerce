@@ -87,6 +87,9 @@ model User {
   socketId String? // Current socket connection
   backups  Backup[]
   newsletterSubs NewsletterSubscriber[]
+
+  recordedExpenses Expense[]
+  recordedPayments OrderPayment[] @relation("OrderPaymentRecorder")
 }
 
 model CustomerGroup {
@@ -917,6 +920,8 @@ enum OrderSource {
 }
 
 enum OrderStatus {
+  DRAFT     // POS - Saved for later (Suspend)
+  HOLD      // POS - On Hold
   PENDING
   PROCESSING
   SHIPPED
@@ -938,6 +943,7 @@ enum PaymentMethod {
 enum PaymentStatus {
   PENDING
   UNPAID
+  PARTIAL
   PAID
   REFUNDED
   FAILED
@@ -960,6 +966,7 @@ model Order {
   walkInPhone String? // POS Guest Phone
 
   items OrderItem[]
+  payments OrderPayment[]
 
   // Pricing breakdown
   subtotal Float
@@ -982,7 +989,8 @@ model Order {
   shippingRateId  String?
   shippingMethod  String?
 
-  total Float
+  total     Float
+  dueAmount Float @default(0)
 
   // Coupon (Online)
   appliedCoupon  String?
@@ -1544,6 +1552,8 @@ model AppearanceSetting {
 
   // Homepage Sections On/Off
   showHeroBanner       Boolean @default(true)
+  heroSliderEnabled    Boolean @default(true)  // NEW: toggle slider vs single image
+  heroShowContent      Boolean @default(true)  // NEW: toggle title/subtitle globally
   showFeaturedProducts Boolean @default(true)
   showCategories       Boolean @default(true)
   showTestimonials     Boolean @default(false)
@@ -2331,3 +2341,53 @@ model NewsletterSubscriber {
 
   @@map("newsletter_subscribers")
 }
+
+// ==================== EXPENSE MANAGEMENT ====================
+model ExpenseCategory {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String    @unique
+  description String?
+  isActive    Boolean   @default(true)
+  expenses    Expense[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Expense {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  amount      Float
+  date        DateTime @default(now())
+  reference   String?  // Voucher or receipt number
+  notes       String?
+  
+  categoryId  String   @db.ObjectId
+  category    ExpenseCategory @relation(fields: [categoryId], references: [id])
+
+  recordedById String? @db.ObjectId
+  recordedBy   User?   @relation(fields: [recordedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==================== DUE MANAGEMENT (ORDER PAYMENTS) ====================
+model OrderPayment {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId       String   @db.ObjectId
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  amount        Float
+  paymentMethod PaymentMethod
+  transactionId String?
+  paymentDate   DateTime @default(now())
+  notes         String?
+  
+  recordedById  String?  @db.ObjectId
+  recordedBy    User?    @relation("OrderPaymentRecorder", fields: [recordedById], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+

@@ -21,7 +21,7 @@ const createCategoryValidation = [
   body('order').optional().isInt({ min: 0 }).withMessage('Order must be a non-negative integer'),
 
   body('parentId')
-    .optional({ nullable: true })
+    .optional({ checkFalsy: true, nullable: true })
     .isMongoId()
     .withMessage('Invalid Parent Category ID'),
 
@@ -54,7 +54,7 @@ const updateCategoryValidation = [
   body('order').optional().isInt({ min: 0 }).withMessage('Order must be a non-negative integer'),
 
   body('parentId')
-    .optional({ nullable: true })
+    .optional({ checkFalsy: true, nullable: true })
     .isMongoId()
     .withMessage('Invalid Parent Category ID'),
 
@@ -75,7 +75,7 @@ const categoryStructureValidation = [
   body('categories.*.order').isInt({ min: 0 }).withMessage('Order must be a non-negative integer'),
 
   body('categories.*.parentId')
-    .optional({ nullable: true })
+    .optional({ checkFalsy: true, nullable: true })
     .isMongoId()
     .withMessage('Invalid Parent ID in structure'),
 ];

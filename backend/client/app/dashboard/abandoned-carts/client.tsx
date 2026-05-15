@@ -1,20 +1,22 @@
-'use client';
+"use client";
 
-import { RecoveryModal } from '@/components/abandoned-carts/RecoveryModal';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { DataTable } from '@/components/ui/data-table';
-import { Cart, fetchApi } from '@/lib/api';
-import { ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
+import { RecoveryModal } from "@/components/abandoned-carts/RecoveryModal";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DataTable } from "@/components/ui/data-table";
+import { Cart, fetchApi } from "@/lib/api";
+import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
 import {
     Calendar,
     Clock,
     Mail,
+    MoreHorizontal,
     ShoppingCart,
     User as UserIcon
-} from 'lucide-react';
-import { useState } from 'react';
+} from "lucide-react";
+import { useState } from "react";
 
 interface AbandonCartClientProps {
   initialData: Cart[];
@@ -28,7 +30,7 @@ export function AbandonCartClient({ initialData }: AbandonCartClientProps) {
   const handleSendRecovery = async (cartId: string) => {
     try {
       const res: any = await fetchApi(`/abandoned-carts/${cartId}/send-recovery`, {
-        method: 'POST',
+        method: "POST",
       });
 
       if (res.success) {
@@ -40,94 +42,93 @@ export function AbandonCartClient({ initialData }: AbandonCartClientProps) {
         } : c));
       }
     } catch (error: any) {
-      console.error('Failed to send recovery email:', error);
+      console.error("Failed to send recovery email:", error);
       throw error;
     }
   };
 
   const columns: ColumnDef<Cart>[] = [
     {
-      id: 'userEmail',
-      accessorFn: (row) => row.user?.email || '',
-      header: 'Customer',
+      id: "userEmail",
+      accessorFn: (row) => row.user?.email || "",
+      header: "Customer",
       cell: ({ row }) => {
         const user = row.original.user;
-        const fullName = user ? `${user.firstName} ${user.lastName}` : 'Guest';
+        const fullName = user ? `${user.firstName} ${user.lastName}` : "Guest";
         return (
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <UserIcon className="h-4 w-4 text-primary" />
+            <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
+              <UserIcon className="h-4 w-4 text-muted-foreground" />
             </div>
-            <div className="flex flex-col">
-              <span className="font-medium">{fullName}</span>
-              <span className="text-xs text-muted-foreground">{user?.email || 'No email'}</span>
+            <div className="flex flex-col min-w-0">
+              <span className="font-medium text-sm truncate">{fullName}</span>
+              <span className="text-xs text-muted-foreground truncate">{user?.email || "No email"}</span>
             </div>
           </div>
         );
       }
     },
     {
-      accessorKey: 'items',
-      header: 'Items',
+      accessorKey: "items",
+      header: "Items",
       cell: ({ row }) => {
         const items = row.original.items;
         return (
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="gap-1">
-              <ShoppingCart className="w-3 h-3" />
-              {items.length} {items.length === 1 ? 'Item' : 'Items'}
+            <Badge variant="outline" className="bg-muted/30 border-none font-bold text-[10px] px-2 py-0">
+              {items.length} {items.length === 1 ? "ITEM" : "ITEMS"}
             </Badge>
-            <div className="text-xs text-muted-foreground truncate max-w-[150px]">
-              {items.map(it => it.product.name).join(', ')}
+            <div className="text-xs text-muted-foreground truncate max-w-[200px]">
+              {items.map(it => it.product.name).join(", ")}
             </div>
           </div>
         );
       }
     },
     {
-      accessorKey: 'total',
-      header: 'Value',
+      accessorKey: "total",
+      header: "Value",
       cell: ({ row }) => (
-        <span className="font-bold text-primary">
-          ${row.original.total.toFixed(2)}
+        <span className="font-bold text-sm">
+          ${row.original.total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
         </span>
       )
     },
     {
-      accessorKey: 'updatedAt',
-      header: 'Abandoned Date',
+      accessorKey: "updatedAt",
+      header: "Abandoned",
       cell: ({ row }) => (
         <div className="flex flex-col text-xs">
-          <span className="flex items-center gap-1">
-            <Calendar className="w-3 h-3" />
-            {format(new Date(row.original.updatedAt), 'MMM dd, yyyy')}
+          <span className="font-medium flex items-center gap-1">
+            <Calendar className="w-3 h-3 text-muted-foreground" />
+            {format(new Date(row.original.updatedAt), "MMM dd, yyyy")}
           </span>
-          <span className="flex items-center gap-1 text-muted-foreground">
+          <span className="text-muted-foreground flex items-center gap-1">
             <Clock className="w-3 h-3" />
-            {format(new Date(row.original.updatedAt), 'hh:mm a')}
+            {format(new Date(row.original.updatedAt), "hh:mm a")}
           </span>
         </div>
       )
     },
     {
-      accessorKey: 'recoveryEmailCount',
-      header: 'Recovery Status',
+      accessorKey: "recoveryEmailCount",
+      header: "Recovery",
       cell: ({ row }) => {
         const count = row.original.recoveryEmailCount;
         const lastSent = row.original.recoveryEmailSentAt;
 
         if (count === 0) {
-          return <Badge variant="secondary" className="bg-slate-100 text-slate-600">Not Sent</Badge>;
+          return <Badge variant="secondary" className="bg-slate-100 text-slate-500 border-none font-bold text-[10px]">NOT SENT</Badge>;
         }
 
         return (
           <div className="flex flex-col gap-1">
-            <Badge variant="default" className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">
-              Sent {count} {count === 1 ? 'time' : 'times'}
+            <Badge className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-none font-bold text-[10px] w-fit">
+              SENT {count} {count === 1 ? "TIME" : "TIMES"}
             </Badge>
             {lastSent && (
-              <span className="text-[10px] text-muted-foreground">
-                Last: {format(new Date(lastSent), 'MMM dd')}
+              <span className="text-[10px] text-muted-foreground font-medium">
+                Last: {format(new Date(lastSent), "dd MMM")}
               </span>
             )}
           </div>
@@ -135,66 +136,70 @@ export function AbandonCartClient({ initialData }: AbandonCartClientProps) {
       }
     },
     {
-      id: 'actions',
+      id: "actions",
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            variant="ghost"
-            className="text-primary hover:text-primary hover:bg-primary/10 gap-1"
-            onClick={() => {
-              setSelectedCart(row.original);
-              setIsRecoveryModalOpen(true);
-            }}
-          >
-            <Mail className="h-4 w-4" />
-            Recover
-          </Button>
-        </div>
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-8 gap-2 font-bold text-xs"
+          onClick={() => {
+            setSelectedCart(row.original);
+            setIsRecoveryModalOpen(true);
+          }}
+        >
+          <Mail className="h-3.5 w-3.5" />
+          Recover
+        </Button>
       )
     }
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6 pt-2">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Abandoned Carts</h2>
-          <p className="text-muted-foreground">
-            View and recover customers who left items in their cart without checking out.
+          <p className="text-muted-foreground mt-1">
+            Analyze and recover customers who left items without checking out.
           </p>
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-xl border bg-card p-6 shadow-sm">
-          <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <h3 className="text-sm font-medium">Total Abandoned</h3>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Abandoned</CardTitle>
             <ShoppingCart className="h-4 w-4 text-muted-foreground" />
-          </div>
-          <div className="text-2xl font-bold">{data.length}</div>
-          <p className="text-xs text-muted-foreground">Showing carts idle for &gt; 24h</p>
-        </div>
-        <div className="rounded-xl border bg-card p-6 shadow-sm">
-          <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <h3 className="text-sm font-medium">Potential Revenue</h3>
-            <span className="text-muted-foreground">$</span>
-          </div>
-          <div className="text-2xl font-bold">
-            ${data.reduce((acc, curr) => acc + curr.total, 0).toFixed(2)}
-          </div>
-          <p className="text-xs text-muted-foreground">Recoverable value</p>
-        </div>
-        <div className="rounded-xl border bg-card p-6 shadow-sm">
-          <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <h3 className="text-sm font-medium">Recovery Sent</h3>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{data.length}</div>
+            <p className="text-xs text-muted-foreground mt-1">Idle for over 24 hours</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Recoverable Value</CardTitle>
+            <span className="text-muted-foreground font-bold text-sm">$</span>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              ${data.reduce((acc, curr) => acc + curr.total, 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Total potential revenue</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Recovery Pulse</CardTitle>
             <Mail className="h-4 w-4 text-muted-foreground" />
-          </div>
-          <div className="text-2xl font-bold">
-            {data.filter(c => c.recoveryEmailCount > 0).length}
-          </div>
-          <p className="text-xs text-muted-foreground">Carts contacted</p>
-        </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {data.filter(c => c.recoveryEmailCount > 0).length}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Carts with recovery contact</p>
+          </CardContent>
+        </Card>
       </div>
 
       <DataTable

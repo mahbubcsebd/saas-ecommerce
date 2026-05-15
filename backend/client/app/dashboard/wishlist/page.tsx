@@ -28,7 +28,7 @@ import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat('en-BD', {
@@ -152,368 +152,338 @@ export default function WishlistAdminPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-          <Heart className="h-8 w-8 text-rose-500" />
-          Wishlist Analytics
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Track customer wish lists, popular products, and low-stock alerts.
-        </p>
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold tracking-tight">Wishlist Analytics</h1>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="border-rose-100">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground font-medium">
-                Total Wishlist Items
-              </p>
-              <p className="text-3xl font-bold text-rose-600 mt-1">
-                {loading ? (
-                  <Loader2 className="h-6 w-6 animate-spin inline" />
-                ) : (
-                  summary.totalWishlistItems.toLocaleString()
-                )}
-              </p>
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Wishlist Items</CardTitle>
+            <Heart className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {loading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                summary.totalWishlistItems.toLocaleString()
+              )}
             </div>
-            <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center">
-              <Heart className="h-6 w-6 text-rose-500" />
-            </div>
+            <p className="text-xs text-muted-foreground">Gross customer interest</p>
           </CardContent>
         </Card>
-        <Card className="border-blue-100">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground font-medium">
-                Customers with Wishlists
-              </p>
-              <p className="text-3xl font-bold text-blue-600 mt-1">
-                {loading ? (
-                  <Loader2 className="h-6 w-6 animate-spin inline" />
-                ) : (
-                  summary.uniqueCustomers.toLocaleString()
-                )}
-              </p>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Unique Customers</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {loading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                summary.uniqueCustomers.toLocaleString()
+              )}
             </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-              <Users className="h-6 w-6 text-blue-500" />
-            </div>
+            <p className="text-xs text-muted-foreground">Customers with wishlists</p>
           </CardContent>
         </Card>
-        <Card
-          className={`${summary.outOfStockCount > 0 ? 'border-red-200' : 'border-green-100'}`}
-        >
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground font-medium">
-                Low Stock Alerts
-              </p>
-              <p
-                className={`text-3xl font-bold mt-1 ${summary.outOfStockCount > 0 ? 'text-red-600' : 'text-green-600'}`}
-              >
-                {loading ? (
-                  <Loader2 className="h-6 w-6 animate-spin inline" />
-                ) : (
-                  summary.outOfStockCount
-                )}
-              </p>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Stock Fulfillment</CardTitle>
+            <AlertTriangle className={`h-4 w-4 ${summary.outOfStockCount > 0 ? 'text-amber-500' : 'text-muted-foreground'}`} />
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${summary.outOfStockCount > 0 ? 'text-amber-600' : ''}`}>
+              {loading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                summary.outOfStockCount
+              )}
             </div>
-            <div
-              className={`w-12 h-12 rounded-full flex items-center justify-center ${summary.outOfStockCount > 0 ? 'bg-red-100' : 'bg-green-100'}`}
-            >
-              <AlertTriangle
-                className={`h-6 w-6 ${summary.outOfStockCount > 0 ? 'text-red-500' : 'text-green-500'}`}
-              />
-            </div>
+            <p className="text-xs text-muted-foreground">Wishlisted items low on stock</p>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         {/* Popular Wishlist Items */}
-        <div className="xl:col-span-2">
-          <Card>
-            <CardHeader className="pb-3 border-b">
-              <CardTitle className="text-base flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-blue-600" />
-                Most Wishlisted Products (Top 10)
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              {loading ? (
-                <div className="py-10 flex justify-center">
-                  <Loader2 className="animate-spin h-6 w-6 text-blue-600" />
-                </div>
-              ) : popular.length === 0 ? (
-                <div className="py-10 text-center text-slate-400 text-sm">
-                  No wishlist data yet.
-                </div>
-              ) : (
-                <div className="divide-y">
-                  {popular.map((p, idx) => (
-                    <div
-                      key={p.id}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors"
-                    >
-                      <span
-                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${idx === 0 ? 'bg-yellow-400 text-yellow-900' : idx === 1 ? 'bg-slate-300 text-slate-800' : idx === 2 ? 'bg-orange-300 text-orange-900' : 'bg-slate-100 text-slate-600'}`}
-                      >
-                        {idx + 1}
-                      </span>
-                      <div className="w-10 h-10 flex-shrink-0 rounded border bg-slate-50 overflow-hidden">
-                        {p.images?.[0] ? (
-                          <Image
-                            src={p.images[0]}
-                            alt={p.name}
-                            width={40}
-                            height={40}
-                            className="object-cover w-full h-full"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-slate-300">
-                            <PackageX className="h-4 w-4" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm text-slate-900 line-clamp-1">
-                          {p.name}
-                        </p>
-                        <p className="text-xs text-slate-400">
-                          {p.category?.name || 'Uncategorized'} ·{' '}
-                          {formatCurrency(p.sellingPrice)}
-                        </p>
-                      </div>
-                      <div className="text-right flex-shrink-0">
-                        <div className="flex items-center gap-1 justify-end">
-                          <Heart
-                            className="h-3 w-3 text-rose-400"
-                            fill="currentColor"
-                          />
-                          <span className="font-bold text-rose-600">
-                            {p.wishlistCount}
-                          </span>
-                        </div>
-                        <Badge
-                          variant={
-                            p.stock <= 0
-                              ? 'destructive'
-                              : p.stock <= 10
-                                ? 'outline'
-                                : 'secondary'
-                          }
-                          className="text-[10px] px-1.5 mt-1"
-                        >
-                          {p.stock <= 0
-                            ? 'Out of Stock'
-                            : p.stock <= 10
-                              ? `${p.stock} left`
-                              : 'In Stock'}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Stock Alerts for Wishlisted Items */}
-        <div>
-          <Card className="border-red-100">
-            <CardHeader className="pb-3 border-b bg-red-50/50">
-              <CardTitle className="text-base text-red-700 flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4" />
-                Stock Alerts
-              </CardTitle>
-              <p className="text-xs text-red-600/80 mt-1">
-                Wishlisted items with stock ≤ 5
-              </p>
-            </CardHeader>
-            <CardContent className="p-0 max-h-[400px] overflow-auto">
-              {loading ? (
-                <div className="py-8 flex justify-center">
-                  <Loader2 className="animate-spin h-5 w-5 text-red-500" />
-                </div>
-              ) : alerts.length === 0 ? (
-                <div className="py-10 text-center text-sm text-slate-400">
-                  <Star className="h-8 w-8 mx-auto text-green-300 mb-2" />
-                  All wishlisted products are well stocked!
-                </div>
-              ) : (
-                <div className="divide-y">
-                  {alerts.map((p) => (
-                    <div
-                      key={p.id}
-                      className="flex items-center gap-3 px-4 py-3"
-                    >
-                      <div className="w-9 h-9 flex-shrink-0 rounded border bg-slate-50 overflow-hidden">
-                        {p.images?.[0] ? (
-                          <Image
-                            src={p.images[0]}
-                            alt={p.name}
-                            width={36}
-                            height={36}
-                            className="object-cover w-full h-full"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-slate-300 text-xs">
-                            ?
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm text-slate-900 line-clamp-1">
-                          {p.name}
-                        </p>
-                        <p className="text-xs text-slate-400 font-mono">
-                          {p.sku || 'No SKU'}
-                        </p>
-                      </div>
-                      <div
-                        className={`text-right flex-shrink-0 text-sm font-bold ${p.stock <= 0 ? 'text-red-600' : 'text-orange-500'}`}
-                      >
-                        {p.stock}
-                        <p className="text-[10px] font-normal text-slate-400">
-                          in stock
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      {/* All Customer Wishlists Table */}
-      <Card>
-        <CardHeader className="border-b pb-3">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <CardTitle className="text-base">All Customer Wishlists</CardTitle>
-            <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search by product or customer..."
-                className="pl-9 h-9"
-              />
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader className="bg-slate-50">
-              <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead className="text-right">Price</TableHead>
-                <TableHead className="text-center">Stock</TableHead>
-                <TableHead>Added On</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-10">
-                    <Loader2 className="animate-spin h-6 w-6 mx-auto text-blue-600" />
-                  </TableCell>
-                </TableRow>
-              ) : filteredWishlists.length === 0 ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    className="text-center py-10 text-slate-400"
+        <Card className="col-span-4">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-blue-600" />
+              Top Wishlisted Products
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            {loading ? (
+              <div className="py-20 flex justify-center">
+                <Loader2 className="animate-spin h-8 w-8 text-primary" />
+              </div>
+            ) : popular.length === 0 ? (
+              <div className="py-20 text-center text-muted-foreground">
+                No wishlist data yet.
+              </div>
+            ) : (
+              <div className="divide-y">
+                {popular.map((p, idx) => (
+                  <div
+                    key={p.id}
+                    className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50/50 transition-colors"
                   >
-                    No wishlist entries found.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredWishlists.map((w) => (
-                  <TableRow key={w.id} className="hover:bg-slate-50/50">
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 flex-shrink-0 rounded border bg-slate-50 overflow-hidden">
-                          {w.product?.images?.[0] ? (
-                            <Image
-                              src={w.product.images[0]}
-                              alt={w.product.name}
-                              width={32}
-                              height={32}
-                              className="object-cover w-full h-full"
-                            />
-                          ) : (
-                            <PackageX className="h-4 w-4 text-slate-300 m-auto" />
-                          )}
+                    <div className="font-bold text-muted-foreground w-4">{idx + 1}.</div>
+                    <div className="w-12 h-12 flex-shrink-0 rounded border bg-white p-1 overflow-hidden">
+                      {p.images?.[0] ? (
+                        <Image
+                          src={p.images[0]}
+                          alt={p.name}
+                          width={48}
+                          height={48}
+                          className="object-contain w-full h-full"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                          <PackageX className="h-5 w-5" />
                         </div>
-                        <div>
-                          <p className="text-sm font-medium text-slate-900 line-clamp-1">
-                            {w.product?.name}
-                          </p>
-                          <p className="text-xs text-slate-400 font-mono">
-                            {w.product?.sku || '—'}
-                          </p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <p className="text-sm font-medium">
-                        {w.user?.firstName} {w.user?.lastName}
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm text-slate-900 line-clamp-1">
+                        {p.name}
                       </p>
-                      <p className="text-xs text-slate-400">{w.user?.email}</p>
-                    </TableCell>
-                    <TableCell className="text-right font-medium text-slate-900">
-                      {formatCurrency(w.product?.sellingPrice || 0)}
-                    </TableCell>
-                    <TableCell className="text-center">
+                      <div className="flex items-center gap-2 mt-1">
+                         <span className="text-xs text-muted-foreground">
+                           {p.category?.name || 'Uncategorized'}
+                         </span>
+                         <span className="text-slate-300">•</span>
+                         <span className="text-xs font-semibold">
+                           {formatCurrency(p.sellingPrice)}
+                         </span>
+                      </div>
+                    </div>
+                    <div className="text-right flex-shrink-0 flex items-center gap-6">
+                      <div className="flex flex-col items-end">
+                         <div className="flex items-center gap-1">
+                           <Heart
+                             className="h-3 w-3 text-rose-500 fill-current"
+                           />
+                           <span className="text-lg font-bold">
+                             {p.wishlistCount}
+                           </span>
+                         </div>
+                         <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tight">Saves</p>
+                      </div>
                       <Badge
                         variant={
-                          w.product?.stock <= 0
+                          p.stock <= 0
                             ? 'destructive'
-                            : w.product?.stock <= 10
+                            : p.stock <= 10
                               ? 'outline'
                               : 'secondary'
                         }
+                        className="h-5 text-[10px]"
                       >
-                        {w.product?.stock <= 0
-                          ? 'Out of Stock'
-                          : `${w.product?.stock}`}
+                        {p.stock <= 0
+                          ? 'Out'
+                          : p.stock <= 10
+                            ? `${p.stock} Left`
+                            : 'Stock'}
                       </Badge>
-                    </TableCell>
-                    <TableCell className="text-slate-500 text-sm">
-                      {w.createdAt
-                        ? format(new Date(w.createdAt), 'dd MMM yyyy')
-                        : '—'}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Stock Alerts for Wishlisted Items */}
+        <Card className="col-span-3">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+              Urgent Fulfillment
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            {loading ? (
+              <div className="py-20 flex justify-center">
+                <Loader2 className="animate-spin h-6 w-6 text-primary" />
+              </div>
+            ) : alerts.length === 0 ? (
+              <div className="py-20 text-center flex flex-col items-center gap-3">
+                <Star className="h-10 w-10 text-green-100 fill-current" />
+                <p className="text-sm text-muted-foreground">All hot items are well-stocked</p>
+              </div>
+            ) : (
+              <div className="divide-y">
+                {alerts.map((p) => (
+                  <div
+                    key={p.id}
+                    className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-red-50/30"
+                  >
+                    <div className="w-10 h-10 flex-shrink-0 rounded border bg-white p-1 overflow-hidden">
+                      {p.images?.[0] ? (
+                        <Image
+                          src={p.images[0]}
+                          alt={p.name}
+                          width={40}
+                          height={40}
+                          className="object-contain w-full h-full"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
+                          ?
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm line-clamp-1">
+                        {p.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        SKU: {p.sku || 'N/A'}
+                      </p>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <Badge variant="destructive" className="font-bold">
+                        {p.stock} Units
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Customer List Tracking Table */}
+      <Card>
+        <CardHeader className="border-b">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+             <div>
+                <CardTitle>Customer Engagement</CardTitle>
+             </div>
+             <div className="relative w-full md:w-80">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search products or customers..."
+                  className="pl-9"
+                />
+             </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader className="bg-slate-50/50">
+                <TableRow>
+                  <TableHead className="pl-6">Product</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead className="text-right">Value</TableHead>
+                  <TableHead className="text-center">Stock</TableHead>
+                  <TableHead className="pr-6">Added Date</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-20">
+                      <Loader2 className="animate-spin h-8 w-8 mx-auto text-primary" />
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                ) : filteredWishlists.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-20 text-muted-foreground">
+                      No matching records found.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredWishlists.map((w) => (
+                    <TableRow key={w.id} className="hover:bg-slate-50/50">
+                      <TableCell className="pl-6">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 flex-shrink-0 rounded border bg-white p-1 overflow-hidden">
+                            {w.product?.images?.[0] ? (
+                              <Image
+                                src={w.product.images[0]}
+                                alt={w.product.name}
+                                width={40}
+                                height={40}
+                                className="object-contain w-full h-full"
+                              />
+                            ) : (
+                              <PackageX className="h-4 w-4 text-slate-100 m-auto" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium line-clamp-1">
+                              {w.product?.name}
+                            </p>
+                            <p className="text-[10px] text-muted-foreground uppercase font-mono">
+                              {w.product?.sku || '—'}
+                            </p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col">
+                           <p className="text-sm font-medium">
+                             {w.user?.firstName} {w.user?.lastName}
+                           </p>
+                           <p className="text-xs text-muted-foreground">{w.user?.email}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right font-semibold">
+                        {formatCurrency(w.product?.sellingPrice || 0)}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Badge
+                          variant={
+                            w.product?.stock <= 0
+                              ? 'destructive'
+                              : w.product?.stock <= 10
+                                ? 'outline'
+                                : 'secondary'
+                          }
+                          className="h-5 text-[10px]"
+                        >
+                          {w.product?.stock <= 0
+                            ? 'Empty'
+                            : `${w.product?.stock}`}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="pr-6">
+                        <span className="text-xs text-muted-foreground">
+                           {w.createdAt ? format(new Date(w.createdAt), 'dd MMM yyyy') : '—'}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
 
           {/* Pagination */}
           {!loading && pagination.totalPages > 1 && (
-            <div className="flex items-center justify-between px-4 py-3 border-t bg-slate-50 text-sm text-slate-600">
-              <span>
+            <div className="flex items-center justify-between px-6 py-4 border-t bg-slate-50/30">
+              <div className="text-xs text-muted-foreground">
                 Showing <b>{(pagination.page - 1) * pagination.limit + 1}</b>–
-                <b>
-                  {Math.min(
-                    pagination.page * pagination.limit,
-                    pagination.total,
-                  )}
-                </b>{' '}
+                <b>{Math.min(pagination.page * pagination.limit, pagination.total)}</b>{' '}
                 of <b>{pagination.total}</b>
-              </span>
-              <div className="flex gap-1">
+              </div>
+              <div className="flex gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="bg-white"
                   disabled={pagination.page <= 1}
                   onClick={() => fetchData(pagination.page - 1)}
                 >
@@ -522,7 +492,6 @@ export default function WishlistAdminPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="bg-white"
                   disabled={pagination.page >= pagination.totalPages}
                   onClick={() => fetchData(pagination.page + 1)}
                 >

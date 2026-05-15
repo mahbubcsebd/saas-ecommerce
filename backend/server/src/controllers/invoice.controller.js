@@ -105,6 +105,33 @@ exports.generateInvoiceRecord = async (req, res, next) => {
 };
 
 /**
+ * Helper: Generate PDF to Buffer
+ */
+const getPDFBuffer = (data) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const doc = new PDFDocument({ size: 'A4', margin: 50, bufferPages: true });
+      const buffers = [];
+      doc.on('data', buffers.push.bind(buffers));
+      doc.on('error', (err) => {
+        console.error('PDF Doc Error:', err);
+        reject(err);
+      });
+      doc.on('end', () => resolve(Buffer.concat(buffers)));
+
+      generateInvoicePDF(doc, data)
+        .then(() => doc.end())
+        .catch((err) => {
+          console.error('generateInvoicePDF Error:', err);
+          reject(err);
+        });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+/**
  * Generate Invoice PDF (Download)
  */
 exports.generateInvoice = async (req, res, next) => {
@@ -162,20 +189,24 @@ exports.generateInvoice = async (req, res, next) => {
       });
     }
 
+    const customerName = order.user
+      ? `${order.user.firstName} ${order.user.lastName}`
+      : order.walkInName || order.guestInfo?.name || 'Guest';
+
     const [companySettings, currencySettings] = await Promise.all([
       prisma.companySetting.findFirst(),
       prisma.currencySetting.findFirst(),
     ]);
 
-    const doc = new PDFDocument({ size: 'A4', margin: 50, bufferPages: true });
-    const fileName = `${invoice.invoiceNumber}.pdf`;
+    const pdfBuffer = await getPDFBuffer({ order, invoice, companySettings, currencySettings });
+    const customerCleanName = customerName.replace(/[^a-zA-Z0-9]/g, '_');
+    const dateStr = new Date().toISOString().split('T')[0];
+    const fileName = `Invoice_${invoice.invoiceNumber}_${customerCleanName}_${dateStr}.pdf`;
+
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
     res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
-
-    doc.pipe(res);
-    generateInvoicePDF(doc, { order, invoice, companySettings, currencySettings });
-    doc.end();
+    return res.send(pdfBuffer);
   } catch (error) {
     next(error);
   }
@@ -213,34 +244,25 @@ exports.sendInvoiceEmail = async (req, res, next) => {
     ]);
 
     // Generate PDF Buffer
-    const doc = new PDFDocument({ size: 'A4', margin: 50 });
-    const buffers = [];
-    doc.on('data', buffers.push.bind(buffers));
-
-    generateInvoicePDF(doc, {
+    const pdfBuffer = await getPDFBuffer({
       order: invoice.order,
       invoice,
       companySettings,
       currencySettings,
     });
 
-    doc.end();
+    const customerName = invoice.user
+      ? `${invoice.user.firstName} ${invoice.user.lastName}`
+      : invoice.order.walkInName || invoice.order.guestInfo?.name || 'Customer';
 
-    doc.on('end', async () => {
-      const pdfBuffer = Buffer.concat(buffers);
-      const customerName = invoice.user
-        ? `${invoice.user.firstName} ${invoice.user.lastName}`
-        : invoice.order.walkInName || invoice.order.guestInfo?.name || 'Customer';
-
-      await emailService.sendInvoicePdfEmail({
-        to: customerEmail,
-        name: customerName,
-        invoiceNumber: invoice.invoiceNumber,
-        pdfBuffer,
-      });
-
-      return successResponse(res, { message: 'Invoice email sent successfully' });
+    await emailService.sendInvoicePdfEmail({
+      to: customerEmail,
+      name: customerName,
+      invoiceNumber: invoice.invoiceNumber,
+      pdfBuffer,
     });
+
+    return successResponse(res, { message: 'Invoice email sent successfully' });
   } catch (error) {
     next(error);
   }

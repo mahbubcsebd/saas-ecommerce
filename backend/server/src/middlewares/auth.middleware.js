@@ -215,6 +215,7 @@ const hasPermission = (permission) => {
 module.exports = {
   authenticate,
   authMiddleware: authenticate, // Alias for backward compatibility if needed
+  isSuperAdmin,
   isAdmin,
   isManager,
   isStaff,

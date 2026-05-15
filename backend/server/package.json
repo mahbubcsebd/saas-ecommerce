@@ -1,7 +1,7 @@
 {
-  "name": "blog-platform-backend",
+  "name": "mahbub-shop-backend",
   "version": "1.0.0",
-  "description": "Personal blog platform - Backend API",
+  "description": "SaaS E-commerce Platform - Backend API",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/server.js",
@@ -9,11 +9,17 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "db:seed": "node prisma/seed.js",
-    "db:clean": "node scripts/cleanDatabase.js",
-    "db:drop": "node scripts/dropDatabase.js",
-    "db:seed:dev": "npx prisma db seed",
-    "db:reset": "npm run db:clean && npm run db:seed",
+    "db:seed": "node prisma/seeds/index.js",
+    "db:seed:users": "node prisma/seeds/users.seed.js",
+    "db:seed:products": "node prisma/seeds/products.seed.js",
+    "db:seed:categories": "node prisma/seeds/categories.seed.js",
+    "db:seed:expenses": "node prisma/seeds/expenses.seed.js",
+    "db:seed:settings": "node prisma/seeds/settings.seed.js",
+    "db:seed:shipping": "node prisma/seeds/shipping.seed.js",
+    "db:seed:suppliers": "node prisma/seeds/suppliers.seed.js",
+    "db:seed:discounts": "node prisma/seeds/discounts.seed.js",
+    "db:seed:orders": "node prisma/seeds/orders.seed.js",
+    "db:reset": "node prisma/seeds/reset.js",
     "test": "vitest",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
@@ -24,6 +30,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@prisma/client": "^6.4.1",
     "archiver": "^7.0.1",
     "axios": "^1.13.5",
     "bcryptjs": "^3.0.2",
@@ -65,7 +72,6 @@
     "xss": "^1.0.15"
   },
   "devDependencies": {
-    "@prisma/client": "^6.4.1",
     "@types/d3-array": "^3.2.2",
     "@vitest/coverage-v8": "^4.0.18",
     "eslint": "^10.0.2",

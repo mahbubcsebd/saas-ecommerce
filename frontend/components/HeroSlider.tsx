@@ -1,5 +1,6 @@
 'use client';
 
+import { useSettings } from '@/context/SettingsContext';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
@@ -25,62 +26,81 @@ interface HeroSliderProps {
 }
 
 export default function HeroSlider({ slides }: HeroSliderProps) {
+  const { settings } = useSettings();
+  const sliderEnabled = settings?.appearance?.heroSliderEnabled ?? true;
+  const showContent = settings?.appearance?.heroShowContent ?? true;
+
   if (!slides || slides.length === 0) {
     return null;
   }
 
+  // If slider is disabled, only show the first slide
+  const displaySlides = sliderEnabled ? slides : [slides[0]];
+
   return (
     <div className="relative w-full h-[300px] md:h-[500px]">
-      <Swiper
-        spaceBetween={0}
-        centeredSlides={true}
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-        }}
-        pagination={{
-          clickable: true,
-        }}
-        navigation={true}
-        modules={[Autoplay, Pagination, Navigation]}
-        className="mySwiper w-full h-full"
-      >
-        {slides.map((slide, index) => (
-          <SwiperSlide key={slide.id}>
-            <div className="relative w-full h-full">
-              {/* Image */}
-              <Image
-                src={slide.image}
-                alt={slide.title || 'Hero Image'}
-                fill
-                className="object-cover"
-                priority={index === 0}
-                unoptimized // Bypass optimization to handle external URLs more reliably in dev
-              />
+      {sliderEnabled && slides.length > 1 ? (
+        <Swiper
+          spaceBetween={0}
+          centeredSlides={true}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+          pagination={{
+            clickable: true,
+          }}
+          navigation={true}
+          modules={[Autoplay, Pagination, Navigation]}
+          className="mySwiper w-full h-full"
+        >
+          {slides.map((slide, index) => (
+            <SwiperSlide key={slide.id}>
+              <SlideContent slide={slide} index={index} showContent={showContent} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      ) : (
+        <SlideContent slide={displaySlides[0]} index={0} showContent={showContent} />
+      )}
+    </div>
+  );
+}
 
-              {/* Overlay Content */}
-              <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-center text-white p-4">
-                {slide.title && (
-                  <h2 className="text-3xl md:text-5xl font-bold mb-2 drop-shadow-lg">
-                    {slide.title}
-                  </h2>
-                )}
-                {slide.subtitle && (
-                  <p className="text-lg md:text-2xl mb-6 drop-shadow-md">{slide.subtitle}</p>
-                )}
-                {slide.link && (
-                  <Link
-                    href={slide.link}
-                    className="px-6 py-3 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold rounded-md transition-all shadow-lg"
-                  >
-                    Shop Now
-                  </Link>
-                )}
-              </div>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+function SlideContent({ slide, index, showContent }: { slide: HeroSlide; index: number; showContent: boolean }) {
+  return (
+    <div className="relative w-full h-full">
+      {/* Image */}
+      <Image
+        src={slide.image}
+        alt={slide.title || 'Hero Image'}
+        fill
+        className="object-cover"
+        priority={index === 0}
+        unoptimized // Bypass optimization to handle external URLs more reliably in dev
+      />
+
+      {/* Overlay Content */}
+      {showContent && (
+        <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-center text-white p-4">
+          {slide.title && (
+            <h2 className="text-3xl md:text-5xl font-bold mb-2 drop-shadow-lg">
+              {slide.title}
+            </h2>
+          )}
+          {slide.subtitle && (
+            <p className="text-lg md:text-2xl mb-6 drop-shadow-md">{slide.subtitle}</p>
+          )}
+          {slide.link && (
+            <Link
+              href={slide.link}
+              className="px-6 py-3 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold rounded-md transition-all shadow-lg"
+            >
+              Shop Now
+            </Link>
+          )}
+        </div>
+      )}
     </div>
   );
 }

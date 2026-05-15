@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Command,
     CommandGroup,
@@ -40,9 +40,9 @@ import {
     Clock,
     Edit2,
     Loader2,
+    Plus,
     Search,
     Tag,
-    Timer,
     Trash2,
     Zap
 } from "lucide-react";
@@ -50,7 +50,7 @@ import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 type FlashSaleProduct = {
@@ -110,10 +110,10 @@ function StatusBadge({ sale }: { sale: FlashSale }) {
   const start = new Date(sale.startDate);
   const end = new Date(sale.endDate);
 
-  if (!sale.isActive) return <Badge variant="secondary">Inactive</Badge>;
-  if (isBefore(now, start)) return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 flex items-center gap-1"><Clock className="h-3 w-3" /> Upcoming</Badge>;
-  if (isAfter(now, end)) return <Badge variant="destructive">Finished</Badge>;
-  return <Badge className="bg-green-100 text-green-700 hover:bg-green-100 flex items-center gap-1"><Zap className="h-3 w-3 fill-current" /> Live</Badge>;
+  if (!sale.isActive) return <Badge variant="outline" className="text-muted-foreground border-muted-foreground/20">Inactive</Badge>;
+  if (isBefore(now, start)) return <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 flex items-center gap-1 font-bold text-[10px]"><Clock className="h-3 w-3" /> Upcoming</Badge>;
+  if (isAfter(now, end)) return <Badge variant="outline" className="bg-rose-50 text-rose-700 border-rose-200 font-bold text-[10px]">Finished</Badge>;
+  return <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 flex items-center gap-1 font-bold text-[10px]"><Zap className="h-3 w-3 fill-current" /> Live</Badge>;
 }
 
 // ─── Main Page ───────────────────────────────────────────────────────────────
@@ -124,7 +124,6 @@ export default function FlashSalesPage() {
 
   const [sales, setSales] = useState<FlashSale[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState({ ...EMPTY_FORM });
@@ -151,7 +150,6 @@ export default function FlashSalesPage() {
 
   // Product Search for Dialog
   useEffect(() => {
-    // If it's closed, clear results and query
     if (!comboOpen) {
       if (!productQuery) setFoundProducts([]);
       return;
@@ -163,32 +161,21 @@ export default function FlashSalesPage() {
         const queryParam = productQuery ? `search=${productQuery}` : '';
         const url = `${API_BASE}/products?${queryParam}&limit=20&status=all`;
 
-        console.log("Fetching products from:", url);
-
         const res = await fetch(url, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();
 
-        console.log("Product Search Response:", {
-            success: data.success,
-            count: data.data?.length,
-            firstItem: data.data?.[0]?.name,
-            error: data.message
-        });
-
         if (data.success) {
           setFoundProducts(data.data);
         } else {
           setFoundProducts([]);
-          toast.error(data.message || "Failed to fetch products");
         }
       } catch (err) {
-        console.error("Fetch Error:", err);
         setFoundProducts([]);
       }
       finally { setSearchingProducts(false); }
-    }, productQuery ? 400 : 0); // Immediate fetch if query is empty (on open)
+    }, productQuery ? 400 : 0);
 
     return () => clearTimeout(delay);
   }, [productQuery, token, comboOpen]);
@@ -222,7 +209,6 @@ export default function FlashSalesPage() {
     const updated = [...form.products];
     updated[index][key] = val;
 
-    // Recalculate price
     if (key === "discountValue" || key === "discountType") {
       const p = updated[index];
       const base = p.basePrice;
@@ -322,275 +308,253 @@ export default function FlashSalesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Flash Sales</h1>
-          <p className="text-muted-foreground mt-1">Manage time-limited sales and countdowns.</p>
+          <h2 className="text-3xl font-bold tracking-tight">Flash Sales</h2>
+          <p className="text-muted-foreground mt-1">Manage time-limited sales and promotional countdowns.</p>
         </div>
-        <Button onClick={openCreate} className="bg-orange-600 hover:bg-orange-700">
-          <Zap className="mr-2 h-4 w-4 fill-current" /> Create Flash Sale
+        <Button onClick={openCreate}>
+          <Plus className="mr-2 h-4 w-4" /> New Flash Sale
         </Button>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          { label: "Active Sales", value: sales.filter(s => s.isActive && isBefore(new Date(s.startDate), new Date()) && isAfter(new Date(s.endDate), new Date())).length, icon: Zap, color: "text-orange-600", bg: "bg-orange-50" },
-          { label: "Upcoming", value: sales.filter(s => s.isActive && isAfter(new Date(s.startDate), new Date())).length, icon: Calendar, color: "text-blue-600", bg: "bg-blue-50" },
-          { label: "Products on Sale", value: sales.reduce((a, s) => a + (s._count?.products || 0), 0), icon: Tag, color: "text-green-600", bg: "bg-green-50" },
-        ].map((kpi) => (
-          <Card key={kpi.label} className="border-0 shadow-sm">
-            <CardContent className="p-6 flex items-center gap-4">
-              <div className={`w-12 h-12 rounded-xl ${kpi.bg} flex items-center justify-center flex-shrink-0`}>
-                <kpi.icon className={`h-6 w-6 ${kpi.color}`} />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-slate-500">{kpi.label}</p>
-                <p className={`text-2xl font-bold ${kpi.color}`}>{loading ? "—" : kpi.value}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Sales</CardTitle>
+            <Zap className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+                {loading ? "—" : sales.filter(s => s.isActive && isBefore(new Date(s.startDate), new Date()) && isAfter(new Date(s.endDate), new Date())).length}
+            </div>
+            <p className="text-xs text-muted-foreground text-emerald-600 font-medium">Currently live now</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Upcoming Campaigns</CardTitle>
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+                {loading ? "—" : sales.filter(s => s.isActive && isAfter(new Date(s.startDate), new Date())).length}
+            </div>
+            <p className="text-xs text-muted-foreground">Scheduled for future</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+            <Tag className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+                {loading ? "—" : sales.reduce((a, s) => a + (s._count?.products || 0), 0)}
+            </div>
+            <p className="text-xs text-muted-foreground">Across all campaigns</p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Table */}
-      <Card className="shadow-sm overflow-hidden">
-        <Table>
-          <TableHeader className="bg-slate-50">
-            <TableRow>
-              <TableHead>Sale Name</TableHead>
-              <TableHead>Duration</TableHead>
-              <TableHead>Products</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Active</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loading && sales.length === 0 ? (
-              <TableRow><TableCell colSpan={6} className="text-center py-10"><Loader2 className="animate-spin h-6 w-6 mx-auto text-orange-600" /></TableCell></TableRow>
-            ) : sales.length === 0 ? (
-              <TableRow><TableCell colSpan={6} className="text-center py-16 text-slate-400">
-                <Timer className="h-12 w-12 mx-auto text-slate-200 mb-3" />
-                No flash sales found. Start a new one!
-              </TableCell></TableRow>
-            ) : sales.map((s) => (
-              <TableRow key={s.id} className="hover:bg-slate-50/50">
-                <TableCell className="font-semibold text-slate-900">{s.name}</TableCell>
-                <TableCell className="text-sm">
-                  <div className="flex flex-col">
-                    <span className="text-slate-600">{format(new Date(s.startDate), "MMM dd, hh:mm a")}</span>
-                    <span className="text-[10px] text-slate-400 uppercase font-bold">to</span>
-                    <span className="text-slate-600">{format(new Date(s.endDate), "MMM dd, hh:mm a")}</span>
-                  </div>
-                </TableCell>
-                <TableCell><Badge variant="outline">{s._count?.products || 0} Items</Badge></TableCell>
-                <TableCell><StatusBadge sale={s} /></TableCell>
-                <TableCell><Switch checked={s.isActive} onCheckedChange={() => handleToggle(s.id)} /></TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-1">
-                    <Button variant="ghost" size="icon" onClick={() => openEdit(s.id)}><Edit2 className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" className="text-red-500" onClick={() => handleDelete(s.id)}><Trash2 className="h-4 w-4" /></Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      <Card>
+        <CardContent className="p-0">
+          <div className="rounded-md border overflow-x-auto">
+            <Table>
+              <TableHeader className="bg-muted/50">
+                <TableRow>
+                  <TableHead className="font-semibold">Sale Name</TableHead>
+                  <TableHead className="font-semibold">Duration</TableHead>
+                  <TableHead className="font-semibold text-center">Products</TableHead>
+                  <TableHead className="font-semibold text-center">Status</TableHead>
+                  <TableHead className="font-semibold">Active</TableHead>
+                  <TableHead className="text-right font-semibold">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {loading && sales.length === 0 ? (
+                  <TableRow><TableCell colSpan={6} className="text-center py-10"><Loader2 className="animate-spin h-6 w-6 mx-auto text-primary" /></TableCell></TableRow>
+                ) : sales.length === 0 ? (
+                  <TableRow><TableCell colSpan={6} className="text-center py-16 text-muted-foreground">No flash sales found.</TableCell></TableRow>
+                ) : sales.map((s) => (
+                  <TableRow key={s.id}>
+                    <TableCell className="font-medium">{s.name}</TableCell>
+                    <TableCell>
+                      <div className="flex flex-col text-xs text-muted-foreground">
+                        <span className="text-slate-900 font-medium">{format(new Date(s.startDate), "dd MMM, hh:mm a")}</span>
+                        <span className="opacity-50">to {format(new Date(s.endDate), "dd MMM, hh:mm a")}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-center"><Badge variant="outline" className="font-normal">{s._count?.products || 0} items</Badge></TableCell>
+                    <TableCell className="text-center"><StatusBadge sale={s} /></TableCell>
+                    <TableCell><Switch checked={s.isActive} onCheckedChange={() => handleToggle(s.id)} className="scale-75 origin-left" /></TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(s.id)}><Edit2 className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => handleDelete(s.id)}><Trash2 className="h-4 w-4" /></Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
       </Card>
 
       {/* Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-4xl p-0 overflow-hidden bg-white rounded-xl border-none shadow-2xl h-[90vh] flex flex-col">
-          <DialogHeader className="p-6 border-b bg-slate-50/50 shrink-0">
+        <DialogContent className="max-w-4xl p-0 overflow-hidden flex flex-col h-[90vh]">
+          <DialogHeader className="px-6 py-4 border-b bg-muted/30">
             <div className="flex items-center justify-between">
               <div>
-                <DialogTitle className="text-2xl font-bold text-slate-900">
-                  {editId ? "Update Flash Sale" : "New Flash Sale"}
-                </DialogTitle>
-                <p className="text-xs text-slate-500 mt-1">Configure your limited time offer and select products.</p>
+                <DialogTitle>{editId ? "Edit Flash Sale" : "New Flash Sale"}</DialogTitle>
+                <p className="text-xs text-muted-foreground mt-1">Configure campaign details and product discounts.</p>
               </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-orange-50 rounded-full border border-orange-100">
-                <Zap className="h-4 w-4 text-orange-600 fill-current" />
-                <span className="text-[10px] font-black uppercase tracking-wider text-orange-700">Campaign Manager</span>
+              <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-orange-50 text-orange-700 border border-orange-100 rounded-full">
+                <Zap className="h-3 w-3 fill-current" />
+                <span className="text-[10px] font-bold uppercase tracking-wider">Campaign</span>
               </div>
             </div>
           </DialogHeader>
 
-          <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
-            {/* Config Section */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Sale Name *</Label>
+                <div className="space-y-2">
+                  <Label>Sale Name</Label>
                   <Input
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    placeholder="e.g. Ramdan Mega Sale"
-                    className="h-10 border-slate-200 focus:ring-orange-500"
+                    placeholder="e.g. Ramadan Special"
+                    className="h-9"
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Description</Label>
+                <div className="space-y-2">
+                  <Label>Description</Label>
                   <Textarea
                     value={form.description}
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    placeholder="Short description for customers..."
-                    className="resize-none border-slate-200"
+                    placeholder="Campaign internal description..."
+                    className="resize-none"
                     rows={2}
                   />
                 </div>
               </div>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1.5">
-                    <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Start Date</Label>
+                  <div className="space-y-2">
+                    <Label>Start Date</Label>
                     <Input
                       type="datetime-local"
                       value={form.startDate}
                       onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-                      className="h-10 border-slate-200"
+                      className="h-9"
                     />
                   </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">End Date</Label>
+                  <div className="space-y-2">
+                    <Label>End Date</Label>
                     <Input
                       type="datetime-local"
                       value={form.endDate}
                       onChange={(e) => setForm({ ...form, endDate: e.target.value })}
-                      className="h-10 border-slate-200"
+                      className="h-9"
                     />
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-                  <div className="flex flex-col">
-                    <span className="text-xs font-bold text-slate-700">Publication Status</span>
-                    <span className="text-[10px] text-slate-500">Enable sale instantly</span>
+                <div className="flex items-center justify-between p-3 rounded-lg border bg-muted/30">
+                  <div>
+                    <p className="text-xs font-semibold">Active Status</p>
+                    <p className="text-[10px] text-muted-foreground">Enable campaign immediately</p>
                   </div>
                   <Switch
                     checked={form.isActive}
                     onCheckedChange={(v) => setForm({ ...form, isActive: v })}
+                    className="scale-75"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Product Selection Section */}
-            <div className="space-y-4 pt-4 border-t">
+            <div className="space-y-4 pt-6 border-t">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <Tag className="h-4 w-4 text-orange-500" /> Selected Products
+                <div className="space-y-1">
+                  <h3 className="text-sm font-bold flex items-center gap-2">
+                    <Tag className="h-4 w-4" /> Selected Products
                   </h3>
-                  <p className="text-[10px] text-slate-500">Search and add products to the sale.</p>
+                  <p className="text-[10px] text-muted-foreground">Add products to this campaign.</p>
                 </div>
 
-                {/* Search Area - Combobox */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                   <Popover open={comboOpen} onOpenChange={setComboOpen}>
                     <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={comboOpen}
-                        className="w-full md:w-[320px] justify-between h-10 border-blue-100 hover:bg-blue-50 transition-all shadow-sm"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Search className="h-4 w-4 text-blue-500" />
-                          <span className="text-slate-600 truncate">
-                            {productQuery || "Select products..."}
-                          </span>
-                        </div>
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      <Button variant="outline" size="sm" className="w-[280px] justify-between h-9">
+                        <span className="truncate">{productQuery || "Search products..."}</span>
+                        <Search className="h-4 w-4 opacity-50" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-full md:w-[400px] p-0 shadow-2xl border-blue-100 rounded-xl overflow-hidden z-[1001]" align="start">
+                    <PopoverContent className="p-0 w-[400px]" align="end">
                       <Command shouldFilter={false}>
                         <CommandInput
-                          placeholder="Search product name, SKU, or brand..."
+                          placeholder="Search name or SKU..."
                           value={productQuery}
                           onValueChange={setProductQuery}
-                          className="h-12 border-none focus:ring-0"
+                          className="h-10"
                         />
-                        <CommandList className="max-h-[300px] overflow-y-auto">
-                          {searchingProducts && (
-                            <div className="p-4 text-center text-sm text-slate-400 flex items-center justify-center gap-2">
-                              <Loader2 className="h-4 w-4 animate-spin" /> Searching...
-                            </div>
-                          )}
-                          {!searchingProducts && foundProducts.length === 0 && productQuery.length >= 2 && (
-                            <div className="p-4 text-center text-sm text-slate-400 flex flex-col items-center gap-2">
-                              <AlertCircle className="h-4 w-4 opacity-50" />
-                              <span>No products found for "{productQuery}"</span>
-                            </div>
-                          )}
-                          <CommandGroup>
-                            {foundProducts.map((p) => (
-                              <CommandItem
-                                key={p.id}
-                                value={p.name}
-                                onSelect={() => {
-                                  addProductToSale(p);
-                                  setComboOpen(false);
-                                  setProductQuery("");
-                                }}
-                                className="flex items-center justify-between p-3 cursor-pointer hover:bg-blue-50 border-b last:border-0"
-                              >
-                                <div className="flex flex-col gap-0.5 max-w-[240px]">
-                                  <div className="flex items-center gap-2">
-                                    <span className="font-bold text-slate-900 truncate">{p.name}</span>
-                                    <Check
-                                      className={cn(
-                                        "h-3 w-3 text-green-600",
-                                        form.products.some(fp => fp.productId === p.id) ? "opacity-100" : "opacity-0"
-                                      )}
-                                    />
+                        <CommandList>
+                          {searchingProducts ? (
+                            <div className="p-4 text-center text-xs text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin mx-auto mb-1" /> Searching...</div>
+                          ) : foundProducts.length === 0 ? (
+                            <div className="p-4 text-center text-xs text-muted-foreground">No products found.</div>
+                          ) : (
+                            <CommandGroup>
+                              {foundProducts.map((p) => (
+                                <CommandItem
+                                  key={p.id}
+                                  onSelect={() => { addProductToSale(p); setComboOpen(false); }}
+                                  className="flex items-center justify-between p-2 cursor-pointer"
+                                >
+                                  <div>
+                                    <p className="font-bold text-xs">{p.name}</p>
+                                    <p className="text-[10px] text-muted-foreground">SKU: {p.sku} • ৳{p.basePrice}</p>
                                   </div>
-                                  <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="text-[9px] px-1 py-0 h-4 bg-slate-50">{p.sku || 'No SKU'}</Badge>
-                                    <span className="text-[10px] text-slate-400 font-medium">Orig: ৳{p.basePrice}</span>
-                                  </div>
-                                </div>
-                                <div className="flex flex-col items-end gap-1">
-                                  <span className="text-xs font-black text-blue-600">৳{p.basePrice}</span>
-                                  <Button size="sm" variant="ghost" className="h-6 text-[10px] px-2 bg-blue-100 text-blue-700 uppercase font-black">Add</Button>
-                                </div>
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
+                                  <Button size="sm" variant="secondary" className="h-6 text-[10px] px-2">Add</Button>
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          )}
                         </CommandList>
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  <div className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">
-                    {form.products.length} Products Added
-                  </div>
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase">{form.products.length} Items</span>
                 </div>
               </div>
 
-              {/* Products Table */}
-              <div className="border rounded-xl overflow-x-auto bg-slate-50/30">
+              <div className="rounded-lg border overflow-hidden">
                 <Table>
-                  <TableHeader className="bg-slate-100/50">
+                  <TableHeader className="bg-muted/50">
                     <TableRow>
-                      <TableHead className="text-[10px] font-black uppercase text-slate-400 h-8 pl-4">Product</TableHead>
-                      <TableHead className="text-[10px] font-black uppercase text-slate-400 h-8 text-center">Price</TableHead>
-                      <TableHead className="text-[10px] font-black uppercase text-slate-400 h-8 text-center">Discount</TableHead>
-                      <TableHead className="text-[10px] font-black uppercase text-slate-400 h-8 text-center">Sale Price</TableHead>
-                      <TableHead className="text-[10px] font-black uppercase text-slate-400 h-8 text-center">Stock</TableHead>
+                      <TableHead className="text-[10px] h-8 font-bold">Product</TableHead>
+                      <TableHead className="text-[10px] h-8 font-bold text-center">Base Price</TableHead>
+                      <TableHead className="text-[10px] h-8 font-bold text-center">Discount</TableHead>
+                      <TableHead className="text-[10px] h-8 font-bold text-center">Sale Price</TableHead>
+                      <TableHead className="text-[10px] h-8 font-bold text-center">Limit</TableHead>
                       <TableHead className="h-8 w-10"></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {form.products.map((p, idx) => (
-                      <TableRow key={p.productId} className="bg-white border-b last:border-0">
-                        <TableCell className="pl-4 py-2">
-                          <span className="text-xs font-bold text-slate-800 block truncate max-w-[180px]">{p.name}</span>
-                        </TableCell>
-                        <TableCell className="text-center py-2 text-xs font-medium text-slate-500">৳{p.basePrice}</TableCell>
+                    {form.products.length === 0 ? (
+                      <TableRow><TableCell colSpan={6} className="text-center py-8 text-xs text-muted-foreground">No products added.</TableCell></TableRow>
+                    ) : form.products.map((p, idx) => (
+                      <TableRow key={p.productId}>
+                        <TableCell className="py-2"><span className="text-xs font-medium truncate block max-w-[200px]">{p.name}</span></TableCell>
+                        <TableCell className="text-center py-2 text-xs font-medium">৳{p.basePrice}</TableCell>
                         <TableCell className="py-2">
                           <div className="flex items-center justify-center gap-1">
                             <Input
                               type="number"
-                              className="h-7 text-[11px] p-1 w-12 text-center"
+                              className="h-7 text-[11px] w-12 text-center"
                               value={p.discountValue}
                               onChange={(e) => updateProductLine(idx, "discountValue", e.target.value)}
                             />
@@ -598,57 +562,39 @@ export default function FlashSalesPage() {
                               onClick={() => updateProductLine(idx, "discountType", p.discountType === "PERCENTAGE" ? "FLAT" : "PERCENTAGE")}
                               className={cn(
                                 "h-7 w-7 flex items-center justify-center rounded border font-bold text-[10px]",
-                                p.discountType === "PERCENTAGE" ? "bg-blue-50 text-blue-600" : "bg-green-50 text-green-600"
+                                p.discountType === "PERCENTAGE" ? "bg-blue-50 text-blue-600" : "bg-emerald-50 text-emerald-600"
                               )}
                             >
                               {p.discountType === "PERCENTAGE" ? "%" : "৳"}
                             </button>
                           </div>
                         </TableCell>
-                        <TableCell className="text-center py-2">
-                          <span className="text-xs font-black text-orange-600">৳{Math.round(p.salePrice)}</span>
-                        </TableCell>
+                        <TableCell className="text-center py-2 text-xs font-bold text-orange-600">৳{Math.round(p.salePrice)}</TableCell>
                         <TableCell className="py-2">
                           <Input
                             type="number"
-                            className="h-7 text-[11px] p-1 w-14 mx-auto text-center"
+                            className="h-7 text-[11px] w-14 mx-auto text-center"
                             placeholder="∞"
                             value={p.stockLimit}
                             onChange={(e) => updateProductLine(idx, "stockLimit", e.target.value)}
                           />
                         </TableCell>
-                        <TableCell className="pr-4 py-2 text-right">
-                          <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-300 hover:text-red-500" onClick={() => removeProduct(p.productId)}>
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
+                        <TableCell className="py-2 text-right">
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => removeProduct(p.productId)}><Trash2 className="h-3.5 w-3.5" /></Button>
                         </TableCell>
                       </TableRow>
                     ))}
-                    {form.products.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center py-8 text-slate-400 text-xs">
-                          No products added to this sale yet.
-                        </TableCell>
-                      </TableRow>
-                    )}
                   </TableBody>
                 </Table>
               </div>
             </div>
           </div>
 
-          {/* Fixed Footer */}
-          <div className="p-6 border-t bg-slate-50/80 flex justify-end gap-3 shrink-0">
-            <Button variant="outline" onClick={() => setDialogOpen(false)} disabled={saving}>
-              Cancel
-            </Button>
-            <Button
-              className="bg-orange-600 hover:bg-orange-700 text-white font-bold h-11 px-8 rounded-lg shadow-lg shadow-orange-200"
-              onClick={handleSave}
-              disabled={saving}
-            >
+          <div className="p-4 border-t bg-muted/30 flex justify-end gap-3">
+            <Button variant="outline" size="sm" onClick={() => setDialogOpen(false)}>Cancel</Button>
+            <Button size="sm" onClick={handleSave} disabled={saving} className="bg-orange-600 hover:bg-orange-700">
               {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Zap className="mr-2 h-4 w-4 fill-current" />}
-              {editId ? "Update Flash Sale" : "Launch Flash Sale"}
+              {editId ? "Update Sale" : "Launch Sale"}
             </Button>
           </div>
         </DialogContent>

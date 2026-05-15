@@ -8,8 +8,8 @@ function initializeSocket(server) {
   io = new Server(server, {
     cors: {
       origin: [
-        'http://localhost:3000', // Frontend
-        'http://localhost:3001', // Dashboard
+        'http://localhost:8050', // Frontend
+        'http://localhost:8060', // Dashboard
         process.env.FRONTEND_URL,
         process.env.DASHBOARD_URL,
       ].filter(Boolean),

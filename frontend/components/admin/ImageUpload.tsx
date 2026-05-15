@@ -40,7 +40,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     try {
       setLoading(true);
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/upload`,
+        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/upload`,
         {
           method: 'POST',
           headers: {

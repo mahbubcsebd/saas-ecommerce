@@ -51,7 +51,7 @@ export default function StoreSettingsClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
       const [conRes, legRes] = await Promise.all([
         fetch(`${BACKEND_URL}/settings/contact`, {
@@ -90,7 +90,7 @@ export default function StoreSettingsClient() {
     setIsSaving(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${BACKEND_URL}/settings/${type}`, {
         method: 'PUT',
         headers: {

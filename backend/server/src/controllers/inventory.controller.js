@@ -1,4 +1,4 @@
-﻿const prisma = require('../config/prisma');
+const prisma = require('../config/prisma');
 const logger = require('../utils/logger');
 const NotificationService = require('../services/notification.service');
 

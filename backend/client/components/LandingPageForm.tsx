@@ -13,6 +13,7 @@ import {
   Trash,
   Zap,
 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -20,7 +21,13 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -40,9 +47,10 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 
+import { cn } from '@/lib/utils';
 import { PageBuilder } from './page-builder/PageBuilder';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 interface LandingPageFormProps {
   initialData?: any;
@@ -154,26 +162,28 @@ export default function LandingPageForm({ initialData }: LandingPageFormProps) {
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-24">
+    <div className="space-y-6">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border sticky top-0 z-50">
+        <div className="flex items-center justify-between bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 py-4 border-b">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               size="icon"
               type="button"
               onClick={() => router.back()}
-              className="rounded-xl"
+              className="h-8 w-8"
             >
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-                {initialData ? 'Editor' : 'New Landing Page'}
-              </h1>
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-widest px-1">
-                Page builder & stats
+              <h2 className="text-xl font-bold tracking-tight">
+                {initialData ? 'Edit Funnel' : 'Create New Funnel'}
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                {initialData
+                  ? `Editing: ${initialData.title}`
+                  : 'Build high-conversion promotional pages'}
               </p>
             </div>
           </div>
@@ -181,120 +191,123 @@ export default function LandingPageForm({ initialData }: LandingPageFormProps) {
             <Button
               type="button"
               variant="outline"
-              className="h-11 px-6 rounded-xl font-bold"
+              size="sm"
               onClick={() => router.back()}
             >
               Cancel
             </Button>
             <Button
               type="submit"
+              size="sm"
               disabled={loading}
-              className="bg-orange-600 hover:bg-orange-700 shadow-lg shadow-orange-100 h-11 px-8 rounded-xl font-bold text-white"
+              className="bg-orange-600 hover:bg-orange-700"
             >
               {loading ? (
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
-                <Zap className="mr-2 h-5 w-5 fill-current" />
+                <Zap className="mr-2 h-4 w-4 fill-current" />
               )}
-              {initialData ? 'Update Changes' : 'Launch Funnel'}
+              {initialData ? 'Save Changes' : 'Create Funnel'}
             </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Main Workspace */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="lg:col-span-9 space-y-6">
             <Tabs defaultValue="builder" className="w-full">
-              <TabsList className="bg-slate-100 p-1 rounded-2xl w-fit h-auto gap-1 border border-slate-200 shadow-inner">
-                <TabsTrigger
-                  value="builder"
-                  className="rounded-xl font-bold py-2.5 px-6 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-orange-600"
-                >
-                  <Layout className="h-4 w-4 mr-2" /> Builder
-                </TabsTrigger>
-                <TabsTrigger
-                  value="ab-test"
-                  className="rounded-xl font-bold py-2.5 px-6 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-orange-600"
-                >
-                  <Split className="h-4 w-4 mr-2" /> Experiments
-                </TabsTrigger>
-                <TabsTrigger
-                  value="settings"
-                  className="rounded-xl font-bold py-2.5 px-6 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-orange-600"
-                >
-                  <Settings2 className="h-4 w-4 mr-2" /> Content
-                </TabsTrigger>
-                <TabsTrigger
-                  value="seo"
-                  className="rounded-xl font-bold py-2.5 px-6 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-orange-600"
-                >
-                  <Globe className="h-4 w-4 mr-2" /> SEO
-                </TabsTrigger>
-              </TabsList>
+              <div className="bg-muted p-1 rounded-lg w-fit mb-6">
+                <TabsList className="h-8 bg-transparent gap-1">
+                  <TabsTrigger
+                    value="builder"
+                    className="h-6 rounded-md px-4 text-xs font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                  >
+                    <Layout className="h-3.5 w-3.5 mr-2" /> Builder
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="ab-test"
+                    className="h-6 rounded-md px-4 text-xs font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                  >
+                    <Split className="h-3.5 w-3.5 mr-2" /> A/B Testing
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="settings"
+                    className="h-6 rounded-md px-4 text-xs font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                  >
+                    <Settings2 className="h-3.5 w-3.5 mr-2" /> Details
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="seo"
+                    className="h-6 rounded-md px-4 text-xs font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                  >
+                    <Globe className="h-3.5 w-3.5 mr-2" /> SEO
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
-              <TabsContent value="builder" className="pt-6">
-                <PageBuilder
-                  pageId={initialData?.id}
-                  initialData={{
-                    html: watch('gjs_html'),
-                    css: watch('gjs_css'),
-                    json: watch('gjs_json'),
-                  }}
-                  onSave={async (gjs) => {
-                    setValue('gjs_html', gjs.html);
-                    setValue('gjs_css', gjs.css);
-                    setValue('gjs_json', gjs.json);
-                  }}
-                />
+              <TabsContent value="builder" className="mt-0">
+                <Card className="border-none shadow-none bg-transparent">
+                  <PageBuilder
+                    pageId={initialData?.id}
+                    initialData={{
+                      html: watch('gjs_html'),
+                      css: watch('gjs_css'),
+                      json: watch('gjs_json'),
+                    }}
+                    onSave={async (gjs) => {
+                      setValue('gjs_html', gjs.html);
+                      setValue('gjs_css', gjs.css);
+                      setValue('gjs_json', gjs.json);
+                    }}
+                  />
+                </Card>
               </TabsContent>
 
-              <TabsContent value="ab-test" className="pt-6 space-y-6">
-                <Card className="border-none shadow-xl shadow-slate-200/50 rounded-2xl overflow-hidden">
-                  <CardHeader className="bg-white border-b p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <CardTitle className="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                          <Split className="h-5 w-5 text-orange-500" />{' '}
-                          Experiment Hub
-                        </CardTitle>
-                        <p className="text-[10px] text-slate-400 font-black tracking-widest uppercase mt-1">
-                          Run A/B tests to optimize conversion
-                        </p>
-                      </div>
-                      <Switch
-                        checked={watch('isAbTestActive')}
-                        onCheckedChange={(v) => setValue('isAbTestActive', v)}
-                      />
+              <TabsContent value="ab-test" className="mt-0 space-y-6">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                      <CardTitle className="text-lg">
+                        A/B Testing Experiments
+                      </CardTitle>
+                      <CardDescription>
+                        Compare different versions of your page to see which
+                        performs better.
+                      </CardDescription>
                     </div>
+                    <Switch
+                      checked={watch('isAbTestActive')}
+                      onCheckedChange={(v) => setValue('isAbTestActive', v)}
+                    />
                   </CardHeader>
-                  <CardContent className="p-6">
+                  <CardContent className="space-y-6">
                     {isAbTest ? (
-                      <div className="space-y-6">
+                      <div className="space-y-4">
                         {variantFields.map((field, index) => (
                           <div
                             key={field.id}
-                            className="flex gap-4 p-4 rounded-2xl border bg-white shadow-sm group hover:border-orange-200 transition-colors"
+                            className="flex gap-4 p-4 rounded-lg border bg-muted/30 group transition-colors"
                           >
                             <div className="flex-1 space-y-4">
                               <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
-                                  <Label className="text-[10px] font-black uppercase text-slate-400">
+                                  <Label className="text-xs font-semibold">
                                     Variant Name
                                   </Label>
                                   <Input
                                     {...register(`variants.${index}.name`)}
                                     placeholder="e.g. Red CTA Button"
-                                    className="h-10 rounded-xl border-slate-200 focus:ring-orange-500"
+                                    className="h-9"
                                   />
                                 </div>
                                 <div className="space-y-1.5">
-                                  <Label className="text-[10px] font-black uppercase text-slate-400">
-                                    Weight (%)
+                                  <Label className="text-xs font-semibold">
+                                    Traffic Weight (%)
                                   </Label>
                                   <Input
                                     {...register(`variants.${index}.weight`)}
                                     type="number"
-                                    className="h-10 rounded-xl border-slate-200 focus:ring-orange-500"
+                                    className="h-9"
                                   />
                                 </div>
                               </div>
@@ -303,24 +316,32 @@ export default function LandingPageForm({ initialData }: LandingPageFormProps) {
                                   type="button"
                                   variant="outline"
                                   size="sm"
-                                  className="text-[10px] font-black uppercase rounded-xl border-slate-200 hover:bg-slate-50 h-9"
+                                  className="h-8 text-xs font-bold"
                                   onClick={() => setEditingVariantIndex(index)}
                                 >
-                                  <Edit2 className="h-3 w-3 mr-1.5" /> Design
+                                  <Edit2 className="h-3 w-3 mr-2" /> Design
                                   Variant
                                 </Button>
-                                <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest bg-slate-50 px-2 py-1 rounded-md">
+                                <Badge
+                                  variant="outline"
+                                  className={cn(
+                                    'font-bold text-[10px]',
+                                    (field as any).gjs_json
+                                      ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                                      : 'bg-slate-50 text-slate-500 border-slate-200',
+                                  )}
+                                >
                                   {(field as any).gjs_json
-                                    ? 'Design Active'
-                                    : 'No Design'}
-                                </div>
+                                    ? 'DESIGN READY'
+                                    : 'NO DESIGN'}
+                                </Badge>
                               </div>
                             </div>
                             <Button
                               variant="ghost"
                               size="icon"
                               onClick={() => removeVariant(index)}
-                              className="text-slate-300 hover:text-red-500 hover:bg-red-50 self-start mt-2"
+                              className="text-muted-foreground hover:text-destructive h-8 w-8"
                             >
                               <Trash className="h-4 w-4" />
                             </Button>
@@ -329,7 +350,7 @@ export default function LandingPageForm({ initialData }: LandingPageFormProps) {
                         <Button
                           type="button"
                           variant="outline"
-                          className="w-full h-12 border-dashed border-2 hover:bg-orange-50 hover:border-orange-300 hover:text-orange-600 font-black rounded-2xl"
+                          className="w-full h-12 border-dashed"
                           onClick={() =>
                             appendVariant({
                               name: 'New Variant',
@@ -341,20 +362,18 @@ export default function LandingPageForm({ initialData }: LandingPageFormProps) {
                             })
                           }
                         >
-                          <Plus className="h-4 w-4 mr-2" /> Add Experiment
-                          Variant
+                          <Plus className="h-4 w-4 mr-2" /> Add Variation
                         </Button>
                       </div>
                     ) : (
-                      <div className="py-20 text-center border-2 border-dashed rounded-2xl border-slate-100">
-                        <div className="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <Split className="h-8 w-8 text-slate-200" />
-                        </div>
-                        <p className="text-slate-400 font-black uppercase text-[10px] tracking-widest">
+                      <div className="py-12 text-center border-2 border-dashed rounded-lg bg-muted/10">
+                        <Split className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
+                        <p className="text-sm font-semibold text-muted-foreground">
                           A/B Testing Disabled
                         </p>
-                        <p className="text-slate-500 text-sm mt-1">
-                          Enable to compare page performance variants.
+                        <p className="text-xs text-muted-foreground mt-1 max-w-[280px] mx-auto">
+                          Turn on experiments to start optimizing your landing
+                          page conversions.
                         </p>
                       </div>
                     )}
@@ -362,46 +381,48 @@ export default function LandingPageForm({ initialData }: LandingPageFormProps) {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="settings" className="pt-6 space-y-6">
-                <Card className="border-none shadow-xl shadow-slate-200/50 rounded-2xl">
-                  <CardHeader className="bg-white border-b p-6">
-                    <CardTitle className="text-lg font-black tracking-tight flex items-center gap-2">
-                      <Settings2 className="h-5 w-5 text-orange-500" /> Funnel
-                      Content
+              <TabsContent value="settings" className="mt-0 space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">
+                      Funnel Information
                     </CardTitle>
+                    <CardDescription>
+                      General settings and checkout product link.
+                    </CardDescription>
                   </CardHeader>
-                  <CardContent className="p-8 space-y-6">
-                    <div className="grid grid-cols-2 gap-8">
+                  <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-1.5">
-                        <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">
-                          Internal Campaign Title
+                        <Label className="text-xs font-semibold">
+                          Internal Title
                         </Label>
                         <Input
                           {...register('title', { required: true })}
-                          placeholder="e.g. Ramdan Offer 2024"
-                          className="h-12 rounded-xl focus:ring-orange-500"
+                          placeholder="e.g. Ramadan Special Offer"
+                          className="h-9"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">
-                          Public URL Slug
+                        <Label className="text-xs font-semibold">
+                          URL Slug
                         </Label>
                         <div className="flex">
-                          <div className="h-12 flex items-center px-4 bg-slate-50 border border-r-0 rounded-l-xl text-xs font-bold text-slate-400">
+                          <div className="h-9 flex items-center px-3 bg-muted border border-r-0 rounded-l-md text-xs font-medium text-muted-foreground">
                             /landing/
                           </div>
                           <Input
                             {...register('slug', { required: true })}
-                            placeholder="offer-name"
-                            className="h-12 rounded-l-none rounded-r-xl focus:ring-orange-500"
+                            placeholder="my-cool-page"
+                            className="h-9 rounded-l-none"
                           />
                         </div>
                       </div>
                     </div>
 
                     <div className="space-y-1.5">
-                      <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">
-                        Linked Product (Checkout)
+                      <Label className="text-xs font-semibold">
+                        Link to Product (Direct Checkout)
                       </Label>
                       <Controller
                         name="productId"
@@ -411,20 +432,22 @@ export default function LandingPageForm({ initialData }: LandingPageFormProps) {
                             onValueChange={field.onChange}
                             value={field.value}
                           >
-                            <SelectTrigger className="h-12 rounded-xl focus:ring-orange-500">
-                              <SelectValue placeholder="Search product for checkout..." />
+                            <SelectTrigger className="h-9">
+                              <SelectValue placeholder="Search product for direct purchase..." />
                             </SelectTrigger>
-                            <SelectContent className="rounded-2xl shadow-2xl border-slate-100 max-h-[300px]">
+                            <SelectContent>
                               {products.map((p) => (
                                 <SelectItem
                                   key={p.id}
                                   value={p.id}
-                                  className="py-3 px-4 focus:bg-orange-50 focus:text-orange-700"
+                                  className="py-2"
                                 >
                                   <div className="flex flex-col">
-                                    <span className="font-bold">{p.name}</span>
-                                    <span className="text-[10px] opacity-50 uppercase tracking-widest">
-                                      SKU: {p.sku || 'N/A'}
+                                    <span className="font-semibold text-xs">
+                                      {p.name}
+                                    </span>
+                                    <span className="text-[10px] text-muted-foreground uppercase">
+                                      SKU: {p.sku || 'N/A'} • ৳{p.basePrice}
                                     </span>
                                   </div>
                                 </SelectItem>
@@ -436,136 +459,141 @@ export default function LandingPageForm({ initialData }: LandingPageFormProps) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">
-                        Internal Description
+                      <Label className="text-xs font-semibold text-muted-foreground">
+                        Internal Notes (Optional)
                       </Label>
                       <Textarea
                         {...register('description')}
-                        placeholder="Short summary for admin reference..."
-                        className="rounded-2xl min-h-[80px] p-4 text-sm focus:ring-orange-500"
+                        placeholder="Page objective, source details, etc."
+                        className="min-h-[100px] resize-none"
                       />
                     </div>
                   </CardContent>
                 </Card>
               </TabsContent>
 
-              <TabsContent value="seo" className="pt-6 space-y-6">
-                <Card className="border-none shadow-xl shadow-slate-200/50 rounded-2xl p-8 space-y-8 bg-white">
-                  <div>
-                    <h2 className="text-lg font-black tracking-tight flex items-center gap-2 mb-1">
-                      <Globe className="h-5 w-5 text-orange-500" /> Search
+              <TabsContent value="seo" className="mt-0 space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Globe className="h-4 w-4 text-blue-500" /> Search
                       Optimization
-                    </h2>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                      Optimize how this page appears in search engines
-                    </p>
-                  </div>
-
-                  <div className="grid gap-6">
+                    </CardTitle>
+                    <CardDescription>
+                      Manage how your landing page appears in search engine
+                      results.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
                     <div className="space-y-1.5">
-                      <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                      <Label className="text-xs font-semibold">
                         Meta Title
                       </Label>
                       <Input
                         {...register('metaTitle')}
-                        className="h-12 rounded-xl"
-                        placeholder="Catchy title for Google results..."
+                        className="h-9"
+                        placeholder="The title that appears in Google search"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                      <Label className="text-xs font-semibold">
                         Meta Description
                       </Label>
                       <Textarea
                         {...register('metaDescription')}
-                        className="rounded-2xl min-h-[120px] p-4 text-sm"
-                        placeholder="A compelling summary of your page to drive clicks..."
+                        className="min-h-[100px] resize-none"
+                        placeholder="Brief summary for search engine users"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">
-                        Meta Keywords
+                      <Label className="text-xs font-semibold text-muted-foreground">
+                        Keywords (Comma separated)
                       </Label>
                       <Input
                         {...register('metaKeywords')}
-                        className="h-12 rounded-xl"
-                        placeholder="sales, ecommerce, fashion, limited-offer"
+                        className="h-9"
+                        placeholder="sale, limited, offer, shop"
                       />
                     </div>
-                  </div>
+                  </CardContent>
                 </Card>
               </TabsContent>
             </Tabs>
           </div>
 
           {/* Right Sidebar */}
-          <div className="space-y-6">
-            <Card className="border-none shadow-xl shadow-slate-200/50 rounded-2xl p-6 space-y-6 bg-white overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full -mr-16 -mt-16" />
-
-              <div className="flex items-center justify-between relative z-10">
-                <Label className="text-sm font-black text-slate-700 uppercase tracking-tight">
-                  Public Status
-                </Label>
-                <Controller
-                  name="isActive"
-                  control={control}
-                  render={({ field }) => (
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      className="data-[state=checked]:bg-orange-600"
-                    />
-                  )}
-                />
-              </div>
-
-              <div className="space-y-3 pt-4 border-t relative z-10">
-                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">
-                  Live Actions
-                </p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full h-11 rounded-xl font-bold bg-slate-50 border-slate-100 hover:bg-white text-slate-600 hover:border-orange-200 transition-all hover:shadow-md"
-                  onClick={() =>
-                    window.open(`/landing/${watch('slug')}`, '_blank')
-                  }
-                >
-                  <Eye className="h-4 w-4 mr-2 text-orange-500" /> Open Live
-                  Page
-                </Button>
-              </div>
-            </Card>
-
-            <Card className="border-none shadow-2xl shadow-slate-900/10 rounded-2xl p-6 bg-slate-900 text-white">
-              <p className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-6 flex items-center gap-2">
-                <Zap className="h-3 w-3 fill-current text-orange-400" />{' '}
-                Branding Tokens
-              </p>
-              <div className="space-y-6">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
-                  <span className="text-xs font-black uppercase tracking-tight">
-                    Theme Accent
-                  </span>
-                  <Input
-                    type="color"
-                    {...register('themeColor')}
-                    className="h-8 w-8 p-0 border-none bg-transparent cursor-pointer"
+          <div className="lg:col-span-3 space-y-6">
+            <Card>
+              <CardHeader className="pb-4">
+                <CardTitle className="text-sm font-bold">Publishing</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-medium text-muted-foreground">
+                    Public Status
+                  </Label>
+                  <Controller
+                    name="isActive"
+                    control={control}
+                    render={({ field }) => (
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    )}
                   />
                 </div>
+                <div className="pt-4 border-t space-y-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full h-9 text-xs font-bold"
+                    onClick={() =>
+                      window.open(`/landing/${watch('slug')}`, '_blank')
+                    }
+                  >
+                    <Eye className="h-3.5 w-3.5 mr-2" /> Live Preview
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-slate-900 border-none">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                  <Zap className="h-3.5 w-3.5 text-orange-400 fill-current" />{' '}
+                  Styling
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
                 <div className="space-y-2">
-                  <Label className="text-[10px] font-black uppercase text-slate-500 tracking-widest">
-                    Typography System
+                  <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    Accent Color
+                  </Label>
+                  <div className="flex items-center gap-3 bg-white/5 p-2 rounded-lg border border-white/10">
+                    <Input
+                      type="color"
+                      {...register('themeColor')}
+                      className="h-8 w-8 p-0 border-none bg-transparent cursor-pointer"
+                    />
+                    <span className="text-xs font-mono text-slate-300 uppercase">
+                      {watch('themeColor')}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    Global Typography
                   </Label>
                   <Select
                     value={watch('fontFamily')}
                     onValueChange={(v) => setValue('fontFamily', v)}
                   >
-                    <SelectTrigger className="h-10 bg-white/5 border-white/10 text-xs font-bold rounded-xl px-4">
+                    <SelectTrigger className="h-9 bg-white/5 border-white/10 text-xs font-medium text-slate-200">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl">
+                    <SelectContent>
                       <SelectItem value="Inter" className="font-sans">
                         Inter (Modern)
                       </SelectItem>
@@ -573,18 +601,18 @@ export default function LandingPageForm({ initialData }: LandingPageFormProps) {
                         Roboto (Clean)
                       </SelectItem>
                       <SelectItem value="Outfit" className="font-sans">
-                        Outfit (Premium)
+                        Outfit (Geometric)
                       </SelectItem>
                       <SelectItem
                         value="Playfair Display"
                         className="font-serif"
                       >
-                        Playfair (Elegant)
+                        Playfair (Serif)
                       </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
+              </CardContent>
             </Card>
           </div>
         </div>
@@ -595,29 +623,30 @@ export default function LandingPageForm({ initialData }: LandingPageFormProps) {
         open={editingVariantIndex !== null}
         onOpenChange={() => setEditingVariantIndex(null)}
       >
-        <DialogContent className="max-w-[95vw] w-[1400px] h-[95vh] p-0 overflow-hidden bg-white shadow-2xl rounded-3xl border-none">
-          <DialogHeader className="p-4 border-b bg-white flex flex-row items-center justify-between shrink-0">
+        <DialogContent className="max-w-[95vw] w-[1400px] h-[90vh] p-0 overflow-hidden flex flex-col border-none shadow-2xl">
+          <DialogHeader className="px-6 py-4 border-b flex flex-row items-center justify-between shrink-0 bg-background">
             <div className="flex items-center gap-4">
-              <div className="h-12 w-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 shadow-sm border border-orange-100">
-                <Split className="h-6 w-6" />
+              <div className="h-10 w-10 bg-orange-50 rounded-lg flex items-center justify-center text-orange-600 border border-orange-100">
+                <Split className="h-5 w-5" />
               </div>
               <div>
-                <DialogTitle className="text-xl font-black text-slate-900 tracking-tight">
+                <DialogTitle className="text-lg font-bold">
                   {editingVariantIndex !== null
-                    ? watch(`variants.${editingVariantIndex}.name`)
+                    ? `Designing: ${watch(`variants.${editingVariantIndex}.name`)}`
                     : 'Experiment Variant'}
                 </DialogTitle>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                  Designing local experience variation
+                <p className="text-xs text-muted-foreground">
+                  Customize the look of this specific variant
                 </p>
               </div>
             </div>
             <Button
               type="button"
+              size="sm"
               onClick={() => setEditingVariantIndex(null)}
-              className="font-black rounded-2xl h-11 px-8 bg-slate-900 hover:bg-black text-white shadow-lg"
+              className="bg-slate-900 hover:bg-black"
             >
-              Finish & Apply
+              Apply Design
             </Button>
           </DialogHeader>
 
@@ -640,7 +669,7 @@ export default function LandingPageForm({ initialData }: LandingPageFormProps) {
                     `variants.${editingVariantIndex}.gjs_json`,
                     gjs.json,
                   );
-                  toast.success('Variant design synced!');
+                  toast.success('Variant design updated');
                 }}
               />
             )}

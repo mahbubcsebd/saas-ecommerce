@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export interface Order {
   id: string;
@@ -14,10 +14,12 @@ export interface Order {
     | 'CANCELLED'
     | 'COMPLETED'
     | 'REFUNDED';
-  paymentStatus: 'PENDING' | 'PAID' | 'FAILED';
+  paymentStatus: 'PENDING' | 'PAID' | 'FAILED' | 'PARTIAL';
   paymentMethod: string;
   total: number;
   subtotal: number;
+  dueAmount?: number;
+  tenderedAmount?: number;
   discountAmount?: number;
   shippingCost?: number;
   vatAmount?: number;
@@ -40,23 +42,33 @@ export interface Order {
 
 export interface OrderItem {
   id: string;
+  orderId: string;
   productId: string;
-  variantId?: string;
-  name: string;
+  variantId?: string | null;
+  // API returns productName, but keeping name as optional fallback
+  productName?: string;
+  name?: string;
   sku: string;
   quantity: number;
-  unitPrice: number;
-  salePrice: number;
-  total: number;
+  unitPrice?: number;   // API field
+  salePrice?: number;   // legacy/fallback
+  totalPrice?: number;  // API field
+  total?: number;       // legacy/fallback
+  returnedQuantity?: number;
+  isRefunded?: boolean;
+  warranty?: string | null;
   product?: {
+    id?: string;
     name: string;
     slug: string;
     images: string[];
+    brand?: string;
+    sellingPrice?: number;
   };
   variant?: {
     name: string;
     images: string[];
-  };
+  } | null;
 }
 
 export interface OrderParams {

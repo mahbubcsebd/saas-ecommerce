@@ -1,133 +1,128 @@
-"use client";
+'use client';
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, ArrowRight, PackageX } from "lucide-react";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { AlertTriangle, ArrowRight, PackageX, Loader2, Package } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export default function LowStockAlerts() {
-    const { data: session } = useSession();
-    const token = (session as any)?.accessToken || "";
+  const { data: session } = useSession();
+  const token = (session as any)?.accessToken || '';
 
-    const [loading, setLoading] = useState(true);
-    const [alerts, setAlerts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [alerts, setAlerts] = useState<any[]>([]);
 
-    useEffect(() => {
-        const fetchLowStock = async () => {
-            if (!token) return;
-            try {
-                setLoading(true);
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
-                const res = await fetch(`${apiUrl}/inventory/low-stock`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                const data = await res.json();
+  useEffect(() => {
+    const fetchLowStock = async () => {
+      if (!token) return;
+      try {
+        setLoading(true);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const res = await fetch(`${apiUrl}/inventory/low-stock`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
 
-                if (data.success) {
-                    setAlerts(data.data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch low stock alerts", error);
-                toast.error("Failed to load low stock alerts");
-            } finally {
-                setLoading(false);
-            }
-        };
+        if (data.success) {
+          setAlerts(data.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch low stock alerts', error);
+        toast.error('Failed to load low stock alerts');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        fetchLowStock();
-    }, [token]);
+    fetchLowStock();
+  }, [token]);
 
-    if (loading) {
-        return (
-            <Card className="border-red-100 shadow-sm animate-pulse h-[300px]">
-                <CardHeader className="bg-red-50/50 pb-4">
-                    <CardTitle className="text-red-800 flex items-center">
-                        <AlertTriangle className="mr-2 h-5 w-5 text-red-600" />
-                        Low Stock Alerts
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6 text-center text-muted-foreground">
-                    Checking inventory levels...
-                </CardContent>
-            </Card>
-        );
-    }
-
-    if (alerts.length === 0) {
-        return (
-            <Card className="border-green-100 shadow-sm">
-                <CardHeader className="bg-green-50/50 pb-4">
-                    <CardTitle className="text-green-800 flex items-center">
-                        <AlertTriangle className="mr-2 h-5 w-5 text-green-600" />
-                        Low Stock Alerts
-                    </CardTitle>
-                    <CardDescription>Items running below minimum threshold</CardDescription>
-                </CardHeader>
-                <CardContent className="p-12 text-center">
-                    <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                        <PackageX className="h-6 w-6 text-green-600" />
-                    </div>
-                    <h3 className="font-medium text-slate-900 mb-1">Inventory is Healthy</h3>
-                    <p className="text-sm text-slate-500">All products are currently above their minimum stock thresholds.</p>
-                </CardContent>
-            </Card>
-        );
-    }
-
+  if (loading) {
     return (
-        <Card className="border-red-200 shadow-sm overflow-hidden flex flex-col h-full">
-            <CardHeader className="bg-red-50 pb-4 border-b border-red-100">
-                <div className="flex justify-between items-start">
-                    <div>
-                        <CardTitle className="text-red-800 flex items-center">
-                            <AlertTriangle className="mr-2 h-5 w-5 text-red-600" />
-                            Low Stock Alerts
-                        </CardTitle>
-                        <CardDescription className="text-red-600/80 mt-1">
-                            {alerts.length} item{alerts.length !== 1 && 's'} need restock
-                        </CardDescription>
-                    </div>
-                    <Button variant="outline" size="sm" asChild className="bg-white border-red-200 hover:bg-red-50 text-red-700">
-                        <Link href="/dashboard/purchases/create">
-                            Reorder <ArrowRight className="ml-1 h-3 w-3" />
-                        </Link>
-                    </Button>
-                </div>
-            </CardHeader>
-            <CardContent className="p-0 overflow-auto max-h-[400px]">
-                <div className="divide-y divide-slate-100">
-                    {alerts.map((item, idx) => (
-                        <div key={`${item.id}-${item.variantId || 'base'}`} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                            <div className="flex-1 pr-4">
-                                <h4 className="font-medium text-slate-900 line-clamp-1" title={item.name}>
-                                    {item.name}
-                                </h4>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-xs text-slate-500 font-mono">SKU: {item.sku || 'N/A'}</span>
-                                    {item.category && (
-                                        <Badge variant="secondary" className="text-[10px] h-4 px-1">{item.category}</Badge>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="text-right">
-                                <div className="text-2xl font-bold flex items-center justify-end gap-1">
-                                    <span className={item.stock === 0 ? "text-red-600" : "text-orange-500"}>
-                                        {item.stock}
-                                    </span>
-                                    <span className="text-xs text-slate-400 font-normal">/ {item.minStockLevel || 5} min</span>
-                                </div>
-                                <span className={`text-[10px] uppercase font-bold tracking-wider ${item.stock === 0 ? "text-red-600" : "text-orange-500"}`}>
-                                    {item.stock === 0 ? "Out of Stock" : "Low Stock"}
-                                </span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </CardContent>
-        </Card>
+      <div className="flex flex-col items-center justify-center h-64 gap-3">
+        <Loader2 className="h-8 w-8 animate-spin text-slate-200" />
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Analyzing inventory levels...</p>
+      </div>
     );
+  }
+
+  if (alerts.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-8 text-center space-y-4">
+        <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-500">
+          <Package className="h-8 w-8" />
+        </div>
+        <div>
+           <h3 className="text-lg font-bold text-slate-900">Inventory is Healthy</h3>
+           <p className="text-sm text-slate-500 max-w-[240px] mx-auto mt-1">All products are currently above their minimum stock thresholds.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex-1 overflow-auto p-6 space-y-4">
+        {alerts.map((item) => (
+          <div
+            key={`${item.id}-${item.variantId || 'base'}`}
+            className="group relative bg-white p-4 rounded-2xl border border-slate-200/60 transition-all hover:shadow-sm hover:border-slate-300"
+          >
+            <div className="flex items-start justify-between gap-4">
+               <div className="flex-1 space-y-1">
+                  <div className="flex items-center gap-2">
+                     <h4 className="text-sm font-bold text-slate-900 line-clamp-1">{item.name}</h4>
+                     <Badge variant="outline" className={`h-5 text-[10px] font-bold uppercase tracking-widest border-none ${
+                        item.stock === 0 ? 'bg-rose-50 text-rose-600' : 'bg-amber-50 text-amber-600'
+                     }`}>
+                        {item.stock === 0 ? 'Empty' : 'Critical'}
+                     </Badge>
+                  </div>
+                  <div className="flex items-center gap-2">
+                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">SKU: {item.sku || 'N/A'}</span>
+                     {item.category && (
+                        <>
+                           <span className="text-slate-200">•</span>
+                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{item.category}</span>
+                        </>
+                     )}
+                  </div>
+               </div>
+               <div className="text-right">
+                  <div className="text-xl font-black text-slate-900">
+                     {item.stock}
+                  </div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+                     Min: {item.minStockLevel || 5}
+                  </div>
+               </div>
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between">
+               <div className="flex -space-x-2">
+                  <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-white" />
+                  <div className="w-6 h-6 rounded-full bg-slate-200 border-2 border-white" />
+               </div>
+               <Button variant="ghost" size="sm" className="h-8 rounded-xl text-[10px] font-bold uppercase tracking-widest text-blue-600 hover:text-blue-700 hover:bg-blue-50" asChild>
+                  <Link href={`/dashboard/products?search=${item.sku}`}>
+                     Manage Stock <ArrowRight className="ml-1.5 h-3 w-3" />
+                  </Link>
+               </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <div className="p-6 bg-slate-50 border-t border-slate-200/60">
+         <Button className="w-full rounded-2xl bg-slate-900 hover:bg-slate-800 text-white h-12 font-bold uppercase tracking-widest text-xs shadow-lg" asChild>
+            <Link href="/dashboard/purchases/create">
+               Create Purchase Order
+            </Link>
+         </Button>
+      </div>
+    </div>
+  );
 }

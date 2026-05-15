@@ -1,4 +1,4 @@
-﻿const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require('@prisma/client');
 const createError = require('http-errors');
 const prisma = require('../config/prisma');
 const contentTranslationService = require('../services/contentTranslation.service');
@@ -37,9 +37,30 @@ exports.getAdminSlides = async (req, res, next) => {
       orderBy: { order: 'asc' },
     });
 
+    // Populate names for products/categories
+    const populatedSlides = await Promise.all(
+      slides.map(async (slide) => {
+        let linkName = null;
+        if (slide.linkType === 'PRODUCT' && slide.linkValue) {
+          const product = await prisma.product.findUnique({
+            where: { id: slide.linkValue },
+            select: { name: true },
+          });
+          linkName = product?.name;
+        } else if (slide.linkType === 'CATEGORY' && slide.linkValue) {
+          const category = await prisma.category.findUnique({
+            where: { id: slide.linkValue },
+            select: { name: true },
+          });
+          linkName = category?.name;
+        }
+        return { ...slide, linkName };
+      })
+    );
+
     res.status(200).json({
       success: true,
-      data: slides,
+      data: populatedSlides,
     });
   } catch (error) {
     next(error);

@@ -64,7 +64,7 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
   return (
     <div
       className={cn(
-        'group relative overflow-hidden rounded-lg border bg-background shadow-sm transition-all hover:shadow-lg',
+        'group relative overflow-hidden rounded-lg border bg-background shadow-sm transition hover:shadow-lg focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-1',
         layout === 'list' ? 'flex flex-col sm:flex-row' : 'flex flex-col'
       )}
     >
@@ -115,26 +115,28 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
         </div>
 
         {/* Action Buttons (Hover) */}
-        <div className="absolute right-2 top-2 z-20 flex flex-col gap-2 translate-x-12 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+        <div className="absolute right-2 top-2 z-20 flex flex-col gap-2 translate-x-12 opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100">
           <button
             onClick={(e) => {
               e.preventDefault();
               toggleWishlist(product.id);
             }}
             className={cn(
-              'flex h-9 w-9 items-center justify-center rounded-full bg-background shadow-md transition-colors hover:bg-primary hover:text-primary-foreground',
+              'flex h-9 w-9 items-center justify-center rounded-full bg-background shadow-md transition-colors hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
               isWishlisted ? 'text-red-500 fill-current' : 'text-muted-foreground'
             )}
+            aria-label={t('common', 'addToWishlist', { defaultValue: 'Add to Wishlist' })}
             title={t('common', 'addToWishlist', { defaultValue: 'Add to Wishlist' })}
           >
-            <Heart className={cn('h-5 w-5', isWishlisted && 'fill-current')} />
+            <Heart className={cn('h-5 w-5', isWishlisted && 'fill-current')} aria-hidden="true" />
           </button>
           <QuickViewModal product={product}>
             <button
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-background shadow-md transition-colors hover:bg-primary hover:text-primary-foreground text-muted-foreground"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-background shadow-md transition-colors hover:bg-primary hover:text-primary-foreground text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              aria-label={t('common', 'quickView', { defaultValue: 'Quick View' })}
               title={t('common', 'quickView', { defaultValue: 'Quick View' })}
             >
-              <Eye className="h-5 w-5" />
+              <Eye className="h-5 w-5" aria-hidden="true" />
             </button>
           </QuickViewModal>
         </div>
@@ -159,7 +161,7 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
               </div>
             )}
           </div>
-          <Link href={`/${product.slug}`} className="block group/title">
+          <Link href={`/${product.slug}`} className="block group/title focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 rounded-sm">
             <h3
               className={cn(
                 'text-base font-semibold transition-colors group-hover/title:text-primary leading-tight mb-1',
@@ -201,15 +203,15 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
             onClick={handleAddToCart}
             disabled={product.stock <= 0 || isAddingToCart}
             className={cn(
-              'shadow-sm transition-all active:scale-95',
+              'shadow-sm transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1',
               layout === 'list' ? 'w-auto px-8 h-10' : 'w-full h-9 text-xs'
             )}
           >
             {isAddingToCart ? (
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" aria-hidden="true" />
             ) : (
               <span className="flex items-center gap-2">
-                <ShoppingCart className="h-3.5 w-3.5" />
+                <ShoppingCart className="h-3.5 w-3.5" aria-hidden="true" />
                 {t('common', 'addToCart', { defaultValue: 'Add to Cart' })}
               </span>
             )}

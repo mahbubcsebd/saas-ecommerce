@@ -20,8 +20,8 @@ export interface CurrencySettings {
  */
 export function formatPrice(amount: number | string, settings?: CurrencySettings): string {
   const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-
-  if (isNaN(numAmount)) return '0';
+  
+  if (amount === null || amount === undefined || isNaN(numAmount as number)) return '0';
 
   // Default settings (fallback)
   const {
@@ -50,7 +50,7 @@ export function formatPrice(amount: number | string, settings?: CurrencySettings
 export function formatNumber(amount: number | string, settings?: CurrencySettings): string {
   const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
 
-  if (isNaN(numAmount)) return '0';
+  if (amount === null || amount === undefined || isNaN(numAmount as number)) return '0';
 
   const { decimalPlaces = 2, decimalSeparator = '.', thousandSeparator = ',' } = settings || {};
 

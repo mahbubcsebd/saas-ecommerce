@@ -230,6 +230,20 @@ exports.createOrder = asyncHandler(async (req, res) => {
     throw ApiError.badRequest('Shipping address is required for Online orders');
   }
 
+  let finalPaymentStatus = source === 'POS' ? 'PAID' : 'PENDING';
+  let finalDueAmount = source === 'POS' ? 0 : finalTotal;
+  let finalTenderedAmount = source === 'POS' ? parseFloat(tenderedAmount) || 0 : 0;
+  
+  if (source === 'POS') {
+    if (finalTenderedAmount === 0) {
+      finalPaymentStatus = 'UNPAID';
+      finalDueAmount = finalTotal;
+    } else if (finalTenderedAmount < finalTotal) {
+      finalPaymentStatus = 'PARTIAL';
+      finalDueAmount = finalTotal - finalTenderedAmount;
+    }
+  }
+
   const orderData = {
     orderNumber,
     invoiceNumber, // Added invoice number
@@ -262,11 +276,12 @@ exports.createOrder = asyncHandler(async (req, res) => {
         : totalDiscountAmount,
     codExtraCharge: parseFloat(codExtraCharge) || 0,
     total: finalTotal,
+    dueAmount: finalDueAmount,
 
     // Payment
     paymentMethod: paymentMethod || 'CASH',
-    paymentStatus: source === 'POS' ? 'PAID' : 'PENDING',
-    tenderedAmount: source === 'POS' ? parseFloat(tenderedAmount) : undefined,
+    paymentStatus: finalPaymentStatus,
+    tenderedAmount: source === 'POS' ? finalTenderedAmount : undefined,
     changeAmount: source === 'POS' ? parseFloat(changeAmount) : undefined,
 
     // Status

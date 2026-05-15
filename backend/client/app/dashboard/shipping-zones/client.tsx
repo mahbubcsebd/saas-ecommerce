@@ -110,7 +110,7 @@ export default function ShippingZonesClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${BACKEND_URL}/shipping/zones`, {
         headers: { Authorization: `Bearer ${session.accessToken}` },
       });
@@ -148,7 +148,7 @@ export default function ShippingZonesClient() {
 
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const method = editingZone ? 'PUT' : 'POST';
       const url = editingZone
         ? `${BACKEND_URL}/shipping/zones/${editingZone.id}`
@@ -192,7 +192,7 @@ export default function ShippingZonesClient() {
 
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${BACKEND_URL}/shipping/zones/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${session.accessToken}` },
@@ -223,7 +223,7 @@ export default function ShippingZonesClient() {
 
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const method = editingRate ? 'PUT' : 'POST';
       const url = editingRate
         ? `${BACKEND_URL}/shipping/rates/${editingRate.id}`
@@ -265,7 +265,7 @@ export default function ShippingZonesClient() {
 
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       await fetch(`${BACKEND_URL}/shipping/rates/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${session.accessToken}` },
@@ -347,25 +347,21 @@ export default function ShippingZonesClient() {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-10">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-primary/5 p-6 rounded-2xl border border-primary/10">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-primary font-semibold text-sm tracking-wide uppercase">
-            <Truck className="w-4 h-4" />
-            Logistics Engine
-          </div>
-          <h1 className="text-4xl font-extrabold tracking-tight">
+    <div className="space-y-6 animate-in fade-in duration-500 pb-10">
+      {/* Page Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <Truck className="h-6 w-6 text-primary" />
             Shipping Zones
           </h1>
-          <p className="text-muted-foreground font-medium">
-            Define regions, couriers, and pricing strategies for your global
-            shop.
+          <p className="text-muted-foreground mt-1 text-sm">
+            Configure delivery regions and shipping rates for your store.
           </p>
         </div>
         <Button
           onClick={() => openZoneModal()}
-          className="rounded-xl shadow-lg shadow-primary/20 gap-2"
+          className="rounded-lg shadow-sm gap-2"
         >
           <Plus className="w-4 h-4" /> Add Shipping Zone
         </Button>
@@ -374,12 +370,17 @@ export default function ShippingZonesClient() {
       {/* Zones Grid */}
       <div className="grid gap-6">
         {zones.length === 0 ? (
-          <Card className="border-dashed border-2 bg-slate-50/50">
-            <CardContent className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
-              <MapPin className="w-12 h-12 mb-4 opacity-20" />
-              <p className="font-medium">No shipping zones defined yet.</p>
-              <Button variant="link" onClick={() => openZoneModal()}>
-                Create your first zone
+          <Card className="border-dashed bg-slate-50/30">
+            <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="h-16 w-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+                <MapPin className="w-8 h-8 text-slate-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900">No shipping zones found</h3>
+              <p className="text-sm text-muted-foreground max-w-[280px] mt-1 mb-6">
+                Define geographic areas where you want to offer shipping services.
+              </p>
+              <Button onClick={() => openZoneModal()} variant="outline">
+                Create first zone
               </Button>
             </CardContent>
           </Card>
@@ -387,162 +388,160 @@ export default function ShippingZonesClient() {
           zones.map((zone) => (
             <Card
               key={zone.id}
-              className={`overflow-hidden transition-all hover:shadow-md ${!zone.isActive ? 'opacity-70 grayscale-[0.5]' : ''}`}
+              className={`overflow-hidden border-slate-200 transition-all hover:shadow-md ${!zone.isActive ? 'opacity-70' : ''}`}
             >
-              <div className="flex flex-col md:flex-row">
-                <div className="p-6 md:w-1/3 bg-slate-50/50 border-r border-slate-100 flex flex-col justify-between">
-                  <div className="space-y-4">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="text-xl font-bold flex items-center gap-2">
-                          {zone.name}
-                          {!zone.isActive && (
-                            <Badge variant="secondary" className="font-normal">
-                              Inactive
-                            </Badge>
-                          )}
-                        </h3>
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {zone.countries.map((c) => (
-                            <Badge
-                              key={c}
-                              variant="outline"
-                              className="bg-white"
-                            >
-                              {c}
-                            </Badge>
-                          ))}
+              <div className="flex flex-col lg:flex-row">
+                {/* Zone Info Left Panel */}
+                <div className="p-6 lg:w-[320px] bg-slate-50/50 border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col">
+                  <div className="flex-1 space-y-5">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-lg font-bold text-slate-900">
+                            {zone.name}
+                          </h3>
+                          <Badge 
+                            variant={zone.isActive ? "default" : "secondary"} 
+                            className={`text-[10px] uppercase font-bold tracking-wider px-1.5 py-0 ${zone.isActive ? 'bg-emerald-500 hover:bg-emerald-600' : ''}`}
+                          >
+                            {zone.isActive ? 'Active' : 'Inactive'}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <Clock className="w-3.5 h-3.5" />
+                          Priority: {zone.priority}
                         </div>
                       </div>
+
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                          >
+                          <Button variant="ghost" size="icon" className="h-8 w-8 -mr-2">
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent align="end" className="w-48">
                           <DropdownMenuItem onClick={() => openZoneModal(zone)}>
-                            <Edit2 className="w-4 h-4 mr-2" /> Edit Zone
+                            <Edit2 className="w-4 h-4 mr-2" /> Edit Details
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => openRateModal(zone)}
-                            className="text-primary"
-                          >
-                            <Plus className="w-4 h-4 mr-2" /> Add Rate
+                          <DropdownMenuItem onClick={() => openRateModal(zone)} className="text-primary font-medium">
+                            <Plus className="w-4 h-4 mr-2" /> Add Shipping Rate
                           </DropdownMenuItem>
-                          <DropdownMenuItem
+                          <DropdownMenuItem 
                             onClick={() => handleDeleteZone(zone.id)}
                             className="text-destructive"
                           >
-                            <Trash2 className="w-4 h-4 mr-2" /> Delete
+                            <Trash2 className="w-4 h-4 mr-2" /> Delete Zone
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
 
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <MapPin className="w-3.5 h-3.5" />
-                        <span className="truncate">
-                          {zone.regions.length > 0
-                            ? zone.regions.join(', ')
-                            : 'All Regions'}
-                        </span>
+                    <div className="space-y-4">
+                      <div>
+                        <Label className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-2 block">Countries</Label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {zone.countries.map((c) => (
+                            <Badge key={c} variant="outline" className="bg-white text-xs font-medium text-slate-600 border-slate-200">
+                              {c}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Layers className="w-3.5 h-3.5" />
-                        <span>Priority: {zone.priority}</span>
+                      
+                      <div>
+                        <Label className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-2 block">Regions</Label>
+                        <p className="text-sm text-slate-600 leading-relaxed">
+                          {zone.regions.length > 0 ? zone.regions.join(', ') : 'All Regions'}
+                        </p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-6 pt-6 border-t border-slate-200">
-                    <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">
-                      Quick Actions
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => openRateModal(zone)}
-                        className="w-full text-xs"
-                      >
-                        Manage Rates
-                      </Button>
-                    </div>
+                  <div className="mt-6 pt-5 border-t border-slate-200">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => openRateModal(zone)}
+                      className="w-full text-xs font-semibold bg-white"
+                    >
+                      New Shipping Method
+                    </Button>
                   </div>
                 </div>
 
-                <div className="p-6 flex-1">
-                  <h4 className="text-sm font-bold opacity-60 uppercase tracking-tighter mb-4 flex items-center gap-2">
-                    <Truck className="w-4 h-4" /> Shipping Methods
-                  </h4>
+                {/* Shipping Rates Right Panel */}
+                <div className="p-6 flex-1 bg-white">
+                  <div className="flex items-center justify-between mb-5">
+                    <h4 className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                      <Truck className="w-4 h-4" /> Shipping Methods
+                    </h4>
+                    <span className="text-xs font-medium text-slate-400">
+                      {zone.rates.length} method{zone.rates.length !== 1 ? 's' : ''}
+                    </span>
+                  </div>
 
                   <div className="space-y-3">
                     {zone.rates.length === 0 ? (
-                      <div className="py-8 text-center text-sm text-muted-foreground italic border-2 border-dashed rounded-xl">
-                        No rates configured for this zone.
+                      <div className="py-12 text-center border-2 border-dashed border-slate-100 rounded-2xl bg-slate-50/30">
+                        <p className="text-sm text-muted-foreground italic">
+                          No rates configured for this zone.
+                        </p>
                       </div>
                     ) : (
                       zone.rates.map((rate) => (
                         <div
                           key={rate.id}
-                          className="group p-4 border rounded-xl hover:border-primary/30 transition-colors bg-white shadow-sm flex items-center justify-between"
+                          className="group p-4 border border-slate-100 rounded-xl hover:border-primary/20 hover:bg-slate-50/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                         >
                           <div className="flex items-center gap-4">
-                            <div className="p-2.5 bg-primary/5 rounded-lg group-hover:bg-primary/10 transition-colors">
-                              <Truck className="w-5 h-5 text-primary" />
+                            <div className="h-10 w-10 rounded-lg bg-primary/5 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/10 transition-colors">
+                              <Truck className="h-5 w-5 text-primary" />
                             </div>
                             <div>
-                              <div className="font-bold flex items-center gap-2">
+                              <div className="font-bold text-slate-900 flex items-center gap-2">
                                 {rate.method}
                                 {!rate.isActive && (
-                                  <span className="text-[10px] font-normal px-1.5 py-0.5 bg-slate-100 rounded">
-                                    Hidden
-                                  </span>
+                                  <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-tighter px-1 py-0 border-slate-200 text-slate-400">
+                                    Disabled
+                                  </Badge>
                                 )}
                               </div>
-                              <div className="text-xs text-muted-foreground flex items-center gap-2">
-                                <span>
+                              <div className="text-xs text-muted-foreground flex items-center flex-wrap gap-x-3 gap-y-1 mt-0.5">
+                                <span className="font-medium text-slate-500">
                                   {rate.carrier || 'Standard Courier'}
                                 </span>
-                                <span className="text-slate-200">•</span>
-                                <span className="flex items-center gap-1">
-                                  <Clock className="w-3 h-3" />{' '}
+                                <span className="flex items-center gap-1.5">
+                                  <Clock className="w-3 h-3" />
                                   {rate.estimatedDays || 'N/A'} days
                                 </span>
                               </div>
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-6">
+                          <div className="flex items-center justify-between sm:justify-end gap-6 border-t sm:border-0 pt-3 sm:pt-0">
                             <div className="text-right">
-                              <div className="text-lg font-black text-primary">
-                                {rate.calculationType === 'FLAT' &&
-                                  `${rate.flatRate}৳`}
-                                {rate.calculationType === 'WEIGHT_BASED' &&
-                                  `${rate.baseRate}৳ + ${rate.perKgRate}৳/kg`}
-                                {rate.calculationType === 'ORDER_VALUE' &&
-                                  (rate.freeShippingThreshold
-                                    ? `Free over ${rate.freeShippingThreshold}৳`
-                                    : `${rate.flatRate}৳`)}
+                              <div className="text-base font-bold text-slate-900 leading-tight">
+                                {rate.calculationType === 'FLAT' && `${rate.flatRate?.toLocaleString()} ৳`}
+                                {rate.calculationType === 'WEIGHT_BASED' && `${rate.baseRate?.toLocaleString()} ৳ + ${rate.perKgRate} ৳/kg`}
+                                {rate.calculationType === 'ORDER_VALUE' && (
+                                  rate.freeShippingThreshold 
+                                    ? <span className="flex flex-col items-end">
+                                        <span>{rate.flatRate?.toLocaleString()} ৳</span>
+                                        <span className="text-[10px] text-emerald-600 font-medium leading-none mt-1 uppercase tracking-tight">Free over {rate.freeShippingThreshold.toLocaleString()} ৳</span>
+                                      </span>
+                                    : `${rate.flatRate?.toLocaleString()} ৳`
+                                )}
                               </div>
-                              <Badge
-                                variant="secondary"
-                                className="text-[10px] font-bold uppercase py-0 leading-tight"
-                              >
+                              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
                                 {rate.calculationType.replace('_', ' ')}
-                              </Badge>
+                              </div>
                             </div>
-                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            
+                            <div className="flex gap-1.5">
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8"
+                                className="h-8 w-8 text-slate-400 hover:text-slate-900"
                                 onClick={() => openRateModal(zone, rate)}
                               >
                                 <Edit2 className="h-3.5 w-3.5" />
@@ -550,7 +549,7 @@ export default function ShippingZonesClient() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 text-destructive hover:bg-destructive/5"
+                                className="h-8 w-8 text-slate-300 hover:text-destructive hover:bg-destructive/5"
                                 onClick={() => handleDeleteRate(rate.id)}
                               >
                                 <Trash2 className="h-3.5 w-3.5" />

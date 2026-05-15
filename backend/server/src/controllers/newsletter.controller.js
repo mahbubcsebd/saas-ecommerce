@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../config/prisma');
 const { createdResponse } = require('../utils/response');
 const ApiError = require('../utils/ApiError');
 const asyncHandler = require('../middlewares/asyncHandler');

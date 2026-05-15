@@ -1,51 +1,94 @@
-"use client";
+'use client';
 
-import { useConfirm } from "@/hooks/use-confirm";
-import { format } from "date-fns";
+import { useConfirm } from '@/hooks/use-confirm';
+import { format } from 'date-fns';
 import {
-    ArrowLeft,
-    CheckCircle2,
-    Circle,
-    CreditCard,
-    Download,
-    FileText,
-    Loader2,
-    MapPin,
-    Package,
-    Printer,
-    Receipt,
-    User
-} from "lucide-react";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+  ArrowLeft,
+  CheckCircle2,
+  CreditCard,
+  Download,
+  FileText,
+  Loader2,
+  MapPin,
+  Package,
+  Printer,
+  Receipt,
+  User,
+  XCircle,
+} from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import { Order, OrderService } from "@/services/order.service";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Order, OrderService } from '@/services/order.service';
+
+const STATUS_CONFIG: Record<
+  string,
+  { color: string; bg: string; text: string; border: string }
+> = {
+  PENDING: {
+    color: 'text-yellow-700',
+    bg: 'bg-yellow-100',
+    text: 'Pending',
+    border: 'border-yellow-300',
+  },
+  PROCESSING: {
+    color: 'text-blue-700',
+    bg: 'bg-blue-100',
+    text: 'Processing',
+    border: 'border-blue-300',
+  },
+  SHIPPED: {
+    color: 'text-purple-700',
+    bg: 'bg-purple-100',
+    text: 'Shipped',
+    border: 'border-purple-300',
+  },
+  DELIVERED: {
+    color: 'text-green-700',
+    bg: 'bg-green-100',
+    text: 'Delivered',
+    border: 'border-green-300',
+  },
+  COMPLETED: {
+    color: 'text-green-800',
+    bg: 'bg-green-200',
+    text: 'Completed',
+    border: 'border-green-400',
+  },
+  CANCELLED: {
+    color: 'text-red-700',
+    bg: 'bg-red-100',
+    text: 'Cancelled',
+    border: 'border-red-300',
+  },
+  REFUNDED: {
+    color: 'text-gray-700',
+    bg: 'bg-gray-100',
+    text: 'Refunded',
+    border: 'border-gray-300',
+  },
+};
 
 export default function OrderDetailsPage() {
   const { confirm } = useConfirm();
@@ -62,16 +105,18 @@ export default function OrderDetailsPage() {
     try {
       setLoading(true);
       if (typeof id === 'string') {
-          const res = await OrderService.getOrder(accessToken, id);
-          if (res.success) {
-            setOrder(res.data);
-          } else {
-             toast.error("Failed to load order");
-          }
+        const res = await OrderService.getOrder(accessToken, id);
+        console.log('[OrderDetail] API response:', res);
+        console.log('[OrderDetail] items:', res.data?.items);
+        if (res.success) {
+          setOrder(res.data);
+        } else {
+          toast.error('Failed to load order');
+        }
       }
     } catch (error) {
-      console.error("Failed to fetch order", error);
-      toast.error("Error loading order details");
+      console.error('Failed to fetch order', error);
+      toast.error('Error loading order details');
     } finally {
       setLoading(false);
     }
@@ -84,344 +129,576 @@ export default function OrderDetailsPage() {
   }, [accessToken, id]);
 
   const handleStatusUpdate = async (status: string) => {
-      try {
-          setUpdating(true);
-          const res = await OrderService.updateStatus(accessToken, order!.id, status);
-          if (res.success) {
-              toast.success(`Order status updated to ${status}`);
-              setOrder(res.data);
-          } else {
-              toast.error("Failed to update status");
-          }
-      } catch (error) {
-          console.error("Update status error", error);
-          toast.error("Error updating status");
-      } finally {
-          setUpdating(false);
+    try {
+      setUpdating(true);
+      const res = await OrderService.updateStatus(
+        accessToken,
+        order!.id,
+        status,
+      );
+      if (res.success) {
+        toast.success(`Order status updated to ${status}`);
+        setOrder(res.data);
+        window.dispatchEvent(new CustomEvent('refresh-sidebar-counts'));
+      } else {
+        toast.error('Failed to update status');
       }
+    } catch (error) {
+      console.error('Update status error', error);
+      toast.error('Error updating status');
+    } finally {
+      setUpdating(false);
+    }
   };
 
   const handleDownloadInvoice = async () => {
-      try {
-          setDownloading(true);
-          const blob = await OrderService.downloadInvoice(accessToken, order!.id);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.style.display = 'none';
-          a.href = url;
-          a.download = `Invoice-${order!.invoiceNumber || order!.orderNumber}.pdf`;
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-          toast.success("Invoice downloaded");
-      } catch (error) {
-          console.error("Download error", error);
-          toast.error("Failed to download invoice");
-      } finally {
-          setDownloading(false);
-      }
+    try {
+      setDownloading(true);
+      const blob = await OrderService.downloadInvoice(accessToken, order!.id);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `Invoice-${order!.invoiceNumber || order!.orderNumber}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      toast.success('Invoice downloaded');
+    } catch (error) {
+      console.error('Download error', error);
+      toast.error('Failed to download invoice');
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const handlePrint = () => {
-      window.print();
+    window.print();
   };
 
   if (loading) {
-      return <div className="flex w-full h-screen justify-center items-center"><Loader2 className="w-8 h-8 animate-spin" /></div>
+    return (
+      <div className="flex w-full h-screen justify-center items-center">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
   }
 
   if (!order) {
-      return <div className="p-8 text-center text-muted-foreground">Order not found</div>
+    return (
+      <div className="p-8 text-center text-muted-foreground">
+        Order not found
+      </div>
+    );
   }
 
   // Status Steps
   const steps = [
-      { status: 'PENDING', label: 'Order Placed' },
-      { status: 'PROCESSING', label: 'Processing' },
-      { status: 'SHIPPED', label: 'Shipped' },
-      { status: 'DELIVERED', label: 'Delivered' },
+    { status: 'PENDING', label: 'Placed', icon: '📦' },
+    { status: 'PROCESSING', label: 'Processing', icon: '⚙️' },
+    { status: 'SHIPPED', label: 'Shipped', icon: '🚚' },
+    { status: 'DELIVERED', label: 'Delivered', icon: '✅' },
   ];
 
-  const currentStepIndex = steps.findIndex(s => s.status === order.status) !== -1
-        ? steps.findIndex(s => s.status === order.status)
-        : (order.status === 'COMPLETED' ? 4 : (order.status === 'CANCELLED' ? -1 : 0));
+  const isCancelledOrRefunded =
+    order.status === 'CANCELLED' || order.status === 'REFUNDED';
+
+  const currentStepIndex =
+    steps.findIndex((s) => s.status === order.status) !== -1
+      ? steps.findIndex((s) => s.status === order.status)
+      : order.status === 'COMPLETED'
+        ? steps.length - 1
+        : 0;
+
+  const progressPercent = isCancelledOrRefunded
+    ? 0
+    : order.status === 'COMPLETED'
+      ? 100
+      : (currentStepIndex / (steps.length - 1)) * 100;
+
+  const statusCfg = STATUS_CONFIG[order.status] || STATUS_CONFIG['PENDING'];
 
   return (
-    <div className="space-y-8 print:p-0 print:space-y-0">
-
+    <div className="space-y-6 print:p-0 print:space-y-0">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
-        <div className="flex items-center gap-4">
+      <div className="print:hidden">
+        {/* Top Row: Back + Title */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <div className="flex items-center gap-3">
             <Button variant="outline" size="icon" asChild>
-                <Link href="/dashboard/orders">
-                    <ArrowLeft className="h-4 w-4" />
-                </Link>
+              <Link href="/dashboard/orders">
+                <ArrowLeft className="h-4 w-4" />
+              </Link>
             </Button>
             <div>
-                <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-                    Order {order.orderNumber}
-                    <Badge variant={order.status === 'CANCELLED' ? 'destructive' : 'secondary'}>
-                        {order.status}
-                    </Badge>
-                </h1>
-                <p className="text-muted-foreground text-sm">
-                    {format(new Date(order.createdAt), "MMMM do, yyyy 'at' h:mm a")}
-                </p>
+              <h1 className="text-2xl font-bold tracking-tight">
+                Order {order.orderNumber}
+              </h1>
+              <p className="text-muted-foreground text-sm">
+                {format(new Date(order.createdAt), "MMMM do, yyyy 'at' h:mm a")}
+              </p>
             </div>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-            <Button variant="outline" onClick={handlePrint}>
-                <Printer className="mr-2 h-4 w-4" />
-                Print Invoice
-            </Button>
-            <Button variant="outline" onClick={handlePrint}>
-                <Receipt className="mr-2 h-4 w-4" />
-                POS Print
-            </Button>
-            <Button variant="default" onClick={handleDownloadInvoice} disabled={downloading}>
-                {downloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-                Download PDF
-            </Button>
-             <Select
-                disabled={updating}
-                value={order.status}
-                onValueChange={handleStatusUpdate}
+            <span
+              className={`ml-2 text-xs font-semibold px-2.5 py-1 rounded-full border ${statusCfg.color} ${statusCfg.bg} ${statusCfg.border}`}
             >
-                <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="PENDING">Pending</SelectItem>
-                    <SelectItem value="PROCESSING">Processing</SelectItem>
-                    <SelectItem value="SHIPPED">Shipped</SelectItem>
-                    <SelectItem value="DELIVERED">Delivered</SelectItem>
-                    <SelectItem value="COMPLETED">Completed</SelectItem>
-                    <SelectItem value="CANCELLED">Cancelled</SelectItem>
-                    <SelectItem value="REFUNDED">Refunded</SelectItem>
-                </SelectContent>
+              {statusCfg.text}
+            </span>
+          </div>
+        </div>
+
+        {/* Action Bar */}
+        <div className="flex flex-wrap items-center gap-2 p-3 bg-slate-50 border rounded-lg">
+          {/* Document Actions */}
+          <div className="flex items-center gap-2 border-r pr-3 mr-1">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePrint}
+              className="gap-1.5"
+            >
+              <Printer className="h-4 w-4" />
+              <span className="hidden sm:inline">Print</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePrint}
+              className="gap-1.5"
+            >
+              <Receipt className="h-4 w-4" />
+              <span className="hidden sm:inline">POS</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownloadInvoice}
+              disabled={downloading}
+              className="gap-1.5"
+            >
+              {downloading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="h-4 w-4" />
+              )}
+              <span className="hidden sm:inline">PDF</span>
+            </Button>
+          </div>
+
+          {/* Status Update */}
+          <div className="flex items-center gap-2">
+            <Select
+              disabled={updating}
+              value={order.status}
+              onValueChange={handleStatusUpdate}
+            >
+              <SelectTrigger className="w-[160px] h-9 text-sm bg-white">
+                {updating ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />{' '}
+                    Updating...
+                  </>
+                ) : (
+                  <SelectValue placeholder="Update Status" />
+                )}
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="PENDING">⏳ Pending</SelectItem>
+                <SelectItem value="PROCESSING">⚙️ Processing</SelectItem>
+                <SelectItem value="SHIPPED">🚚 Shipped</SelectItem>
+                <SelectItem value="DELIVERED">📬 Delivered</SelectItem>
+                <SelectItem value="COMPLETED">✅ Completed</SelectItem>
+                <SelectItem value="CANCELLED">❌ Cancelled</SelectItem>
+                <SelectItem value="REFUNDED">💸 Refunded</SelectItem>
+              </SelectContent>
             </Select>
+
             {order.status !== 'CANCELLED' && order.status !== 'REFUNDED' && (
-                <Button
-                    variant="destructive"
-                    onClick={async () => {
-                        if (await confirm({
-                            title: "Cancel Order",
-                            message: "Are you sure you want to cancel this order? Stock will be restored to inventory and this action may be difficult to reverse.",
-                            type: "danger",
-                            confirmText: "Cancel Order"
-                        })) {
-                            handleStatusUpdate('CANCELLED');
-                        }
-                    }}
-                    disabled={updating}
-                >
-                    Cancel Order
-                </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                className="gap-1.5"
+                onClick={async () => {
+                  if (
+                    await confirm({
+                      title: 'Cancel Order',
+                      message:
+                        'Are you sure you want to cancel this order? Stock will be restored to inventory.',
+                      type: 'danger',
+                      confirmText: 'Cancel Order',
+                    })
+                  ) {
+                    handleStatusUpdate('CANCELLED');
+                  }
+                }}
+                disabled={updating}
+              >
+                <XCircle className="h-4 w-4" />
+                Cancel Order
+              </Button>
             )}
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 print:block">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 print:block">
+        {/* Main Content */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Order Status Progress Bar */}
+          {!isCancelledOrRefunded ? (
+            <Card className="print:hidden overflow-hidden">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base font-medium flex items-center gap-2">
+                  <Package className="h-4 w-4 text-muted-foreground" />
+                  Order Progress
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Progress Bar Track */}
+                <div className="relative h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div
+                    className="absolute left-0 top-0 h-full bg-primary rounded-full transition-all duration-700 ease-in-out"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                  {/* Animated shimmer on the active portion */}
+                  {progressPercent > 0 && progressPercent < 100 && (
+                    <div
+                      className="absolute top-0 h-full w-16 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-[shimmer_1.5s_infinite] rounded-full"
+                      style={{ left: `calc(${progressPercent}% - 4rem)` }}
+                    />
+                  )}
+                </div>
 
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+                {/* Step Indicators */}
+                <div className="relative flex items-start justify-between">
+                  {steps.map((step, index) => {
+                    const isCompleted =
+                      index < currentStepIndex || order.status === 'COMPLETED';
+                    const isCurrent =
+                      index === currentStepIndex &&
+                      order.status !== 'COMPLETED';
 
-              {/* Order Status Timeline (Hidden in Print) */}
-              {order.status !== 'CANCELLED' && (
-                  <Card className="print:hidden">
-                      <CardHeader className="pb-4">
-                          <CardTitle className="text-base font-medium">Order Status</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                          <div className="relative flex items-center justify-between w-full">
-                                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-100 -z-10" />
-                                {steps.map((step, index) => {
-                                    const isCompleted = index <= currentStepIndex || order.status === 'COMPLETED';
-                                    const isCurrent = index === currentStepIndex;
-
-                                    return (
-                                        <div key={step.status} className="flex flex-col items-center bg-background px-2">
-                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${isCompleted ? 'bg-primary border-primary text-white' : 'bg-background border-gray-300 text-gray-300'}`}>
-                                                {isCompleted ? <CheckCircle2 className="h-4 w-4" /> : <Circle className="h-4 w-4" />}
-                                            </div>
-                                            <span className={`text-xs mt-2 font-medium ${isCurrent ? 'text-primary' : 'text-muted-foreground'}`}>
-                                                {step.label}
-                                            </span>
-                                        </div>
-                                    )
-                                })}
+                    return (
+                      <div
+                        key={step.status}
+                        className="flex flex-col items-center gap-1.5 flex-1"
+                      >
+                        {/* Step Circle */}
+                        <div className="relative">
+                          <div
+                            className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                              isCompleted
+                                ? 'bg-primary border-primary text-white shadow-sm'
+                                : isCurrent
+                                  ? 'bg-primary/10 border-primary text-primary'
+                                  : 'bg-white border-slate-200 text-slate-300'
+                            }`}
+                          >
+                            {isCompleted ? (
+                              <CheckCircle2 className="h-4 w-4" />
+                            ) : (
+                              <span className="text-sm">{step.icon}</span>
+                            )}
                           </div>
-                      </CardContent>
-                  </Card>
-              )}
-
-              {/* Order Items */}
-              <Card className="print:shadow-none print:border-none">
-                  <CardHeader className="print:px-0">
-                      <CardTitle className="flex items-center gap-2">
-                          <Package className="h-5 w-5 text-muted-foreground" />
-                          Order Items
-                      </CardTitle>
-                  </CardHeader>
-                  <CardContent className="print:px-0">
-                      <Table>
-                          <TableHeader>
-                              <TableRow>
-                                  <TableHead className="w-[80px] print:hidden">Image</TableHead>
-                                  <TableHead>Product</TableHead>
-                                  <TableHead className="text-right">Price</TableHead>
-                                  <TableHead className="text-right">Quantity</TableHead>
-                                  <TableHead className="text-right">Total</TableHead>
-                              </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                              {order.items?.map((item) => (
-                                  <TableRow key={item.id}>
-                                      <TableCell className="print:hidden">
-                                        <div className="relative h-12 w-12 rounded overflow-hidden border">
-                                            <img
-                                                src={item.variant?.images?.[0] || item.product?.images?.[0] || "/placeholder.png"}
-                                                alt={item.name}
-                                                className="object-cover w-full h-full"
-                                            />
-                                        </div>
-                                      </TableCell>
-                                      <TableCell>
-                                          <div className="font-medium">
-                                              {item.name}
-                                          </div>
-                                          <div className="text-xs text-muted-foreground">{item.sku}</div>
-                                      </TableCell>
-                                      <TableCell className="text-right">{item.salePrice?.toLocaleString()} BDT</TableCell>
-                                      <TableCell className="text-right">{item.quantity}</TableCell>
-                                      <TableCell className="text-right font-medium">{item.total?.toLocaleString()} BDT</TableCell>
-                                  </TableRow>
-                              ))}
-
-                              <TableRow>
-                                  <TableCell colSpan={3} className="text-right font-medium print:hidden">Subtotal</TableCell>
-                                  <TableCell className="text-right font-medium hidden print:table-cell" colSpan={3}>Subtotal</TableCell>
-                                  <TableCell className="text-right">{order.subtotal?.toLocaleString()} BDT</TableCell>
-                              </TableRow>
-                              {(order.discountAmount || 0) > 0 && (
-                                <TableRow>
-                                    <TableCell colSpan={3} className="text-right font-medium text-green-600 print:hidden">Discount</TableCell>
-                                    <TableCell className="text-right font-medium text-green-600 hidden print:table-cell" colSpan={3}>Discount</TableCell>
-                                    <TableCell className="text-right text-green-600">-{order.discountAmount?.toLocaleString()} BDT</TableCell>
-                                </TableRow>
-                              )}
-                              {(order.vatAmount || 0) > 0 && (
-                                <TableRow>
-                                    <TableCell colSpan={3} className="text-right font-medium print:hidden">VAT</TableCell>
-                                    <TableCell className="text-right font-medium hidden print:table-cell" colSpan={3}>VAT</TableCell>
-                                    <TableCell className="text-right">{order.vatAmount?.toLocaleString()} BDT</TableCell>
-                                </TableRow>
-                              )}
-                              <TableRow>
-                                  <TableCell colSpan={3} className="text-right font-medium print:hidden">Shipping</TableCell>
-                                  <TableCell className="text-right font-medium hidden print:table-cell" colSpan={3}>Shipping</TableCell>
-                                  <TableCell className="text-right">{order.shippingCost?.toLocaleString()} BDT</TableCell>
-                              </TableRow>
-                              <TableRow>
-                                  <TableCell colSpan={3} className="text-right font-bold text-lg print:hidden">Total</TableCell>
-                                  <TableCell className="text-right font-bold text-lg hidden print:table-cell" colSpan={3}>Total</TableCell>
-                                  <TableCell className="text-right font-bold text-lg">{order.total?.toLocaleString()} BDT</TableCell>
-                              </TableRow>
-                          </TableBody>
-                      </Table>
-                  </CardContent>
-              </Card>
-          </div>
-
-          {/* Sidebar Info */}
-          <div className="space-y-6 print:grid print:grid-cols-2 print:gap-8 print:space-y-0">
-              <Card className="print:shadow-none print:border-none">
-                  <CardHeader className="print:px-0">
-                      <CardTitle className="flex items-center gap-2">
-                          <User className="h-5 w-5 text-muted-foreground" />
-                          Customer Info
-                      </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4 print:px-0">
-                      <div className="grid gap-1">
-                          <p className="font-medium">{order.user?.username || order.guestInfo?.name || "Guest"}</p>
-                          <div className="flex items-center text-sm text-muted-foreground gap-2">
-                              <span className="truncate">{order.user?.email || order.guestInfo?.email}</span>
-                          </div>
-                          <div className="flex items-center text-sm text-muted-foreground gap-2">
-                              <span>{order.user?.phone || order.guestInfo?.phone}</span>
-                          </div>
-                      </div>
-                  </CardContent>
-              </Card>
-
-              <Card className="print:shadow-none print:border-none">
-                  <CardHeader className="print:px-0">
-                      <CardTitle className="flex items-center gap-2">
-                          <MapPin className="h-5 w-5 text-muted-foreground" />
-                          Shipping Address
-                      </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4 print:px-0">
-                      <div className="text-sm">
-                        {order.shippingAddress && typeof order.shippingAddress === 'object' ? (
+                          {/* Pulse Ring for Current Step */}
+                          {isCurrent && (
                             <>
-                                {order.shippingAddress.name && <p className="font-medium">{order.shippingAddress.name}</p>}
-                                <p>{order.shippingAddress.address}</p>
-                                <p>{order.shippingAddress.city}, {order.shippingAddress.zip}</p>
-                                <p>{order.shippingAddress.country}</p>
-                                {order.shippingAddress.phone && <p className="mt-1">{order.shippingAddress.phone}</p>}
+                              <span className="absolute inset-0 rounded-full border-2 border-primary animate-ping opacity-60" />
+                              <span className="absolute inset-[-4px] rounded-full border border-primary/30 animate-pulse" />
                             </>
-                        ) : (
-                            <p className="text-muted-foreground">{order.shippingAddress || "No shipping address provided"}</p>
-                        )}
+                          )}
+                        </div>
+                        {/* Label */}
+                        <span
+                          className={`text-xs font-medium text-center leading-tight ${
+                            isCurrent
+                              ? 'text-primary font-semibold'
+                              : isCompleted
+                                ? 'text-slate-700'
+                                : 'text-muted-foreground'
+                          }`}
+                        >
+                          {step.label}
+                        </span>
                       </div>
-                  </CardContent>
-              </Card>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="print:hidden border-red-200 bg-red-50/30">
+              <CardContent className="py-4 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center text-red-600 flex-shrink-0">
+                  <XCircle className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="font-semibold text-red-800 text-sm">
+                    Order{' '}
+                    {order.status === 'CANCELLED' ? 'Cancelled' : 'Refunded'}
+                  </p>
+                  <p className="text-xs text-red-600/80">
+                    This order has been {order.status.toLowerCase()}. Stock has
+                    been restored.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-              <Card className="print:hidden">
-                  <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                          <CreditCard className="h-5 w-5 text-muted-foreground" />
-                          Payment & Source
-                      </CardTitle>
-                  </CardHeader>
-                   <CardContent className="space-y-4">
-                       <div className="flex items-center justify-between border-b pb-2">
-                            <span className="text-sm text-muted-foreground">Order Source</span>
-                            <Badge variant="outline">{order.source}</Badge>
-                        </div>
-                       <div className="flex items-center justify-between border-b pb-2">
-                            <span className="text-sm text-muted-foreground">Payment Method</span>
-                            <span className="font-medium">{order.paymentMethod}</span>
-                        </div>
-                         <div className="flex items-center justify-between">
-                            <span className="text-sm text-muted-foreground">Payment Status</span>
-                            <Badge variant={order.paymentStatus === 'PAID' ? 'default' : 'secondary'}>{order.paymentStatus}</Badge>
-                        </div>
-                   </CardContent>
-              </Card>
+          {/* Order Items */}
+          <Card className="print:shadow-none print:border-none overflow-hidden">
+            <CardHeader className="pb-0 print:px-0">
+              <CardTitle className="flex items-center justify-between gap-2">
+                <span className="flex items-center gap-2">
+                  <Package className="h-5 w-5 text-muted-foreground" />
+                  Order Items
+                </span>
+                <span className="text-xs font-normal text-muted-foreground bg-slate-100 px-2 py-0.5 rounded-full">
+                  {order.items?.length ?? 0} item
+                  {(order.items?.length ?? 0) !== 1 ? 's' : ''}
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 print:px-0">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-slate-50 border-y">
+                    <TableHead className="w-[56px] print:hidden pl-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                      #
+                    </TableHead>
+                    <TableHead className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                      Product
+                    </TableHead>
+                    <TableHead className="text-right text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                      Unit Price
+                    </TableHead>
+                    <TableHead className="text-center text-xs font-semibold text-slate-500 uppercase tracking-wide w-20">
+                      Qty
+                    </TableHead>
+                    <TableHead className="text-right text-xs font-semibold text-slate-500 uppercase tracking-wide pr-4">
+                      Subtotal
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {!order.items || order.items.length === 0 ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={5}
+                        className="text-center py-10 text-muted-foreground text-sm"
+                      >
+                        No items found in this order.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    order.items.map((item, idx) => (
+                      <TableRow
+                        key={item.id}
+                        className="hover:bg-slate-50/60 transition-colors"
+                      >
+                        <TableCell className="print:hidden pl-4 py-3">
+                          <div className="relative h-12 w-12 rounded-lg border bg-slate-50 overflow-hidden flex-shrink-0">
+                            <img
+                              src={
+                                item.variant?.images?.[0] ||
+                                item.product?.images?.[0] ||
+                                '/placeholder.png'
+                              }
+                              alt={item.name}
+                              className="object-cover w-full h-full"
+                            />
+                          </div>
+                        </TableCell>
+                        <TableCell className="py-3">
+                          <div className="font-medium text-sm text-slate-900 line-clamp-1">
+                            {item.productName || item.name}
+                          </div>
+                          {item.sku && (
+                            <div className="text-xs text-muted-foreground font-mono mt-0.5 bg-slate-50 inline-block px-1.5 py-0.5 rounded">
+                              {item.sku}
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right text-sm text-slate-600 py-3">
+                          {(item.unitPrice ?? item.salePrice)?.toLocaleString()}{' '}
+                          ৳
+                        </TableCell>
+                        <TableCell className="text-center py-3">
+                          <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-700 text-sm font-semibold">
+                            {item.quantity}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-right font-semibold text-sm text-slate-900 pr-4 py-3">
+                          {(item.totalPrice ?? item.total)?.toLocaleString()} ৳
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
 
-              {/* Invoice Info (Visible only in Print or Details) */}
-              <Card className="hidden print:block print:shadow-none print:border-none">
-                   <CardHeader className="print:px-0">
-                      <CardTitle className="flex items-center gap-2">
-                          <FileText className="h-5 w-5 text-muted-foreground" />
-                          Invoice Details
-                      </CardTitle>
-                  </CardHeader>
-                  <CardContent className="print:px-0 text-sm space-y-1">
-                      <div className="flex justify-between">
-                          <span>Invoice #:</span>
-                          <span className="font-bold">{order.invoiceNumber || "N/A"}</span>
+              {/* Order Summary */}
+              <div className="border-t bg-slate-50/50">
+                <div className="flex justify-end px-4 py-3">
+                  <div className="w-full max-w-xs space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Subtotal</span>
+                      <span className="font-medium">
+                        {order.subtotal?.toLocaleString()} ৳
+                      </span>
+                    </div>
+                    {(order.discountAmount || 0) > 0 && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-green-600">Discount</span>
+                        <span className="font-medium text-green-600">
+                          −{order.discountAmount?.toLocaleString()} ৳
+                        </span>
                       </div>
-                      <div className="flex justify-between">
-                          <span>Date:</span>
-                          <span>{format(new Date(order.createdAt), "dd MMM yyyy")}</span>
+                    )}
+                    {(order.vatAmount || 0) > 0 && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">VAT</span>
+                        <span className="font-medium">
+                          {order.vatAmount?.toLocaleString()} ৳
+                        </span>
                       </div>
-                  </CardContent>
-              </Card>
-          </div>
+                    )}
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Shipping</span>
+                      <span className="font-medium">
+                        {order.shippingCost?.toLocaleString() ?? 0} ৳
+                      </span>
+                    </div>
+                    <div className="border-t pt-2 flex items-center justify-between">
+                      <span className="font-bold text-base text-slate-900">
+                        Total
+                      </span>
+                      <span className="font-bold text-lg text-primary">
+                        {order.total?.toLocaleString()} ৳
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sidebar Info */}
+        <div className="space-y-4 print:grid print:grid-cols-2 print:gap-8 print:space-y-0">
+          <Card className="print:shadow-none print:border-none">
+            <CardHeader className="pb-3 print:px-0">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <User className="h-4 w-4 text-muted-foreground" />
+                Customer Info
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1.5 print:px-0">
+              <p className="font-semibold text-sm">
+                {order.user?.username || order.guestInfo?.name || 'Guest'}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {order.user?.email || order.guestInfo?.email}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {order.user?.phone || order.guestInfo?.phone}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="print:shadow-none print:border-none">
+            <CardHeader className="pb-3 print:px-0">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-muted-foreground" />
+                Shipping Address
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm space-y-0.5 print:px-0">
+              {order.shippingAddress &&
+              typeof order.shippingAddress === 'object' ? (
+                <>
+                  {order.shippingAddress.name && (
+                    <p className="font-medium">{order.shippingAddress.name}</p>
+                  )}
+                  <p className="text-muted-foreground">
+                    {order.shippingAddress.address}
+                  </p>
+                  <p className="text-muted-foreground">
+                    {order.shippingAddress.city}, {order.shippingAddress.zip}
+                  </p>
+                  <p className="text-muted-foreground">
+                    {order.shippingAddress.country}
+                  </p>
+                  {order.shippingAddress.phone && (
+                    <p className="text-muted-foreground mt-1">
+                      {order.shippingAddress.phone}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p className="text-muted-foreground">
+                  {order.shippingAddress || 'No address provided'}
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="print:hidden">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <CreditCard className="h-4 w-4 text-muted-foreground" />
+                Payment & Source
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Source</span>
+                <Badge variant="outline" className="text-xs">
+                  {order.source}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Method</span>
+                <span className="text-xs font-medium">
+                  {order.paymentMethod}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Payment</span>
+                <Badge
+                  variant={
+                    order.paymentStatus === 'PAID' ? 'default' : 'secondary'
+                  }
+                  className="text-xs"
+                >
+                  {order.paymentStatus}
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Invoice Info (Print Only) */}
+          <Card className="hidden print:block print:shadow-none print:border-none">
+            <CardHeader className="print:px-0">
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-muted-foreground" />
+                Invoice Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="print:px-0 text-sm space-y-1">
+              <div className="flex justify-between">
+                <span>Invoice #:</span>
+                <span className="font-bold">
+                  {order.invoiceNumber || 'N/A'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span>Date:</span>
+                <span>{format(new Date(order.createdAt), 'dd MMM yyyy')}</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

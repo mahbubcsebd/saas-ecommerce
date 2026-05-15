@@ -142,7 +142,7 @@ export default function StaffClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
       // Get Staff
       const staffRes = await fetch(`${BACKEND_URL}/staff`, {
@@ -179,7 +179,7 @@ export default function StaffClient() {
     e.preventDefault();
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${BACKEND_URL}/admin/users`, {
         method: 'POST',
         headers: {
@@ -205,7 +205,7 @@ export default function StaffClient() {
     if (!selectedStaff) return;
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(
         `${BACKEND_URL}/staff/${selectedStaff.id}/permissions`,
         {

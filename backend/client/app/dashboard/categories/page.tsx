@@ -218,6 +218,41 @@ function SortableCategoryItem({
   );
 }
 
+// Root Drop Zone Component for de-nesting
+function RootDropZone({ activeId }: { activeId: string | null }) {
+  const { setNodeRef, isOver } = useDroppable({
+    id: 'root-drop-zone',
+    data: { type: 'root' }
+  });
+
+  if (!activeId) return null;
+
+  return (
+    <div
+      ref={setNodeRef}
+      className={`w-full h-16 mb-6 border-2 border-dashed rounded-xl flex items-center justify-center transition-all animate-in fade-in slide-in-from-top-2 duration-300 ${
+        isOver 
+          ? 'border-blue-500 bg-blue-50 scale-[1.01] shadow-md' 
+          : 'border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-50'
+      }`}
+    >
+      <div className="flex items-center gap-3">
+        <div className={`p-2 rounded-lg transition-colors ${isOver ? 'bg-blue-600 text-white' : 'bg-white text-gray-400 border'}`}>
+           <Plus className="w-5 h-5" />
+        </div>
+        <div className="flex flex-col">
+          <span className={`text-sm font-bold ${isOver ? 'text-blue-700' : 'text-gray-700'}`}>
+            {isOver ? 'Release to Move to Root' : 'Move to Root Level'}
+          </span>
+          <span className="text-xs text-gray-500">
+            Make this a main category (sibling of Electronics)
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function CategoriesPage() {
   const { alert, confirm } = useConfirm();
   const { data: session } = useSession();
@@ -251,7 +286,7 @@ export default function CategoriesPage() {
     imagePreview: null,
   });
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
   // Fetch languages
   const fetchLanguages = async () => {
@@ -727,11 +762,16 @@ export default function CategoriesPage() {
 
     // Check if dropping on a droppable zone (category)
     const isDropZone = over.id.toString().startsWith('drop-');
+    const isRootZone = over.id === 'root-drop-zone';
 
     let newParentId: string | null = null;
     let targetOrder = 0;
 
-    if (isDropZone) {
+    if (isRootZone) {
+      // Move to root level
+      newParentId = null;
+      targetOrder = 0; // Add at start of root
+    } else if (isDropZone) {
       // Dropped on a category - make it a child
       const targetCategoryId = over.id.toString().replace('drop-', '');
       const targetCat = allCategoriesFlat.find((c) => c.id === targetCategoryId);
@@ -888,6 +928,7 @@ export default function CategoriesPage() {
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
           >
+            <RootDropZone activeId={activeId} />
             <SortableContext items={allCategoriesFlat.map((c) => c.id)} strategy={verticalListSortingStrategy}>
               {categories.map((category) => (
                 <SortableCategoryItem
@@ -1126,7 +1167,7 @@ export default function CategoriesPage() {
 
       {/* View Modal using Shadcn Dialog */}
       <Dialog open={showViewModal} onOpenChange={setShowViewModal}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
              <DialogTitle className="text-2xl font-bold">
                View Category Details

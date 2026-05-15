@@ -1,4 +1,4 @@
-﻿const prisma = require('../config/prisma');
+const prisma = require('../config/prisma');
 const logger = require('../utils/logger');
 
 // @desc    Create a new damage report

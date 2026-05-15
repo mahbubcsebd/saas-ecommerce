@@ -74,7 +74,7 @@ export default function SearchWithSuggestions() {
       setIsOpen(true);
 
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
         // Fetch Products
         const prodRes = await fetch(
@@ -123,6 +123,8 @@ export default function SearchWithSuggestions() {
         <Input
           ref={inputRef}
           type="search"
+          name="search"
+          autoComplete="off"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -130,7 +132,7 @@ export default function SearchWithSuggestions() {
             if (query.trim()) setIsOpen(true);
           }}
           placeholder={t('common', 'searchPlaceholder', { defaultValue: 'Search for products...' })}
-          className="pl-4 pr-12 h-11 rounded-md border-primary/20 focus-visible:border-primary shadow-sm transition-all text-base bg-white dark:bg-muted/20"
+          className="pl-4 pr-12 h-11 rounded-md border-primary/20 focus-visible:border-primary shadow-sm transition text-base bg-white dark:bg-muted/20"
         />
 
         <div className="absolute right-0 top-0 bottom-0 flex items-center">
@@ -140,8 +142,9 @@ export default function SearchWithSuggestions() {
               size="icon"
               className="h-full px-3 hover:bg-transparent text-muted-foreground hover:text-foreground"
               onClick={clearSearch}
+              aria-label={t('common', 'clearSearch', { defaultValue: 'Clear search' })}
             >
-              <X className="h-4 w-4" />
+              <X className="h-4 w-4" aria-hidden="true" />
             </Button>
           )}
           <Button
@@ -151,6 +154,7 @@ export default function SearchWithSuggestions() {
               router.push(`/products?search=${encodeURIComponent(query)}`);
               setIsOpen(false);
             }}
+            aria-label={t('common', 'search', { defaultValue: 'Search' })}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -163,6 +167,7 @@ export default function SearchWithSuggestions() {
               strokeLinecap="round"
               strokeLinejoin="round"
               className="lucide lucide-search"
+              aria-hidden="true"
             >
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.3-4.3" />

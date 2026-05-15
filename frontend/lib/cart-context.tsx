@@ -50,7 +50,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [localCart, setLocalCart] = useState<CartItem[]>([]);
   const [isMounted, setIsMounted] = useState(false);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
   const getHeaders = () => {
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };

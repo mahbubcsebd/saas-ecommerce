@@ -1,5 +1,5 @@
 async function verifyGuestCart() {
-  const API_URL = "http://127.0.0.1:8000/api";
+  const API_URL = "http://localhost:5000/api";
   const guestId = "test-guest-" + Date.now();
 
   try {

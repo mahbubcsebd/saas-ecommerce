@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { PageBuilder } from '@/components/page-builder/PageBuilder';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Eye, Save } from 'lucide-react';
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { use, useEffect, useState } from 'react';
-import { toast } from 'sonner';
+import { PageBuilder } from "@/components/page-builder/PageBuilder";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { ArrowLeft, Eye, Loader2, Save } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
+import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 export default function EditLandingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -24,22 +24,22 @@ export default function EditLandingPage({ params }: { params: Promise<{ id: stri
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [pageData, setPageData] = useState({
-    title: '',
-    slug: '',
-    description: '',
-    metaTitle: '',
-    metaDescription: '',
-    metaKeywords: '',
-    ogImage: '',
-    gjs_html: '',
-    gjs_css: '',
-    gjs_json: '',
+    title: "",
+    slug: "",
+    description: "",
+    metaTitle: "",
+    metaDescription: "",
+    metaKeywords: "",
+    ogImage: "",
+    gjs_html: "",
+    gjs_css: "",
+    gjs_json: "",
   });
 
   useEffect(() => {
-    if (id !== 'create' && token) {
+    if (id !== "create" && token) {
       fetchPage();
-    } else if (id === 'create') {
+    } else if (id === "create") {
       setLoading(false);
     }
   }, [id, token]);
@@ -55,7 +55,7 @@ export default function EditLandingPage({ params }: { params: Promise<{ id: stri
         setPageData(data.data);
       }
     } catch (error) {
-      toast.error('Failed to load page');
+      toast.error("Failed to load page");
     } finally {
       setLoading(false);
     }
@@ -74,16 +74,16 @@ export default function EditLandingPage({ params }: { params: Promise<{ id: stri
         }),
       };
 
-      const url = id === 'create'
+      const url = id === "create"
         ? `${API_BASE}/landing-pages`
         : `${API_BASE}/landing-pages/${id}`;
 
-      const method = id === 'create' ? 'POST' : 'PUT';
+      const method = id === "create" ? "POST" : "PUT";
 
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(payload),
@@ -92,16 +92,16 @@ export default function EditLandingPage({ params }: { params: Promise<{ id: stri
       const data = await response.json();
 
       if (data.success) {
-        toast.success(id === 'create' ? 'Page created' : 'Page updated');
+        toast.success(id === "create" ? "Page created" : "Page updated");
 
-        if (id === 'create') {
+        if (id === "create") {
           router.push(`/dashboard/landing-pages/${data.data.id}/edit`);
         }
       } else {
-        toast.error(data.message || 'Failed to save page');
+        toast.error(data.message || "Failed to save page");
       }
     } catch (error) {
-      toast.error('Failed to save page');
+      toast.error("Failed to save page");
     } finally {
       setSaving(false);
     }
@@ -110,38 +110,36 @@ export default function EditLandingPage({ params }: { params: Promise<{ id: stri
   const generateSlug = (title: string) => {
     return title
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading page...</p>
-        </div>
+      <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <Loader2 className="animate-spin h-8 w-8 text-primary mb-2" />
+        <p className="text-muted-foreground text-xs font-medium">Loading page details...</p>
       </div>
     );
   }
 
   return (
-    <div className="h-screen flex flex-col bg-white">
+    <div className="h-[calc(100vh-64px)] flex flex-col -m-6">
       {/* Header */}
-      <div className="border-b bg-white p-4 flex items-center justify-between">
+      <div className="border-b bg-background px-6 py-4 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" asChild className="rounded-xl">
+          <Button variant="ghost" size="icon" asChild className="h-8 w-8">
             <Link href="/dashboard/landing-pages">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
           <div>
-            <h1 className="text-xl font-black text-slate-900 tracking-tight">
-              {id === 'create' ? 'Design New Funnel' : 'Refine Landing Page'}
-            </h1>
+            <h2 className="text-xl font-bold tracking-tight">
+              {id === "create" ? "Create Landing Page" : "Edit Experience"}
+            </h2>
             {pageData.slug && (
-              <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mt-0.5">
-                Path: /landing/{pageData.slug}
+              <p className="text-xs text-muted-foreground">
+                Path: <span className="font-mono text-blue-600">/landing/{pageData.slug}</span>
               </p>
             )}
           </div>
@@ -149,16 +147,16 @@ export default function EditLandingPage({ params }: { params: Promise<{ id: stri
 
         <div className="flex items-center gap-2">
           {pageData.slug && (
-            <Button variant="outline" asChild className="rounded-xl font-bold h-10 border-slate-200">
+            <Button variant="outline" size="sm" asChild>
               <a href={`/landing/${pageData.slug}`} target="_blank">
-                <Eye className="h-4 w-4 mr-2" />
-                Live Preview
+                <Eye className="h-3.5 w-3.5 mr-2" />
+                Preview
               </a>
             </Button>
           )}
-          <Button onClick={() => handleSave()} disabled={saving} className="bg-orange-600 hover:bg-orange-700 h-10 px-6 rounded-xl font-bold shadow-lg shadow-orange-100">
-            <Save className="h-4 w-4 mr-2" />
-            {saving ? 'Syncing...' : 'Save All Changes'}
+          <Button onClick={() => handleSave()} disabled={saving} size="sm" className="bg-orange-600 hover:bg-orange-700">
+            <Save className="h-3.5 w-3.5 mr-2" />
+            {saving ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </div>
@@ -166,32 +164,32 @@ export default function EditLandingPage({ params }: { params: Promise<{ id: stri
       {/* Content */}
       <div className="flex-1 overflow-hidden">
         <Tabs defaultValue="builder" className="h-full flex flex-col">
-          <div className="px-6 border-b bg-slate-50/50">
-            <TabsList className="h-12 bg-transparent p-0 gap-6">
+          <div className="px-6 border-b bg-muted/30">
+            <TabsList className="h-10 bg-transparent p-0 gap-6">
               <TabsTrigger
                 value="builder"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none font-black text-[10px] uppercase tracking-widest h-full px-0"
+                className="h-full rounded-none border-b-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none font-bold text-xs uppercase tracking-wider"
               >
-                Experience Designer
+                Designer
               </TabsTrigger>
               <TabsTrigger
                 value="settings"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none font-black text-[10px] uppercase tracking-widest h-full px-0"
+                className="h-full rounded-none border-b-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none font-bold text-xs uppercase tracking-wider"
               >
-                Funnel Settings
+                Settings
               </TabsTrigger>
               <TabsTrigger
                 value="seo"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none font-black text-[10px] uppercase tracking-widest h-full px-0"
+                className="h-full rounded-none border-b-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none font-bold text-xs uppercase tracking-wider"
               >
-                SEO Optimization
+                SEO
               </TabsTrigger>
             </TabsList>
           </div>
 
           <TabsContent value="builder" className="flex-1 m-0 overflow-hidden">
             <PageBuilder
-              pageId={id !== 'create' ? id : undefined}
+              pageId={id !== "create" ? id : undefined}
               initialData={{
                 html: pageData.gjs_html,
                 css: pageData.gjs_css,
@@ -201,134 +199,108 @@ export default function EditLandingPage({ params }: { params: Promise<{ id: stri
             />
           </TabsContent>
 
-          <TabsContent value="settings" className="flex-1 m-0 overflow-auto p-8 bg-slate-50/30">
-            <div className="max-w-2xl space-y-8 bg-white p-8 rounded-3xl border shadow-sm">
-              <div className="space-y-2">
-                <Label htmlFor="title" className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Internal Page Title *</Label>
-                <Input
-                  id="title"
-                  value={pageData.title}
-                  onChange={(e) => {
-                    const title = e.target.value;
-                    setPageData({
-                      ...pageData,
-                      title,
-                      slug: pageData.slug || generateSlug(title),
-                    });
-                  }}
-                  className="h-11 rounded-xl border-slate-200"
-                  placeholder="e.g., Summer Sale 2025"
-                />
-              </div>
+          <TabsContent value="settings" className="flex-1 m-0 overflow-auto p-6 bg-muted/10">
+            <div className="max-w-2xl space-y-6 mx-auto">
+               <div className="bg-background p-6 rounded-xl border shadow-sm space-y-6">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="title" className="text-xs font-semibold">Page Title</Label>
+                    <Input
+                      id="title"
+                      value={pageData.title}
+                      onChange={(e) => {
+                        const title = e.target.value;
+                        setPageData({
+                          ...pageData,
+                          title,
+                          slug: pageData.slug || generateSlug(title),
+                        });
+                      }}
+                      className="h-9"
+                      placeholder="e.g. Summer Sale 2025"
+                    />
+                  </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="slug" className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Campaign URL Slug *</Label>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-slate-400">/landing/</span>
-                  <Input
-                    id="slug"
-                    value={pageData.slug}
-                    onChange={(e) => setPageData({
-                      ...pageData,
-                      slug: generateSlug(e.target.value),
-                    })}
-                    className="h-11 rounded-xl border-slate-200 font-bold text-blue-600"
-                    placeholder="summer-sale-2025"
-                  />
-                </div>
-                <p className="text-[10px] text-slate-400 font-medium">
-                  Use descriptive, lowercase slugs for better SEO performance.
-                </p>
-              </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="slug" className="text-xs font-semibold">URL Slug</Label>
+                    <div className="flex items-center">
+                      <span className="h-9 flex items-center px-3 bg-muted border border-r-0 rounded-l-md text-xs font-medium text-muted-foreground">/landing/</span>
+                      <Input
+                        id="slug"
+                        value={pageData.slug}
+                        onChange={(e) => setPageData({
+                          ...pageData,
+                          slug: generateSlug(e.target.value),
+                        })}
+                        className="h-9 rounded-l-none font-medium"
+                        placeholder="summer-sale"
+                      />
+                    </div>
+                  </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="description" className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Internal Notes</Label>
-                <Textarea
-                  id="description"
-                  value={pageData.description || ''}
-                  onChange={(e) => setPageData({
-                    ...pageData,
-                    description: e.target.value,
-                  })}
-                  className="rounded-2xl border-slate-200 min-h-[120px]"
-                  placeholder="What is the goal of this campaign?"
-                  rows={4}
-                />
-              </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="description" className="text-xs font-semibold text-muted-foreground">Internal Description</Label>
+                    <Textarea
+                      id="description"
+                      value={pageData.description || ""}
+                      onChange={(e) => setPageData({
+                        ...pageData,
+                        description: e.target.value,
+                      })}
+                      className="min-h-[120px] resize-none"
+                      placeholder="Brief notes for reference..."
+                    />
+                  </div>
+               </div>
             </div>
           </TabsContent>
 
-          <TabsContent value="seo" className="flex-1 m-0 overflow-auto p-8 bg-slate-50/30">
-            <div className="max-w-2xl space-y-8 bg-white p-8 rounded-3xl border shadow-sm">
-              <div className="space-y-2">
-                <Label htmlFor="metaTitle" className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Search Engine Title</Label>
-                <Input
-                  id="metaTitle"
-                  value={pageData.metaTitle || ''}
-                  onChange={(e) => setPageData({
-                    ...pageData,
-                    metaTitle: e.target.value,
-                  })}
-                  className="h-11 rounded-xl border-slate-200"
-                  placeholder="SEO title (60 chars max)"
-                  maxLength={60}
-                />
-                <div className="flex justify-between">
-                   <p className="text-[10px] text-slate-400 font-medium">Recommended for Google: 50-60 characters</p>
-                   <p className="text-[10px] text-slate-400 font-black">{pageData.metaTitle?.length || 0}/60</p>
-                </div>
-              </div>
+          <TabsContent value="seo" className="flex-1 m-0 overflow-auto p-6 bg-muted/10">
+            <div className="max-w-2xl space-y-6 mx-auto">
+               <div className="bg-background p-6 rounded-xl border shadow-sm space-y-6">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="metaTitle" className="text-xs font-semibold">Search Title</Label>
+                    <Input
+                      id="metaTitle"
+                      value={pageData.metaTitle || ""}
+                      onChange={(e) => setPageData({
+                        ...pageData,
+                        metaTitle: e.target.value,
+                      })}
+                      className="h-9"
+                      placeholder="Appears in Google results"
+                      maxLength={60}
+                    />
+                  </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="metaDescription" className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Meta Description</Label>
-                <Textarea
-                  id="metaDescription"
-                  value={pageData.metaDescription || ''}
-                  onChange={(e) => setPageData({
-                    ...pageData,
-                    metaDescription: e.target.value,
-                  })}
-                  className="rounded-2xl border-slate-200 min-h-[100px]"
-                  placeholder="Sum up the offer for search engine results..."
-                  maxLength={160}
-                  rows={3}
-                />
-                <div className="flex justify-between">
-                   <p className="text-[10px] text-slate-400 font-medium">Recommended: 150-160 characters</p>
-                   <p className="text-[10px] text-slate-400 font-black">{pageData.metaDescription?.length || 0}/160</p>
-                </div>
-              </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="metaDescription" className="text-xs font-semibold">Search Description</Label>
+                    <Textarea
+                      id="metaDescription"
+                      value={pageData.metaDescription || ""}
+                      onChange={(e) => setPageData({
+                        ...pageData,
+                        metaDescription: e.target.value,
+                      })}
+                      className="min-h-[100px] resize-none"
+                      placeholder="Summary for search results..."
+                      maxLength={160}
+                    />
+                  </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="metaKeywords" className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Meta Keywords</Label>
-                <Input
-                  id="metaKeywords"
-                  value={pageData.metaKeywords || ''}
-                  onChange={(e) => setPageData({
-                    ...pageData,
-                    metaKeywords: e.target.value,
-                  })}
-                  className="h-11 rounded-xl border-slate-200"
-                  placeholder="keyword1, keyword2, keyword3"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="ogImage" className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Social Share Image (OG Image)</Label>
-                <Input
-                  id="ogImage"
-                  value={pageData.ogImage || ''}
-                  onChange={(e) => setPageData({
-                    ...pageData,
-                    ogImage: e.target.value,
-                  })}
-                  className="h-11 rounded-xl border-slate-200"
-                  placeholder="https://yourdomain.com/social-preview.jpg"
-                />
-                <p className="text-[10px] text-slate-400 font-medium">
-                  Displays when the page is shared on Facebook, WhatsApp, or X.
-                </p>
-              </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="ogImage" className="text-xs font-semibold">OG Image (Share Preview)</Label>
+                    <Input
+                      id="ogImage"
+                      value={pageData.ogImage || ""}
+                      onChange={(e) => setPageData({
+                        ...pageData,
+                        ogImage: e.target.value,
+                      })}
+                      className="h-9"
+                      placeholder="https://example.com/share-image.jpg"
+                    />
+                  </div>
+               </div>
             </div>
           </TabsContent>
         </Tabs>

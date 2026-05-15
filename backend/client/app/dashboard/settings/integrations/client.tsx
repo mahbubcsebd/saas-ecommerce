@@ -65,7 +65,7 @@ export default function IntegrationsClient() {
     setIsLoading(true);
     try {
       const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
       const [intRes, webRes] = await Promise.all([
         fetch(`${API_URL}/settings/integrations`, {
@@ -99,7 +99,7 @@ export default function IntegrationsClient() {
     setIsSaving(true);
     try {
       const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${API_URL}/settings/integrations`, {
         method: 'PUT',
         headers: {
@@ -126,7 +126,7 @@ export default function IntegrationsClient() {
       return toast.error('Name and URL are required');
     try {
       const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${API_URL}/settings/webhooks`, {
         method: 'POST',
         headers: {
@@ -160,7 +160,7 @@ export default function IntegrationsClient() {
       return;
     try {
       const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${API_URL}/settings/webhooks/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${session.accessToken}` },
@@ -179,7 +179,7 @@ export default function IntegrationsClient() {
     if (!session?.accessToken) return;
     try {
       const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       await fetch(`${API_URL}/settings/webhooks/${webhook.id}`, {
         method: 'PUT',
         headers: {

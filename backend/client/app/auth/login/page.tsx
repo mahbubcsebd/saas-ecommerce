@@ -25,8 +25,8 @@ function LoginForm() {
   const [success, setSuccess] = useState('');
 
   const [formData, setFormData] = useState({
-    email: 'superadmin@example.com',
-    password: 'password123',
+    email: 'admin@mahbubshop.com',
+    password: 'password123@!',
   });
 
   useEffect(() => {
@@ -91,6 +91,8 @@ function LoginForm() {
           <CardDescription className="text-center">
             Enter your admin credentials to access the panel.
           </CardDescription>
+          {error && <ErrorMessage message={error} />}
+          {success && <SuccessMessage message={success} />}
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
@@ -110,14 +112,11 @@ function LoginForm() {
               value={formData.password}
               onChange={handleChange}
             />
-
-            {error && <ErrorMessage message={error} />}
-            {success && <SuccessMessage message={success} />}
           </CardContent>
           <CardFooter>
             <Button
               type="submit"
-              className="w-full"
+              className="w-full mt-5"
               disabled={loading || !!success}
             >
               {loading || success ? 'Logging in...' : 'Login'}

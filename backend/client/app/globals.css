@@ -122,8 +122,22 @@
   body {
     @apply bg-background text-foreground;
   }
+  button, 
+  a, 
+  [role="button"],
+  input[type="submit"],
+  input[type="button"],
+  input[type="checkbox"],
+  input[type="radio"],
+  label {
+    cursor: pointer;
+  }
 }
 
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
 
 /* Proper Container Implementation */
 @layer components {

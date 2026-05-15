@@ -4,11 +4,15 @@ const logger = require('../utils/logger');
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
 
 const redis = new Redis(redisUrl, {
-  maxRetriesPerRequest: 3,
+  maxRetriesPerRequest: 1,
   retryStrategy(times) {
-    const delay = Math.min(times * 50, 2000);
-    return delay;
+    // If times > 1, stop retrying to prevent log spam
+    if (times > 1) return null;
+    return 5000; // Wait 5 seconds before the single retry
   },
+  reconnectOnError(err) {
+    return false; // Don't automatically reconnect on every error
+  }
 });
 
 redis.on('connect', () => {

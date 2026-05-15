@@ -1,4 +1,4 @@
-﻿const prisma = require('../config/prisma');
+const prisma = require('../config/prisma');
 const emailService = require('../services/emailService');
 const smsService = require('../services/sms.service');
 

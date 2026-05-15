@@ -92,7 +92,7 @@ export default function ShippingSettingsClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
       // Fetch General Shipping Config
       const configRes = await fetch(`${BACKEND_URL}/settings/shipping`, {
@@ -130,7 +130,7 @@ export default function ShippingSettingsClient() {
     setIsSaving(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${BACKEND_URL}/settings/shipping`, {
         method: 'PUT',
         headers: {
@@ -157,7 +157,7 @@ export default function ShippingSettingsClient() {
     setIsSaving(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const url = editingPackaging
         ? `${BACKEND_URL}/shipping/packaging/${editingPackaging.id}`
         : `${BACKEND_URL}/shipping/packaging`;
@@ -199,7 +199,7 @@ export default function ShippingSettingsClient() {
     if (!session?.accessToken) return;
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${BACKEND_URL}/shipping/packaging/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${session.accessToken}` },

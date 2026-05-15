@@ -86,7 +86,7 @@ export default function TaxSettingsClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
       // Fetch General Tax Config
       const configRes = await fetch(`${BACKEND_URL}/settings/tax`, {
@@ -123,7 +123,7 @@ export default function TaxSettingsClient() {
     setIsSaving(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const url = editingRate
         ? `${BACKEND_URL}/tax-configurations/rates/${editingRate.id}`
         : `${BACKEND_URL}/tax-configurations/rates`;
@@ -167,7 +167,7 @@ export default function TaxSettingsClient() {
     if (!session?.accessToken) return;
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${BACKEND_URL}/tax-configurations/rates/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${session.accessToken}` },
@@ -187,7 +187,7 @@ export default function TaxSettingsClient() {
     setIsSaving(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const url = editingClass
         ? `${BACKEND_URL}/tax-configurations/classes/${editingClass.id}`
         : `${BACKEND_URL}/tax-configurations/classes`;
@@ -231,7 +231,7 @@ export default function TaxSettingsClient() {
     if (!session?.accessToken) return;
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(
         `${BACKEND_URL}/tax-configurations/classes/${id}`,
         {
@@ -258,7 +258,7 @@ export default function TaxSettingsClient() {
     setIsSaving(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${BACKEND_URL}/settings/tax`, {
         method: 'PUT',
         headers: {

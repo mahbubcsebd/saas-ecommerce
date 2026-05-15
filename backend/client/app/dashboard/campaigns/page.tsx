@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
     Table,
@@ -32,7 +32,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 type Campaign = {
   id: string;
@@ -128,154 +128,154 @@ export default function CampaignsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Campaigns</h1>
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900">Campaigns</h2>
           <p className="text-muted-foreground mt-1">Design and send marketing messages to your audience.</p>
         </div>
         <Link href="/dashboard/campaigns/new">
-          <Button className="bg-blue-600 hover:bg-blue-700">
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
             <Plus className="mr-2 h-4 w-4" /> New Campaign
           </Button>
         </Link>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-500">Total Campaigns</p>
-                <p className="text-2xl font-bold">{loading ? "—" : campaigns.length}</p>
-              </div>
-              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
-                <Megaphone className="h-5 w-5 text-blue-600" />
-              </div>
-            </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Campaigns</CardTitle>
+            <Megaphone className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{loading ? "—" : campaigns.length}</div>
+            <p className="text-xs text-muted-foreground">Active lifetime campaigns</p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-500">Sent Messages</p>
-                <p className="text-2xl font-bold">{loading ? "—" : campaigns.reduce((a, b) => a + b.sentCount, 0)}</p>
-              </div>
-              <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
-                <Send className="h-5 w-5 text-green-600" />
-              </div>
-            </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Sent Messages</CardTitle>
+            <Send className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{loading ? "—" : campaigns.reduce((a, b) => a + b.sentCount, 0)}</div>
+            <p className="text-xs text-muted-foreground">Successfully transmitted</p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-500">Total Opens</p>
-                <p className="text-2xl font-bold">{loading ? "—" : campaigns.reduce((a, b) => a + b.openCount, 0)}</p>
-              </div>
-              <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center">
-                <Eye className="h-5 w-5 text-orange-600" />
-              </div>
-            </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Opens</CardTitle>
+            <Eye className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{loading ? "—" : campaigns.reduce((a, b) => a + b.openCount, 0)}</div>
+            <p className="text-xs text-muted-foreground">Unique recipient views</p>
           </CardContent>
         </Card>
-        <Card className="shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-500">Avg. Open Rate</p>
-                <p className="text-2xl font-bold">
-                  {loading ? "—" : (() => {
-                    const sent = campaigns.reduce((a, b) => a + b.sentCount, 0);
-                    const opened = campaigns.reduce((a, b) => a + b.openCount, 0);
-                    return sent > 0 ? `${((opened / sent) * 100).toFixed(1)}%` : "0%";
-                  })()}
-                </p>
-              </div>
-              <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center">
-                <BarChart2 className="h-5 w-5 text-purple-600" />
-              </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Avg. Open Rate</CardTitle>
+            <BarChart2 className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+                {loading ? "—" : (() => {
+                const sent = campaigns.reduce((a, b) => a + b.sentCount, 0);
+                const opened = campaigns.reduce((a, b) => a + b.openCount, 0);
+                return sent > 0 ? `${((opened / sent) * 100).toFixed(1)}%` : "0%";
+                })()}
             </div>
+            <p className="text-xs text-muted-foreground">Engagement efficiency</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Table Section */}
-      <Card className="shadow-sm overflow-hidden">
-        <div className="p-4 border-b bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <Input
-              placeholder="Search campaigns..."
-              className="pl-9 h-9"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <Table>
-          <TableHeader className="bg-slate-50">
-            <TableRow>
-              <TableHead>Campaign</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Stats</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loading ? (
-              <TableRow><TableCell colSpan={6} className="text-center py-10"><Loader2 className="animate-spin h-6 w-6 mx-auto text-blue-600" /></TableCell></TableRow>
-            ) : filtered.length === 0 ? (
-              <TableRow><TableCell colSpan={6} className="text-center py-16 text-slate-400">No campaigns found.</TableCell></TableRow>
-            ) : filtered.map((c) => (
-              <TableRow key={c.id} className="hover:bg-slate-50/50">
-                <TableCell>
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-slate-900">{c.name}</span>
-                    <span className="text-xs text-slate-500 line-clamp-1">{c.subject || "No subject"}</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    {getTypeIcon(c.type)}
-                    <span className="text-xs capitalize font-medium">{c.type.toLowerCase()}</span>
-                  </div>
-                </TableCell>
-                <TableCell>{getStatusBadge(c.status)}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] uppercase font-black text-slate-400">Sent</span>
-                      <span className="text-xs font-bold">{c.sentCount}</span>
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-[10px] uppercase font-black text-slate-400">Opens</span>
-                      <span className="text-xs font-bold">{c.openCount}</span>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell className="text-xs text-slate-600">
-                  {format(new Date(c.createdAt), "MMM dd, yyyy")}
-                </TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-1">
-                    <Link href={`/dashboard/campaigns/${c.id}`}>
-                      <Button variant="ghost" size="icon"><BarChart2 className="h-4 w-4" /></Button>
-                    </Link>
-                    {c.status === "DRAFT" && (
-                      <Button variant="ghost" size="icon" className="text-red-500" onClick={() => handleDelete(c.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      <Card>
+        <CardHeader>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="relative flex-1 max-w-sm">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        placeholder="Search campaigns..."
+                        className="pl-9 h-9"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
+            </div>
+        </CardHeader>
+        <CardContent>
+            <div className="rounded-md border overflow-x-auto">
+                <Table>
+                    <TableHeader className="bg-muted/50">
+                        <TableRow>
+                            <TableHead className="font-semibold">Campaign</TableHead>
+                            <TableHead className="font-semibold">Type</TableHead>
+                            <TableHead className="font-semibold">Status</TableHead>
+                            <TableHead className="font-semibold">Stats</TableHead>
+                            <TableHead className="font-semibold">Created</TableHead>
+                            <TableHead className="text-right font-semibold">Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {loading ? (
+                            <TableRow><TableCell colSpan={6} className="text-center py-10"><Loader2 className="animate-spin h-6 w-6 mx-auto text-primary" /></TableCell></TableRow>
+                        ) : filtered.length === 0 ? (
+                            <TableRow><TableCell colSpan={6} className="text-center py-16 text-muted-foreground">No campaigns found.</TableCell></TableRow>
+                        ) : filtered.map((c) => (
+                            <TableRow key={c.id}>
+                                <TableCell>
+                                    <div className="flex flex-col">
+                                        <span className="font-medium text-slate-900">{c.name}</span>
+                                        <span className="text-xs text-muted-foreground line-clamp-1">{c.subject || "No subject"}</span>
+                                    </div>
+                                </TableCell>
+                                <TableCell>
+                                    <div className="flex items-center gap-2">
+                                        {getTypeIcon(c.type)}
+                                        <span className="text-xs capitalize">{c.type.toLowerCase()}</span>
+                                    </div>
+                                </TableCell>
+                                <TableCell>{getStatusBadge(c.status)}</TableCell>
+                                <TableCell>
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] uppercase font-bold text-muted-foreground">Sent</span>
+                                            <span className="text-xs font-semibold">{c.sentCount}</span>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] uppercase font-bold text-muted-foreground">Opens</span>
+                                            <span className="text-xs font-semibold">{c.openCount}</span>
+                                        </div>
+                                    </div>
+                                </TableCell>
+                                <TableCell className="text-xs text-muted-foreground">
+                                    {format(new Date(c.createdAt), "MMM dd, yyyy")}
+                                </TableCell>
+                                <TableCell className="text-right">
+                                    <div className="flex justify-end gap-1">
+                                        <Link href={`/dashboard/campaigns/${c.id}`}>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                <BarChart2 className="h-4 w-4" />
+                                            </Button>
+                                        </Link>
+                                        {c.status === "DRAFT" && (
+                                            <Button 
+                                                variant="ghost" 
+                                                size="icon" 
+                                                className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10" 
+                                                onClick={() => handleDelete(c.id)}
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        )}
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+        </CardContent>
       </Card>
     </div>
   );

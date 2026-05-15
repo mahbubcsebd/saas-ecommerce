@@ -9,12 +9,9 @@ routes.use(i18nMiddleware);
 // Import all route files
 const authRouter = require('./auth.routes');
 const userRouter = require('./user.routes');
-const meRouter = require('./me.routes');
-
 // Use routes
 routes.use('/auth', authRouter);
 routes.use('/user', userRouter);
-routes.use('/me', meRouter);
 const productRouter = require('./product.routes');
 routes.use('/products', productRouter);
 
@@ -139,5 +136,11 @@ routes.use('/backup', backupRouter);
 
 const newsletterRouter = require('./newsletter.routes');
 routes.use('/newsletter', newsletterRouter);
+
+const expenseRouter = require('./expense.routes');
+routes.use('/expenses', expenseRouter);
+
+const paymentRouter = require('./payment.routes');
+routes.use('/payments', paymentRouter);
 
 module.exports = routes;

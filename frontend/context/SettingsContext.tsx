@@ -50,6 +50,8 @@ export interface AppearanceSetting {
   secondaryColor?: string;
   fontFamily: string;
   showHeroBanner: boolean;
+  heroSliderEnabled?: boolean;
+  heroShowContent?: boolean;
 }
 
 export interface SeoSetting {
@@ -113,7 +115,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   const fetchSettings = async () => {
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const res = await fetch(`${API_URL}/settings/public`, { cache: 'no-store' });
       // Use no-store to ensure we get fresh settings if they change
       if (res.ok) {

@@ -220,7 +220,7 @@ exports.sendCampaign = async (req, res) => {
     for (const recipient of recipients) {
       try {
         // Injected tracking pixel
-        const trackingPixel = `<img src="${process.env.BACKEND_URL || 'http://localhost:8000'}/api/v1/campaigns/track/open/${recipient.id}" width="1" height="1" style="display:none;" />`;
+        const trackingPixel = `<img src="${process.env.BACKEND_URL || 'http://localhost:5000'}/api/v1/campaigns/track/open/${recipient.id}" width="1" height="1" style="display:none;" />`;
         const finalHtml = campaign.content + trackingPixel;
 
         await emailService.sendCustomEmail({

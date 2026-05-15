@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Eye, MousePointerClick, Target, TrendingUp } from 'lucide-react';
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
-import { use, useEffect, useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowLeft, Eye, Loader2, MousePointerClick, Target, TrendingUp } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { use, useEffect, useState } from "react";
 import {
     Bar,
     BarChart,
@@ -14,9 +14,9 @@ import {
     Tooltip,
     XAxis,
     YAxis
-} from 'recharts';
+} from "recharts";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 export default function LandingPageAnalytics({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -41,7 +41,7 @@ export default function LandingPageAnalytics({ params }: { params: Promise<{ id:
         setAnalytics(data.data);
       }
     } catch (error) {
-      console.error('Failed to fetch analytics');
+      console.error("Failed to fetch analytics");
     } finally {
       setLoading(false);
     }
@@ -49,9 +49,9 @@ export default function LandingPageAnalytics({ params }: { params: Promise<{ id:
 
   if (loading) {
     return (
-       <div className="p-8 flex flex-col items-center justify-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-slate-400 font-black uppercase text-xs tracking-widest">Compiling Data...</p>
+       <div className="flex flex-col items-center justify-center min-h-[400px]">
+          <Loader2 className="animate-spin h-8 w-8 text-primary mb-2" />
+          <p className="text-muted-foreground text-xs font-medium">Compiling analytics data...</p>
        </div>
     );
   }
@@ -60,104 +60,106 @@ export default function LandingPageAnalytics({ params }: { params: Promise<{ id:
   const page = analytics?.page || {};
 
   return (
-    <div className="space-y-8 p-8 max-w-7xl mx-auto">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4 bg-white p-6 rounded-3xl border shadow-sm">
-        <Button variant="ghost" size="icon" asChild className="rounded-xl">
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon" asChild className="h-8 w-8">
           <Link href="/dashboard/landing-pages">
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-4 w-4" />
           </Link>
         </Button>
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">{page.title}</h1>
-          <p className="text-slate-500 font-medium">Performance metrics and funnel insights</p>
+          <h2 className="text-3xl font-bold tracking-tight">{page.title}</h2>
+          <p className="text-muted-foreground mt-1">Performance metrics and funnel conversion insights.</p>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-6 md:grid-cols-4">
-        <Card className="border-none shadow-xl shadow-slate-200/50 rounded-3xl p-6 bg-white overflow-hidden relative">
-          <div className="absolute top-0 right-0 p-6 opacity-5">
-             <Eye className="h-12 w-12" />
-          </div>
-          <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Total Views</p>
-          <div className="text-3xl font-black text-slate-900">
-            {page.viewCount?.toLocaleString() || 0}
-          </div>
-          <div className="mt-4 flex items-center text-[10px] font-bold text-green-600 bg-green-50 w-fit px-2 py-1 rounded-full">
-             +12.5% vs last week
-          </div>
+      <div className="grid gap-4 md:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Views</CardTitle>
+            <Eye className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {page.viewCount?.toLocaleString() || 0}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Direct page visits</p>
+          </CardContent>
         </Card>
 
-        <Card className="border-none shadow-xl shadow-slate-200/50 rounded-3xl p-6 bg-white overflow-hidden relative">
-          <div className="absolute top-0 right-0 p-6 opacity-5">
-             <Target className="h-12 w-12" />
-          </div>
-          <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Conversions</p>
-          <div className="text-3xl font-black text-slate-900">
-            {page.orderCount?.toLocaleString() || 0}
-          </div>
-           <div className="mt-4 flex items-center text-[10px] font-bold text-blue-600 bg-blue-50 w-fit px-2 py-1 rounded-full">
-             Conversion goal active
-          </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Conversions</CardTitle>
+            <Target className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {page.orderCount?.toLocaleString() || 0}
+            </div>
+            <p className="text-xs text-emerald-600 font-medium mt-1">Completed checkouts</p>
+          </CardContent>
         </Card>
 
-        <Card className="border-none shadow-xl shadow-slate-200/50 rounded-3xl p-6 bg-slate-900 text-white overflow-hidden relative">
-          <div className="absolute top-0 right-0 p-6 opacity-10">
-             <TrendingUp className="h-12 w-12" />
-          </div>
-          <p className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-1">Conversion Rate</p>
-          <div className="text-3xl font-black text-white">
-            {conversionRate.toFixed(2)}%
-          </div>
-          <div className="mt-4 flex items-center text-[10px] font-bold text-orange-400 bg-white/10 w-fit px-2 py-1 rounded-full">
-             High performance
-          </div>
+        <Card className="bg-slate-900 border-none">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-slate-100">Conversion Rate</CardTitle>
+            <TrendingUp className="h-4 w-4 text-slate-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-white">
+              {conversionRate.toFixed(2)}%
+            </div>
+            <p className="text-xs text-orange-400 font-medium mt-1">Views to orders ratio</p>
+          </CardContent>
         </Card>
 
-        <Card className="border-none shadow-xl shadow-slate-200/50 rounded-3xl p-6 bg-white overflow-hidden relative">
-          <div className="absolute top-0 right-0 p-6 opacity-5">
-             <MousePointerClick className="h-12 w-12" />
-          </div>
-          <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Total Events</p>
-          <div className="text-3xl font-black text-slate-900">
-            {analytics?.totalEvents?.toLocaleString() || 0}
-          </div>
-          <div className="mt-4 flex items-center text-[10px] font-bold text-slate-400 bg-slate-50 w-fit px-2 py-1 rounded-full">
-             Event tracking live
-          </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Events</CardTitle>
+            <MousePointerClick className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {analytics?.totalEvents?.toLocaleString() || 0}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Button clicks & interactions</p>
+          </CardContent>
         </Card>
       </div>
 
       {/* Event Breakdown */}
-      <Card className="border-none shadow-xl shadow-slate-200/50 rounded-3xl overflow-hidden bg-white">
-        <CardHeader className="bg-slate-50/50 border-b p-6">
-          <CardTitle className="text-xl font-black text-slate-900 tracking-tight">Event Analysis</CardTitle>
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Interactions over time</p>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Event Analysis</CardTitle>
+          <p className="text-xs text-muted-foreground">Detailed interaction breakdown across the landing page.</p>
         </CardHeader>
-        <CardContent className="p-8">
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={analytics?.eventCounts || []}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-              <XAxis
-                dataKey="event"
-                axisLine={false}
-                tickLine={false}
-                tick={{fontSize: 10, fontWeight: 900, fill: '#94A3B8'}}
-                dy={10}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{fontSize: 10, fontWeight: 900, fill: '#94A3B8'}}
-              />
-              <Tooltip
-                cursor={{fill: '#F8FAF8'}}
-                contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)'}}
-              />
-              <Bar dataKey="_count" fill="#f97316" radius={[8, 8, 0, 0]} barSize={40} />
-            </BarChart>
-          </ResponsiveContainer>
+        <CardContent className="pt-4">
+          <div className="h-[400px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={analytics?.eventCounts || []} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                <XAxis
+                  dataKey="event"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 11, fill: "#64748b" }}
+                  dy={10}
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 11, fill: "#64748b" }}
+                />
+                <Tooltip
+                  cursor={{ fill: "#f1f5f9" }}
+                  contentStyle={{ borderRadius: "8px", border: "1px solid #e2e8f0", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
+                />
+                <Bar dataKey="_count" fill="#f97316" radius={[4, 4, 0, 0]} barSize={32} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </CardContent>
       </Card>
     </div>

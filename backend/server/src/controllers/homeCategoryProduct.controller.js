@@ -28,7 +28,7 @@ exports.getHomeCategoryWiseProduct = async (req, res, next) => {
       },
     });
 
-    console.log('DEBUG: Total categories fetched:', allCategories.length);
+
 
     // Filter for root categories (no parentId) and isHomeShown
     const categories = allCategories.filter((c) => {
@@ -38,7 +38,7 @@ exports.getHomeCategoryWiseProduct = async (req, res, next) => {
       return isRoot && shouldShow;
     });
 
-    console.log('DEBUG: Filtered root categories:', categories.length);
+
 
     // For each category, get products
     const result = await Promise.all(

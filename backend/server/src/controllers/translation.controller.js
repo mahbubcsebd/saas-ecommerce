@@ -1,4 +1,4 @@
-﻿const translationService = require('../services/translation.service');
+const translationService = require('../services/translation.service');
 const { PrismaClient } = require('@prisma/client');
 const prisma = require('../config/prisma');
 

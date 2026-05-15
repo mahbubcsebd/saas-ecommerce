@@ -20,7 +20,9 @@ import {
     Eye,
     Loader2,
     MoreHorizontal,
+    Package,
     Search,
+    ShoppingCart,
     Trash,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -32,7 +34,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
     Card,
-    CardContent
+    CardContent,
+    CardHeader,
+    CardTitle
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -125,6 +129,7 @@ export default function OrdersPage() {
         toast.success(`Successfully updated ${selectedIds.length} orders`);
         fetchOrders();
         setRowSelection({});
+        window.dispatchEvent(new CustomEvent('refresh-sidebar-counts'));
       } else {
         toast.error(res.message || "Bulk update failed");
       }
@@ -291,34 +296,84 @@ export default function OrdersPage() {
   });
 
   return (
-    <div className="w-full space-y-4">
+    <div className="space-y-6 pt-2">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Orders</h1>
-          <p className="text-muted-foreground">Manage and track customer orders.</p>
+          <p className="text-muted-foreground mt-1">Manage and track customer orders across all channels.</p>
         </div>
         <div className="flex items-center gap-2">
             <Button variant="outline" className="hidden md:flex">
-                <Download className="mr-2 h-4 w-4" /> Export
+                <Download className="mr-2 h-4 w-4" /> Export Report
             </Button>
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+      {/* KPI Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{pagination.total || data.length}</div>
+            <p className="text-xs text-muted-foreground">Total orders in system</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pending</CardTitle>
+            <Loader2 className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+                {data.filter(o => o.status === 'PENDING').length}
+            </div>
+            <p className="text-xs text-muted-foreground">Requiring immediate action</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Processing</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+                {data.filter(o => o.status === 'PROCESSING').length}
+            </div>
+            <p className="text-xs text-muted-foreground">Currently being prepared</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Delivered</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+                {data.filter(o => o.status === 'DELIVERED' || o.status === 'COMPLETED').length}
+            </div>
+            <p className="text-xs text-muted-foreground">Successfully fulfilled</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between bg-white p-4 rounded-xl border shadow-sm">
         <div className="flex flex-1 items-center space-x-2 w-full md:max-w-md">
           <div className="relative w-full">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search orders..."
+              placeholder="Search by order #, customer, phone..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8"
+              className="pl-9 bg-slate-50/50 border-none focus-visible:ring-1"
             />
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[150px]">
+            <SelectTrigger className="w-[140px] bg-slate-50/50 border-none">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -332,7 +387,7 @@ export default function OrdersPage() {
           </Select>
 
           <Select value={paymentFilter} onValueChange={setPaymentFilter}>
-            <SelectTrigger className="w-[150px]">
+            <SelectTrigger className="w-[140px] bg-slate-50/50 border-none">
               <SelectValue placeholder="Payment" />
             </SelectTrigger>
             <SelectContent>
@@ -349,7 +404,7 @@ export default function OrdersPage() {
           {Object.keys(rowSelection).length > 0 && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="secondary">
+                <Button variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 border-none">
                   Bulk Actions ({Object.keys(rowSelection).length}) <ChevronDown className="ml-2 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -359,14 +414,14 @@ export default function OrdersPage() {
                 <DropdownMenuItem onClick={() => handleBulkUpdate("SHIPPED")}>Mark as Shipped</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleBulkUpdate("DELIVERED")}>Mark as Delivered</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => handleBulkUpdate("CANCELLED")} className="text-destructive">Cancel Orders</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleBulkUpdate("CANCELLED")} className="text-destructive font-medium">Cancel Orders</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           )}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="ml-auto">
+              <Button variant="outline" size="sm" className="ml-auto border-dashed">
                 Columns <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -393,16 +448,15 @@ export default function OrdersPage() {
         </div>
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <div className="rounded-md border">
+      <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
             <Table>
-              <TableHeader>
+              <TableHeader className="bg-slate-50/50">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
+                  <TableRow key={headerGroup.id} className="hover:bg-transparent">
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id}>
+                        <TableHead key={header.id} className="py-4">
                           {header.isPlaceholder
                             ? null
                             : flexRender(
@@ -418,10 +472,10 @@ export default function OrdersPage() {
               <TableBody>
                 {loading ? (
                   <TableRow>
-                     <TableCell colSpan={columns.length} className="h-24 text-center">
-                        <div className="flex justify-center items-center gap-2">
-                           <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                           <span>Loading orders...</span>
+                     <TableCell colSpan={columns.length} className="h-32 text-center">
+                        <div className="flex flex-col justify-center items-center gap-3">
+                           <Loader2 className="h-8 w-8 animate-spin text-primary/60" />
+                           <span className="text-sm text-muted-foreground font-medium">Fetching orders...</span>
                         </div>
                      </TableCell>
                   </TableRow>
@@ -430,9 +484,10 @@ export default function OrdersPage() {
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && "selected"}
+                      className="group"
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
+                        <TableCell key={cell.id} className="py-4">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
@@ -445,33 +500,35 @@ export default function OrdersPage() {
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      className="h-24 text-center text-muted-foreground"
+                      className="h-32 text-center text-muted-foreground"
                     >
-                      No orders found.
+                      <div className="flex flex-col items-center gap-2">
+                        <ShoppingCart className="h-8 w-8 text-slate-200" />
+                        <p>No orders match your criteria.</p>
+                      </div>
                     </TableCell>
                   </TableRow>
                 )}
               </TableBody>
             </Table>
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <div className="flex items-center justify-between px-2">
-        <div className="flex-1 text-sm text-muted-foreground">
+      <div className="flex items-center justify-between px-2 bg-white p-4 rounded-xl border shadow-sm">
+        <div className="flex-1 text-sm text-muted-foreground font-medium">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {table.getFilteredRowModel().rows.length} row(s) selected
         </div>
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium">Rows per page</p>
+            <p className="text-sm font-medium text-muted-foreground">Rows per page</p>
             <Select
               value={`${pagination.limit}`}
               onValueChange={(value) => {
                 setPagination(p => ({ ...p, limit: Number(value), page: 1 }));
               }}
             >
-              <SelectTrigger className="h-8 w-[70px]">
+              <SelectTrigger className="h-9 w-[70px] border-none bg-slate-50">
                 <SelectValue placeholder={pagination.limit} />
               </SelectTrigger>
               <SelectContent align="end">
@@ -483,13 +540,13 @@ export default function OrdersPage() {
               </SelectContent>
             </Select>
           </div>
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-            Page {pagination.page} of {pagination.pages}
+          <div className="flex w-[100px] items-center justify-center text-sm font-semibold text-slate-700">
+            Page {pagination.page} / {pagination.pages}
           </div>
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 p-0"
               onClick={() => setPagination(p => ({ ...p, page: p.page - 1 }))}
               disabled={pagination.page <= 1}
             >
@@ -498,7 +555,7 @@ export default function OrdersPage() {
             </Button>
             <Button
               variant="outline"
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 p-0"
               onClick={() => setPagination(p => ({ ...p, page: p.page + 1 }))}
               disabled={pagination.page >= pagination.pages}
             >

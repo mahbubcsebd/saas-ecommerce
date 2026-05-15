@@ -23,18 +23,20 @@ import {
     ChevronLeft,
     Loader2,
     Mail,
+    Save,
     Settings
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
-const EMAIL_API = `${API_BASE}/api/email-templates`;
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const EMAIL_API = `${API_BASE}/email-templates`;
 
 export default function EmailTemplateEditorPage() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params?.id as string;
   const router = useRouter();
   const { data: session } = useSession();
   const token = session?.accessToken;
@@ -121,11 +123,9 @@ export default function EmailTemplateEditorPage() {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-slate-50">
-        <div className="text-center space-y-4">
-          <Loader2 className="h-10 w-10 animate-spin text-blue-500 mx-auto" />
-          <p className="text-slate-500 font-medium tracking-tight">Initializing Designer...</p>
-        </div>
+      <div className="h-screen flex flex-col items-center justify-center bg-slate-50">
+        <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+        <p className="text-muted-foreground text-sm font-medium">Initializing Email Designer...</p>
       </div>
     );
   }
@@ -133,62 +133,62 @@ export default function EmailTemplateEditorPage() {
   return (
     <div className="h-screen flex flex-col bg-slate-50 overflow-hidden">
       {/* Top Navigation Bar */}
-      <header className="h-16 border-b bg-white flex items-center justify-between px-6 shrink-0 z-10 shadow-sm">
+      <header className="h-16 border-b bg-background flex items-center justify-between px-6 shrink-0 z-10">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => router.push("/dashboard/email-templates")}>
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => router.push("/dashboard/email-templates")}>
             <ChevronLeft size={20} />
           </Button>
-          <div className="h-8 w-px bg-slate-200" />
+          <div className="h-8 w-px bg-border" />
           <div className="flex flex-col">
-            <h1 className="text-sm font-bold text-slate-900 truncate max-w-[200px] leading-tight">
+            <h1 className="text-sm font-bold text-slate-900 truncate max-w-[300px] leading-tight">
               {form.name || "Untitled Template"}
             </h1>
-            <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">
-              {id === "new" ? "New Draft" : `Last Edited: ${new Date(template?.updatedAt).toLocaleDateString()}`}
+            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+              {id === "new" ? "New Design" : `Last Edited: ${new Date(template?.updatedAt).toLocaleDateString()}`}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm" className="h-9 px-4 rounded-lg bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-600 font-bold">
-                <Settings size={16} className="mr-2" /> Template Settings
+              <Button variant="outline" size="sm" className="h-8">
+                <Settings size={14} className="mr-2" /> Template Settings
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="sm:max-w-[480px]">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
-                  <Mail className="text-blue-500" size={20} />
-                  Email Template Settings
+                  <Mail className="text-blue-500" size={18} />
+                  Email Configuration
                 </DialogTitle>
               </DialogHeader>
-              <div className="grid gap-6 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-slate-400">Template Name</Label>
+              <div className="grid gap-5 py-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="name" className="text-xs font-semibold">Template Name</Label>
                   <Input
                     id="name"
                     value={form.name}
                     onChange={e => setForm({...form, name: e.target.value})}
-                    placeholder="e.g. Black Friday Launch"
-                    className="h-11 bg-slate-50 border-slate-200"
+                    placeholder="e.g. Monthly Newsletter"
+                    className="h-9"
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="subject" className="text-xs font-bold uppercase tracking-widest text-slate-400">Email Subject</Label>
+                <div className="space-y-1.5">
+                  <Label htmlFor="subject" className="text-xs font-semibold">Default Subject Line</Label>
                   <Input
                     id="subject"
                     value={form.subject}
                     onChange={e => setForm({...form, subject: e.target.value})}
-                    placeholder="e.g. Get 20% off your next purchase!"
-                    className="h-11 bg-slate-50 border-slate-200"
+                    placeholder="e.g. Check out our latest updates!"
+                    className="h-9"
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="type" className="text-xs font-bold uppercase tracking-widest text-slate-400">System Category</Label>
+                <div className="space-y-1.5">
+                  <Label htmlFor="type" className="text-xs font-semibold">Template Category</Label>
                   <Select value={form.type} onValueChange={v => setForm({...form, type: v})}>
-                    <SelectTrigger className="h-11 bg-slate-50 border-slate-200">
-                      <SelectValue placeholder="Custom Template (Default)" />
+                    <SelectTrigger className="h-9">
+                      <SelectValue placeholder="Custom Template" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="CUSTOM">Custom Template</SelectItem>
@@ -198,42 +198,48 @@ export default function EmailTemplateEditorPage() {
                       <SelectItem value="WELCOME_EMAIL">Welcome Email</SelectItem>
                       <SelectItem value="PASSWORD_RESET">Password Reset</SelectItem>
                       <SelectItem value="PROMOTION">Promotional / Sale</SelectItem>
-                      <SelectItem value="USER_DIRECT">User Direct Message</SelectItem>
                     </SelectContent>
                   </Select>
-                  <p className="text-[10px] text-slate-400 italic">Selecting a category links this design to specific system events.</p>
+                  <p className="text-[10px] text-muted-foreground">Category determines where this template can be used.</p>
                 </div>
               </div>
               <DialogFooter>
-                <Button onClick={() => setIsSettingsOpen(false)} className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold h-11 rounded-xl">
+                <Button onClick={() => setIsSettingsOpen(false)} className="w-full h-9">
                   Done
                 </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
+          <div className="h-8 w-px bg-border mx-1" />
+          <Button size="sm" className="h-8 bg-blue-600 hover:bg-blue-700" disabled={saving}>
+             <Save className="h-3.5 w-3.5 mr-2" />
+             {saving ? "Saving..." : "Save Template"}
+          </Button>
         </div>
       </header>
 
       {/* Builder Main View */}
-      <main className="flex-1 overflow-hidden p-6 relative">
-        <EmailBuilder
-          initialData={template ? { html: template.body, design: template.design } : undefined}
-          onSave={handleSaveDesign}
-          variables={template?.variables || [
-            { key: "customer_name", label: "Customer Name" },
-            { key: "order_number", label: "Order Number" },
-            { key: "order_total", label: "Order Total" },
-            { key: "shop_link", label: "Shop Link" },
-            { key: "reset_link", label: "Reset Link" }
-          ]}
-        />
+      <main className="flex-1 overflow-hidden p-6 bg-slate-100/50 relative">
+        <div className="h-full rounded-xl border bg-background shadow-sm overflow-hidden">
+          <EmailBuilder
+            initialData={template ? { html: template.body, design: template.design } : undefined}
+            onSave={handleSaveDesign}
+            variables={template?.variables || [
+              { key: "customer_name", label: "Customer Name" },
+              { key: "order_number", label: "Order Number" },
+              { key: "order_total", label: "Order Total" },
+              { key: "shop_link", label: "Shop Link" },
+              { key: "reset_link", label: "Reset Link" }
+            ]}
+          />
+        </div>
       </main>
 
-      {/* Floating Status (Optional) */}
+      {/* Floating Status */}
       {saving && (
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-2.5 rounded-full shadow-2xl flex items-center gap-3 animate-bounce z-50 border border-white/20">
-          <Loader2 className="animate-spin h-4 w-4" />
-          <span className="text-xs font-bold tracking-tight">Syncing Changes...</span>
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-2 rounded-full shadow-2xl flex items-center gap-3 z-50 border border-white/10 animate-in fade-in slide-in-from-bottom-4">
+          <Loader2 className="animate-spin h-3.5 w-3.5" />
+          <span className="text-xs font-bold">Saving changes...</span>
         </div>
       )}
     </div>

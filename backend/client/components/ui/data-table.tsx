@@ -46,10 +46,10 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 px-1">
         <Input
           placeholder={`Search ${searchKey}...`}
-          value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ''}
+          value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn(searchKey)?.setFilterValue(event.target.value)
           }
@@ -58,7 +58,7 @@ export function DataTable<TData, TValue>({
       </div>
       <ScrollArea className="rounded-md border h-[calc(80vh-220px)]">
         <Table className="relative">
-          <TableHeader>
+          <TableHeader className="bg-muted/50">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {

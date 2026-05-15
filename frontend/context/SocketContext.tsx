@@ -27,7 +27,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   useEffect(() => {
     if (session?.accessToken) {
       const socketUrl =
-        process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
+        process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
       const socketInstance = io(socketUrl, {
         auth: {

@@ -395,6 +395,7 @@ exports.login = asyncHandler(async (req, res) => {
 
   // Send Login Notification (Non-blocking)
   setImmediate(() => {
+    /*
     NotificationService.notifyUser(
       user.id,
       'LOGIN_NEW_DEVICE', // Simplified: treating all logins as potentially new for now or just identifying it
@@ -402,6 +403,7 @@ exports.login = asyncHandler(async (req, res) => {
       `Login from ${req.headers['user-agent'] || 'Unknown Device'}`,
       { time: new Date() }
     ).catch((err) => console.error('Login notification error:', err));
+    */
 
     // Also notify admins if it's a staff member login
     if (['ADMIN', 'SUPER_ADMIN', 'MANAGER'].includes(user.role)) {

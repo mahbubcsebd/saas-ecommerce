@@ -1,0 +1,987 @@
+{
+  "timestamp": "2026-05-11T03:41:00.113Z",
+  "version": "1.0",
+  "type": "scheduled",
+  "data": {
+    "user": [
+      {
+        "id": "6a000b0d634476b3ec4de57b",
+        "avatar": null,
+        "firstName": "Super",
+        "lastName": "Admin",
+        "email": "admin@mahbubshop.com",
+        "username": "admin",
+        "password": "$2b$10$nek0zcgFEb68H6FB3KrcnO4suanWS5V33us1zmd9vRxqgowSCwMbe",
+        "role": "ADMIN",
+        "isActive": true,
+        "status": "ACTIVE",
+        "permissions": [],
+        "customRoleId": null,
+        "groupId": null,
+        "invitationToken": null,
+        "invitationSentAt": null,
+        "invitationExpiry": null,
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "isEmailVerified": true,
+        "emailVerifiedAt": null,
+        "emailVerificationToken": null,
+        "emailVerificationTokenExpiry": null,
+        "phone": null,
+        "address": null,
+        "website": null,
+        "bio": null,
+        "dob": null,
+        "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTAwMGIwZDYzNDQ3NmIzZWM0ZGU1N2IiLCJpYXQiOjE3NzgzODgwODgsImV4cCI6MTc3ODk5Mjg4OH0._tJMDb0KdvxKXpVNCPCPv9_kB0y2uTOubvPoG95cXrQ",
+        "refreshTokenExpires": null,
+        "createdAt": "2026-05-10T04:35:25.214Z",
+        "updatedAt": "2026-05-10T10:35:55.582Z",
+        "createdBy": null,
+        "conversationIds": [],
+        "isOnline": true,
+        "lastSeen": "2026-05-10T10:35:55.581Z",
+        "socketId": "z6mtjnsSpAf1_KpkAAAF"
+      },
+      {
+        "id": "6a000b0d634476b3ec4de57c",
+        "avatar": null,
+        "firstName": "Demo",
+        "lastName": "Customer",
+        "email": "customer@mahbubshop.com",
+        "username": "customer",
+        "password": "$2b$10$nek0zcgFEb68H6FB3KrcnO4suanWS5V33us1zmd9vRxqgowSCwMbe",
+        "role": "CUSTOMER",
+        "isActive": true,
+        "status": "ACTIVE",
+        "permissions": [],
+        "customRoleId": null,
+        "groupId": null,
+        "invitationToken": null,
+        "invitationSentAt": null,
+        "invitationExpiry": null,
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "isEmailVerified": true,
+        "emailVerifiedAt": null,
+        "emailVerificationToken": null,
+        "emailVerificationTokenExpiry": null,
+        "phone": null,
+        "address": null,
+        "website": null,
+        "bio": null,
+        "dob": null,
+        "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTAwMGIwZDYzNDQ3NmIzZWM0ZGU1N2MiLCJpYXQiOjE3Nzg0MDczMjYsImV4cCI6MTc3OTAxMjEyNn0.5VCBuBz_xqdnzwfJdYfZWKL3S4Vol3XQK15qbO5Wp08",
+        "refreshTokenExpires": null,
+        "createdAt": "2026-05-10T04:35:25.854Z",
+        "updatedAt": "2026-05-10T10:31:58.741Z",
+        "createdBy": null,
+        "conversationIds": [],
+        "isOnline": true,
+        "lastSeen": "2026-05-10T10:31:58.740Z",
+        "socketId": "28IcY5ZcBbvyI7fGAAAD"
+      }
+    ],
+    "product": [
+      {
+        "id": "6a000b10634476b3ec4de584",
+        "name": "iPhone 15 Pro Max",
+        "slug": "iphone-15-pro",
+        "description": "The latest Titanium iPhone.",
+        "basePrice": 120000,
+        "sellingPrice": 115000,
+        "costPrice": null,
+        "sku": "IP15PM-001",
+        "barcode": "1234567890",
+        "stock": 49,
+        "minStockLevel": 5,
+        "lowStockAlert": 10,
+        "trackInventory": true,
+        "images": [],
+        "categoryId": "6a000b0e634476b3ec4de57f",
+        "brand": "Apple",
+        "tags": [],
+        "weight": null,
+        "length": null,
+        "width": null,
+        "height": null,
+        "status": "PUBLISHED",
+        "isNewArrival": false,
+        "isFeatured": false,
+        "isHomeShown": false,
+        "homeOrder": 0,
+        "isFreeShipping": false,
+        "isPreOrder": false,
+        "warranty": null,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "ogImage": null,
+        "viewCount": 11,
+        "soldCount": 1,
+        "numReviews": 0,
+        "rating": 0,
+        "createdAt": "2026-05-10T04:35:28.365Z",
+        "updatedAt": "2026-05-10T10:02:30.542Z",
+        "taxClassId": null,
+        "createdById": null
+      }
+    ],
+    "productVariant": [
+      {
+        "id": "6a000b10634476b3ec4de585",
+        "productId": "6a000b10634476b3ec4de584",
+        "name": "Black - 256GB",
+        "sku": "IP15PM-BLK-256",
+        "barcode": "VAR-IP15PM-BLK",
+        "basePrice": null,
+        "sellingPrice": 115000,
+        "costPrice": null,
+        "stock": 25,
+        "minStockLevel": 2,
+        "attributes": null,
+        "images": [],
+        "isActive": true,
+        "isFreeShipping": null,
+        "isPreOrder": null,
+        "warranty": null,
+        "createdAt": "2026-05-10T04:35:28.365Z",
+        "updatedAt": "2026-05-10T04:35:28.365Z"
+      },
+      {
+        "id": "6a000b10634476b3ec4de586",
+        "productId": "6a000b10634476b3ec4de584",
+        "name": "White - 256GB",
+        "sku": "IP15PM-WHT-256",
+        "barcode": "VAR-IP15PM-WHT",
+        "basePrice": null,
+        "sellingPrice": 115000,
+        "costPrice": null,
+        "stock": 25,
+        "minStockLevel": 2,
+        "attributes": null,
+        "images": [],
+        "isActive": true,
+        "isFreeShipping": null,
+        "isPreOrder": null,
+        "warranty": null,
+        "createdAt": "2026-05-10T04:35:28.365Z",
+        "updatedAt": "2026-05-10T04:35:28.365Z"
+      }
+    ],
+    "category": [
+      {
+        "id": "6a000b0e634476b3ec4de57e",
+        "name": "Electronics",
+        "slug": "electronics",
+        "image": null,
+        "icon": null,
+        "description": null,
+        "isHomeShown": false,
+        "order": 0,
+        "isActive": true,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "parentId": null,
+        "createdAt": "2026-05-10T04:35:26.146Z",
+        "updatedAt": "2026-05-10T04:50:59.858Z",
+        "createdById": null
+      },
+      {
+        "id": "6a000b0e634476b3ec4de57f",
+        "name": "Smartphones",
+        "slug": "smartphones",
+        "image": null,
+        "icon": null,
+        "description": null,
+        "isHomeShown": false,
+        "order": 0,
+        "isActive": true,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "parentId": null,
+        "createdAt": "2026-05-10T04:35:26.772Z",
+        "updatedAt": "2026-05-10T04:50:59.858Z",
+        "createdById": null
+      },
+      {
+        "id": "6a000b0e634476b3ec4de580",
+        "name": "Clothing",
+        "slug": "clothing",
+        "image": null,
+        "icon": null,
+        "description": null,
+        "isHomeShown": false,
+        "order": 0,
+        "isActive": true,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "parentId": "6a000b0e634476b3ec4de57e",
+        "createdAt": "2026-05-10T04:35:26.949Z",
+        "updatedAt": "2026-05-10T04:51:06.459Z",
+        "createdById": null
+      },
+      {
+        "id": "6a000fd07810dc5714bdabfc",
+        "name": "Pharmacy",
+        "slug": "pharmacy",
+        "image": "https://res.cloudinary.com/dfigg4e5e/image/upload/v1778388943/ecommerce/categories/x3tsl8q4j78w7owntypm.webp",
+        "icon": null,
+        "description": "",
+        "isHomeShown": true,
+        "order": 0,
+        "isActive": true,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "parentId": null,
+        "createdAt": "2026-05-10T04:55:44.373Z",
+        "updatedAt": "2026-05-10T04:55:44.373Z",
+        "createdById": null
+      }
+    ],
+    "order": [
+      {
+        "id": "6a000b12634476b3ec4de58e",
+        "orderNumber": "ORD-290805",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": null,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 60,
+        "shippingAddress": {
+          "name": "Demo",
+          "address": "Dhaka",
+          "phone": "01700000000"
+        },
+        "billingAddress": null,
+        "shippingZoneId": null,
+        "shippingRateId": null,
+        "shippingMethod": null,
+        "total": 115060,
+        "dueAmount": 0,
+        "appliedCoupon": null,
+        "couponDiscount": 0,
+        "paymentMethod": "ONLINE",
+        "paymentStatus": "PAID",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "DELIVERED",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": null,
+        "notes": null,
+        "createdAt": "2026-05-10T04:35:30.937Z",
+        "updatedAt": "2026-05-10T04:35:30.937Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a0057b6c700b37231b0a9af",
+        "orderNumber": "ORD-20260510-M9T6G",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": 0,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 60,
+        "shippingAddress": {
+          "street": "Baruntek",
+          "city": "Farmgate",
+          "state": "",
+          "zipCode": "1215",
+          "country": "BD"
+        },
+        "billingAddress": null,
+        "shippingZoneId": "6a000b0c634476b3ec4de575",
+        "shippingRateId": "6a000b0c634476b3ec4de576",
+        "shippingMethod": "Inside Dhaka",
+        "total": 115060,
+        "dueAmount": 115060,
+        "appliedCoupon": "",
+        "couponDiscount": 0,
+        "paymentMethod": "COD",
+        "paymentStatus": "PENDING",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "COMPLETED",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": "INV-20260510-BVHW82",
+        "notes": null,
+        "createdAt": "2026-05-10T10:02:30.161Z",
+        "updatedAt": "2026-05-10T10:33:55.235Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      }
+    ],
+    "orderItem": [
+      {
+        "id": "6a000b13634476b3ec4de58f",
+        "orderId": "6a000b12634476b3ec4de58e",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": null,
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-10T04:35:30.937Z",
+        "updatedAt": "2026-05-10T04:35:30.937Z"
+      },
+      {
+        "id": "6a0057b6c700b37231b0a9b0",
+        "orderId": "6a0057b6c700b37231b0a9af",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": "IP15PM-001",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-10T10:02:30.161Z",
+        "updatedAt": "2026-05-10T10:02:30.161Z"
+      }
+    ],
+    "cart": [
+      {
+        "id": "69a12fc31cab472fa33dd0d6",
+        "userId": null,
+        "sessionId": "test-guest-1772171202550",
+        "appliedCoupon": null,
+        "discountAmount": 0,
+        "subtotal": 0,
+        "total": 0,
+        "createdAt": "2026-02-27T05:46:43.433Z",
+        "updatedAt": "2026-02-27T05:46:43.433Z",
+        "recoveryEmailSentAt": null,
+        "recoveryEmailCount": 0,
+        "isRecovered": false
+      },
+      {
+        "id": "69a231dacfa281dae595f997",
+        "userId": null,
+        "sessionId": "709361f1-3e81-4731-a4f8-8166bfdcd55d",
+        "appliedCoupon": null,
+        "discountAmount": 0,
+        "subtotal": 0,
+        "total": 0,
+        "createdAt": "2026-02-28T00:07:54.459Z",
+        "updatedAt": "2026-02-28T00:07:54.459Z",
+        "recoveryEmailSentAt": null,
+        "recoveryEmailCount": 0,
+        "isRecovered": false
+      }
+    ],
+    "cartItem": [],
+    "discount": [
+      {
+        "id": "6a000b11634476b3ec4de588",
+        "name": "Welcome Bonus",
+        "code": "WELCOME50",
+        "description": null,
+        "type": "FLAT",
+        "applicableOn": "CART",
+        "value": 50,
+        "buyQuantity": 0,
+        "getQuantity": 0,
+        "startDate": "2026-05-10T04:35:28.586Z",
+        "endDate": "2027-05-10T04:35:28.586Z",
+        "isActive": true,
+        "usageLimit": 100,
+        "usageCount": 0,
+        "perUserLimit": 1,
+        "minOrderValue": 500,
+        "maxDiscountCap": null,
+        "categoryIds": [],
+        "brandNames": [],
+        "allowedCountries": [],
+        "excludedProducts": [],
+        "allowedUserIds": [],
+        "allowedGroupIds": [],
+        "newUsersOnly": false,
+        "priority": 0,
+        "isStackable": false,
+        "createdAt": "2026-05-10T04:35:28.683Z",
+        "updatedAt": "2026-05-10T04:35:28.683Z"
+      }
+    ],
+    "review": [],
+    "supplier": [
+      {
+        "id": "6a000b0f634476b3ec4de582",
+        "name": "Tech Wholesalers BD",
+        "contactPerson": "Mr. Rahim",
+        "email": "rahim@techwholesale.bd",
+        "phone": "01800000000",
+        "address": "Motijheel, Dhaka",
+        "isActive": true,
+        "dueBalance": 0,
+        "createdAt": "2026-05-10T04:35:27.263Z",
+        "updatedAt": "2026-05-10T04:35:27.263Z"
+      }
+    ],
+    "purchase": [],
+    "purchaseItem": [],
+    "returnRequest": [],
+    "invoice": [
+      {
+        "id": "6a0057fdc700b37231b0a9b8",
+        "invoiceNumber": "INV-000001",
+        "orderId": "6a0057b6c700b37231b0a9af",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "amount": 115060,
+        "issueDate": "2026-05-10T10:03:41.961Z",
+        "dueDate": "2026-05-25T10:03:41.961Z",
+        "paidDate": null,
+        "status": "PENDING",
+        "createdAt": "2026-05-10T10:03:41.962Z",
+        "updatedAt": "2026-05-10T10:03:41.962Z"
+      }
+    ],
+    "address": [],
+    "wishlist": [],
+    "stockMovement": [
+      {
+        "id": "6a0057b6c700b37231b0a9b1",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 50,
+        "newQty": 49,
+        "reason": "Order ORD-20260510-M9T6G",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57c",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-10T10:02:30.737Z"
+      }
+    ],
+    "damageReport": [],
+    "shippingZone": [
+      {
+        "id": "6a000b0c634476b3ec4de575",
+        "name": "Inside Dhaka",
+        "countries": [],
+        "regions": [
+          "Dhaka"
+        ],
+        "isActive": true,
+        "priority": 0,
+        "createdAt": "2026-05-10T04:35:24.620Z",
+        "updatedAt": "2026-05-10T04:35:24.620Z"
+      },
+      {
+        "id": "6a000b0c634476b3ec4de578",
+        "name": "Outside Dhaka",
+        "countries": [],
+        "regions": [
+          "All BD"
+        ],
+        "isActive": true,
+        "priority": 0,
+        "createdAt": "2026-05-10T04:35:24.809Z",
+        "updatedAt": "2026-05-10T04:35:24.809Z"
+      }
+    ],
+    "shippingRate": [
+      {
+        "id": "6a000b0c634476b3ec4de576",
+        "zoneId": "6a000b0c634476b3ec4de575",
+        "method": "Standard Delivery",
+        "carrier": null,
+        "courierId": null,
+        "calculationType": "FLAT",
+        "flatRate": 60,
+        "baseRate": null,
+        "perKgRate": null,
+        "freeShippingThreshold": null,
+        "minWeight": null,
+        "maxWeight": null,
+        "minOrderValue": null,
+        "estimatedDays": null,
+        "isActive": true,
+        "createdAt": "2026-05-10T04:35:24.620Z",
+        "updatedAt": "2026-05-10T04:35:24.620Z"
+      },
+      {
+        "id": "6a000b0c634476b3ec4de577",
+        "zoneId": "6a000b0c634476b3ec4de575",
+        "method": "Express Delivery",
+        "carrier": null,
+        "courierId": null,
+        "calculationType": "FLAT",
+        "flatRate": 120,
+        "baseRate": null,
+        "perKgRate": null,
+        "freeShippingThreshold": null,
+        "minWeight": null,
+        "maxWeight": null,
+        "minOrderValue": null,
+        "estimatedDays": null,
+        "isActive": true,
+        "createdAt": "2026-05-10T04:35:24.620Z",
+        "updatedAt": "2026-05-10T04:35:24.620Z"
+      },
+      {
+        "id": "6a000b0c634476b3ec4de579",
+        "zoneId": "6a000b0c634476b3ec4de578",
+        "method": "Standard Delivery",
+        "carrier": null,
+        "courierId": null,
+        "calculationType": "FLAT",
+        "flatRate": 120,
+        "baseRate": null,
+        "perKgRate": null,
+        "freeShippingThreshold": null,
+        "minWeight": null,
+        "maxWeight": null,
+        "minOrderValue": null,
+        "estimatedDays": null,
+        "isActive": true,
+        "createdAt": "2026-05-10T04:35:24.809Z",
+        "updatedAt": "2026-05-10T04:35:24.809Z"
+      }
+    ],
+    "courier": [],
+    "campaign": [
+      {
+        "id": "699a4ba6311e127d41715236",
+        "name": "ddd",
+        "subject": "test",
+        "type": "EMAIL",
+        "status": "SENT",
+        "content": "sssss",
+        "template": null,
+        "targetType": "ALL",
+        "targetGroupIds": [],
+        "targetUserIds": [],
+        "scheduledAt": null,
+        "sentAt": "2026-02-22T00:20:02.885Z",
+        "totalRecipients": 2,
+        "sentCount": 2,
+        "openCount": 0,
+        "failedCount": 0,
+        "createdAt": "2026-02-22T00:19:50.031Z",
+        "updatedAt": "2026-02-22T00:20:02.888Z"
+      },
+      {
+        "id": "699a4dc9311e127d41715239",
+        "name": "ddd",
+        "subject": "ddd",
+        "type": "EMAIL",
+        "status": "SENT",
+        "content": "<!DOCTYPE html>\n<html>\n<head><meta charset=\"utf-8\"></head>\n<body style=\"margin:0;padding:0;background:#faf5ff;font-family:Arial,sans-serif;\">\n  <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n    <tr><td align=\"center\" style=\"padding:40px 20px;\">\n      <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.08);\">\n        <tr><td style=\"background:linear-gradient(135deg,#7c3aed,#db2777);padding:50px 40px;text-align:center;\">\n          <p style=\"margin:0 0 8px;color:rgba(255,255,255,.8);font-size:13px;text-transform:uppercase;letter-spacing:3px;font-weight:600;\">Just Arrived</p>\n          <h1 style=\"color:#fff;margin:0;font-size:30px;font-weight:800;\">New Collection Is Here ✨</h1>\n        </td></tr>\n        <tr><td style=\"padding:40px;\">\n          <p style=\"font-size:15px;color:#4b5563;line-height:1.7;margin:0 0 28px;\">We've just added exciting new products to our store. Be the first to explore our latest collection and find your next favourite item.</p>\n          <div style=\"background:#faf5ff;border-radius:8px;padding:20px;text-align:center;margin-bottom:28px;\">\n            <p style=\"margin:0;font-size:24px;font-weight:800;color:#7c3aed;\">50+ New Products</p>\n            <p style=\"margin:4px 0 0;font-size:13px;color:#6b7280;\">Added this week</p>\n          </div>\n          <div style=\"text-align:center;margin:20px 0;\">\n            <a href=\"#\" style=\"background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;text-decoration:none;padding:16px 40px;border-radius:8px;font-weight:700;font-size:16px;display:inline-block;\">Explore Now →</a>\n          </div>\n        </td></tr>\n        <tr><td style=\"background:#f9fafb;padding:20px 40px;text-align:center;border-top:1px solid #e5e7eb;\">\n          <p style=\"margin:0;font-size:12px;color:#9ca3af;\">Mahbub Shop · <a href=\"#\" style=\"color:#6b7280;\">Unsubscribe</a></p>\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n</body>\n</html>",
+        "template": null,
+        "targetType": "ALL",
+        "targetGroupIds": [],
+        "targetUserIds": [],
+        "scheduledAt": null,
+        "sentAt": "2026-02-22T00:29:08.274Z",
+        "totalRecipients": 2,
+        "sentCount": 2,
+        "openCount": 0,
+        "failedCount": 0,
+        "createdAt": "2026-02-22T00:28:57.890Z",
+        "updatedAt": "2026-02-22T00:29:08.275Z"
+      }
+    ],
+    "notification": [
+      {
+        "id": "6a000c79864bdb2e2c74cfe6",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-10T04:41:29.224Z"
+      },
+      {
+        "id": "6a000c79864bdb2e2c74cfe7",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "LOGIN_NEW_DEVICE",
+        "title": "New Login Detected",
+        "message": "Login from node",
+        "data": {
+          "time": "2026-05-10T04:41:29.174Z"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-10T04:41:29.177Z"
+      },
+      {
+        "id": "6a00579fc700b37231b0a9ad",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "LOGIN_NEW_DEVICE",
+        "title": "New Login Detected",
+        "message": "Login from node",
+        "data": {
+          "time": "2026-05-10T10:02:07.362Z"
+        },
+        "isRead": true,
+        "readAt": "2026-05-10T10:26:21.007Z",
+        "createdAt": "2026-05-10T10:02:07.364Z"
+      },
+      {
+        "id": "6a0057b7c700b37231b0a9b2",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#ORD-20260510-M9T6G · iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-10T10:02:31.098Z"
+      },
+      {
+        "id": "6a005ef0c839aea5116735c9",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_PROCESSING",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G is being packed.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-10T10:33:20.264Z"
+      },
+      {
+        "id": "6a005f0cc839aea5116735cd",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_DELIVERED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G has been delivered.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-10T10:33:48.199Z"
+      },
+      {
+        "id": "6a005f13c839aea5116735ce",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_DELIVERED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G is completed.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-10T10:33:55.614Z"
+      }
+    ],
+    "conversation": [],
+    "chatMessage": [],
+    "heroSlide": [
+      {
+        "id": "6a0043167810dc5714bdac17",
+        "image": "https://res.cloudinary.com/dfigg4e5e/image/upload/v1778402069/ecommerce/hero/invbvnxkueihyynlfutn.webp",
+        "title": "Grocery",
+        "subtitle": "online shop with your trust",
+        "linkType": "PRODUCT",
+        "linkValue": "6a000b10634476b3ec4de584",
+        "isActive": true,
+        "startDate": null,
+        "endDate": null,
+        "order": 0,
+        "createdAt": "2026-05-10T08:34:30.003Z",
+        "updatedAt": "2026-05-10T08:49:35.772Z"
+      },
+      {
+        "id": "6a00443c7810dc5714bdac2b",
+        "image": "https://res.cloudinary.com/dfigg4e5e/image/upload/v1778402363/ecommerce/hero/qsjopdk6evkbtis6jg3m.webp",
+        "title": "Electronics",
+        "subtitle": "",
+        "linkType": "PRODUCT",
+        "linkValue": "6a000b10634476b3ec4de584",
+        "isActive": true,
+        "startDate": null,
+        "endDate": null,
+        "order": 1,
+        "createdAt": "2026-05-10T08:39:24.164Z",
+        "updatedAt": "2026-05-10T08:39:24.164Z"
+      }
+    ],
+    "emailTemplate": [
+      {
+        "id": "699abc582fcedbc07d87496a",
+        "name": "Order Confirmation",
+        "subject": "Thank you for your order! #{{order_number}}",
+        "type": "ORDER_CONFIRMATION",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee;\">\n        <h2 style=\"color: #333;\">Hello {{customer_name}},</h2>\n        <p>Your order <strong>#{{order_number}}</strong> has been confirmed!</p>\n        <div style=\"background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0;\">\n          {{order_items}}\n        </div>\n        <p style=\"font-size: 18px; font-weight: bold;\">Total: {{order_total}} BDT</p>\n        <p>We'll notify you when your items are on their way.</p>\n        <footer style=\"margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; font-size: 12px; color: #888;\">\n          Mahbub Shop | Powered by Saas Ecommerce\n        </footer>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "order_number",
+            "label": "Order Number"
+          },
+          {
+            "key": "order_total",
+            "label": "Order Total"
+          },
+          {
+            "key": "order_items",
+            "label": "Order Items Table"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:20:39.630Z",
+        "updatedAt": "2026-02-22T08:20:39.630Z"
+      },
+      {
+        "id": "699abc582fcedbc07d87496b",
+        "name": "Welcome Email",
+        "subject": "Welcome to Mahbub Shop, {{customer_name}}!",
+        "type": "WELCOME_EMAIL",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 40px; text-align: center;\">\n        <h1 style=\"color: #4f46e5;\">Welcome aboard!</h1>\n        <p style=\"font-size: 16px; color: #666;\">Hi {{customer_name}}, we're thrilled to have you with us.</p>\n        <a href=\"{{shop_link}}\" style=\"display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; margin-top: 20px;\">Start Shopping</a>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "shop_link",
+            "label": "Shop Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:20:40.691Z",
+        "updatedAt": "2026-02-22T08:20:40.691Z"
+      },
+      {
+        "id": "699abc592fcedbc07d87496c",
+        "name": "Password Reset",
+        "subject": "Reset your password",
+        "type": "PASSWORD_RESET",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px;\">\n        <h3>Hello {{customer_name}},</h3>\n        <p>You requested a password reset. Click the button below to set a new password:</p>\n        <a href=\"{{reset_link}}\" style=\"display: inline-block; background: #ef4444; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none;\">Reset Password</a>\n        <p style=\"margin-top: 20px; font-size: 12px; color: #999;\">If you didn't request this, you can safely ignore this email.</p>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "reset_link",
+            "label": "Reset Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:20:41.314Z",
+        "updatedAt": "2026-02-22T08:20:41.314Z"
+      },
+      {
+        "id": "699ac092648676575dfdbcc7",
+        "name": "Modern Welcome with Coupon",
+        "subject": "Welcome to Mahbub Shop! Unlock your 10% discount.",
+        "type": "WELCOME_EMAIL",
+        "body": "\n      <div style=\"font-family: 'Inter', sans-serif; max-width: 600px; margin: auto; padding: 40px; background: #ffffff; border: 1px solid #f1f5f9; border-radius: 16px;\">\n        <h1 style=\"color: #4f46e5; text-align: center; font-size: 32px;\">Welcome, {{customer_name}}!</h1>\n        <p style=\"text-align: center; color: #64748b; line-height: 1.6;\">We're so glad you're here. As a token of our appreciation, here's a special gift just for you:</p>\n        <div style=\"background: #f5f3ff; border: 2px dashed #c084fc; padding: 20px; text-align: center; margin: 30px 0; border-radius: 12px;\">\n          <span style=\"font-size: 14px; color: #7c3aed; font-weight: bold; display: block; margin-bottom: 5px;\">YOUR CODE</span>\n          <span style=\"font-size: 24px; color: #1e1b4b; font-weight: 900; letter-spacing: 2px;\">{{coupon_code}}</span>\n        </div>\n        <div style=\"text-align: center;\">\n          <a href=\"{{shop_link}}\" style=\"background: #4f46e5; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);\">Start Exploring</a>\n        </div>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "coupon_code",
+            "label": "Coupon Code"
+          },
+          {
+            "key": "shop_link",
+            "label": "Shop Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:41.690Z",
+        "updatedAt": "2026-02-22T08:38:41.690Z"
+      },
+      {
+        "id": "699ac092648676575dfdbcc8",
+        "name": "Minimalist Welcome",
+        "subject": "G'day from Mahbub Shop!",
+        "type": "WELCOME_EMAIL",
+        "body": "\n      <div style=\"font-family: serif; max-width: 600px; margin: auto; padding: 40px; color: #334155;\">\n        <p>Dear {{customer_name}},</p>\n        <p>Welcome to the family. We hope you find exactly what you're looking for.</p>\n        <p>Best,<br>The Team</p>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:42.779Z",
+        "updatedAt": "2026-02-22T08:38:42.779Z"
+      },
+      {
+        "id": "699ac093648676575dfdbcc9",
+        "name": "Visual Order Confirmation",
+        "subject": "Order Confirmed: #{{order_number}}",
+        "type": "ORDER_CONFIRMATION",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;\">\n        <div style=\"background: #1e293b; color: white; padding: 30px; text-align: center;\">\n          <h2 style=\"margin: 0;\">Thanks for your order!</h2>\n          <p style=\"opacity: 0.8; font-size: 14px; margin-top: 5px;\">#{{order_number}}</p>\n        </div>\n        <div style=\"padding: 30px;\">\n          <p>Hi {{customer_name}}, we've received your order and are getting it ready.</p>\n          <div style=\"margin: 20px 0;\">{{order_items}}</div>\n          <div style=\"border-top: 2px solid #f8fafc; padding-top: 20px; text-align: right;\">\n            <p style=\"font-size: 20px; font-weight: bold;\">Total: {{order_total}} BDT</p>\n          </div>\n        </div>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "order_number",
+            "label": "Order Number"
+          },
+          {
+            "key": "order_items",
+            "label": "Order Items (HTML)"
+          },
+          {
+            "key": "order_total",
+            "label": "Order Total"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:43.080Z",
+        "updatedAt": "2026-02-22T08:38:43.080Z"
+      },
+      {
+        "id": "699ac093648676575dfdbcca",
+        "name": "Flash Sale Alert",
+        "subject": "🔥 FLASH SALE IS LIVE!",
+        "type": "PROMOTION",
+        "body": "\n      <div style=\"font-family: 'Arial Black', sans-serif; max-width: 600px; margin: auto; text-align: center; background: #000; color: #fff; padding: 50px 20px;\">\n        <h1 style=\"font-size: 48px; color: #ffeb3b; margin: 0;\">{{discount_percentage}}% OFF</h1>\n        <h2 style=\"font-size: 24px; margin-top: 10px;\">{{sale_title}}</h2>\n        <p style=\"font-family: sans-serif; opacity: 0.8; margin: 30px 0;\">Limited time only. Don't miss out on these incredible deals.</p>\n        <a href=\"{{shop_link}}\" style=\"background: #ffffff; color: #000; padding: 15px 40px; border-radius: 4px; text-decoration: none; font-weight: bold; text-transform: uppercase;\">Shop Now</a>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "sale_title",
+            "label": "Sale Title"
+          },
+          {
+            "key": "discount_percentage",
+            "label": "Discount %"
+          },
+          {
+            "key": "shop_link",
+            "label": "Shop Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:43.489Z",
+        "updatedAt": "2026-02-22T08:38:43.489Z"
+      },
+      {
+        "id": "699ac093648676575dfdbccb",
+        "name": "Direct Message from Support",
+        "subject": "Regarding your recent query",
+        "type": "USER_DIRECT",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 30px; border-left: 4px solid #3b82f6; background: #f8fafc;\">\n        <h3 style=\"color: #1e293b; margin-top: 0;\">Hello {{customer_name}},</h3>\n        <p style=\"color: #475569; line-height: 1.7; white-space: pre-line;\">{{support_message}}</p>\n        <p style=\"font-size: 11px; color: #94a3b8; margin-top: 40px;\">Reference Ticket: #{{ticket_id}}</p>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "support_message",
+            "label": "Support Message Content"
+          },
+          {
+            "key": "ticket_id",
+            "label": "Ticket ID"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:43.799Z",
+        "updatedAt": "2026-02-22T08:38:43.799Z"
+      },
+      {
+        "id": "699ac094648676575dfdbccc",
+        "name": "Account Status Update",
+        "subject": "Important update about your account",
+        "type": "USER_DIRECT",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 30px; text-align: center;\">\n        <div style=\"background: #fffbeb; border: 1px solid #fde68a; padding: 20px; border-radius: 12px;\">\n          <h2 style=\"color: #92400e; margin-top: 0;\">Account Update</h2>\n          <p style=\"color: #78350f;\">Hi {{customer_name}}, we wanted to let you know that: {{status_message}}</p>\n        </div>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "status_message",
+            "label": "Status Update Description"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:44.100Z",
+        "updatedAt": "2026-02-22T08:38:44.100Z"
+      },
+      {
+        "id": "699ac094648676575dfdbccd",
+        "name": "Secure Password Reset",
+        "subject": "Reset your password",
+        "type": "PASSWORD_RESET",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px;\">\n        <h3>Hello {{customer_name}},</h3>\n        <p>You requested a password reset. Click the button below to set a new password:</p>\n        <a href=\"{{reset_link}}\" style=\"display: inline-block; background: #ef4444; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none;\">Reset Password</a>\n        <p style=\"margin-top: 20px; font-size: 12px; color: #999;\">If you didn't request this, you can safely ignore this email.</p>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "reset_link",
+            "label": "Reset Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:44.420Z",
+        "updatedAt": "2026-02-22T08:38:44.420Z"
+      }
+    ],
+    "landingPage": []
+  }
+}

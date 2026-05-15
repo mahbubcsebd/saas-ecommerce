@@ -1,12 +1,9 @@
 const express = require('express'); // Server entry point
 
 const app = express();
-// require('./utils/cronBackup');
 
 // http-errors is a middleware which creates an error object
 const createError = require('http-errors');
-// morgan is a middleware which logs all the requests to the console
-const morgan = require('morgan');
 // body-parser is a middleware which parses the incoming request body
 const bodyParser = require('body-parser');
 // Rate Limiter  is a middleware which limits the number of requests a client can make
@@ -14,10 +11,9 @@ const rateLimit = require('express-rate-limit');
 // Cors is a middleware which allows cross-origin requests
 const cors = require('cors');
 const helmet = require('helmet');
-// const xss = require('xss');
+const xss = require('xss');
 const compression = require('compression');
-// const mongoSanitize = require('express-mongo-sanitize');
-// const cron = require('node-cron');
+const mongoSanitize = require('express-mongo-sanitize');
 
 const cookieParser = require('cookie-parser');
 const swaggerUI = require('swagger-ui-express');
@@ -30,29 +26,44 @@ const routes = require('./routes');
 
 const { ALLOWED_ORIGINS } = require('./config/env');
 
-const rateLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minutes
-  max: 50, // limit each IP to 50 requests per windowMs
-  message: 'Too many requests from this IP, please try again after 15 minutes',
+// ─── Rate Limiter ─────────────────────────────────────
+const globalLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 200, // limit each IP to 200 requests per minute
+  message: 'Too many requests from this IP, please try again shortly',
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
-// Middlewares
-// Static files
-// CORS Middleware
+// Stricter limit for auth routes (brute-force protection)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // 20 attempts per 15 min
+  message: 'Too many login attempts, please try again after 15 minutes',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// ─── CORS ─────────────────────────────────────────────
+// Default dev origins (always allowed)
+const defaultOrigins = [
+  'http://localhost:8050',
+  'http://localhost:8060',
+  'http://127.0.0.1:8050',
+  'http://127.0.0.1:8060',
+  'https://admin.mahbuburrahman.xyz',
+  'https://shop.mahbuburrahman.xyz',
+];
+
+// Merge default origins with env-configured production origins
+const allowedOrigins = [...new Set([...defaultOrigins, ...ALLOWED_ORIGINS])];
+
 app.use(
   cors({
     origin: function (origin, callback) {
+      // Allow requests with no origin (mobile apps, curl, Postman, etc.)
       if (!origin) return callback(null, true);
-      const allowedOrigins = [
-        'http://localhost:3000',
-        'http://localhost:3001',
-        'http://127.0.0.1:3000',
-        'http://127.0.0.1:3001',
-        'https://shop-kappa-lac.vercel.app',
-        'https://saas-ecommerce-seven.vercel.app',
-        'https://shop-dashboard-olive.vercel.app',
-      ];
-      if (allowedOrigins.indexOf(origin) !== -1) {
+      if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
@@ -65,45 +76,29 @@ app.use(
   })
 );
 
+// ─── Middlewares ────────────────────────────────────────
 app.use(express.static('public'));
-
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(rateLimiter);
+app.use(globalLimiter);
 app.use(cookieParser());
 app.use(morganMiddleware); // Request Logging Middleware
 app.use(helmet()); // Secures HTTP headers
-// app.use(xss()); // Sanitizes input data
+// app.use(mongoSanitize()); // Sanitizes NoSQL injection from user input
 app.use(compression()); // Enable Gzip/Brotli compression for responses
-// app.use(mongoSanitize()); // Middleware to sanitize user input
 
-// Swagger UI
+// ─── Swagger UI ────────────────────────────────────────
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec, { explorer: true }));
 
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     if (!origin || ALLOWED_ORIGINS.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-//   credentials: true,
-// };
-
-// app.use(cors(corsOptions));
-// app.use(
-//   cors({
-//     origin: true,
-//     credentials: true,
-//   })
-// );
-
+// ─── Routes ────────────────────────────────────────────
 app.get('/', (req, res) => {
   res.status(200).json({
-    message: 'Home Page',
+    message: 'Mahbub Shop API is running',
   });
 });
+
+// Apply stricter rate limit on auth routes
+app.use('/api/auth', authLimiter);
 
 // Use the centralized router
 app.use('/api', routes);

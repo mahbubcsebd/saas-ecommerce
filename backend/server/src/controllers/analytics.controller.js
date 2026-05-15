@@ -1,4 +1,4 @@
-﻿const analyticsService = require('../services/analytics.service');
+const analyticsService = require('../services/analytics.service');
 const { successResponse, errorResponse } = require('../utils/response');
 const asyncHandler = require('../middlewares/asyncHandler');
 
@@ -130,6 +130,30 @@ exports.getAdminOverview = async (req, res) => {
       revenue: (p.soldCount || 0) * (p.sellingPrice || 0),
     }));
 
+    // 6. Sidebar Badges Counts
+    const [
+      pendingOrders,
+      pendingReturns,
+      pendingReviews,
+      abandonedCarts,
+      openChats,
+      openTickets,
+      unreadNotifications
+    ] = await Promise.all([
+      prisma.order.count({ where: { status: 'PENDING' } }),
+      prisma.returnRequest.count({ where: { status: 'PENDING' } }),
+      prisma.review.count({ where: { status: 'PENDING' } }),
+      prisma.cart.count({ 
+        where: { 
+          updatedAt: { lte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+          items: { some: {} }
+        } 
+      }),
+      prisma.conversation.count({ where: { type: 'SUPPORT', status: 'OPEN' } }),
+      prisma.conversation.count({ where: { type: 'ORDER', status: 'OPEN' } }), // Assuming ORDER type for tickets or similar
+      prisma.notification.count({ where: { isRead: false } }),
+    ]);
+
     return successResponse(res, {
       data: {
         kpi: {
@@ -137,6 +161,16 @@ exports.getAdminOverview = async (req, res) => {
           totalOrders,
           totalCustomers,
           totalProducts,
+        },
+        sidebar: {
+          pendingOrders,
+          pendingReturns,
+          pendingReviews,
+          abandonedCarts,
+          openChats,
+          openTickets,
+          unreadNotifications,
+          lowStockProducts: lowStockProducts.length,
         },
         salesChart,
         recentOrders,

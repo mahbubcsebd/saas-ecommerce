@@ -2,19 +2,42 @@
 
 import { Header } from '@/components/dashboard/header';
 import { Sidebar } from '@/components/dashboard/sidebar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { Activity } from 'lucide-react';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/auth/login');
+    }
+  }, [status, router]);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const toggleCollapse = () => setIsCollapsed(!isCollapsed);
   const closeSidebar = () => setIsSidebarOpen(false);
+
+  if (status === 'loading') {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <Activity className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!session) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-screen bg-background">

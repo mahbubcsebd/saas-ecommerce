@@ -66,7 +66,13 @@ export default function InvoicePage() {
   };
 
   const handlePrintA4 = () => {
+    const customerName = order.user
+      ? `${order.user.firstName} ${order.user.lastName}`
+      : order.walkInName || order.guestInfo?.name || 'Guest';
+    const oldTitle = document.title;
+    document.title = `Invoice_${order.orderNumber}_${customerName.replace(/[^a-zA-Z0-9]/g, '_')}`;
     window.print();
+    document.title = oldTitle;
   };
 
   const handlePrintPOS = async () => {
@@ -117,9 +123,14 @@ export default function InvoicePage() {
             .mock-barcode { height: 30px; background: repeating-linear-gradient(90deg, #000, #000 2px, #fff 2px, #fff 4px); margin: 10px auto; width: 80%; }
         `;
 
+    const customerName = order.user
+      ? `${order.user.firstName} ${order.user.lastName}`
+      : order.walkInName || order.guestInfo?.name || 'Guest';
+    const docTitle = `POS_Receipt_${order.orderNumber}_${customerName.replace(/[^a-zA-Z0-9]/g, '_')}`;
+
     const content = `
             <html>
-                <head><title>POS Receipt</title><style>${styles}</style></head>
+                <head><title>${docTitle}</title><style>${styles}</style></head>
                 <body>
                     <div class="header">
                         <p class="ShopName">${companyInfo.name}</p>
@@ -149,11 +160,16 @@ export default function InvoicePage() {
                             ${order.items
                               .map(
                                 (item: any) => `
-                                <tr>
+                                <tr key="${item.id}">
                                     <td class="qty">${item.quantity}</td>
                                     <td class="item-name">
-                                        ${item.name}
-                                        ${item.variant ? `<br/><small>(${item.variant.name})</small>` : ''}
+                                        <div style="display: flex; align-items: center; gap: 5px;">
+                                            ${item.product?.images?.[0] ? `<img src="${item.product.images[0]}" style="width: 20px; height: 20px; object-fit: cover; border-radius: 2px;" />` : ''}
+                                            <span>
+                                                ${item.productName || item.name}
+                                                ${item.variant ? `<br/><small style="font-size: 8px;">(${item.variant.name})</small>` : ''}
+                                            </span>
+                                        </div>
                                     </td>
                                     <td class="price">${formatPrice((item.salePrice || item.price || item.unitPrice) * item.quantity)}</td>
                                 </tr>
@@ -346,7 +362,7 @@ export default function InvoicePage() {
                   >
                     <td className="py-4 pl-4 align-top">
                       <div className="flex gap-4">
-                        <div className="relative w-14 h-14 shrink-0 overflow-hidden rounded border bg-muted no-print">
+                        <div className="relative w-14 h-14 shrink-0 overflow-hidden rounded border bg-muted">
                           {displayImage && (
                             <Image
                               src={displayImage}
@@ -357,7 +373,7 @@ export default function InvoicePage() {
                           )}
                         </div>
                         <div>
-                          <div className="font-semibold text-gray-900">{item.name}</div>
+                          <div className="font-semibold text-gray-900">{item.productName || item.name}</div>
                           {item.variant && (
                             <div className="text-[10px] text-primary font-medium mt-0.5">
                               {item.variant.name}

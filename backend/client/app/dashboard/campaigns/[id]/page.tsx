@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Table,
     TableBody,
@@ -11,6 +11,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import {
     AlertTriangle,
@@ -21,14 +22,14 @@ import {
     Mail,
     RefreshCw,
     Send,
-    User
+    Users
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 type Recipient = {
   id: string;
@@ -49,6 +50,7 @@ type Campaign = {
   sentCount: number;
   openCount: number;
   failedCount: number;
+  createdAt: string;
   sentAt?: string;
   recipients: Recipient[];
 };
@@ -83,7 +85,7 @@ export default function CampaignDetailPage() {
   }, [fetchDetails]);
 
   if (loading && !campaign) {
-    return <div className="flex h-96 items-center justify-center"><Loader2 className="h-10 w-10 animate-spin text-blue-600" /></div>;
+    return <div className="flex h-96 items-center justify-center"><Loader2 className="h-10 w-10 animate-spin text-black" /></div>;
   }
 
   if (!campaign) {
@@ -91,7 +93,7 @@ export default function CampaignDetailPage() {
       <div className="text-center py-20 space-y-4">
         <AlertTriangle className="h-12 w-12 mx-auto text-orange-400" />
         <h2 className="text-2xl font-bold">Campaign not found</h2>
-        <Button onClick={() => router.back()}>Go Back</Button>
+        <Button variant="outline" className="rounded-xl" onClick={() => router.back()}>Go Back</Button>
       </div>
     );
   }
@@ -99,12 +101,12 @@ export default function CampaignDetailPage() {
   const openRate = campaign.sentCount > 0 ? ((campaign.openCount / campaign.sentCount) * 100).toFixed(1) : "0";
 
   return (
-    <div className="space-y-8 pb-10">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => router.back()}><ChevronLeft /></Button>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">{campaign.name}</h1>
+            <h2 className="text-3xl font-bold tracking-tight">{campaign.name}</h2>
             <p className="text-muted-foreground mt-1">Campaign Analytics & Delivery Report</p>
           </div>
         </div>
@@ -114,105 +116,107 @@ export default function CampaignDetailPage() {
       </div>
 
       {/* KPI Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: "Total Target", value: campaign.totalRecipients, sub: "Recipients", icon: User, color: "text-blue-600", bg: "bg-blue-50" },
-          { label: "Successfully Sent", value: campaign.sentCount, sub: `${((campaign.sentCount / campaign.totalRecipients) * 100).toFixed(1)}% Delivery`, icon: Send, color: "text-green-600", bg: "bg-green-50" },
-          { label: "Opened", value: campaign.openCount, sub: `${openRate}% Open Rate`, icon: Eye, color: "text-orange-600", bg: "bg-orange-50" },
-          { label: "Failed", value: campaign.failedCount, sub: "Error during sending", icon: AlertTriangle, color: "text-red-600", bg: "bg-red-50" },
+          { label: "Total Target", value: campaign.totalRecipients, sub: "Recipients", icon: Users },
+          { label: "Successfully Sent", value: campaign.sentCount, sub: `${campaign.totalRecipients > 0 ? ((campaign.sentCount / campaign.totalRecipients) * 100).toFixed(1) : 0}% Delivery`, icon: Send },
+          { label: "Opened", value: campaign.openCount, sub: `${openRate}% Open Rate`, icon: Eye },
+          { label: "Failed", value: campaign.failedCount, sub: "Error during sending", icon: AlertTriangle },
         ].map((kpi) => (
-          <Card key={kpi.label} className="border-0 shadow-sm">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className={`p-2 rounded-lg ${kpi.bg}`}>
-                  <kpi.icon className={`h-5 w-5 ${kpi.color}`} />
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{kpi.label}</span>
-              </div>
-              <p className="text-3xl font-bold text-slate-900">{kpi.value}</p>
-              <p className="text-xs text-slate-500 font-medium mt-1">{kpi.sub}</p>
+          <Card key={kpi.label}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{kpi.label}</CardTitle>
+              <kpi.icon className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{kpi.value.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground">{kpi.sub}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid gap-4 lg:grid-cols-3">
         {/* Recipient Table */}
-        <Card className="lg:col-span-2 shadow-sm">
-          <div className="p-5 border-b bg-slate-50/50 flex items-center justify-between">
-            <h3 className="font-bold text-slate-800">Delivery List</h3>
-            <Badge variant="outline">{campaign.recipients.length} Detailed Logs</Badge>
-          </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Recipient</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Sent At</TableHead>
-                <TableHead>Opened At</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {campaign.recipients.map((r) => (
-                <TableRow key={r.id}>
-                  <TableCell className="font-medium text-slate-700">{r.email}</TableCell>
-                  <TableCell>
-                    <Badge variant={r.status === 'SENT' ? 'secondary' : r.status === 'OPENED' ? 'default' : 'destructive'}
-                      className={r.status === 'OPENED' ? 'bg-orange-100 text-orange-700 hover:bg-orange-100' : ''}>
-                      {r.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-xs text-slate-500">{r.sentAt ? format(new Date(r.sentAt), "HH:mm, MMM dd") : "—"}</TableCell>
-                  <TableCell className="text-xs text-slate-500">{r.openedAt ? format(new Date(r.openedAt), "HH:mm, MMM dd") : "—"}</TableCell>
-                </TableRow>
-              ))}
-              {campaign.recipients.length === 0 && (
-                <TableRow><TableCell colSpan={4} className="text-center py-10 text-slate-400">No recipients tracked yet.</TableCell></TableRow>
-              )}
-            </TableBody>
-          </Table>
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Delivery List</CardTitle>
+            <CardDescription>{campaign.recipients.length} detailed logs found.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-md border overflow-x-auto">
+                <Table>
+                    <TableHeader className="bg-muted/50">
+                        <TableRow>
+                            <TableHead className="font-semibold text-xs uppercase tracking-wider">Recipient</TableHead>
+                            <TableHead className="font-semibold text-xs uppercase tracking-wider">Status</TableHead>
+                            <TableHead className="font-semibold text-xs uppercase tracking-wider">Sent At</TableHead>
+                            <TableHead className="font-semibold text-xs uppercase tracking-wider">Opened At</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {campaign.recipients.map((r) => (
+                            <TableRow key={r.id}>
+                                <TableCell className="font-medium text-sm">{r.email}</TableCell>
+                                <TableCell>
+                                    <Badge variant={r.status === 'SENT' ? 'secondary' : r.status === 'OPENED' ? 'default' : 'destructive'} className="text-[10px] px-2 py-0">
+                                        {r.status}
+                                    </Badge>
+                                </TableCell>
+                                <TableCell className="text-xs text-muted-foreground">{r.sentAt ? format(new Date(r.sentAt), "HH:mm, MMM dd") : "—"}</TableCell>
+                                <TableCell className="text-xs text-muted-foreground">{r.openedAt ? format(new Date(r.openedAt), "HH:mm, MMM dd") : "—"}</TableCell>
+                            </TableRow>
+                        ))}
+                        {campaign.recipients.length === 0 && (
+                            <TableRow><TableCell colSpan={4} className="text-center py-10 text-muted-foreground">No recipients tracked yet.</TableCell></TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+          </CardContent>
         </Card>
 
-        {/* Info & Content Preview */}
-        <div className="space-y-6">
-          <Card className="shadow-sm">
-            <div className="p-5 border-b bg-slate-50/50">
-              <h3 className="font-bold text-slate-800 italic flex items-center gap-2"><Clock className="h-4 w-4" /> Timeline</h3>
+        {/* Timeline */}
+        <Card className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-muted-foreground" /> 
+              Timeline
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] uppercase font-bold text-muted-foreground">Campaign Created</span>
+              <span className="text-sm font-medium">{format(new Date(campaign.createdAt), "MMM dd, yyyy 'at' hh:mm a")}</span>
             </div>
-            <CardContent className="p-5 space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                <div className="flex flex-col">
-                  <span className="text-[10px] uppercase font-black text-slate-400">Campaign Created</span>
-                  <span className="text-sm font-bold text-slate-700">Dec 20, 2024 at 10:00 AM</span>
-                </div>
+            {campaign.sentAt && (
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] uppercase font-bold text-muted-foreground">Delivery Finished</span>
+                <span className="text-sm font-medium text-green-600">{format(new Date(campaign.sentAt), "MMM dd, yyyy 'at' hh:mm a")}</span>
               </div>
-              {campaign.sentAt && (
-                <div className="flex items-center gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                  <div className="flex flex-col">
-                    <span className="text-[10px] uppercase font-black text-slate-400">Delivery Finished</span>
-                    <span className="text-sm font-bold text-slate-700">{format(new Date(campaign.sentAt), "MMM dd, yyyy 'at' hh:mm a")}</span>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-sm overflow-hidden">
-            <div className="p-5 border-b bg-slate-50/50 flex items-center justify-between">
-              <h3 className="font-bold text-slate-800">Content Preview</h3>
-              <Mail className="h-4 w-4 text-slate-400" />
-            </div>
-            <div className="p-5 bg-white max-h-[400px] overflow-y-auto">
-              <div className="mb-4 text-xs">
-                <p><strong>Subject:</strong> {campaign.subject}</p>
-              </div>
-              <div className="border rounded p-4 text-[13px] bg-slate-50 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: campaign.content }} />
-            </div>
-          </Card>
-        </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Content Preview (Full Width) */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Mail className="h-4 w-4 text-muted-foreground" /> 
+            Content Preview
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-1">
+            <p className="text-[10px] font-bold uppercase text-muted-foreground">Subject Line</p>
+            <p className="text-sm font-medium">{campaign.subject || "No subject"}</p>
+          </div>
+          <div className="border rounded-md p-4 bg-slate-50/50 min-h-[200px] overflow-y-auto">
+            <div className="prose prose-sm max-w-none text-xs" dangerouslySetInnerHTML={{ __html: campaign.content }} />
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

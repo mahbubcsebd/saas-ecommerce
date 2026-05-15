@@ -1,4 +1,4 @@
-﻿const createError = require('http-errors');
+const createError = require('http-errors');
 const prisma = require('../config/prisma');
 const slugify = require('slugify');
 

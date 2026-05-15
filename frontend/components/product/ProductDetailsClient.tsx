@@ -49,7 +49,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
         const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
 
         // Fetch product and settings concurrently
