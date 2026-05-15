@@ -47,7 +47,7 @@ export function GlobalDatePicker({
         
         <DatePicker
           selected={value}
-          onChange={(date) => {
+          onChange={(date: Date | null) => {
             if (date && !value) {
               date.setHours(0, 0, 0, 0);
             }

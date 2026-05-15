@@ -69,7 +69,7 @@ export default function CreateRMAPage() {
 
   // Derived state for the selected item to calculate max refund
   const selectedItem = orderData?.items.find(item => item.id === selectedItemId);
-  const maxRefundAmount = selectedItem ? selectedItem.unitPrice * quantity : 0;
+  const maxRefundAmount = selectedItem ? (selectedItem.unitPrice || 0) * quantity : 0;
 
   const handleSearchOrder = async (searchVal: string) => {
     if (!searchVal) return;

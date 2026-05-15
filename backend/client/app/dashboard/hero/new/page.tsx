@@ -17,7 +17,8 @@ export default function NewHeroSlidePage() {
 
   const handleSubmit = async (form: any) => {
     if (form.imageFiles.length === 0) {
-      return toast.error('At least one image is required');
+      toast.error('At least one image is required');
+      return;
     }
 
     setLoading(true);
