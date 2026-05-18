@@ -3,11 +3,7 @@ name: Deploy SaaS E-Commerce Monorepo to Google Cloud
 on:
   push:
     branches:
-      - main
-
-# ১. Node 24-এর গিটহাব রানিং ওয়ার্নিং একবারে ফিক্স করার গ্লোবাল ভেরিয়েবল
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      - main # আপনার গিটহাবের মেইন ব্রাঞ্চের নাম যদি master হয়, তবে এখানে master লিখে দিন
 
 jobs:
   deploy:
@@ -25,40 +21,32 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # 🔥 ২. সার্ভারের NVM (Node Version Manager) লোড করে লেটেস্ট নোড ২৬/২২ ফোর্স করা
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm use default || nvm use 22
-
-            # 3. Navigate to project root and pull latest code changes from GitHub
+            # 1. Navigate to project root and pull latest code changes from GitHub
             cd ~/saas-ecommerce
             git pull origin main
 
-            # 4. Update, Generate Prisma & Restart Express API Backend
+            # 2. Update, Generate Prisma & Restart Express API Backend
             echo "⚡ Deploying Express API Backend..."
             cd ~/saas-ecommerce/backend/server
             npm install --production
             npm run db:generate
-            PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://www.mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 restart express-api --update-env || PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://www.mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 start src/server.js --name "express-api"
+            PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 restart express-api --update-env || PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 start src/server.js --name "express-api"
 
-            # 5. Update, Build & Restart Admin Dashboard Client (Port 3001)
+            # 3. Update, Build & Restart Admin Dashboard Client (Port 3001)
             echo "🎨 Deploying Admin Dashboard Client..."
             cd ~/saas-ecommerce/backend/client
             npm install
             npm run build
             PORT=3001 pm2 restart next-dashboard --update-env || PORT=3001 pm2 start npm --name "next-dashboard" -- run start -- -p 3001
 
-            # 6. Update, Build & Restart Frontend Shop Client (Port 3000)
-            # 🔥 ৫0২ এরর চিরতরে বন্ধ করতে এখানে পুরনো প্রসেস ফ্ল্যাশ করে ফ্রেশ নোড এনভায়রনমেন্টে স্টার্ট করা হচ্ছে
+            # 4. Update, Build & Restart Frontend Shop Client (Port 3000)
             echo "🛒 Deploying Frontend Shop Client..."
             cd ~/saas-ecommerce/frontend
             npm install
             npm run build
+            PORT=3000 pm2 restart next-shop --update-env || PORT=3000 pm2 start npm --name "next-shop" -- run start -- -p 3000
 
-            pm2 delete next-shop || true
-            PORT=3000 pm2 start npm --name "next-shop" -- run start -- -p 3000
-
-            # 7. Save PM2 running state and display live process list
+            # 5. Save PM2 running state and display live process list
             pm2 save
             pm2 list
-            echo "🚀 Monorepo successfully deployed! All servers are live and updated without 502 errors."
+            echo "🚀 Monorepo successfully deployed! All servers are live and updated."

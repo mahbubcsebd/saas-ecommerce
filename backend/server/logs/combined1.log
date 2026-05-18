@@ -3815,3 +3815,4 @@
 {"level":"info","message":"GET /api/homeCategoryWiseProduct 200 1469.653 ms - 26","service":"mahbub-shop-backend","timestamp":"2026-05-19 02:47:13"}
 {"level":"info","message":"POST /api/analytics/track 200 568.970 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-19 02:47:14"}
 {"level":"info","message":"GET /api/cart 304 59.144 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-19 02:52:36"}
+{"level":"info","message":"POST /api/analytics/track 200 1028.668 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-19 03:07:34"}
