@@ -3789,3 +3789,10 @@
 {"level":"info","message":"GET /api/cart 304 82.776 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-19 01:34:06"}
 {"level":"info","message":"GET /api/cart 304 133.083 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-19 01:55:55"}
 {"level":"info","message":"GET /api/cart 304 86.674 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-19 02:02:11"}
+{"level":"info","message":"GET /api/cart 304 99.178 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-19 02:13:12"}
+{"level":"info","message":"GET /api/cart?guestId=6e9e0ecd-518b-4422-8286-baedffa0e401 304 83.855 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-19 02:15:47"}
+{"level":"info","message":"POST /api/analytics/track 200 928.219 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-19 02:15:49"}
+{"level":"info","message":"POST /api/analytics/track 200 510.155 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-19 02:15:53"}
+{"level":"info","message":"GET /api/settings/public 200 1179.685 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-19 02:16:00"}
+{"level":"info","message":"GET /api/settings/public 200 1675.224 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-19 02:16:00"}
+{"level":"info","message":"POST /api/analytics/track 200 562.963 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-19 02:16:00"}
