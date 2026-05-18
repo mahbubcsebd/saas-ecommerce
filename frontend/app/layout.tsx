@@ -17,9 +17,10 @@ const geistMono = Geist_Mono({
 });
 
 async function getSeoSettings() {
-  const baseUrl = typeof window === 'undefined'
-    ? 'http://127.0.0.1:5000/api'
-    : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api');
+  const baseUrl =
+    typeof window === 'undefined'
+      ? 'http://127.0.0.1:5000/api'
+      : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
   const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
   try {
     const res = await fetch(`${apiUrl}/settings/public`, { next: { revalidate: 3600 } });
@@ -60,6 +61,8 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   };
 }
+
+// test
 
 import { ClientWidgets } from '@/components/ClientWidgets';
 
