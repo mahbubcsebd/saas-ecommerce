@@ -373,7 +373,9 @@ export default function InvoicePage() {
                           )}
                         </div>
                         <div>
-                          <div className="font-semibold text-gray-900">{item.productName || item.name}</div>
+                          <div className="font-semibold text-gray-900">
+                            {item.productName || item.name}
+                          </div>
                           {item.variant && (
                             <div className="text-[10px] text-primary font-medium mt-0.5">
                               {item.variant.name}

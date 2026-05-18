@@ -9,7 +9,7 @@ module.exports = (io, socket) => {
           where: { userId, isRead: false },
         }),
         prisma.notification.count({
-          where: { userId, type: 'NEW_MESSAGE', isRead: false },
+          where: { userId, type: 'NEW_CHAT_MESSAGE', isRead: false },
         }),
       ]);
       io.to(`user:${userId}`).emit('notification:count', { count: totalCount });
@@ -107,7 +107,7 @@ module.exports = (io, socket) => {
           await prisma.notification.create({
             data: {
               userId: participant.id,
-              type: 'NEW_MESSAGE',
+              type: 'NEW_CHAT_MESSAGE',
               title: 'New Message',
               message: `${socket.user.firstName} sent you a ${type === 'TEXT' ? 'message' : type.toLowerCase()}`,
               data: { conversationId },
@@ -215,6 +215,27 @@ module.exports = (io, socket) => {
         where: { conversationId, id: messageId, senderId: { not: socket.userId } },
         data: { isRead: true, readAt: new Date() },
       });
+
+      // Find and mark all unread chat notifications for this conversation as read
+      const unreadChatNotifications = await prisma.notification.findMany({
+        where: {
+          userId: socket.userId,
+          type: 'NEW_CHAT_MESSAGE',
+          isRead: false,
+        },
+      });
+
+      const matchingNotificationIds = unreadChatNotifications
+        .filter((n) => n.data && typeof n.data === 'object' && n.data.conversationId === conversationId)
+        .map((n) => n.id);
+
+      if (matchingNotificationIds.length > 0) {
+        await prisma.notification.updateMany({
+          where: { id: { in: matchingNotificationIds } },
+          data: { isRead: true, readAt: new Date() },
+        });
+      }
+
       io.to(`conversation:${conversationId}`).emit('chat:read', {
         messageId,
         userId: socket.userId,

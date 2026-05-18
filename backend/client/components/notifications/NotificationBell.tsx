@@ -127,7 +127,7 @@ export const NotificationBell = () => {
             </div>
           ) : (
             notifications
-            .filter((n) => n.type !== 'NEW_MESSAGE')
+            .filter((n) => n.type !== 'NEW_CHAT_MESSAGE')
             .map((n) => {
               let Icon = Bell;
               let iconColor = 'text-primary';
@@ -171,7 +171,7 @@ export const NotificationBell = () => {
                     window.dispatchEvent(new CustomEvent('refresh-sidebar-counts'));
                   }
 
-                  if (n.type === 'NEW_MESSAGE' && n.data?.conversationId) {
+                  if (n.type === 'NEW_CHAT_MESSAGE' && n.data?.conversationId) {
                       // Should be filtered out, but just in case
                     router.push(`/dashboard/chat?id=${n.data.conversationId}`);
                   } else if (n.data?.orderId) {

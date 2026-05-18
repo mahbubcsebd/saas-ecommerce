@@ -1,0 +1,1771 @@
+{
+  "timestamp": "2026-05-18T03:41:00.090Z",
+  "version": "1.0",
+  "type": "scheduled",
+  "data": {
+    "user": [
+      {
+        "id": "6a000b0d634476b3ec4de57b",
+        "avatar": null,
+        "firstName": "Super",
+        "lastName": "Admin",
+        "email": "admin@mahbubshop.com",
+        "username": "admin",
+        "password": "$2b$10$nek0zcgFEb68H6FB3KrcnO4suanWS5V33us1zmd9vRxqgowSCwMbe",
+        "role": "ADMIN",
+        "isActive": true,
+        "status": "ACTIVE",
+        "permissions": [],
+        "customRoleId": null,
+        "groupId": null,
+        "invitationToken": null,
+        "invitationSentAt": null,
+        "invitationExpiry": null,
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "isEmailVerified": true,
+        "emailVerifiedAt": null,
+        "emailVerificationToken": null,
+        "emailVerificationTokenExpiry": null,
+        "phone": null,
+        "address": null,
+        "website": null,
+        "bio": null,
+        "dob": null,
+        "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTAwMGIwZDYzNDQ3NmIzZWM0ZGU1N2IiLCJpYXQiOjE3NzkwMzQwNjcsImV4cCI6MTc3OTYzODg2N30.eOHx3vqk3VTfyOgkKb59g6f3ZMiR5weyopQ5s8Q9lEM",
+        "refreshTokenExpires": null,
+        "createdAt": "2026-05-10T04:35:25.214Z",
+        "updatedAt": "2026-05-17T18:25:45.072Z",
+        "createdBy": null,
+        "conversationIds": [
+          "6a09e9dd364b7acdefc72e8b"
+        ],
+        "isOnline": false,
+        "lastSeen": "2026-05-17T18:25:45.069Z",
+        "socketId": null
+      },
+      {
+        "id": "6a000b0d634476b3ec4de57c",
+        "avatar": null,
+        "firstName": "Demo",
+        "lastName": "Customer",
+        "email": "customer@mahbubshop.com",
+        "username": "customer",
+        "password": "$2b$10$nek0zcgFEb68H6FB3KrcnO4suanWS5V33us1zmd9vRxqgowSCwMbe",
+        "role": "CUSTOMER",
+        "isActive": true,
+        "status": "ACTIVE",
+        "permissions": [],
+        "customRoleId": null,
+        "groupId": null,
+        "invitationToken": null,
+        "invitationSentAt": null,
+        "invitationExpiry": null,
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "isEmailVerified": true,
+        "emailVerifiedAt": null,
+        "emailVerificationToken": null,
+        "emailVerificationTokenExpiry": null,
+        "phone": null,
+        "address": null,
+        "website": null,
+        "bio": null,
+        "dob": null,
+        "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTAwMGIwZDYzNDQ3NmIzZWM0ZGU1N2MiLCJpYXQiOjE3NzkwMzQzMzgsImV4cCI6MTc3OTYzOTEzOH0.GFDg8KFjpPaI0RLCOHvLlU-dXOR-LcFQ-UWoMz0-gLg",
+        "refreshTokenExpires": null,
+        "createdAt": "2026-05-10T04:35:25.854Z",
+        "updatedAt": "2026-05-17T18:25:45.093Z",
+        "createdBy": null,
+        "conversationIds": [
+          "6a09e9dd364b7acdefc72e8b"
+        ],
+        "isOnline": false,
+        "lastSeen": "2026-05-17T18:25:45.091Z",
+        "socketId": null
+      },
+      {
+        "id": "6a09eb3b506f93e75ea07d12",
+        "avatar": null,
+        "firstName": "Hridoy",
+        "lastName": "Ahmed",
+        "email": "hridoy@gmail.com",
+        "username": "hridoy490",
+        "password": "284f22cb7c8913fd7b43b275e108e037",
+        "role": "CUSTOMER",
+        "isActive": true,
+        "status": "PENDING",
+        "permissions": [],
+        "customRoleId": null,
+        "groupId": null,
+        "invitationToken": "f4b85f24e0d75d33132a2060c196e5c6672e487e5357affe36d113e6c8d652ee",
+        "invitationSentAt": "2026-05-17T16:22:19.126Z",
+        "invitationExpiry": "2026-05-24T16:22:19.126Z",
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "isEmailVerified": false,
+        "emailVerifiedAt": null,
+        "emailVerificationToken": null,
+        "emailVerificationTokenExpiry": null,
+        "phone": "018444444444",
+        "address": null,
+        "website": null,
+        "bio": null,
+        "dob": null,
+        "refreshToken": null,
+        "refreshTokenExpires": null,
+        "createdAt": "2026-05-17T16:22:19.127Z",
+        "updatedAt": "2026-05-17T16:22:19.127Z",
+        "createdBy": "6a000b0d634476b3ec4de57b",
+        "conversationIds": [],
+        "isOnline": false,
+        "lastSeen": null,
+        "socketId": null
+      },
+      {
+        "id": "6a09eb98364b7acdefc72e91",
+        "avatar": null,
+        "firstName": "Mahbubur",
+        "lastName": "Rahman",
+        "email": "mahbub.cse.me@gmail.com",
+        "username": "mahbub.cse.me340",
+        "password": "92088bc92fd9ab2c4ef1f80d23a060d9",
+        "role": "CUSTOMER",
+        "isActive": true,
+        "status": "PENDING",
+        "permissions": [],
+        "customRoleId": null,
+        "groupId": null,
+        "invitationToken": "2862f92b326577b2d08909fbd93dd9627435278bbd560f3afe098c0f38651584",
+        "invitationSentAt": "2026-05-17T16:23:52.553Z",
+        "invitationExpiry": "2026-05-24T16:23:52.553Z",
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "isEmailVerified": false,
+        "emailVerifiedAt": null,
+        "emailVerificationToken": null,
+        "emailVerificationTokenExpiry": null,
+        "phone": "01886225492",
+        "address": null,
+        "website": null,
+        "bio": null,
+        "dob": null,
+        "refreshToken": null,
+        "refreshTokenExpires": null,
+        "createdAt": "2026-05-17T16:23:52.555Z",
+        "updatedAt": "2026-05-17T16:23:52.555Z",
+        "createdBy": "6a000b0d634476b3ec4de57b",
+        "conversationIds": [],
+        "isOnline": false,
+        "lastSeen": null,
+        "socketId": null
+      }
+    ],
+    "product": [
+      {
+        "id": "6a000b10634476b3ec4de584",
+        "name": "iPhone 15 Pro Max",
+        "slug": "iphone-15-pro",
+        "description": "<h2 data-text-color=\"rgb(41, 41, 41)\" data-level=\"2\" style=\"color: rgb(41, 41, 41);\"><strong>Specification</strong></h2><table><colgroup><col><col></colgroup><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Brand</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>Apple</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Model</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>iPhone 17 Pro Max</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Network</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>GSM / CDMA / HSPA / EVDO / LTE / 5G</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Dimensions</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>163.4 x 78 x 8.8 mm</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Weight</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>233 g</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>SIM</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>Nano-SIM + eSIM + eSIM (max 2 at a time; International) | eSIM + eSIM (8 or more, max 2 at a time; USA) | Nano-SIM + Nano-SIM (China)</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Build</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>Glass front (Ceramic Shield 2), aluminum alloy frame, aluminum alloy back/ glass back (Ceramic Shield)</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Display Type</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>LTPO Super Retina XDR OLED, 120Hz, HDR10, Dolby Vision, 1000 nits (typ), 1600 nits (HBM), 3000 nits (peak)</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Display Size</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>6.9 inches</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Chipset</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>Apple A19 Pro</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>CPU</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>Hexa-core</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Display Resolution</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>1320 x 2868 pixels</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>OS</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>iOS 26</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Protection</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>Ceramic Shield 2, Mohs level 5 | Anti-reflective coating</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Memory</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>256GB 12GB RAM, 512GB 12GB RAM, 1TB 12GB RAM, 2TB 12GB RAM</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Main Camera</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>48 MP (wide) | 48 MP (periscope telephoto) | | 48 MP (ultrawide) | TOF 3D LiDAR scanner (depth) | Video: up to 4K</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Selfie Camera</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>18 MP (Ultrawide) | Video: up to 4K</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Sound</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>Stereo Speakers</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Battery Info</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>Li-Ion 4832 mAh - Nano SIM model | Li-Ion 5088 mAh - eSIM only model | Wired, PD2.0 | 25W wireless (MagSafe) | 15W wireless (MagSafe) - China only | 25W wireless (Qi2) | 4.5W reverse wired</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Connectivity</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>Wi-Fi: Wi-Fi 802.11 a/b/g/n/ac/6e/7 | Bluetooth: 6.0, A2DP, LE | NFC: Yes</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Sensors</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>Face ID, accelerometer, gyro, proximity, compass, barometer | Ultra Wideband (UWB) support (gen2 chip) | Emergency SOS, Messages and Find My via satellite</strong></p></td></tr><tr><td data-text-color=\"rgb(82, 82, 82)\" colspan=\"1\" rowspan=\"1\"><p><strong>Other Features / Info</strong></p></td><td data-text-color=\"rgb(41, 41, 41)\" colspan=\"1\" rowspan=\"1\"><p><strong>Glass front (Ceramic Shield 2), aluminum alloy frame, aluminum alloy back/ glass back (Ceramic Shield) | IP68 dust tight and water resistant (immersible up to 6m for 30 min) | Ceramic Shield 2 | Anti-reflective coating | Ultra Wideband (UWB) support (gen2 chip) | Emergency SOS, Messages and Find My via satellite</strong></p></td></tr></table><h2 data-text-color=\"rgb(41, 41, 41)\" data-level=\"2\" style=\"color: rgb(41, 41, 41);\"><strong>Descriptions</strong></h2><h2 data-text-color=\"rgb(17, 24, 39)\" data-level=\"2\" style=\"color: rgb(17, 24, 39);\"></h2><h2 data-text-color=\"rgb(17, 24, 39)\" data-level=\"2\" style=\"color: rgb(17, 24, 39);\"><strong>iPhone 17 Pro Max Price in Bangladesh</strong></h2><p data-text-alignment=\"justify\" style=\"text-align: justify;\">Experience the future of smartphones with the&nbsp;<strong><u><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://www.applegadgetsbd.com/brands/apple\">Apple</a></u></strong>&nbsp;iPhone 17 Pro Max. Packed with the powerful A19 Pro chip, a pro-grade triple camera system, and a stunning 6.9-inch Super Retina XDR display, this device redefines performance, creativity, and elegance. Get yours today with Apple Gadgets’ exclusive offers, EMI plans, and official warranty support in Bangladesh.<br></p><h2 data-text-color=\"rgb(17, 24, 39)\" data-level=\"2\" style=\"color: rgb(17, 24, 39);\"><strong>Why You’ll Love It</strong></h2><ul><li><p class=\"bn-inline-content\">Stunning 6.9\" Super Retina XDR display with 3000 nits peak brightness for unmatched clarity.</p></li><li><p class=\"bn-inline-content\">Pro-level triple 48MP camera system with LiDAR for sharp photos and breathtaking 3D video.</p></li><li><p class=\"bn-inline-content\">Apple A19 Pro chip built on 3nm for unbeatable performance in gaming and multitasking.</p></li><li><p class=\"bn-inline-content\">Ultra-fast 5G connectivity and the latest Wi-Fi 7 support.</p></li><li><p class=\"bn-inline-content\">Stronger, lighter design with Ceramic Shield 2 protection and IP68 water resistance.</p></li><li><p class=\"bn-inline-content\">All-day battery life with super-fast wired and MagSafe wireless charging.</p></li><li><p class=\"bn-inline-content\">Next-gen Face ID &amp; satellite connectivity for safety anywhere.<br></p></li></ul><h2 data-text-color=\"rgb(17, 24, 39)\" data-level=\"2\" style=\"color: rgb(17, 24, 39);\"><strong>Special Features of iPhone 17 Pro Max</strong></h2><h3 data-text-color=\"rgb(17, 24, 39)\" data-level=\"3\" style=\"color: rgb(17, 24, 39);\"><strong>Pro Camera System – Capture Every Moment Like a Pro</strong></h3><ul><li><p class=\"bn-inline-content\">Triple 48 MP Pro Fusion cameras: The system includes a wide, ultrawide, and periscope telephoto lens — letting you zoom much more without losing quality. Whether you’re snapping landscapes, portraits, or distant subjects, the periscope lens gives sharp detail.</p></li><li><p class=\"bn-inline-content\">Sensor-shift OIS &amp; LiDAR Scanner: For stability and depth, especially in low light. Night shots are substantially better with less noise. LiDAR helps with depth mapping and AR.</p></li><li><p class=\"bn-inline-content\">Pro Video Capabilities: You get 4K up to 120 fps, Dolby Vision HDR, ProRes and ProRes RAW workflows, Apple Log 2. Perfect for creators who want cinematic video. Also, the capability to do dual capture (front + back) and spatial audio adds immersive feel.<br></p></li></ul><h3 data-text-color=\"rgb(17, 24, 39)\" data-level=\"3\" style=\"color: rgb(17, 24, 39);\"><strong>Display &amp; Design – Premium Look &amp; Feel with Durability</strong></h3><ul><li><p class=\"bn-inline-content\">6.9-inch LTPO Super Retina XDR OLED, 120Hz refresh rate: Smooth scroll, dynamic refresh for battery savings, vibrant colors, HDR10, Dolby Vision. Peak brightness up to ~3000 nits makes it viewable even in bright sun.</p></li><li><p class=\"bn-inline-content\">Ceramic Shield 2 &amp; Mohs level protection + IP68 rating: Front glass is much more scratch resistant; entire body built tough. With IP68 you can go into water (up to 6m for 30 mins) — less worry about spills, rain, etc.</p></li><li><p class=\"bn-inline-content\">Premium Build Materials: Aluminum alloy frame &amp; back (on non-China variants) or glass back with Ceramic Shield, precision machining, elegant colors (Silver, Deep Blue, Cosmic Orange).<br></p></li></ul><h3 data-text-color=\"rgb(17, 24, 39)\" data-level=\"3\" style=\"color: rgb(17, 24, 39);\"><strong>Performance &amp; Processing Power</strong></h3><ul><li><p class=\"bn-inline-content\">A19 Pro (3 nm process): Very efficient, very fast. Power savings + less heat generation. High performance in gaming, pro apps (video editing, AR).</p></li><li><p class=\"bn-inline-content\">Generous RAM + Storage Options: Up to 12GB RAM + up to 2TB storage option means you can keep thousands of photos, videos, apps without worry. NVMe storage means read/write is fast.</p></li><li><p class=\"bn-inline-content\">Thermal Management: Aluminum body and design helps dissipate heat; helps maintain high performance under load.<br></p></li></ul><h3 data-text-color=\"rgb(17, 24, 39)\" data-level=\"3\" style=\"color: rgb(17, 24, 39);\"><strong>Battery &amp; Charging – All Day, All Power</strong></h3><ul><li><p class=\"bn-inline-content\">Large battery: ~4832 mAh for the nano-SIM model; ~5088 mAh for eSIM-only model. More capacity for heavier usage.</p></li><li><p class=\"bn-inline-content\">Fast wired charging: 50% in ~20 minutes using PD-compatible charger.</p></li><li><p class=\"bn-inline-content\">Wireless charging with MagSafe / Qi2 (~25W), and reverse wired charging for accessories.</p></li><li><p class=\"bn-inline-content\">Optimizations: OS (iOS 26) + chip improvements mean better power management; longer video playback &amp; more time between charges.<br></p></li></ul><h3 data-text-color=\"rgb(17, 24, 39)\" data-level=\"3\" style=\"color: rgb(17, 24, 39);\"><strong>Connectivity &amp; Extra Features – Modern &amp; Safe</strong></h3><ul><li><p class=\"bn-inline-content\">Advanced connectivity: Full 5G, tri-band Wi-Fi including Wi-Fi 7, Bluetooth 6.0, UWB (Ultra Wideband) for precision spatial detection &amp; accessories.</p></li><li><p class=\"bn-inline-content\">eSIM + Dual SIM capabilities for flexibility.</p></li><li><p class=\"bn-inline-content\">USB-C 3.2 Gen 2 with DisplayPort faster data transfer &amp; ability to use as external display.</p></li><li><p class=\"bn-inline-content\">Face ID, SL 3D sensors, TrueDepth front camera with Center Stage features (auto framing, wide-angle video, better group selfie).</p></li><li><p class=\"bn-inline-content\">IP68 water &amp; dust resistance; Apple Pay, safety features like Emergency SOS &amp; satellite-based Messages / Find My.<br></p></li></ul><h2 data-text-color=\"rgb(17, 24, 39)\" data-level=\"2\" style=\"color: rgb(17, 24, 39);\"><strong>Exclusive Apple Gadgets Offer</strong></h2><ul><li><p class=\"bn-inline-content\">Official Apple product with 1-year international warranty</p></li><li><p class=\"bn-inline-content\">Exclusive offer with competitive pricing in Bangladesh</p></li><li><p class=\"bn-inline-content\">Easy EMI up to 36 months with partnered banks</p></li><li><p class=\"bn-inline-content\">Cash on delivery, bKash, Nagad, card payments accepted</p></li><li><p class=\"bn-inline-content\">Fast delivery: 24–48 hrs in Dhaka, 3–5 days outside<br></p></li></ul><h2 data-text-color=\"rgb(17, 24, 39)\" data-level=\"2\" style=\"color: rgb(17, 24, 39);\"><strong>Why Buy iPhone 17 Pro Max from Apple Gadgets?</strong></h2><p data-text-alignment=\"justify\" style=\"text-align: justify;\">Apple Gadgets is a trusted Apple products provider in Bangladesh. That means when you buy from us (online/offline), you benefit from:</p><ul><li><p class=\"bn-inline-content\">100% genuine products with official Apple warranty – Every iPhone comes with a verified Apple warranty, giving you peace of mind and protection against manufacturing defects.</p></li><li><p class=\"bn-inline-content\">Multiple outlets and pickup points – Convenient locations across Bangladesh let you pick up your iPhone in person or access support whenever needed.</p></li><li><p class=\"bn-inline-content\">Expert after-sales support – Our trained staff assist with device setup, troubleshooting, and advice on Apple accessories for iPhone, iPad, MacBook, and more. For repairing support we have our own concern Apple Gadgets Care.</p></li><li><p class=\"bn-inline-content\">Flexible payment and EMI facilities – Choose from flexible EMI plans, bKash, Nagad, cash-on-delivery, and card payments to make owning your iPhone 17 Pro Max easier and more affordable.</p></li><li><p class=\"bn-inline-content\">Reliable and quick service – Apple Gadgets ensures fast and hassle-free support for any device issues, keeping your experience smooth and worry-free.<br></p></li></ul><h2 data-text-color=\"rgb(17, 24, 39)\" data-level=\"2\" style=\"color: rgb(17, 24, 39);\"><strong>FAQ</strong></h2><h3 data-text-color=\"rgb(17, 24, 39)\" data-level=\"3\" style=\"color: rgb(17, 24, 39);\"><strong>What are the different storage options available for the iPhone 17 Pro Max?</strong></h3><p data-text-alignment=\"justify\" style=\"text-align: justify;\">iPhone 17 Pro Max storage options are: 256GB, 512GB, 1TB and 2TB. All storage options are NVMe type to deliver blazing fast data transfer rates.</p><h3 data-text-color=\"rgb(17, 24, 39)\" data-level=\"3\" style=\"color: rgb(17, 24, 39);\"><strong>Does the iPhone 17 Pro Max support dual SIM?</strong></h3><p data-text-alignment=\"justify\" style=\"text-align: justify;\">Yes. The iPhone 17 Pro Max supports dual SIM, but it varies by region:</p><ul><li><p class=\"bn-inline-content\">International: Nano-SIM + eSIM (or 2 eSIMs, max 2 active)</p></li><li><p class=\"bn-inline-content\">USA: eSIM only (you can store 8+ but use 2 at a time)</p></li><li><p class=\"bn-inline-content\">China: Dual Nano-SIM</p></li></ul><h3 data-text-color=\"rgb(17, 24, 39)\" data-level=\"3\" style=\"color: rgb(17, 24, 39);\"><strong>Can I buy the iPhone 17 Pro Max with an EMI plan?</strong></h3><p data-text-alignment=\"justify\" style=\"text-align: justify;\">Yes. With Apple Gadgets, you can buy the iPhone 17 Pro Max on EMI through 30+ banks and MFS, with flexible plans for easy monthly payments.</p><h2 data-text-color=\"rgb(41, 41, 41)\" data-level=\"2\" style=\"color: rgb(41, 41, 41);\"><strong>Warranty</strong></h2><p>Explore our&nbsp;<strong><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://www.applegadgetsbd.com/page/warranty-policy\">Warranty Policy</a></strong>&nbsp;page for detailed information about our warranty coverage.</p><p data-text-color=\"rgb(41, 41, 41)\" style=\"color: rgb(41, 41, 41);\"><strong>Recently Viewed</strong></p><img src=\"https://www.applegadgetsbd.com/_next/image?url=https%3A%2F%2Fadminapi.applegadgetsbd.com%2Fstorage%2Fmedia%2Fmedium%2F2927-91804.jpg&amp;w=3840&amp;q=100\" alt=\"Baseus Metal Gleam Series/ Starjoy 11 in 1 Multifunctional Type-C Hub\" data-background-color=\"rgb(255, 255, 255)\" data-name=\"Baseus Metal Gleam Series/ Starjoy 11 in 1 Multifunctional Type-C Hub\" data-url=\"https://www.applegadgetsbd.com/_next/image?url=https%3A%2F%2Fadminapi.applegadgetsbd.com%2Fstorage%2Fmedia%2Fmedium%2F2927-91804.jpg&amp;w=3840&amp;q=100\"><p><strong><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://www.applegadgetsbd.com/product/baseus-metal-gleam-series-starjoy-11-in-1-multifunctional-type-c-hub\">Baseus Metal Gleam Series/ Starjoy 11 in 1 Multifunctional Type-C Hub</a></strong></p><p><strong>৳&nbsp;5,500</strong></p><img src=\"https://www.applegadgetsbd.com/_next/image?url=https%3A%2F%2Fadminapi.applegadgetsbd.com%2Fstorage%2Fmedia%2Fmedium%2F4181-44913.jpg&amp;w=3840&amp;q=100\" alt=\"Baseus Metal Gleam Series/ Starjoy 7 in 1 Multifunctional Type-C Hub\" data-background-color=\"rgb(255, 255, 255)\" data-name=\"Baseus Metal Gleam Series/ Starjoy 7 in 1 Multifunctional Type-C Hub\" data-url=\"https://www.applegadgetsbd.com/_next/image?url=https%3A%2F%2Fadminapi.applegadgetsbd.com%2Fstorage%2Fmedia%2Fmedium%2F4181-44913.jpg&amp;w=3840&amp;q=100\"><p><strong><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://www.applegadgetsbd.com/product/baseus-metal-gleam-series-starjoy-7-in-1-multifunctional-type-c-hub\">Baseus Metal Gleam Series/ Starjoy 7 in 1 Multifunctional Type-C Hub</a></strong></p><p><strong>৳&nbsp;3,100</strong></p><img src=\"https://www.applegadgetsbd.com/_next/image?url=https%3A%2F%2Fadminapi.applegadgetsbd.com%2Fstorage%2Fmedia%2Fmedium%2FiPhone-17-Pro-Max-Cosmic-Orange-4556.jpg&amp;w=3840&amp;q=100\" alt=\"iPhone 17 Pro Max\" data-background-color=\"rgb(255, 255, 255)\" data-name=\"iPhone 17 Pro Max\" data-url=\"https://www.applegadgetsbd.com/_next/image?url=https%3A%2F%2Fadminapi.applegadgetsbd.com%2Fstorage%2Fmedia%2Fmedium%2FiPhone-17-Pro-Max-Cosmic-Orange-4556.jpg&amp;w=3840&amp;q=100\"><p><strong><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://www.applegadgetsbd.com/product/iphone-17-pro-max\">iPhone 17 Pro Max</a></strong></p><p><strong>৳&nbsp;171,500</strong></p><img src=\"https://www.applegadgetsbd.com/_next/image?url=https%3A%2F%2Fadminapi.applegadgetsbd.com%2Fstorage%2Fmedia%2Fmedium%2FMacBook-Air-M4-13-Incha-4820.png&amp;w=3840&amp;q=100\" alt=\"MacBook Air M4 13-Inch\" data-background-color=\"rgb(255, 255, 255)\" data-name=\"MacBook Air M4 13-Inch\" data-url=\"https://www.applegadgetsbd.com/_next/image?url=https%3A%2F%2Fadminapi.applegadgetsbd.com%2Fstorage%2Fmedia%2Fmedium%2FMacBook-Air-M4-13-Incha-4820.png&amp;w=3840&amp;q=100\"><p><strong><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://www.applegadgetsbd.com/product/macbook-air-m4-13-inch\">MacBook Air M4 13-Inch</a></strong></p><p><strong>৳&nbsp;142,500</strong><strong><span data-style-type=\"textColor\" data-value=\"rgb(115, 115, 115)\" data-editable=\"\" style=\"color: rgb(115, 115, 115);\">৳146,000</span></strong></p><p data-background-color=\"rgb(220, 252, 231)\" data-text-color=\"rgb(22, 163, 74)\" style=\"background-color: rgb(220, 252, 231); color: rgb(22, 163, 74);\"><strong>৳&nbsp;3,500&nbsp;OFF</strong></p><p></p>",
+        "basePrice": 120000,
+        "sellingPrice": 115000,
+        "costPrice": null,
+        "sku": "IP15PM-001",
+        "barcode": "1234567890",
+        "stock": 46,
+        "minStockLevel": 5,
+        "lowStockAlert": 10,
+        "trackInventory": true,
+        "images": [
+          "https://res.cloudinary.com/dfigg4e5e/image/upload/v1779034260/products/chjdqtbghnar9nfyihfx.webp",
+          "https://res.cloudinary.com/dfigg4e5e/image/upload/v1779034260/products/subrkrjpkqfpqt65gr0n.webp",
+          "https://res.cloudinary.com/dfigg4e5e/image/upload/v1779034261/products/jrywlghn8kpiy5ixbo5x.webp"
+        ],
+        "categoryId": "6a000b0e634476b3ec4de57f",
+        "brand": "Apple",
+        "tags": [
+          "electronics",
+          "trending",
+          "new-arrival",
+          "best-seller"
+        ],
+        "weight": null,
+        "length": null,
+        "width": null,
+        "height": null,
+        "status": "PUBLISHED",
+        "isNewArrival": true,
+        "isFeatured": true,
+        "isHomeShown": false,
+        "homeOrder": 0,
+        "isFreeShipping": false,
+        "isPreOrder": false,
+        "warranty": null,
+        "metaTitle": "Iphone latest 17 pro max",
+        "metaDescription": "iPhone 17 Pro Max Price in Bangladesh Experience the future of smartphones with the Apple iPhone 17 Pro Max. Packed with the powerful A19 Pro chip, a pro-grade triple camera system, and a stunning 6.9-inch Super Retina XDR display, this device redefines performance, creativity, and elegance. Get yours today with Apple Gadgets’ exclusive offers, EMI plans, and official warranty support in Bangladesh.",
+        "metaKeywords": "online shopping, free shipping, quality products, test",
+        "ogImage": null,
+        "viewCount": 35,
+        "soldCount": 4,
+        "numReviews": 1,
+        "rating": 5,
+        "createdAt": "2026-05-10T04:35:28.365Z",
+        "updatedAt": "2026-05-17T16:33:13.545Z",
+        "taxClassId": null,
+        "createdById": null
+      }
+    ],
+    "productVariant": [
+      {
+        "id": "6a09e896364b7acdefc72e55",
+        "productId": "6a000b10634476b3ec4de584",
+        "name": "Black - 256GB",
+        "sku": "IP15PM-BLK-256",
+        "barcode": "VAR-IP15PM-BLK",
+        "basePrice": 120000,
+        "sellingPrice": 115000,
+        "costPrice": null,
+        "stock": 24,
+        "minStockLevel": 2,
+        "attributes": [],
+        "images": [],
+        "isActive": true,
+        "isFreeShipping": null,
+        "isPreOrder": null,
+        "warranty": null,
+        "createdAt": "2026-05-17T16:11:01.095Z",
+        "updatedAt": "2026-05-17T16:20:21.742Z"
+      },
+      {
+        "id": "6a09e896364b7acdefc72e56",
+        "productId": "6a000b10634476b3ec4de584",
+        "name": "White - 256GB",
+        "sku": "IP15PM-WHT-256",
+        "barcode": "VAR-IP15PM-WHT",
+        "basePrice": 120000,
+        "sellingPrice": 115000,
+        "costPrice": null,
+        "stock": 25,
+        "minStockLevel": 2,
+        "attributes": [],
+        "images": [],
+        "isActive": true,
+        "isFreeShipping": null,
+        "isPreOrder": null,
+        "warranty": null,
+        "createdAt": "2026-05-17T16:11:01.095Z",
+        "updatedAt": "2026-05-17T16:11:01.095Z"
+      }
+    ],
+    "category": [
+      {
+        "id": "6a000b0e634476b3ec4de57e",
+        "name": "Electronics",
+        "slug": "electronics",
+        "image": null,
+        "icon": null,
+        "description": null,
+        "isHomeShown": false,
+        "order": 0,
+        "isActive": true,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "parentId": null,
+        "createdAt": "2026-05-10T04:35:26.146Z",
+        "updatedAt": "2026-05-10T04:50:59.858Z",
+        "createdById": null
+      },
+      {
+        "id": "6a000b0e634476b3ec4de57f",
+        "name": "Smartphones",
+        "slug": "smartphones",
+        "image": null,
+        "icon": null,
+        "description": null,
+        "isHomeShown": false,
+        "order": 0,
+        "isActive": true,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "parentId": null,
+        "createdAt": "2026-05-10T04:35:26.772Z",
+        "updatedAt": "2026-05-10T04:50:59.858Z",
+        "createdById": null
+      },
+      {
+        "id": "6a000b0e634476b3ec4de580",
+        "name": "Clothing",
+        "slug": "clothing",
+        "image": null,
+        "icon": null,
+        "description": null,
+        "isHomeShown": false,
+        "order": 0,
+        "isActive": true,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "parentId": "6a000b0e634476b3ec4de57e",
+        "createdAt": "2026-05-10T04:35:26.949Z",
+        "updatedAt": "2026-05-10T04:51:06.459Z",
+        "createdById": null
+      },
+      {
+        "id": "6a000fd07810dc5714bdabfc",
+        "name": "Pharmacy",
+        "slug": "pharmacy",
+        "image": "https://res.cloudinary.com/dfigg4e5e/image/upload/v1778388943/ecommerce/categories/x3tsl8q4j78w7owntypm.webp",
+        "icon": null,
+        "description": "",
+        "isHomeShown": true,
+        "order": 0,
+        "isActive": true,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "parentId": null,
+        "createdAt": "2026-05-10T04:55:44.373Z",
+        "updatedAt": "2026-05-10T04:55:44.373Z",
+        "createdById": null
+      }
+    ],
+    "order": [
+      {
+        "id": "6a000b12634476b3ec4de58e",
+        "orderNumber": "ORD-290805",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": null,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 60,
+        "shippingAddress": {
+          "name": "Demo",
+          "address": "Dhaka",
+          "phone": "01700000000"
+        },
+        "billingAddress": null,
+        "shippingZoneId": null,
+        "shippingRateId": null,
+        "shippingMethod": null,
+        "total": 115060,
+        "dueAmount": 0,
+        "appliedCoupon": null,
+        "couponDiscount": 0,
+        "paymentMethod": "ONLINE",
+        "paymentStatus": "PAID",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "DELIVERED",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": null,
+        "notes": null,
+        "createdAt": "2026-05-10T04:35:30.937Z",
+        "updatedAt": "2026-05-10T04:35:30.937Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a0057b6c700b37231b0a9af",
+        "orderNumber": "ORD-20260510-M9T6G",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": 0,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 60,
+        "shippingAddress": {
+          "street": "Baruntek",
+          "city": "Farmgate",
+          "state": "",
+          "zipCode": "1215",
+          "country": "BD"
+        },
+        "billingAddress": null,
+        "shippingZoneId": "6a000b0c634476b3ec4de575",
+        "shippingRateId": "6a000b0c634476b3ec4de576",
+        "shippingMethod": "Inside Dhaka",
+        "total": 115060,
+        "dueAmount": 115060,
+        "appliedCoupon": "",
+        "couponDiscount": 0,
+        "paymentMethod": "COD",
+        "paymentStatus": "PENDING",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "COMPLETED",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": "INV-20260510-BVHW82",
+        "notes": null,
+        "createdAt": "2026-05-10T10:02:30.161Z",
+        "updatedAt": "2026-05-14T12:00:57.967Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a09e5c5506f93e75ea07ceb",
+        "orderNumber": "ORD-20260517-601Z6",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": 0,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 120,
+        "shippingAddress": {
+          "street": "Ideal Tower, Baruntek, Cantonment",
+          "city": "Dhaka",
+          "state": "",
+          "zipCode": "1216",
+          "country": "BD"
+        },
+        "billingAddress": null,
+        "shippingZoneId": "6a000b0c634476b3ec4de575",
+        "shippingRateId": "6a000b0c634476b3ec4de577",
+        "shippingMethod": "Inside Dhaka",
+        "total": 115120,
+        "dueAmount": 115120,
+        "appliedCoupon": "",
+        "couponDiscount": 0,
+        "paymentMethod": "COD",
+        "paymentStatus": "PENDING",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "DELIVERED",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": "INV-20260517-6EYPDU",
+        "notes": null,
+        "createdAt": "2026-05-17T15:59:01.201Z",
+        "updatedAt": "2026-05-17T16:01:45.568Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a09e614506f93e75ea07cf4",
+        "orderNumber": "ORD-20260517-CQ248",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": 0,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 120,
+        "shippingAddress": {
+          "street": "Ideal Tower, Baruntek, Cantonment",
+          "city": "Dhaka",
+          "state": "",
+          "zipCode": "1216",
+          "country": "BD"
+        },
+        "billingAddress": null,
+        "shippingZoneId": "6a000b0c634476b3ec4de575",
+        "shippingRateId": "6a000b0c634476b3ec4de577",
+        "shippingMethod": "Inside Dhaka",
+        "total": 115120,
+        "dueAmount": 115120,
+        "appliedCoupon": "",
+        "couponDiscount": 0,
+        "paymentMethod": "COD",
+        "paymentStatus": "PENDING",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "PENDING",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": "INV-20260517-U4GFB8",
+        "notes": null,
+        "createdAt": "2026-05-17T16:00:20.701Z",
+        "updatedAt": "2026-05-17T16:00:20.701Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a09e94d364b7acdefc72e7d",
+        "orderNumber": "ORD-20260517-978QS",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": 0,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 120,
+        "shippingAddress": {
+          "street": "Ideal Tower, Baruntek, Cantonment",
+          "city": "Dhaka",
+          "state": "Dhaka",
+          "zipCode": "1216",
+          "country": "BD"
+        },
+        "billingAddress": null,
+        "shippingZoneId": "6a000b0c634476b3ec4de578",
+        "shippingRateId": "6a000b0c634476b3ec4de579",
+        "shippingMethod": "Outside Dhaka",
+        "total": 115120,
+        "dueAmount": 115120,
+        "appliedCoupon": "",
+        "couponDiscount": 0,
+        "paymentMethod": "COD",
+        "paymentStatus": "PENDING",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "PENDING",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": "INV-20260517-K41NNN",
+        "notes": null,
+        "createdAt": "2026-05-17T16:14:05.038Z",
+        "updatedAt": "2026-05-17T16:14:05.038Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a09eac3506f93e75ea07d0d",
+        "orderNumber": "POS-20260517-Q34OY",
+        "source": "POS",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "guestInfo": null,
+        "walkInName": "",
+        "walkInPhone": "",
+        "subtotal": 115000,
+        "discountType": "FLAT",
+        "discountValue": 5,
+        "discountAmount": 5,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 0,
+        "shippingAddress": {},
+        "billingAddress": null,
+        "shippingZoneId": null,
+        "shippingRateId": null,
+        "shippingMethod": null,
+        "total": 114995,
+        "dueAmount": 0,
+        "appliedCoupon": null,
+        "couponDiscount": 5,
+        "paymentMethod": "CASH",
+        "paymentStatus": "PAID",
+        "codExtraCharge": 0,
+        "tenderedAmount": 150000,
+        "changeAmount": 35005,
+        "transactionId": null,
+        "status": "COMPLETED",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": "2026-05-17T16:20:19.636Z",
+        "invoiceNumber": "INV-20260517-DD28VG",
+        "notes": null,
+        "createdAt": "2026-05-17T16:20:19.637Z",
+        "updatedAt": "2026-05-17T16:20:19.637Z",
+        "soldBy": "6a000b0d634476b3ec4de57b",
+        "salesChannel": "ONLINE"
+      }
+    ],
+    "orderItem": [
+      {
+        "id": "6a000b13634476b3ec4de58f",
+        "orderId": "6a000b12634476b3ec4de58e",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": null,
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-10T04:35:30.937Z",
+        "updatedAt": "2026-05-10T04:35:30.937Z"
+      },
+      {
+        "id": "6a0057b6c700b37231b0a9b0",
+        "orderId": "6a0057b6c700b37231b0a9af",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": "IP15PM-001",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-10T10:02:30.161Z",
+        "updatedAt": "2026-05-10T10:02:30.161Z"
+      },
+      {
+        "id": "6a09e5c5506f93e75ea07cec",
+        "orderId": "6a09e5c5506f93e75ea07ceb",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": "IP15PM-001",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-17T15:59:01.201Z",
+        "updatedAt": "2026-05-17T15:59:01.201Z"
+      },
+      {
+        "id": "6a09e614506f93e75ea07cf5",
+        "orderId": "6a09e614506f93e75ea07cf4",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": "IP15PM-001",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-17T16:00:20.701Z",
+        "updatedAt": "2026-05-17T16:00:20.701Z"
+      },
+      {
+        "id": "6a09e94d364b7acdefc72e7e",
+        "orderId": "6a09e94d364b7acdefc72e7d",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": "IP15PM-001",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-17T16:14:05.038Z",
+        "updatedAt": "2026-05-17T16:14:05.038Z"
+      },
+      {
+        "id": "6a09eac3506f93e75ea07d0e",
+        "orderId": "6a09eac3506f93e75ea07d0d",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": "6a09e896364b7acdefc72e55",
+        "productName": "iPhone 15 Pro Max - Black - 256GB",
+        "sku": "IP15PM-BLK-256",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-17T16:20:19.637Z",
+        "updatedAt": "2026-05-17T16:20:19.637Z"
+      }
+    ],
+    "cart": [
+      {
+        "id": "69a12fc31cab472fa33dd0d6",
+        "userId": null,
+        "sessionId": "test-guest-1772171202550",
+        "appliedCoupon": null,
+        "discountAmount": 0,
+        "subtotal": 0,
+        "total": 0,
+        "createdAt": "2026-02-27T05:46:43.433Z",
+        "updatedAt": "2026-02-27T05:46:43.433Z",
+        "recoveryEmailSentAt": null,
+        "recoveryEmailCount": 0,
+        "isRecovered": false
+      },
+      {
+        "id": "69a231dacfa281dae595f997",
+        "userId": null,
+        "sessionId": "709361f1-3e81-4731-a4f8-8166bfdcd55d",
+        "appliedCoupon": null,
+        "discountAmount": 0,
+        "subtotal": 0,
+        "total": 0,
+        "createdAt": "2026-02-28T00:07:54.459Z",
+        "updatedAt": "2026-02-28T00:07:54.459Z",
+        "recoveryEmailSentAt": null,
+        "recoveryEmailCount": 0,
+        "isRecovered": false
+      }
+    ],
+    "cartItem": [],
+    "discount": [
+      {
+        "id": "6a000b11634476b3ec4de588",
+        "name": "Welcome Bonus",
+        "code": "WELCOME50",
+        "description": null,
+        "type": "FLAT",
+        "applicableOn": "CART",
+        "value": 50,
+        "buyQuantity": 0,
+        "getQuantity": 0,
+        "startDate": "2026-05-10T04:35:28.586Z",
+        "endDate": "2027-05-10T04:35:28.586Z",
+        "isActive": true,
+        "usageLimit": 100,
+        "usageCount": 0,
+        "perUserLimit": 1,
+        "minOrderValue": 500,
+        "maxDiscountCap": null,
+        "categoryIds": [],
+        "brandNames": [],
+        "allowedCountries": [],
+        "excludedProducts": [],
+        "allowedUserIds": [],
+        "allowedGroupIds": [],
+        "newUsersOnly": false,
+        "priority": 0,
+        "isStackable": false,
+        "createdAt": "2026-05-10T04:35:28.683Z",
+        "updatedAt": "2026-05-10T04:35:28.683Z"
+      }
+    ],
+    "review": [
+      {
+        "id": "6a09ecf5364b7acdefc72e96",
+        "rating": 5,
+        "comment": "I recently explored the iPhone 17 Pro Max, and the experience feels extremely premium. The performance is effortlessly smooth — apps open instantly, multitasking feels seamless, and gaming runs without any noticeable lag",
+        "images": [
+          "https://res.cloudinary.com/dfigg4e5e/image/upload/v1779035381/reviews/onuddzajrzawjt4h8oqf.webp"
+        ],
+        "userId": "6a000b0d634476b3ec4de57c",
+        "productId": "6a000b10634476b3ec4de584",
+        "status": "APPROVED",
+        "adminReply": "Thank you for your positive feedback",
+        "isFlagged": false,
+        "createdAt": "2026-05-17T16:29:41.503Z",
+        "updatedAt": "2026-05-17T16:32:33.352Z"
+      }
+    ],
+    "supplier": [
+      {
+        "id": "6a000b0f634476b3ec4de582",
+        "name": "Tech Wholesalers BD",
+        "contactPerson": "Mr. Rahim",
+        "email": "rahim@techwholesale.bd",
+        "phone": "01800000000",
+        "address": "Motijheel, Dhaka",
+        "isActive": true,
+        "dueBalance": 0,
+        "createdAt": "2026-05-10T04:35:27.263Z",
+        "updatedAt": "2026-05-10T04:35:27.263Z"
+      }
+    ],
+    "purchase": [],
+    "purchaseItem": [],
+    "returnRequest": [],
+    "invoice": [
+      {
+        "id": "6a0057fdc700b37231b0a9b8",
+        "invoiceNumber": "INV-000001",
+        "orderId": "6a0057b6c700b37231b0a9af",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "amount": 115060,
+        "issueDate": "2026-05-10T10:03:41.961Z",
+        "dueDate": "2026-05-25T10:03:41.961Z",
+        "paidDate": null,
+        "status": "PENDING",
+        "createdAt": "2026-05-10T10:03:41.962Z",
+        "updatedAt": "2026-05-10T10:03:41.962Z"
+      },
+      {
+        "id": "6a0591db26ad3cb07daf0387",
+        "invoiceNumber": "INV-000002",
+        "orderId": "6a000b12634476b3ec4de58e",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "amount": 115060,
+        "issueDate": "2026-05-14T09:11:55.195Z",
+        "dueDate": "2026-05-29T09:11:55.195Z",
+        "paidDate": null,
+        "status": "PAID",
+        "createdAt": "2026-05-14T09:11:55.198Z",
+        "updatedAt": "2026-05-14T09:11:55.198Z"
+      }
+    ],
+    "address": [
+      {
+        "id": "6a09e91f364b7acdefc72e74",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "Home",
+        "name": "Mahbubur Rahman",
+        "phone": "01886225492",
+        "street": "Ideal Tower, Baruntek, Cantonment",
+        "city": "Dhaka",
+        "state": "Dhaka",
+        "zipCode": "1216",
+        "country": "Bangladesh",
+        "isDefault": true,
+        "createdAt": "2026-05-17T16:13:19.770Z",
+        "updatedAt": "2026-05-17T16:13:19.770Z"
+      }
+    ],
+    "wishlist": [
+      {
+        "id": "6a09e93c364b7acdefc72e7b",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "productId": "6a000b10634476b3ec4de584",
+        "createdAt": "2026-05-17T16:13:48.747Z",
+        "updatedAt": "2026-05-17T16:13:48.747Z"
+      }
+    ],
+    "stockMovement": [
+      {
+        "id": "6a0057b6c700b37231b0a9b1",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 50,
+        "newQty": 49,
+        "reason": "Order ORD-20260510-M9T6G",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57c",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-10T10:02:30.737Z"
+      },
+      {
+        "id": "6a09e5c7506f93e75ea07ced",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 50,
+        "newQty": 49,
+        "reason": "Order ORD-20260517-601Z6",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57c",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-17T15:59:03.914Z"
+      },
+      {
+        "id": "6a09e617506f93e75ea07cf6",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 49,
+        "newQty": 48,
+        "reason": "Order ORD-20260517-CQ248",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57c",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-17T16:00:23.460Z"
+      },
+      {
+        "id": "6a09e94d364b7acdefc72e7f",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 48,
+        "newQty": 47,
+        "reason": "Order ORD-20260517-978QS",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57c",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-17T16:14:05.593Z"
+      },
+      {
+        "id": "6a09eac7506f93e75ea07d0f",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": "6a09e896364b7acdefc72e55",
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 25,
+        "newQty": 24,
+        "reason": "Order POS-20260517-Q34OY",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57b",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-17T16:20:23.618Z"
+      }
+    ],
+    "damageReport": [],
+    "shippingZone": [
+      {
+        "id": "6a000b0c634476b3ec4de575",
+        "name": "Inside Dhaka",
+        "countries": [],
+        "regions": [
+          "Dhaka"
+        ],
+        "isActive": true,
+        "priority": 0,
+        "createdAt": "2026-05-10T04:35:24.620Z",
+        "updatedAt": "2026-05-10T04:35:24.620Z"
+      },
+      {
+        "id": "6a000b0c634476b3ec4de578",
+        "name": "Outside Dhaka",
+        "countries": [],
+        "regions": [
+          "All BD"
+        ],
+        "isActive": true,
+        "priority": 0,
+        "createdAt": "2026-05-10T04:35:24.809Z",
+        "updatedAt": "2026-05-10T04:35:24.809Z"
+      }
+    ],
+    "shippingRate": [
+      {
+        "id": "6a000b0c634476b3ec4de576",
+        "zoneId": "6a000b0c634476b3ec4de575",
+        "method": "Standard Delivery",
+        "carrier": null,
+        "courierId": null,
+        "calculationType": "FLAT",
+        "flatRate": 60,
+        "baseRate": null,
+        "perKgRate": null,
+        "freeShippingThreshold": null,
+        "minWeight": null,
+        "maxWeight": null,
+        "minOrderValue": null,
+        "estimatedDays": null,
+        "isActive": true,
+        "createdAt": "2026-05-10T04:35:24.620Z",
+        "updatedAt": "2026-05-10T04:35:24.620Z"
+      },
+      {
+        "id": "6a000b0c634476b3ec4de577",
+        "zoneId": "6a000b0c634476b3ec4de575",
+        "method": "Express Delivery",
+        "carrier": null,
+        "courierId": null,
+        "calculationType": "FLAT",
+        "flatRate": 120,
+        "baseRate": null,
+        "perKgRate": null,
+        "freeShippingThreshold": null,
+        "minWeight": null,
+        "maxWeight": null,
+        "minOrderValue": null,
+        "estimatedDays": null,
+        "isActive": true,
+        "createdAt": "2026-05-10T04:35:24.620Z",
+        "updatedAt": "2026-05-10T04:35:24.620Z"
+      },
+      {
+        "id": "6a000b0c634476b3ec4de579",
+        "zoneId": "6a000b0c634476b3ec4de578",
+        "method": "Standard Delivery",
+        "carrier": null,
+        "courierId": null,
+        "calculationType": "FLAT",
+        "flatRate": 120,
+        "baseRate": null,
+        "perKgRate": null,
+        "freeShippingThreshold": null,
+        "minWeight": null,
+        "maxWeight": null,
+        "minOrderValue": null,
+        "estimatedDays": null,
+        "isActive": true,
+        "createdAt": "2026-05-10T04:35:24.809Z",
+        "updatedAt": "2026-05-10T04:35:24.809Z"
+      }
+    ],
+    "courier": [],
+    "campaign": [
+      {
+        "id": "699a4ba6311e127d41715236",
+        "name": "ddd",
+        "subject": "test",
+        "type": "EMAIL",
+        "status": "SENT",
+        "content": "sssss",
+        "template": null,
+        "targetType": "ALL",
+        "targetGroupIds": [],
+        "targetUserIds": [],
+        "scheduledAt": null,
+        "sentAt": "2026-02-22T00:20:02.885Z",
+        "totalRecipients": 2,
+        "sentCount": 2,
+        "openCount": 0,
+        "failedCount": 0,
+        "createdAt": "2026-02-22T00:19:50.031Z",
+        "updatedAt": "2026-02-22T00:20:02.888Z"
+      },
+      {
+        "id": "699a4dc9311e127d41715239",
+        "name": "ddd",
+        "subject": "ddd",
+        "type": "EMAIL",
+        "status": "SENT",
+        "content": "<!DOCTYPE html>\n<html>\n<head><meta charset=\"utf-8\"></head>\n<body style=\"margin:0;padding:0;background:#faf5ff;font-family:Arial,sans-serif;\">\n  <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n    <tr><td align=\"center\" style=\"padding:40px 20px;\">\n      <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.08);\">\n        <tr><td style=\"background:linear-gradient(135deg,#7c3aed,#db2777);padding:50px 40px;text-align:center;\">\n          <p style=\"margin:0 0 8px;color:rgba(255,255,255,.8);font-size:13px;text-transform:uppercase;letter-spacing:3px;font-weight:600;\">Just Arrived</p>\n          <h1 style=\"color:#fff;margin:0;font-size:30px;font-weight:800;\">New Collection Is Here ✨</h1>\n        </td></tr>\n        <tr><td style=\"padding:40px;\">\n          <p style=\"font-size:15px;color:#4b5563;line-height:1.7;margin:0 0 28px;\">We've just added exciting new products to our store. Be the first to explore our latest collection and find your next favourite item.</p>\n          <div style=\"background:#faf5ff;border-radius:8px;padding:20px;text-align:center;margin-bottom:28px;\">\n            <p style=\"margin:0;font-size:24px;font-weight:800;color:#7c3aed;\">50+ New Products</p>\n            <p style=\"margin:4px 0 0;font-size:13px;color:#6b7280;\">Added this week</p>\n          </div>\n          <div style=\"text-align:center;margin:20px 0;\">\n            <a href=\"#\" style=\"background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;text-decoration:none;padding:16px 40px;border-radius:8px;font-weight:700;font-size:16px;display:inline-block;\">Explore Now →</a>\n          </div>\n        </td></tr>\n        <tr><td style=\"background:#f9fafb;padding:20px 40px;text-align:center;border-top:1px solid #e5e7eb;\">\n          <p style=\"margin:0;font-size:12px;color:#9ca3af;\">Mahbub Shop · <a href=\"#\" style=\"color:#6b7280;\">Unsubscribe</a></p>\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n</body>\n</html>",
+        "template": null,
+        "targetType": "ALL",
+        "targetGroupIds": [],
+        "targetUserIds": [],
+        "scheduledAt": null,
+        "sentAt": "2026-02-22T00:29:08.274Z",
+        "totalRecipients": 2,
+        "sentCount": 2,
+        "openCount": 0,
+        "failedCount": 0,
+        "createdAt": "2026-02-22T00:28:57.890Z",
+        "updatedAt": "2026-02-22T00:29:08.275Z"
+      }
+    ],
+    "notification": [
+      {
+        "id": "6a000c79864bdb2e2c74cfe6",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-10T04:41:29.224Z"
+      },
+      {
+        "id": "6a000c79864bdb2e2c74cfe7",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "LOGIN_NEW_DEVICE",
+        "title": "New Login Detected",
+        "message": "Login from node",
+        "data": {
+          "time": "2026-05-10T04:41:29.174Z"
+        },
+        "isRead": true,
+        "readAt": "2026-05-14T12:01:15.161Z",
+        "createdAt": "2026-05-10T04:41:29.177Z"
+      },
+      {
+        "id": "6a00579fc700b37231b0a9ad",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "LOGIN_NEW_DEVICE",
+        "title": "New Login Detected",
+        "message": "Login from node",
+        "data": {
+          "time": "2026-05-10T10:02:07.362Z"
+        },
+        "isRead": true,
+        "readAt": "2026-05-10T10:26:21.007Z",
+        "createdAt": "2026-05-10T10:02:07.364Z"
+      },
+      {
+        "id": "6a0057b7c700b37231b0a9b2",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#ORD-20260510-M9T6G · iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af"
+        },
+        "isRead": true,
+        "readAt": "2026-05-14T11:42:47.635Z",
+        "createdAt": "2026-05-10T10:02:31.098Z"
+      },
+      {
+        "id": "6a005ef0c839aea5116735c9",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_PROCESSING",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G is being packed.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-10T10:33:20.264Z"
+      },
+      {
+        "id": "6a005f0cc839aea5116735cd",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_DELIVERED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G has been delivered.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-10T10:33:48.199Z"
+      },
+      {
+        "id": "6a005f13c839aea5116735ce",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_DELIVERED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G is completed.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-10T10:33:55.614Z"
+      },
+      {
+        "id": "6a056db205639e98affa1b72",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "LOGIN_NEW_DEVICE",
+        "title": "New Login Detected",
+        "message": "Login from node",
+        "data": {
+          "time": "2026-05-14T06:37:38.056Z"
+        },
+        "isRead": true,
+        "readAt": "2026-05-14T11:30:06.635Z",
+        "createdAt": "2026-05-14T06:37:38.060Z"
+      },
+      {
+        "id": "6a056db205639e98affa1b73",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": true,
+        "readAt": "2026-05-14T11:29:50.693Z",
+        "createdAt": "2026-05-14T06:37:38.110Z"
+      },
+      {
+        "id": "6a05b6b99254ba4e97281ae8",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_PROCESSING",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G is being packed.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-14T11:49:13.160Z"
+      },
+      {
+        "id": "6a05b6c39254ba4e97281ae9",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_SHIPPED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G has been shipped.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-14T11:49:23.942Z"
+      },
+      {
+        "id": "6a05b6d19254ba4e97281aea",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_DELIVERED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G has been delivered.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-14T11:49:37.450Z"
+      },
+      {
+        "id": "6a05b9129254ba4e97281aee",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_CANCELLED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G was cancelled.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-14T11:59:14.609Z"
+      },
+      {
+        "id": "6a05b97a9254ba4e97281af3",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_DELIVERED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G is completed.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-14T12:00:58.364Z"
+      },
+      {
+        "id": "6a077874bb44e59f90ae194f",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-15T19:48:04.539Z"
+      },
+      {
+        "id": "6a09e591506f93e75ea07ce2",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-17T15:58:09.713Z"
+      },
+      {
+        "id": "6a09e5c9506f93e75ea07cee",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#ORD-20260517-601Z6 · iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a09e5c5506f93e75ea07ceb"
+        },
+        "isRead": true,
+        "readAt": "2026-05-17T16:00:56.789Z",
+        "createdAt": "2026-05-17T15:59:05.712Z"
+      },
+      {
+        "id": "6a09e619506f93e75ea07cf7",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#ORD-20260517-CQ248 · iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a09e614506f93e75ea07cf4"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-17T16:00:25.278Z"
+      },
+      {
+        "id": "6a09e644506f93e75ea07cfb",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_PROCESSING",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260517-601Z6 is being packed.",
+        "data": {
+          "orderId": "6a09e5c5506f93e75ea07ceb",
+          "url": "/orders/6a09e5c5506f93e75ea07ceb"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-17T16:01:08.536Z"
+      },
+      {
+        "id": "6a09e65d506f93e75ea07cfe",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_SHIPPED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260517-601Z6 has been shipped.",
+        "data": {
+          "orderId": "6a09e5c5506f93e75ea07ceb",
+          "url": "/orders/6a09e5c5506f93e75ea07ceb"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-17T16:01:33.631Z"
+      },
+      {
+        "id": "6a09e66b506f93e75ea07cff",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_DELIVERED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260517-601Z6 has been delivered.",
+        "data": {
+          "orderId": "6a09e5c5506f93e75ea07ceb",
+          "url": "/orders/6a09e5c5506f93e75ea07ceb"
+        },
+        "isRead": true,
+        "readAt": "2026-05-17T16:33:31.370Z",
+        "createdAt": "2026-05-17T16:01:47.432Z"
+      },
+      {
+        "id": "6a09e7d3364b7acdefc72e51",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-17T16:07:47.923Z"
+      },
+      {
+        "id": "6a09e94e364b7acdefc72e80",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#ORD-20260517-978QS · iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a09e94d364b7acdefc72e7d"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-17T16:14:06.219Z"
+      },
+      {
+        "id": "6a09eac9506f93e75ea07d10",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#POS-20260517-Q34OY · iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a09eac3506f93e75ea07d0d"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-17T16:20:25.462Z"
+      }
+    ],
+    "conversation": [
+      {
+        "id": "6a09e9dd364b7acdefc72e8b",
+        "participantIds": [
+          "6a000b0d634476b3ec4de57c",
+          "6a000b0d634476b3ec4de57b"
+        ],
+        "type": "SUPPORT",
+        "status": "OPEN",
+        "lastMessage": "❤️",
+        "lastMessageAt": "2026-05-17T16:17:16.917Z",
+        "assignedTo": null,
+        "createdAt": "2026-05-17T16:16:29.523Z",
+        "updatedAt": "2026-05-17T16:17:16.919Z"
+      }
+    ],
+    "chatMessage": [
+      {
+        "id": "6a09e9e2364b7acdefc72e8c",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57c",
+        "message": "hi",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-17T16:16:47.750Z",
+        "createdAt": "2026-05-17T16:16:34.273Z",
+        "updatedAt": "2026-05-17T16:16:47.751Z"
+      },
+      {
+        "id": "6a09e9f8364b7acdefc72e8e",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57b",
+        "message": "hello",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-17T16:16:57.577Z",
+        "createdAt": "2026-05-17T16:16:56.951Z",
+        "updatedAt": "2026-05-17T16:16:57.578Z"
+      },
+      {
+        "id": "6a09ea0c364b7acdefc72e8f",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57c",
+        "message": "❤️",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-17T16:17:17.483Z",
+        "createdAt": "2026-05-17T16:17:16.695Z",
+        "updatedAt": "2026-05-17T16:17:17.484Z"
+      }
+    ],
+    "heroSlide": [
+      {
+        "id": "6a0043167810dc5714bdac17",
+        "image": "https://res.cloudinary.com/dfigg4e5e/image/upload/v1778402069/ecommerce/hero/invbvnxkueihyynlfutn.webp",
+        "title": "Grocery",
+        "subtitle": "online shop with your trust",
+        "linkType": "PRODUCT",
+        "linkValue": "6a000b10634476b3ec4de584",
+        "isActive": true,
+        "startDate": null,
+        "endDate": null,
+        "order": 0,
+        "createdAt": "2026-05-10T08:34:30.003Z",
+        "updatedAt": "2026-05-10T08:49:35.772Z"
+      },
+      {
+        "id": "6a00443c7810dc5714bdac2b",
+        "image": "https://res.cloudinary.com/dfigg4e5e/image/upload/v1778402363/ecommerce/hero/qsjopdk6evkbtis6jg3m.webp",
+        "title": "Electronics",
+        "subtitle": "",
+        "linkType": "PRODUCT",
+        "linkValue": "6a000b10634476b3ec4de584",
+        "isActive": true,
+        "startDate": null,
+        "endDate": null,
+        "order": 1,
+        "createdAt": "2026-05-10T08:39:24.164Z",
+        "updatedAt": "2026-05-10T08:39:24.164Z"
+      },
+      {
+        "id": "6a0576ec26ad3cb07daf0339",
+        "image": "https://res.cloudinary.com/dfigg4e5e/image/upload/v1778743020/ecommerce/hero/l1gdccbn8ituf8kjxg1y.webp",
+        "title": "Summer",
+        "subtitle": "up to 50% off",
+        "linkType": "PRODUCT",
+        "linkValue": "6a000b10634476b3ec4de584",
+        "isActive": true,
+        "startDate": null,
+        "endDate": null,
+        "order": 3,
+        "createdAt": "2026-05-14T07:17:00.838Z",
+        "updatedAt": "2026-05-14T07:17:00.838Z"
+      },
+      {
+        "id": "6a0576ec26ad3cb07daf033a",
+        "image": "https://res.cloudinary.com/dfigg4e5e/image/upload/v1778743019/ecommerce/hero/r7ml4hp8yfnvekh4utqe.webp",
+        "title": "Summer",
+        "subtitle": "up to 50% off",
+        "linkType": "PRODUCT",
+        "linkValue": "6a000b10634476b3ec4de584",
+        "isActive": true,
+        "startDate": null,
+        "endDate": null,
+        "order": 2,
+        "createdAt": "2026-05-14T07:17:00.838Z",
+        "updatedAt": "2026-05-14T07:17:00.838Z"
+      }
+    ],
+    "emailTemplate": [
+      {
+        "id": "699abc582fcedbc07d87496a",
+        "name": "Order Confirmation",
+        "subject": "Thank you for your order! #{{order_number}}",
+        "type": "ORDER_CONFIRMATION",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee;\">\n        <h2 style=\"color: #333;\">Hello {{customer_name}},</h2>\n        <p>Your order <strong>#{{order_number}}</strong> has been confirmed!</p>\n        <div style=\"background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0;\">\n          {{order_items}}\n        </div>\n        <p style=\"font-size: 18px; font-weight: bold;\">Total: {{order_total}} BDT</p>\n        <p>We'll notify you when your items are on their way.</p>\n        <footer style=\"margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; font-size: 12px; color: #888;\">\n          Mahbub Shop | Powered by Saas Ecommerce\n        </footer>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "order_number",
+            "label": "Order Number"
+          },
+          {
+            "key": "order_total",
+            "label": "Order Total"
+          },
+          {
+            "key": "order_items",
+            "label": "Order Items Table"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:20:39.630Z",
+        "updatedAt": "2026-02-22T08:20:39.630Z"
+      },
+      {
+        "id": "699abc582fcedbc07d87496b",
+        "name": "Welcome Email",
+        "subject": "Welcome to Mahbub Shop, {{customer_name}}!",
+        "type": "WELCOME_EMAIL",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 40px; text-align: center;\">\n        <h1 style=\"color: #4f46e5;\">Welcome aboard!</h1>\n        <p style=\"font-size: 16px; color: #666;\">Hi {{customer_name}}, we're thrilled to have you with us.</p>\n        <a href=\"{{shop_link}}\" style=\"display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; margin-top: 20px;\">Start Shopping</a>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "shop_link",
+            "label": "Shop Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:20:40.691Z",
+        "updatedAt": "2026-02-22T08:20:40.691Z"
+      },
+      {
+        "id": "699abc592fcedbc07d87496c",
+        "name": "Password Reset",
+        "subject": "Reset your password",
+        "type": "PASSWORD_RESET",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px;\">\n        <h3>Hello {{customer_name}},</h3>\n        <p>You requested a password reset. Click the button below to set a new password:</p>\n        <a href=\"{{reset_link}}\" style=\"display: inline-block; background: #ef4444; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none;\">Reset Password</a>\n        <p style=\"margin-top: 20px; font-size: 12px; color: #999;\">If you didn't request this, you can safely ignore this email.</p>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "reset_link",
+            "label": "Reset Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:20:41.314Z",
+        "updatedAt": "2026-02-22T08:20:41.314Z"
+      },
+      {
+        "id": "699ac092648676575dfdbcc7",
+        "name": "Modern Welcome with Coupon",
+        "subject": "Welcome to Mahbub Shop! Unlock your 10% discount.",
+        "type": "WELCOME_EMAIL",
+        "body": "\n      <div style=\"font-family: 'Inter', sans-serif; max-width: 600px; margin: auto; padding: 40px; background: #ffffff; border: 1px solid #f1f5f9; border-radius: 16px;\">\n        <h1 style=\"color: #4f46e5; text-align: center; font-size: 32px;\">Welcome, {{customer_name}}!</h1>\n        <p style=\"text-align: center; color: #64748b; line-height: 1.6;\">We're so glad you're here. As a token of our appreciation, here's a special gift just for you:</p>\n        <div style=\"background: #f5f3ff; border: 2px dashed #c084fc; padding: 20px; text-align: center; margin: 30px 0; border-radius: 12px;\">\n          <span style=\"font-size: 14px; color: #7c3aed; font-weight: bold; display: block; margin-bottom: 5px;\">YOUR CODE</span>\n          <span style=\"font-size: 24px; color: #1e1b4b; font-weight: 900; letter-spacing: 2px;\">{{coupon_code}}</span>\n        </div>\n        <div style=\"text-align: center;\">\n          <a href=\"{{shop_link}}\" style=\"background: #4f46e5; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);\">Start Exploring</a>\n        </div>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "coupon_code",
+            "label": "Coupon Code"
+          },
+          {
+            "key": "shop_link",
+            "label": "Shop Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:41.690Z",
+        "updatedAt": "2026-02-22T08:38:41.690Z"
+      },
+      {
+        "id": "699ac092648676575dfdbcc8",
+        "name": "Minimalist Welcome",
+        "subject": "G'day from Mahbub Shop!",
+        "type": "WELCOME_EMAIL",
+        "body": "\n      <div style=\"font-family: serif; max-width: 600px; margin: auto; padding: 40px; color: #334155;\">\n        <p>Dear {{customer_name}},</p>\n        <p>Welcome to the family. We hope you find exactly what you're looking for.</p>\n        <p>Best,<br>The Team</p>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:42.779Z",
+        "updatedAt": "2026-02-22T08:38:42.779Z"
+      },
+      {
+        "id": "699ac093648676575dfdbcc9",
+        "name": "Visual Order Confirmation",
+        "subject": "Order Confirmed: #{{order_number}}",
+        "type": "ORDER_CONFIRMATION",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;\">\n        <div style=\"background: #1e293b; color: white; padding: 30px; text-align: center;\">\n          <h2 style=\"margin: 0;\">Thanks for your order!</h2>\n          <p style=\"opacity: 0.8; font-size: 14px; margin-top: 5px;\">#{{order_number}}</p>\n        </div>\n        <div style=\"padding: 30px;\">\n          <p>Hi {{customer_name}}, we've received your order and are getting it ready.</p>\n          <div style=\"margin: 20px 0;\">{{order_items}}</div>\n          <div style=\"border-top: 2px solid #f8fafc; padding-top: 20px; text-align: right;\">\n            <p style=\"font-size: 20px; font-weight: bold;\">Total: {{order_total}} BDT</p>\n          </div>\n        </div>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "order_number",
+            "label": "Order Number"
+          },
+          {
+            "key": "order_items",
+            "label": "Order Items (HTML)"
+          },
+          {
+            "key": "order_total",
+            "label": "Order Total"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:43.080Z",
+        "updatedAt": "2026-02-22T08:38:43.080Z"
+      },
+      {
+        "id": "699ac093648676575dfdbcca",
+        "name": "Flash Sale Alert",
+        "subject": "🔥 FLASH SALE IS LIVE!",
+        "type": "PROMOTION",
+        "body": "\n      <div style=\"font-family: 'Arial Black', sans-serif; max-width: 600px; margin: auto; text-align: center; background: #000; color: #fff; padding: 50px 20px;\">\n        <h1 style=\"font-size: 48px; color: #ffeb3b; margin: 0;\">{{discount_percentage}}% OFF</h1>\n        <h2 style=\"font-size: 24px; margin-top: 10px;\">{{sale_title}}</h2>\n        <p style=\"font-family: sans-serif; opacity: 0.8; margin: 30px 0;\">Limited time only. Don't miss out on these incredible deals.</p>\n        <a href=\"{{shop_link}}\" style=\"background: #ffffff; color: #000; padding: 15px 40px; border-radius: 4px; text-decoration: none; font-weight: bold; text-transform: uppercase;\">Shop Now</a>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "sale_title",
+            "label": "Sale Title"
+          },
+          {
+            "key": "discount_percentage",
+            "label": "Discount %"
+          },
+          {
+            "key": "shop_link",
+            "label": "Shop Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:43.489Z",
+        "updatedAt": "2026-02-22T08:38:43.489Z"
+      },
+      {
+        "id": "699ac093648676575dfdbccb",
+        "name": "Direct Message from Support",
+        "subject": "Regarding your recent query",
+        "type": "USER_DIRECT",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 30px; border-left: 4px solid #3b82f6; background: #f8fafc;\">\n        <h3 style=\"color: #1e293b; margin-top: 0;\">Hello {{customer_name}},</h3>\n        <p style=\"color: #475569; line-height: 1.7; white-space: pre-line;\">{{support_message}}</p>\n        <p style=\"font-size: 11px; color: #94a3b8; margin-top: 40px;\">Reference Ticket: #{{ticket_id}}</p>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "support_message",
+            "label": "Support Message Content"
+          },
+          {
+            "key": "ticket_id",
+            "label": "Ticket ID"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:43.799Z",
+        "updatedAt": "2026-02-22T08:38:43.799Z"
+      },
+      {
+        "id": "699ac094648676575dfdbccc",
+        "name": "Account Status Update",
+        "subject": "Important update about your account",
+        "type": "USER_DIRECT",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 30px; text-align: center;\">\n        <div style=\"background: #fffbeb; border: 1px solid #fde68a; padding: 20px; border-radius: 12px;\">\n          <h2 style=\"color: #92400e; margin-top: 0;\">Account Update</h2>\n          <p style=\"color: #78350f;\">Hi {{customer_name}}, we wanted to let you know that: {{status_message}}</p>\n        </div>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "status_message",
+            "label": "Status Update Description"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:44.100Z",
+        "updatedAt": "2026-02-22T08:38:44.100Z"
+      },
+      {
+        "id": "699ac094648676575dfdbccd",
+        "name": "Secure Password Reset",
+        "subject": "Reset your password",
+        "type": "PASSWORD_RESET",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px;\">\n        <h3>Hello {{customer_name}},</h3>\n        <p>You requested a password reset. Click the button below to set a new password:</p>\n        <a href=\"{{reset_link}}\" style=\"display: inline-block; background: #ef4444; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none;\">Reset Password</a>\n        <p style=\"margin-top: 20px; font-size: 12px; color: #999;\">If you didn't request this, you can safely ignore this email.</p>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "reset_link",
+            "label": "Reset Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:44.420Z",
+        "updatedAt": "2026-02-22T08:38:44.420Z"
+      }
+    ],
+    "landingPage": []
+  }
+}

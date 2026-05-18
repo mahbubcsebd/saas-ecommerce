@@ -62,7 +62,7 @@ export function POSCart({
   };
 
   return (
-    <Card className="h-full flex flex-col border-l rounded-none">
+    <Card className="h-full flex flex-col border shadow-sm rounded-lg bg-white overflow-hidden">
       <CardHeader className="py-3 px-4 border-b">
         <CardTitle className="text-lg">Current Order</CardTitle>
       </CardHeader>

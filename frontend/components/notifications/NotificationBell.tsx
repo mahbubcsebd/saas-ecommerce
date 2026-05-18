@@ -113,7 +113,7 @@ export const NotificationBell = () => {
             <div className="p-4 text-center text-sm text-muted-foreground">No notifications</div>
           ) : (
             notifications
-              .filter((n) => n.type !== 'NEW_MESSAGE')
+              .filter((n) => n.type !== 'NEW_CHAT_MESSAGE')
               .map((n) => {
                 let Icon = Bell;
                 let iconColor = 'text-primary';

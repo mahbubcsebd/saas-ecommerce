@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from '@/context/TranslationContext';
+import { useCurrency } from '@/hooks/useCurrency';
 import { getOrderStatusConfig } from '@/lib/order-utils';
 import { cn } from '@/lib/utils';
 import { Calendar, FileText, Wallet } from 'lucide-react';
@@ -33,11 +34,11 @@ interface Order {
 
 interface OrderCardProps {
   order: Order;
-  formatPrice: (price: number) => string;
 }
 
-export default function OrderCard({ order, formatPrice }: OrderCardProps) {
+export default function OrderCard({ order }: OrderCardProps) {
   const { t } = useTranslations();
+  const { formatPrice } = useCurrency();
   const statusConfig = getOrderStatusConfig(order.status);
 
   return (

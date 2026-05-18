@@ -8,12 +8,14 @@ interface SocketContextType {
   socket: Socket | null;
   isConnected: boolean;
   unreadCount: number;
+  chatUnreadCount: number;
 }
 
 const SocketContext = createContext<SocketContextType>({
   socket: null,
   isConnected: false,
   unreadCount: 0,
+  chatUnreadCount: 0,
 });
 
 export const useSocket = () => useContext(SocketContext);
@@ -23,6 +25,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [chatUnreadCount, setChatUnreadCount] = useState(0);
 
   useEffect(() => {
     if (session?.accessToken) {
@@ -51,6 +54,10 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         setUnreadCount(data.count);
       });
 
+      socketInstance.on('notification:chat-count', (data: { count: number }) => {
+        setChatUnreadCount(data.count);
+      });
+
       socketInstance.on('notification:new', () => {
         socketInstance.emit('notification:count');
       });
@@ -71,7 +78,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [session?.accessToken]);
 
   return (
-    <SocketContext.Provider value={{ socket, isConnected, unreadCount }}>
+    <SocketContext.Provider value={{ socket, isConnected, unreadCount, chatUnreadCount }}>
       {children}
     </SocketContext.Provider>
   );

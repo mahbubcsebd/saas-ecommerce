@@ -208,7 +208,7 @@ export default function POSPage() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen lg:h-[calc(100vh-60px)] gap-4 p-2 sm:p-4 max-w-[1920px] mx-auto bg-muted/20">
+    <div className="flex flex-col lg:flex-row h-auto lg:h-[calc(100vh-140px)] gap-4 p-2 sm:p-4 max-w-[1920px] mx-auto bg-muted/20 lg:overflow-hidden">
         <Toaster />
 
         {/* Helper for Print - Hidden usually */}
@@ -224,19 +224,19 @@ export default function POSPage() {
                         <Printer className="h-8 w-8" />
                      </div>
                      <div>
-                         <h2 className="text-xl font-bold">Order Successful!</h2>
-                         <p className="text-muted-foreground font-mono">{lastOrder.invoiceNumber}</p>
+                          <h2 className="text-xl font-bold">Order Successful!</h2>
+                          <p className="text-muted-foreground font-mono">{lastOrder.invoiceNumber}</p>
                      </div>
                      <div className="flex gap-4 justify-center">
-                         <Button variant="outline" onClick={() => setLastOrder(null)}>Close</Button>
-                         <Button onClick={() => handlePrint && handlePrint()}>Print Receipt</Button>
+                          <Button variant="outline" onClick={() => setLastOrder(null)}>Close</Button>
+                          <Button onClick={() => handlePrint && handlePrint()}>Print Receipt</Button>
                      </div>
                  </div>
              </div>
         )}
 
         {/* Left Column: Products (65% on large, full on small) */}
-        <div className="flex-1 flex flex-col gap-4 min-w-0 bg-white rounded-lg shadow-sm border p-4 h-full">
+        <div className="flex-1 flex flex-col gap-4 min-w-0 bg-white rounded-lg shadow-sm border p-4 h-auto lg:h-full lg:overflow-hidden">
              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
                  <div className="flex items-center gap-2">
                     <Link href="/dashboard">
@@ -260,17 +260,18 @@ export default function POSPage() {
         </div>
 
         {/* Right Column: Cart & Checkout (35% or side drawer style) */}
-        <div className="w-full lg:w-[450px] xl:w-[500px] flex flex-col gap-4 min-w-0 h-full">
-            <div className="flex-1 overflow-auto flex flex-col gap-3">
-                 <POSCustomer
-                    selectedUser={selectedUser}
-                    setSelectedUser={setSelectedUser}
-                    walkInName={walkInName}
-                    setWalkInName={setWalkInName}
-                    walkInPhone={walkInPhone}
-                    setWalkInPhone={setWalkInPhone}
-                 />
+        <div className="w-full lg:w-[450px] xl:w-[500px] flex flex-col gap-3 min-w-0 h-auto lg:h-full lg:overflow-hidden">
+             <POSCustomer
+                selectedUser={selectedUser}
+                setSelectedUser={setSelectedUser}
+                walkInName={walkInName}
+                setWalkInName={setWalkInName}
+                walkInPhone={walkInPhone}
+                setWalkInPhone={setWalkInPhone}
+             />
 
+             {/* Wrapper for POSCart that allows it to grow and fill the space */}
+             <div className="flex-grow flex-1 min-h-[350px] lg:min-h-0 flex flex-col">
                  <POSCart
                     items={cartItems}
                     onUpdateQuantity={handleUpdateQuantity}
@@ -286,16 +287,16 @@ export default function POSPage() {
                     onCheckout={handleCheckout}
                     isProcessing={isProcessing}
                  />
+             </div>
 
-                 <POSPayment
-                    total={total}
-                    paymentMethod={paymentMethod}
-                    setPaymentMethod={setPaymentMethod}
-                    tenderedAmount={tenderedAmount}
-                    setTenderedAmount={setTenderedAmount}
-                    changeAmount={changeAmount}
-                 />
-            </div>
+             <POSPayment
+                total={total}
+                paymentMethod={paymentMethod}
+                setPaymentMethod={setPaymentMethod}
+                tenderedAmount={tenderedAmount}
+                setTenderedAmount={setTenderedAmount}
+                changeAmount={changeAmount}
+             />
         </div>
     </div>
   );

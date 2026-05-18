@@ -12,10 +12,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useSettings } from '@/context/SettingsContext';
+import { useSocket } from '@/context/SocketContext';
 import { useTranslations } from '@/context/TranslationContext';
-import { useWishlist } from '@/context/WishlistContext';
 import { useCartStore } from '@/store/useCartStore';
-import { Heart, LogOut, Menu, ShoppingCart, User } from 'lucide-react';
+import { LogOut, Menu, ShoppingCart, User, MessageSquare } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -26,7 +26,7 @@ import { Button } from './ui/button';
 
 export default function Header() {
   const cart = useCartStore((state) => state.cart);
-  const { wishlist } = useWishlist();
+  const { chatUnreadCount } = useSocket();
   const { data: session } = useSession();
   const { settings } = useSettings();
   const { t } = useTranslations();
@@ -123,19 +123,28 @@ export default function Header() {
               </Button>
             </div>
           )}
-
-          {/* Wishlist */}
-          <Button variant="ghost" size="icon" className="relative" asChild>
-            <Link href="/wishlist">
-              <Heart className="h-6 w-6" aria-hidden="true" />
-              <span className="sr-only">{t('common', 'wishlist')}</span>
-              {wishlist && wishlist.length > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-[11px] font-bold text-primary-foreground flex items-center justify-center animate-in zoom-in">
-                  {wishlist.length}
+          {/* Chat */}
+          {session && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative"
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new CustomEvent('open-chat'));
+                }
+              }}
+              aria-label={t('common', 'chat', { defaultValue: 'Chat' })}
+            >
+              <MessageSquare className="h-6 w-6" aria-hidden="true" />
+              <span className="sr-only">{t('common', 'chat', { defaultValue: 'Chat' })}</span>
+              {chatUnreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-blue-600 text-[11px] font-bold text-white flex items-center justify-center animate-in zoom-in">
+                  {chatUnreadCount}
                 </span>
               )}
-            </Link>
-          </Button>
+            </Button>
+          )}
 
           {/* Cart */}
           <Button variant="ghost" size="icon" className="relative" asChild>

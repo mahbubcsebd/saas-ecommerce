@@ -4,8 +4,9 @@ import { Check, Clock, ShieldCheck, Star, Truck } from 'lucide-react';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
-// Force regular fetch instead of static generation for now, or allow ISR
-export const dynamic = 'force-dynamic';
+export function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

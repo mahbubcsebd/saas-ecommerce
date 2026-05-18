@@ -93,7 +93,7 @@ export function POSProductList({ onAddToCart }: POSProductListProps) {
   };
 
   return (
-    <div className="flex flex-col h-full gap-4">
+    <div className="flex flex-col flex-1 min-h-0 gap-4">
       {/* Search Bar */}
       <div className="relative">
         <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -106,7 +106,7 @@ export function POSProductList({ onAddToCart }: POSProductListProps) {
       </div>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-y-auto flex-1 p-1">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-y-auto flex-1 p-1 items-start content-start">
         {loading ? (
              <p className="text-center col-span-full">Loading...</p>
         ) : products.length === 0 ? (
@@ -116,11 +116,11 @@ export function POSProductList({ onAddToCart }: POSProductListProps) {
             <Card
               key={product.id}
               ref={index === products.length - 1 ? lastProductElementRef : null}
-              className="cursor-pointer hover:border-primary transition-all hover:shadow-md group"
+              className="cursor-pointer hover:border-primary transition-all hover:shadow-md group h-full flex flex-col"
               onClick={() => handleProductClick(product)}
             >
-              <CardContent className="p-3">
-                <div className="relative aspect-square mb-2 bg-muted rounded-md overflow-hidden">
+              <CardContent className="p-3 flex flex-col flex-1">
+                <div className="relative aspect-square mb-2 bg-muted rounded-md overflow-hidden shrink-0">
                   {product.images?.[0] ? (
                     <Image
                       src={product.images[0]}
@@ -133,23 +133,41 @@ export function POSProductList({ onAddToCart }: POSProductListProps) {
                   )}
                   {product.variants?.length > 0 && (
                       <div className="absolute top-1 right-1">
-                          <Badge variant="secondary" className="text-[10px] px-1 h-5">
+                          <Badge variant="secondary" className="text-[10px] px-1.5 h-5 bg-background/80 backdrop-blur-xs font-semibold">
                               {product.variants.length} Vars
                           </Badge>
                       </div>
                   )}
                   {product.stock <= 0 && (
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                          <Badge variant="destructive">Out of Stock</Badge>
+                      <div className="absolute inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center">
+                          <Badge variant="destructive" className="font-semibold shadow-sm">Out of Stock</Badge>
                       </div>
                   )}
                 </div>
-                <h3 className="font-medium text-sm truncate" title={product.name}>{product.name}</h3>
-                <div className="flex justify-between items-center mt-1">
-                    <span className="font-bold text-primary">৳{product.sellingPrice}</span>
-                    <span className="text-xs text-muted-foreground">Stock: {product.stock}</span>
+
+                <div className="flex flex-col flex-1 justify-between gap-1">
+                  <div>
+                    <h3 className="font-semibold text-slate-800 dark:text-slate-200 text-sm line-clamp-2 leading-snug group-hover:text-primary transition-colors" title={product.name}>
+                      {product.name}
+                    </h3>
+                    <p className="text-[11px] text-muted-foreground font-mono mt-0.5 truncate" title={product.sku}>
+                      {product.sku}
+                    </p>
+                  </div>
+
+                  <div className="flex justify-between items-center mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <span className="font-bold text-primary text-sm sm:text-base">৳{product.sellingPrice}</span>
+                    <span className={`text-[11px] sm:text-xs font-medium px-1.5 py-0.5 rounded-sm ${
+                      product.stock > 10 
+                        ? "text-emerald-600 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950/20" 
+                        : product.stock > 0 
+                          ? "text-amber-600 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/20"
+                          : "text-rose-600 bg-rose-50 dark:text-rose-400 dark:bg-rose-950/20"
+                    }`}>
+                      {product.stock > 0 ? `${product.stock} left` : '0 left'}
+                    </span>
+                  </div>
                 </div>
-                <p className="text-xs text-muted-foreground truncate">{product.sku}</p>
               </CardContent>
             </Card>
           ))

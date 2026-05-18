@@ -260,9 +260,9 @@ export default function ReviewsPage() {
                       ))}
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="max-w-[200px] sm:max-w-[300px] md:max-w-[400px] lg:max-w-[500px]">
                     <div className="w-full">
-                      <p className="text-xs md:text-sm text-gray-700 break-words line-clamp-2 md:line-clamp-3" title={review.comment || ""}>
+                      <p className="text-xs md:text-sm text-gray-700 break-words whitespace-normal line-clamp-2 md:line-clamp-3" title={review.comment || ""}>
                         {review.comment || <span className="text-gray-400 italic">No comment provided</span>}
                       </p>
                       {review.adminReply && (

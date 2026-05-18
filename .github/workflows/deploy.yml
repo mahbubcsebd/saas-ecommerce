@@ -1,0 +1,53 @@
+name: Deploy SaaS E-Commerce Monorepo to Google Cloud
+
+on:
+  push:
+    branches:
+      - main # আপনার গিটহাবের মেইন ব্রাঞ্চের নাম যদি master হয়, তবে এখানে master লিখে দিন
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to GCP VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # 1. Navigate to project root and pull latest code changes from GitHub
+            cd ~/saas-ecommerce
+            git pull origin main
+
+            # 2. Update, Generate Prisma & Restart Express API Backend
+            echo "⚡ Deploying Express API Backend..."
+            cd ~/saas-ecommerce/backend/server
+            npm install --production
+            npm run db:generate
+            PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 restart express-api --update-env || PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 start src/server.js --name "express-api"
+
+            # 3. Update, Build & Restart Admin Dashboard Client (Port 3001)
+            echo "🎨 Deploying Admin Dashboard Client..."
+            cd ~/saas-ecommerce/backend/client
+            npm install
+            npm run build
+            PORT=3001 pm2 restart next-dashboard --update-env || PORT=3001 pm2 start npm --name "next-dashboard" -- run start -- -p 3001
+
+            # 4. Update, Build & Restart Frontend Shop Client (Port 3000)
+            echo "🛒 Deploying Frontend Shop Client..."
+            cd ~/saas-ecommerce/frontend
+            npm install
+            npm run build
+            PORT=3000 pm2 restart next-shop --update-env || PORT=3000 pm2 start npm --name "next-shop" -- run start -- -p 3000
+
+            # 5. Save PM2 running state and display live process list
+            pm2 save
+            pm2 list
+            echo "🚀 Monorepo successfully deployed! All servers are live and updated."
+

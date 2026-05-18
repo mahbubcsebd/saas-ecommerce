@@ -35,7 +35,6 @@ export default async function OrdersPage() {
 
   const orders = await getOrders(session.accessToken as string);
 
-  const formatPrice = (price: number) => `৳${price?.toLocaleString()}`;
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
@@ -64,7 +63,7 @@ export default async function OrdersPage() {
       <div className="grid grid-cols-1 gap-6">
         {orders.length > 0 ? (
           orders.map((order: any) => (
-            <OrderCard key={order.id} order={order} formatPrice={formatPrice} />
+            <OrderCard key={order.id} order={order} />
           ))
         ) : (
           <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-12 text-center space-y-6">

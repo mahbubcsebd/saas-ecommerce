@@ -5,9 +5,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { Bot, Loader2, MessageSquare, Minimize2, Send, User, X } from 'lucide-react';
+import { Bot, Loader2, Minimize2, Send, User, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 interface Message {
     id: string;
@@ -16,13 +15,7 @@ interface Message {
     timestamp: Date;
 }
 
-interface ProductContext {
-    name: string;
-    price: number;
-    description: string;
-    category?: { name: string };
-    stock: number;
-}
+const generateId = () => Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
 
 const playNotificationSound = () => {
   try {
@@ -52,7 +45,7 @@ const playNotificationSound = () => {
   }
 };
 
-export const CustomerChatbot = () => {
+export default function CustomerChatbot() {
     const [isOpen, setIsOpen] = useState(false);
     const [isMinimized, setIsMinimized] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
@@ -75,7 +68,7 @@ export const CustomerChatbot = () => {
         // Generate a session ID on load if not exists
         let sid = localStorage.getItem('chatSessionId');
         if (!sid) {
-            sid = uuidv4();
+            sid = generateId();
             localStorage.setItem('chatSessionId', sid);
         }
         setSessionId(sid);
@@ -91,7 +84,7 @@ export const CustomerChatbot = () => {
         if (!input.trim() || loading) return;
 
         const userMessage: Message = {
-            id: uuidv4(),
+            id: generateId(),
             role: 'user',
             content: input,
             timestamp: new Date(),
@@ -124,7 +117,7 @@ export const CustomerChatbot = () => {
 
             if (data.success) {
                 const aiMessage: Message = {
-                    id: uuidv4(),
+                    id: generateId(),
                     role: 'assistant',
                     content: data.data.response || data.data.message || 'I processed your request.',
                     timestamp: new Date(),
@@ -133,7 +126,7 @@ export const CustomerChatbot = () => {
                 playNotificationSound();
             } else {
                  setMessages(prev => [...prev, {
-                    id: uuidv4(),
+                    id: generateId(),
                     role: 'assistant',
                     content: 'Sorry, I encountered an issue. Please try again.',
                     timestamp: new Date(),
@@ -143,7 +136,7 @@ export const CustomerChatbot = () => {
         } catch (error) {
             console.error('Chat error:', error);
             setMessages(prev => [...prev, {
-                id: uuidv4(),
+                id: generateId(),
                 role: 'assistant',
                 content: 'Network error. Please try again later.',
                 timestamp: new Date(),
@@ -158,20 +151,24 @@ export const CustomerChatbot = () => {
         return (
             <Button
                 onClick={() => setIsOpen(true)}
-                className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg p-0 z-50 animate-bounce-slow"
+                className="fixed bottom-6 right-24 h-14 w-14 rounded-full shadow-lg p-0 z-50 bg-gradient-to-tr from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 border-none transition-all duration-300 transform hover:scale-110 flex items-center justify-center"
                 size="icon"
+                aria-label="AI Assistant"
             >
-                <MessageSquare className="h-8 w-8 text-white" />
+                <Bot className="h-7 w-7 text-white" />
             </Button>
         );
     }
 
     if (isMinimized) {
          return (
-            <div className="fixed bottom-6 right-6 z-50 bg-white rounded-lg shadow-xl border w-72 flex items-center justify-between p-3 cursor-pointer" onClick={() => setIsMinimized(false)}>
+            <div 
+              className="fixed bottom-6 right-24 z-50 bg-white rounded-lg shadow-xl border w-72 flex items-center justify-between p-3 cursor-pointer hover:shadow-2xl transition-shadow duration-300" 
+              onClick={() => setIsMinimized(false)}
+            >
                  <div className="flex items-center gap-2">
-                     <div className="bg-primary/10 p-2 rounded-full">
-                         <Bot className="h-5 w-5 text-primary" />
+                     <div className="bg-indigo-100 p-2 rounded-full text-indigo-600">
+                         <Bot className="h-5 w-5" />
                      </div>
                      <span className="font-semibold text-sm">AI Assistant</span>
                  </div>
@@ -183,23 +180,23 @@ export const CustomerChatbot = () => {
     }
 
     return (
-        <Card className="fixed bottom-6 right-6 w-[380px] h-[600px] shadow-2xl z-50 flex flex-col border-primary/20 animate-in slide-in-from-bottom-10 fade-in duration-300">
-            <CardHeader className="bg-primary text-primary-foreground p-4 flex flex-row items-center justify-between space-y-0 rounded-t-lg">
+        <Card className="fixed bottom-6 right-6 w-[380px] h-[600px] shadow-2xl z-50 flex flex-col border-indigo-200/50 animate-in slide-in-from-bottom-10 fade-in duration-300">
+            <CardHeader className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white p-4 flex flex-row items-center justify-between space-y-0 rounded-t-lg">
                 <div className="flex items-center gap-2">
-                    <Bot className="h-6 w-6" />
+                    <Bot className="h-6 w-6 text-white" />
                     <div>
-                        <CardTitle className="text-base">Shop Assistant</CardTitle>
-                        <p className="text-xs text-primary-foreground/80 flex items-center gap-1">
+                        <CardTitle className="text-base font-bold">Shop AI Assistant</CardTitle>
+                        <p className="text-xs text-white/80 flex items-center gap-1">
                             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
                             Online
                         </p>
                     </div>
                 </div>
                 <div className="flex items-center gap-1">
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20" onClick={() => setIsMinimized(true)}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/20" onClick={() => setIsMinimized(true)}>
                         <Minimize2 className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20" onClick={() => setIsOpen(false)}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-white hover:bg-white/20" onClick={() => setIsOpen(false)}>
                         <X className="h-5 w-5" />
                     </Button>
                 </div>
@@ -218,14 +215,14 @@ export const CustomerChatbot = () => {
                             >
                                 <div className={cn(
                                     "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
-                                    msg.role === 'user' ? "bg-primary text-primary-foreground" : "bg-white border shadow-sm text-primary"
+                                    msg.role === 'user' ? "bg-indigo-600 text-white" : "bg-white border shadow-sm text-indigo-600"
                                 )}>
                                     {msg.role === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
                                 </div>
                                 <div className={cn(
                                     "p-3 rounded-2xl text-sm shadow-sm",
                                     msg.role === 'user'
-                                        ? "bg-primary text-primary-foreground rounded-tr-none"
+                                        ? "bg-indigo-600 text-white rounded-tr-none"
                                         : "bg-white border text-foreground rounded-tl-none"
                                 )}>
                                    <div dangerouslySetInnerHTML={{ __html: msg.content.replace(/\n/g, '<br/>') }} />
@@ -237,13 +234,13 @@ export const CustomerChatbot = () => {
                         ))}
                         {loading && (
                              <div className="flex gap-2 mr-auto max-w-[80%]">
-                                <div className="w-8 h-8 rounded-full bg-white border shadow-sm text-primary flex items-center justify-center shrink-0">
+                                <div className="w-8 h-8 rounded-full bg-white border shadow-sm text-indigo-600 flex items-center justify-center shrink-0">
                                     <Bot className="h-4 w-4" />
                                 </div>
                                 <div className="bg-white border p-3 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-1">
-                                    <span className="w-1.5 h-1.5 bg-primary/60 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                                    <span className="w-1.5 h-1.5 bg-primary/60 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                                    <span className="w-1.5 h-1.5 bg-primary/60 rounded-full animate-bounce"></span>
+                                    <span className="w-1.5 h-1.5 bg-indigo-600/60 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                                    <span className="w-1.5 h-1.5 bg-indigo-600/60 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                                    <span className="w-1.5 h-1.5 bg-indigo-600/60 rounded-full animate-bounce"></span>
                                 </div>
                             </div>
                         )}
@@ -278,13 +275,13 @@ export const CustomerChatbot = () => {
                         onChange={(e) => setInput(e.target.value)}
                         disabled={loading}
                         ref={inputRef}
-                        className="rounded-full focus-visible:ring-primary/20"
+                        className="rounded-full focus-visible:ring-indigo-500/20"
                     />
-                    <Button type="submit" size="icon" disabled={loading || !input.trim()} className="rounded-full shrink-0">
+                    <Button type="submit" size="icon" disabled={loading || !input.trim()} className="rounded-full shrink-0 bg-indigo-600 hover:bg-indigo-700">
                         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                     </Button>
                 </form>
             </CardFooter>
         </Card>
     );
-};
+}

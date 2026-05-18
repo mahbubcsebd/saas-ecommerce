@@ -54,3 +54,9 @@ yarn-error.log*
 .gemini/
 tmp/
 temp/
+
+# Allow environment configuration templates/configs to be tracked in git
+!**/frontend/.env.production
+!**/frontend/.env.development
+!**/backend/client/.env.production
+!**/backend/client/.env.development

@@ -25,6 +25,33 @@ import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
 // import { toast } from "react-hot-toast";
 
+const playNotificationSound = () => {
+  try {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    
+    osc.type = 'sine';
+    const now = ctx.currentTime;
+    
+    osc.frequency.setValueAtTime(587.33, now); // D5
+    osc.frequency.exponentialRampToValueAtTime(880.00, now + 0.1); // A5
+    
+    gain.gain.setValueAtTime(0.35, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+    
+    osc.start(now);
+    osc.stop(now + 0.45);
+  } catch (error) {
+    console.error('Failed to play synthesized sound:', error);
+  }
+};
+
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { socket, isConnected } = useSocket();
@@ -52,6 +79,32 @@ const ChatWidget = () => {
   }, [isOpen, session]);
 
   useEffect(() => {
+    if (!socket || !session) return;
+
+    const handleGlobalNewMessage = (message: any) => {
+      // If already open, the local socket listener handles real-time appends
+      if (isOpen) return;
+
+      if (message.senderId !== session.user?.id) {
+        playNotificationSound();
+        if (!conversation) {
+          initChat();
+        }
+        setIsOpen(true);
+        toast.info('New Message from Support', {
+          description: message.message || 'You received a new message.',
+        });
+      }
+    };
+
+    socket.on('chat:message:new', handleGlobalNewMessage);
+
+    return () => {
+      socket.off('chat:message:new', handleGlobalNewMessage);
+    };
+  }, [socket, session, isOpen, conversation]);
+
+  useEffect(() => {
     if (!socket || !conversation) return;
 
     socket.emit('chat:join', conversation.id);
@@ -62,7 +115,11 @@ const ChatWidget = () => {
           if (prev.some((m) => m.id === message.id)) return prev;
           return [...prev, message];
         });
-        if (isOpen && message.senderId !== session?.user?.id) {
+        
+        // Play notification sound if received from support
+        if (message.senderId !== session?.user?.id) {
+          playNotificationSound();
+          
           socket.emit('chat:read', {
             conversationId: conversation.id,
             messageId: message.id,

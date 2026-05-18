@@ -9,6 +9,10 @@ import { Product } from '@/types/product';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+export function generateStaticParams() {
+  return [];
+}
+
 // Data Fetching Utils
 async function getProduct(slug: string): Promise<Product | null> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';

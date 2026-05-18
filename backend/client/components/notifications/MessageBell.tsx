@@ -15,6 +15,35 @@ import { MessageSquare } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+
+const playNotificationSound = () => {
+  try {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    
+    osc.type = 'sine';
+    const now = ctx.currentTime;
+    
+    // Play a premium double-note ascending chime
+    osc.frequency.setValueAtTime(587.33, now); // D5
+    osc.frequency.exponentialRampToValueAtTime(880.00, now + 0.1); // A5
+    
+    gain.gain.setValueAtTime(0.35, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+    
+    osc.start(now);
+    osc.stop(now + 0.45);
+  } catch (error) {
+    console.error('Failed to play synthesized sound:', error);
+  }
+};
 
 export const MessageBell = () => {
   const { socket, chatUnreadCount } = useSocket();
@@ -39,7 +68,7 @@ export const MessageBell = () => {
       const data = await res.json();
       if (data.success) {
         // Filter only chat messages
-        const chatNotis = data.data.notifications.filter((n: any) => n.type === 'NEW_MESSAGE');
+        const chatNotis = data.data.notifications.filter((n: any) => n.type === 'NEW_CHAT_MESSAGE');
         setNotifications(chatNotis);
       }
     } catch (error) {
@@ -56,18 +85,43 @@ export const MessageBell = () => {
   useEffect(() => {
     if (!socket) return;
 
-    const handleNewNoti = (notification: any) => {
-        if (notification.type === 'NEW_MESSAGE') {
-            setNotifications((prev) => [notification, ...prev].slice(0, 10));
+    const handleNewMessage = (message: any) => {
+        if (message.senderId !== session?.user?.id) {
+            setNotifications((prev) => [
+              {
+                id: message.id,
+                type: 'NEW_CHAT_MESSAGE',
+                title: `New Message from ${message.sender?.firstName || 'User'}`,
+                message: message.message,
+                data: { conversationId: message.conversationId },
+                createdAt: message.createdAt || new Date(),
+              },
+              ...prev
+            ].slice(0, 10));
+
+            playNotificationSound();
+
+            toast.info(`New Message from ${message.sender?.firstName || 'User'}`, {
+              description: message.message || 'You received a new message.',
+              action: {
+                label: 'Reply',
+                onClick: () => {
+                  router.push(`/dashboard/chat?id=${message.conversationId}`);
+                }
+              }
+            });
+
+            // Automatically open chat window
+            router.push(`/dashboard/chat?id=${message.conversationId}`);
         }
     };
 
-    socket.on('notification:new', handleNewNoti);
+    socket.on('chat:message:new', handleNewMessage);
 
     return () => {
-      socket.off('notification:new', handleNewNoti);
+      socket.off('chat:message:new', handleNewMessage);
     };
-  }, [socket]);
+  }, [socket, session?.user?.id]);
 
   const renderTime = (value: any) => {
     if (!value) return 'just now';

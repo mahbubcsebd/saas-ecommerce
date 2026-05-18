@@ -106,20 +106,20 @@ class NotificationService {
       if (!io) return;
 
       const [totalCount, chatCount] = await Promise.all([
-        // Count all unread notifications EXCLUDING 'NEW_MESSAGE'
+        // Count all unread notifications EXCLUDING 'NEW_CHAT_MESSAGE'
         prisma.notification.count({
           where: {
             userId,
             isRead: false,
-            type: { not: 'NEW_MESSAGE' }, // Exclude chat
+            type: { not: 'NEW_CHAT_MESSAGE' }, // Exclude chat
           },
         }),
-        // Count unread 'NEW_MESSAGE' notifications
+        // Count unread 'NEW_CHAT_MESSAGE' notifications
         prisma.notification.count({
           where: {
             userId,
             isRead: false,
-            type: 'NEW_MESSAGE',
+            type: 'NEW_CHAT_MESSAGE',
           },
         }),
       ]);
