@@ -28,21 +28,21 @@ jobs:
             # 2. Update, Generate Prisma & Restart Express API Backend
             echo "⚡ Deploying Express API Backend..."
             cd ~/saas-ecommerce/backend/server
-            npm install --production
+            npm install --production --legacy-peer-deps
             npm run db:generate
             PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 restart express-api --update-env || PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 start src/server.js --name "express-api"
 
             # 3. Update, Build & Restart Admin Dashboard Client (Port 3001)
             echo "🎨 Deploying Admin Dashboard Client..."
             cd ~/saas-ecommerce/backend/client
-            npm install
+            npm install --legacy-peer-deps
             npm run build
             PORT=3001 pm2 restart next-dashboard --update-env || PORT=3001 pm2 start npm --name "next-dashboard" -- run start -- -p 3001
 
             # 4. Update, Build & Restart Frontend Shop Client (Port 3000)
             echo "🛒 Deploying Frontend Shop Client..."
             cd ~/saas-ecommerce/frontend
-            npm install
+            npm install --legacy-peer-deps
             npm run build
             PORT=3000 pm2 restart next-shop --update-env || PORT=3000 pm2 start npm --name "next-shop" -- run start -- -p 3000
 
