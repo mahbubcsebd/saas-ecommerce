@@ -37,7 +37,7 @@ interface BackupSettings {
 
 export default function BackupExportPage() {
   const { data: session } = useSession();
-  const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+  const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
 
   const [backups, setBackups] = useState<BackupRecord[]>([]);
   const [settings, setSettings] = useState<BackupSettings>({

@@ -66,7 +66,7 @@ export default function SmsSettingsClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const res = await fetch(`${BACKEND_URL}/settings/sms`, {
         headers: { Authorization: `Bearer ${session.accessToken}` },
       });
@@ -90,7 +90,7 @@ export default function SmsSettingsClient() {
     setIsSaving(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const res = await fetch(`${BACKEND_URL}/settings/sms`, {
         method: 'PUT',
         headers: {
@@ -118,7 +118,7 @@ export default function SmsSettingsClient() {
     setTestResult(null);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const res = await fetch(`${BACKEND_URL}/settings/sms-test`, {
         method: 'POST',
         headers: {

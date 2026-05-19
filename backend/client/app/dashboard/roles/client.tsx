@@ -105,7 +105,7 @@ export default function RolesClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const res = await fetch(`${BACKEND_URL}/roles`, {
         headers: { Authorization: `Bearer ${session.accessToken}` },
       });
@@ -127,7 +127,7 @@ export default function RolesClient() {
 
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const method = selectedRole ? 'PATCH' : 'POST';
       const url = selectedRole
         ? `${BACKEND_URL}/roles/${selectedRole.id}`
@@ -168,7 +168,7 @@ export default function RolesClient() {
       return;
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const res = await fetch(`${BACKEND_URL}/roles/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${session?.accessToken}` },

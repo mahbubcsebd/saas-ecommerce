@@ -16,7 +16,7 @@ import {
     YAxis
 } from "recharts";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
 
 export default function LandingPageAnalytics({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);

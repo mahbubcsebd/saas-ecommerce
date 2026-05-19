@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
 const HERO_API = `${API_BASE}/hero-slides`;
 
 export default function EditHeroSlidePage({ params }: { params: Promise<{ id: string }> }) {

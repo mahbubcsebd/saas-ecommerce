@@ -44,7 +44,7 @@ import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
 
 type LinkType = 'NONE' | 'PRODUCT' | 'CATEGORY' | 'EXTERNAL';
 

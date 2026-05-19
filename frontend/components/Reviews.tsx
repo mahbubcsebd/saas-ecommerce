@@ -64,7 +64,7 @@ export default function Reviews({ productId }: { productId: string }) {
 
   const fetchReviews = async () => {
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const res = await fetch(`${API_URL}/reviews/${productId}`);
       const data = await res.json();
       if (data.success) {
@@ -90,7 +90,7 @@ export default function Reviews({ productId }: { productId: string }) {
 
     setSubmitting(true);
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
 
       const formData = new FormData();
       formData.append('productId', productId);

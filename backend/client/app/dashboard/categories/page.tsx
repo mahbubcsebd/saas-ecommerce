@@ -286,7 +286,7 @@ export default function CategoriesPage() {
     imagePreview: null,
   });
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
 
   // Fetch languages
   const fetchLanguages = async () => {

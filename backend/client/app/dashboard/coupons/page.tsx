@@ -50,7 +50,7 @@ import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 type DiscountType = "PERCENTAGE" | "FLAT" | "FREE_SHIPPING";

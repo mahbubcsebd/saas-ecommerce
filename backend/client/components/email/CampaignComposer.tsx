@@ -439,7 +439,7 @@ export const CampaignComposer: React.FC<CampaignComposerProps> = ({
 }) => {
   const { data: session } = useSession();
   const token = (session as any)?.accessToken ?? '';
-  const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+  const API = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
   const CAMPAIGN_API = `${API}/campaigns`;
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);

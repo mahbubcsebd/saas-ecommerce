@@ -1,5 +1,5 @@
 async function verifyI18n() {
-  const API_URL = 'http://localhost:5000/api';
+  const API_URL = 'https://api.mahbuburrahman.xyz/api';
   const locale = 'bn';
 
   try {

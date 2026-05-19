@@ -11,7 +11,7 @@ export function generateStaticParams() {
 }
 
 async function getProduct(slug: string): Promise<Product | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
   // Ensure we don't have double /api if the env var already includes it
   const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
 

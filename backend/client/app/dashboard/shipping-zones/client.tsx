@@ -110,7 +110,7 @@ export default function ShippingZonesClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const res = await fetch(`${BACKEND_URL}/shipping/zones`, {
         headers: { Authorization: `Bearer ${session.accessToken}` },
       });
@@ -148,7 +148,7 @@ export default function ShippingZonesClient() {
 
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const method = editingZone ? 'PUT' : 'POST';
       const url = editingZone
         ? `${BACKEND_URL}/shipping/zones/${editingZone.id}`
@@ -192,7 +192,7 @@ export default function ShippingZonesClient() {
 
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const res = await fetch(`${BACKEND_URL}/shipping/zones/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${session.accessToken}` },
@@ -223,7 +223,7 @@ export default function ShippingZonesClient() {
 
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const method = editingRate ? 'PUT' : 'POST';
       const url = editingRate
         ? `${BACKEND_URL}/shipping/rates/${editingRate.id}`
@@ -265,7 +265,7 @@ export default function ShippingZonesClient() {
 
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       await fetch(`${BACKEND_URL}/shipping/rates/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${session.accessToken}` },

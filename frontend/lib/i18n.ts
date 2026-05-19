@@ -8,8 +8,8 @@ export async function getLocale() {
 
 export async function getTranslations(locale: string) {
   const baseUrl = typeof window === 'undefined'
-    ? 'http://127.0.0.1:5000/api'
-    : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api');
+    ? 'https://api.mahbuburrahman.xyz/api'
+    : (process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api');
   const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
 
   try {

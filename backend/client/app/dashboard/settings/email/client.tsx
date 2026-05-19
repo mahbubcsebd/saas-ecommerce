@@ -62,7 +62,7 @@ export default function EmailSettingsClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const res = await fetch(`${BACKEND_URL}/settings/email`, {
         headers: { Authorization: `Bearer ${session.accessToken}` },
       });
@@ -86,7 +86,7 @@ export default function EmailSettingsClient() {
     setIsSaving(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const res = await fetch(`${BACKEND_URL}/settings/email`, {
         method: 'PUT',
         headers: {
@@ -114,7 +114,7 @@ export default function EmailSettingsClient() {
     setTestResult(null);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const res = await fetch(`${BACKEND_URL}/settings/email-test`, {
         method: 'POST',
         headers: {

@@ -465,7 +465,7 @@ export function Sidebar({
 
   const fetchCounts = async () => {
     try {
-      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       const response = await fetch(`${BACKEND_URL}/analytics/overview`, {
         headers: {
           'Authorization': `Bearer ${session?.accessToken || ''}`,
@@ -539,7 +539,7 @@ export function Sidebar({
   const handleLogout = async () => {
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
       await fetch(`${BACKEND_URL}/auth/logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

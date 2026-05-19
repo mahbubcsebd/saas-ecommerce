@@ -29,7 +29,7 @@ export default function MegaMenu() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
         const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
 
         // Backend now returns nested categories directly (parentId: null filter)

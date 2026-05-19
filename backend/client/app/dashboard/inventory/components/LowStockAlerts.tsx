@@ -20,7 +20,7 @@ export default function LowStockAlerts() {
       if (!token) return;
       try {
         setLoading(true);
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
         const res = await fetch(`${apiUrl}/inventory/low-stock`, {
           headers: { Authorization: `Bearer ${token}` },
         });

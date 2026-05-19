@@ -140,7 +140,7 @@ export const SendEmailModal: React.FC<SendEmailModalProps> = ({
       setLoading(true);
       const token = (session as any)?.accessToken;
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
 
       const res = await fetch(`${BACKEND_URL}/user/${user.id}/send-email`, {
         method: 'POST',

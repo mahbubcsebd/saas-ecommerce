@@ -113,7 +113,7 @@ export default function TaxReportClient() {
       const startStr = dateRange.start.toISOString();
       const endStr = dateRange.end.toISOString();
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
 
       const response = await fetch(
         `${BACKEND_URL}/analytics/tax?startDate=${startStr}&endDate=${endStr}`,

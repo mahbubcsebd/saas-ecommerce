@@ -33,7 +33,7 @@ export function StockHistoryModal({ item, isOpen, onClose }: StockHistoryModalPr
   const [history, setHistory] = useState<StockMovement[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
 
   useEffect(() => {
     if (isOpen && session?.accessToken) {

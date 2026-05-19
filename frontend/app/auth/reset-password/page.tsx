@@ -8,7 +8,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import { toast } from 'sonner';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
 
 function ResetPasswordContent() {
   const router = useRouter();

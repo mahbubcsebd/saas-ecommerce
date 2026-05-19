@@ -34,7 +34,7 @@ export default function SiteAnalyticsTracker() {
     const trackPageView = async () => {
       try {
         const BACKEND_URL =
-          process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+          process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
 
         // Extract UTM params
         const utmParams = {

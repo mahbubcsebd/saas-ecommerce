@@ -87,7 +87,7 @@ export default function KeyManagerPage() {
     const [showResetConfirm, setShowResetConfirm] = useState(false);
     const [resetConfirmText, setResetConfirmText] = useState("");
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
 
     const fetchData = async (silent = false) => {
         if (!session?.accessToken) return;

@@ -31,7 +31,7 @@ export const UserClient: React.FC<UserClientProps> = ({ initialData }) => {
 
       setExporting(true);
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/user/export`,
+        `${process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api'}/user/export`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

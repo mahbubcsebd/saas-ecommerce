@@ -9,7 +9,7 @@ export async function loginAction(prevState: any, formData: FormData) {
 
   try {
     const API_URL =
-      process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
     const res = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

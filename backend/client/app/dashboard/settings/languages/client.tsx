@@ -90,7 +90,7 @@ export default function LanguageSettingsClient() {
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedLang, setSelectedLang] = useState<Language | null>(null);
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
 
     const fetchData = async () => {
         if (!session?.accessToken) return;
