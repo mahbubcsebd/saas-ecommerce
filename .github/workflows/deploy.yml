@@ -123,7 +123,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
+          username: mahbub_cse_me
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
