@@ -4,9 +4,7 @@ on:
   push:
     branches:
       - main
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  workflow_dispatch: # ম্যানুয়ালি ডিপ্লয় রান করার অপশন
 
 jobs:
   deploy:
@@ -16,7 +14,24 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Deploy to GCP VPS via SSH
+      # কোন কোন ডিরেক্টরিতে পরিবর্তন হয়েছে তা ডিটেক্ট করবে
+      - name: Check Changed Paths
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend_server:
+              - 'backend/server/**'
+            backend_client:
+              - 'backend/client/**'
+            frontend:
+              - 'frontend/**'
+            workflow:
+              - '.github/workflows/deploy.yml'
+
+      # ১. যদি ব্যাকএন্ড সার্ভারে পরিবর্তন হয়
+      - name: Deploy Express API Backend
+        if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.backend_server == 'true'
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -24,46 +39,76 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # 1. Force load NVM and use Node 26 system default
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm use 26 || nvm use default
-
-            # 2. Navigate to root and pull fresh code
+            echo "⚡ Deploying Express API Backend..."
             cd ~/saas-ecommerce
             git pull origin main
-
-            # 3. Clean and Deploy Express API Backend (Port 5000)
-            echo "⚡ Deploying Express API Backend..."
+            
             cd ~/saas-ecommerce/backend/server
-            # Safe delete only modules and lockfile to preserve existing .env file
+            rm -rf node_modules package-lock.json
+            npm install --production --legacy-peer-deps
+            npm run db:generate
+            PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 restart express-api --update-env || PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 start src/server.js --name "express-api"
+            
+            pm2 save
+            echo "✅ Express API Backend successfully updated!"
+
+      # ২. যদি এডমিন ড্যাশবোর্ডে পরিবর্তন হয়
+      - name: Deploy Admin Dashboard Client
+        if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.backend_client == 'true'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "🎨 Deploying Admin Dashboard Client..."
+            cd ~/saas-ecommerce
+            git pull origin main
+            
+            cd ~/saas-ecommerce/backend/client
             rm -rf node_modules package-lock.json
             npm install --legacy-peer-deps
-            npm run db:generate
-            pm2 delete express-api || true
-            PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://www.mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 start src/server.js --name "express-api"
-
-            # 4. Wipe, Fresh Install, Build & Restart Admin Dashboard Client (Port 3001)
-            echo "🎨 Deploying Admin Dashboard Client..."
-            cd ~/saas-ecommerce/backend/client
-            # Wipe stale state completely to prevent build resolution conflicts while keeping .env safe
-            rm -rf node_modules .next package-lock.json
-            npm install --legacy-peer-deps
-            NODE_OPTIONS="--max-old-space-size=1024" npm run build
-            pm2 delete next-dashboard || true
-            pm2 start npm --name "next-dashboard" -- run start -- -p 3001
-
-            # 5. Wipe, Fresh Install, Build & Restart Frontend Shop Client (Port 3000)
-            echo "🛒 Deploying Frontend Shop Client..."
-            cd ~/saas-ecommerce/frontend
-            # Clear old production cache and lockfile for clean Tailwind v4 compilation
-            rm -rf node_modules .next package-lock.json
-            npm install --legacy-peer-deps
-            NODE_OPTIONS="--max-old-space-size=1024" npm run build
-            pm2 delete next-shop || true
-            pm2 start npm --name "next-shop" -- run start -- -p 3000
-
-            # 6. Global Persistence and Monitoring State
+            rm -rf .next
+            npm run build
+            PORT=3001 pm2 restart next-dashboard --update-env || PORT=3001 pm2 start npm --name "next-dashboard" -- run start -- -p 3001
+            
             pm2 save
+            echo "✅ Admin Dashboard Client successfully updated!"
+
+      # ৩. যদি ফ্রন্টএন্ড শপে পরিবর্তন হয়
+      - name: Deploy Frontend Shop Client
+        if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.frontend == 'true'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "🛒 Deploying Frontend Shop Client..."
+            cd ~/saas-ecommerce
+            git pull origin main
+            
+            cd ~/saas-ecommerce/frontend
+            rm -rf node_modules package-lock.json
+            npm install --legacy-peer-deps
+            rm -rf .next
+            npm run build
+            PORT=3000 pm2 restart next-shop --update-env || PORT=3000 pm2 start npm --name "next-shop" -- run start -- -p 3000
+            
+            pm2 save
+            echo "✅ Frontend Shop Client successfully updated!"
+
+      # ৪. পিএম২ স্ট্যাটাস এবং মেসেজ শো করবে
+      - name: Show Running Status
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ~/saas-ecommerce
             pm2 list
-            echo "🚀 Deployment pipeline completed successfully! All processes are isolated, compiled and running fresh on Node 26."
+            echo "🚀 Deployment processes checked. All updated servers are live!"
