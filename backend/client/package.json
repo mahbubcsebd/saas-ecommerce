@@ -49,6 +49,7 @@
     "react-dom": "19.2.3",
     "react-dropzone": "^15.0.0",
     "react-hook-form": "^7.71.1",
+    "react-is": "^19.2.6",
     "react-markdown": "^10.1.0",
     "react-select": "^5.10.2",
     "react-simple-code-editor": "^0.14.1",
