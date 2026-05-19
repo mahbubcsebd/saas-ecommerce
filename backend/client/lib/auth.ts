@@ -97,12 +97,14 @@ export const authOptions: NextAuthOptions = {
   // Separate cookie so shop and dashboard logins don't overwrite each other (e.g. on localhost)
   cookies: {
     sessionToken: {
-      name: 'next-auth.session-token.dashboard',
+      name: process.env.NODE_ENV === 'production'
+        ? '__Secure-next-auth.session-token.dashboard'
+        : 'next-auth.session-token.dashboard',
       options: {
         path: '/',
         sameSite: 'lax',
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === 'production',
         maxAge: 30 * 24 * 60 * 60,
       },
     },

@@ -68,8 +68,7 @@ function LoginForm() {
         // Login successful
         toast.success('Logged in successfully!');
         const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
-        router.push(callbackUrl);
-        router.refresh();
+        window.location.href = callbackUrl;
         return;
       } else {
         setError('Login failed. Please try again.');
