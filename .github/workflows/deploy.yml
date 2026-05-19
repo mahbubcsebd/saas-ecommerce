@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # ম্যানুয়ালি ডিপ্লয় রান করার অপশন
+  workflow_dispatch: # Allows manual deployment trigger from GitHub UI
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   deploy:
@@ -14,24 +17,47 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # কোন কোন ডিরেক্টরিতে পরিবর্তন হয়েছে তা ডিটেক্ট করবে
-      - name: Check Changed Paths
+      # Advanced Filter: Detects code changes vs dependency updates separately
+      - name: Check Changed Paths and Dependencies
         uses: dorny/paths-filter@v3
         id: filter
         with:
           filters: |
-            backend_server:
+            backend_server_code:
               - 'backend/server/**'
-            backend_client:
+            backend_server_deps:
+              - 'backend/server/package.json'
+              - 'backend/server/package-lock.json'
+            backend_client_code:
               - 'backend/client/**'
-            frontend:
+            backend_client_deps:
+              - 'backend/client/package.json'
+              - 'backend/client/package-lock.json'
+            frontend_code:
               - 'frontend/**'
+            frontend_deps:
+              - 'frontend/package.json'
+              - 'frontend/package-lock.json'
             workflow:
               - '.github/workflows/deploy.yml'
 
-      # ১. যদি ব্যাকএন্ড সার্ভারে পরিবর্তন হয়
+      # STEP 0: Base Git Synchronization
+      - name: Pull Latest Codebase
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ~/saas-ecommerce
+            git reset --hard HEAD
+            git pull origin main
+            echo "🚀 Codebase hard synchronized with main branch!"
+
+      # STEP 1: Express API Backend Pipeline
       - name: Deploy Express API Backend
-        if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.backend_server == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.backend_server_code == 'true'
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -39,22 +65,30 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            echo "⚡ Deploying Express API Backend..."
-            cd ~/saas-ecommerce
-            git pull origin main
-            
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 26 || nvm use default
+
             cd ~/saas-ecommerce/backend/server
-            rm -rf node_modules package-lock.json
-            npm install --production --legacy-peer-deps
+
+            # Condition: Only run npm install if dependencies actually changed OR node_modules went missing
+            if [ "${{ steps.filter.outputs.backend_server_deps }}" = "true" ] || [ ! -d "node_modules" ]; then
+              echo "📦 Dependency changes detected. Running fresh npm install..."
+              rm -rf node_modules package-lock.json
+              npm install --legacy-peer-deps
+            fi
+
             npm run db:generate
-            PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 restart express-api --update-env || PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 start src/server.js --name "express-api"
-            
-            pm2 save
-            echo "✅ Express API Backend successfully updated!"
 
-      # ২. যদি এডমিন ড্যাশবোর্ডে পরিবর্তন হয়
+            # Zero-Downtime Reload Trick: Reload if process exists, otherwise boot cold
+            PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 reload express-api --update-env || PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 start src/server.js --name "express-api" --cwd "/home/${{ secrets.SERVER_USER }}/saas-ecommerce/backend/server"
+
+            pm2 save
+            echo "✅ Express API Backend hot reloaded!"
+
+      # STEP 2: Admin Dashboard Client Pipeline
       - name: Deploy Admin Dashboard Client
-        if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.backend_client == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.backend_client_code == 'true'
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -62,23 +96,30 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            echo "🎨 Deploying Admin Dashboard Client..."
-            cd ~/saas-ecommerce
-            git pull origin main
-            
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 26 || nvm use default
+
             cd ~/saas-ecommerce/backend/client
-            rm -rf node_modules package-lock.json
-            npm install --legacy-peer-deps
-            rm -rf .next
-            npm run build
-            PORT=3001 pm2 restart next-dashboard --update-env || PORT=3001 pm2 start npm --name "next-dashboard" -- run start -- -p 3001
-            
-            pm2 save
-            echo "✅ Admin Dashboard Client successfully updated!"
 
-      # ৩. যদি ফ্রন্টএন্ড শপে পরিবর্তন হয়
+            if [ "${{ steps.filter.outputs.backend_client_deps }}" = "true" ] || [ ! -d "node_modules" ]; then
+              echo "📦 Dependency changes detected for Dashboard. Installing packages..."
+              rm -rf node_modules package-lock.json
+              npm install --legacy-peer-deps
+            fi
+
+            rm -rf .next
+            NODE_OPTIONS="--max-old-space-size=1024" npm run build
+
+            # Zero-Downtime Swap for Next.js Instance
+            pm2 reload next-dashboard || pm2 start npm --name "next-dashboard" --cwd "/home/${{ secrets.SERVER_USER }}/saas-ecommerce/backend/client" -- run start -- -p 3001
+
+            pm2 save
+            echo "✅ Admin Dashboard Client hot reloaded!"
+
+      # STEP 3: Frontend Shop Client Pipeline
       - name: Deploy Frontend Shop Client
-        if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.frontend == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.frontend_code == 'true'
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -86,21 +127,28 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            echo "🛒 Deploying Frontend Shop Client..."
-            cd ~/saas-ecommerce
-            git pull origin main
-            
-            cd ~/saas-ecommerce/frontend
-            rm -rf node_modules package-lock.json
-            npm install --legacy-peer-deps
-            rm -rf .next
-            npm run build
-            PORT=3000 pm2 restart next-shop --update-env || PORT=3000 pm2 start npm --name "next-shop" -- run start -- -p 3000
-            
-            pm2 save
-            echo "✅ Frontend Shop Client successfully updated!"
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 26 || nvm use default
 
-      # ৪. পিএম২ স্ট্যাটাস এবং মেসেজ শো করবে
+            cd ~/saas-ecommerce/frontend
+
+            if [ "${{ steps.filter.outputs.frontend_deps }}" = "true" ] || [ ! -d "node_modules" ]; then
+              echo "📦 Dependency changes detected for Frontend. Installing packages..."
+              rm -rf node_modules package-lock.json
+              npm install --legacy-peer-deps
+            fi
+
+            rm -rf .next
+            NODE_OPTIONS="--max-old-space-size=1024" npm run build
+
+            # Zero-Downtime Swap for Frontend Instance
+            pm2 reload next-shop || pm2 start npm --name "next-shop" --cwd "/home/${{ secrets.SERVER_USER }}/saas-ecommerce/frontend" -- run start -- -p 3000
+
+            pm2 save
+            echo "✅ Frontend Shop Client hot reloaded!"
+
+      # STEP 4: Global Verification State
       - name: Show Running Status
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -109,6 +157,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd ~/saas-ecommerce
             pm2 list
-            echo "🚀 Deployment processes checked. All updated servers are live!"
+            echo "🚀 Professional Enterprise pipeline executed flawlessly!"
