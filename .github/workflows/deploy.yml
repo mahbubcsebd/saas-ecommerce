@@ -41,39 +41,35 @@ jobs:
             workflow:
               - '.github/workflows/deploy.yml'
 
-      # STEP 0: Base Git Synchronization (Fixed to Password Auth)
+      # Setup Native SSH Client on GitHub Runner (Bypasses problematic plugins)
+      - name: Configure Native SSH Client
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p 22 -H "${{ secrets.SERVER_HOST }}" >> ~/.ssh/known_hosts
+
+      # STEP 0: Base Git Synchronization
       - name: Pull Latest Codebase
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: mahbub_cse_me
-          password: ${{ secrets.SERVER_PASSWORD }}
-          key: ''
-          port: 22
-          script: |
+        run: |
+          ssh -i ~/.ssh/id_rsa -p 22 mahbub_cse_me@${{ secrets.SERVER_HOST }} << 'EOF'
             cd ~/saas-ecommerce
             git reset --hard HEAD
             git pull origin main
             echo "🚀 Codebase hard synchronized with main branch!"
+          EOF
 
       # STEP 1: Express API Backend Pipeline
       - name: Deploy Express API Backend
         if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.backend_server_code == 'true'
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: mahbub_cse_me
-          password: ${{ secrets.SERVER_PASSWORD }}
-          key: ''
-          port: 22
-          script: |
+        run: |
+          ssh -i ~/.ssh/id_rsa -p 22 mahbub_cse_me@${{ secrets.SERVER_HOST }} << 'EOF'
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use 26 || nvm use default
 
             cd ~/saas-ecommerce/backend/server
 
-            # Condition: Only run npm install if dependencies changed OR node_modules missing
             if [ "${{ steps.filter.outputs.backend_server_deps }}" = "true" ] || [ ! -d "node_modules" ]; then
               echo "📦 Dependency changes detected. Running fresh npm install..."
               rm -rf node_modules package-lock.json
@@ -82,23 +78,17 @@ jobs:
 
             npm run db:generate
 
-            # Zero-Downtime Reload
             PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 reload express-api --update-env || PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 start src/server.js --name "express-api" --cwd "/home/mahbub_cse_me/saas-ecommerce/backend/server"
 
             pm2 save
             echo "✅ Express API Backend hot reloaded!"
+          EOF
 
       # STEP 2: Admin Dashboard Client Pipeline
       - name: Deploy Admin Dashboard Client
         if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.backend_client_code == 'true'
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: mahbub_cse_me
-          password: ${{ secrets.SERVER_PASSWORD }}
-          key: ''
-          port: 22
-          script: |
+        run: |
+          ssh -i ~/.ssh/id_rsa -p 22 mahbub_cse_me@${{ secrets.SERVER_HOST }} << 'EOF'
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use 26 || nvm use default
@@ -114,23 +104,17 @@ jobs:
             rm -rf .next
             NODE_OPTIONS="--max-old-space-size=1024" npm run build
 
-            # Zero-Downtime Swap for Next.js Instance with Explicit Working Directory
             pm2 reload next-dashboard || pm2 start npm --name "next-dashboard" --cwd "/home/mahbub_cse_me/saas-ecommerce/backend/client" -- run start -- -p 3001
 
             pm2 save
             echo "✅ Admin Dashboard Client hot reloaded!"
+          EOF
 
       # STEP 3: Frontend Shop Client Pipeline
       - name: Deploy Frontend Shop Client
         if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.frontend_code == 'true'
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: mahbub_cse_me
-          password: ${{ secrets.SERVER_PASSWORD }}
-          key: ''
-          port: 22
-          script: |
+        run: |
+          ssh -i ~/.ssh/id_rsa -p 22 mahbub_cse_me@${{ secrets.SERVER_HOST }} << 'EOF'
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use 26 || nvm use default
@@ -146,21 +130,14 @@ jobs:
             rm -rf .next
             NODE_OPTIONS="--max-old-space-size=1024" npm run build
 
-            # Zero-Downtime Swap for Frontend Instance with Explicit Working Directory
             pm2 reload next-shop || pm2 start npm --name "next-shop" --cwd "/home/mahbub_cse_me/saas-ecommerce/frontend" -- run start -- -p 3000
 
             pm2 save
             echo "✅ Frontend Shop Client hot reloaded!"
+          EOF
 
       # STEP 4: Global Verification State
       - name: Show Running Status
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: mahbub_cse_me
-          password: ${{ secrets.SERVER_PASSWORD }}
-          key: ''
-          port: 22
-          script: |
-            pm2 list
-            echo "🚀 Professional Enterprise pipeline executed flawlessly!"
+        run: |
+          ssh -i ~/.ssh/id_rsa -p 22 mahbub_cse_me@${{ secrets.SERVER_HOST }} "pm2 list"
+          echo "🚀 Monorepo processes verified successfully using native secure shell connection!"
