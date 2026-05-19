@@ -61,8 +61,8 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          username: mahbub_cse_me
+          password: ${{ secrets.SERVER_PASSWORD }}
           port: 22
           script: |
             export NVM_DIR="$HOME/.nvm"
@@ -81,7 +81,7 @@ jobs:
             npm run db:generate
 
             # Zero-Downtime Reload Trick: Reload if process exists, otherwise boot cold
-            PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 reload express-api --update-env || PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 start src/server.js --name "express-api" --cwd "/home/${{ secrets.SERVER_USER }}/saas-ecommerce/backend/server"
+            PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 reload express-api --update-env || PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 start src/server.js --name "express-api" --cwd "/home/mahbub_cse_me/saas-ecommerce/backend/server"
 
             pm2 save
             echo "✅ Express API Backend hot reloaded!"
@@ -92,8 +92,8 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          username: mahbub_cse_me
+          password: ${{ secrets.SERVER_PASSWORD }}
           port: 22
           script: |
             export NVM_DIR="$HOME/.nvm"
@@ -112,7 +112,7 @@ jobs:
             NODE_OPTIONS="--max-old-space-size=1024" npm run build
 
             # Zero-Downtime Swap for Next.js Instance
-            pm2 reload next-dashboard || pm2 start npm --name "next-dashboard" --cwd "/home/${{ secrets.SERVER_USER }}/saas-ecommerce/backend/client" -- run start -- -p 3001
+            pm2 reload next-dashboard || pm2 start npm --name "next-dashboard" --cwd "/home/mahbub_cse_me/saas-ecommerce/backend/client" -- run start -- -p 3001
 
             pm2 save
             echo "✅ Admin Dashboard Client hot reloaded!"
@@ -124,7 +124,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: mahbub_cse_me
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          password: ${{ secrets.SERVER_PASSWORD }}
           port: 22
           script: |
             export NVM_DIR="$HOME/.nvm"
@@ -143,7 +143,7 @@ jobs:
             NODE_OPTIONS="--max-old-space-size=1024" npm run build
 
             # Zero-Downtime Swap for Frontend Instance
-            pm2 reload next-shop || pm2 start npm --name "next-shop" --cwd "/home/${{ secrets.SERVER_USER }}/saas-ecommerce/frontend" -- run start -- -p 3000
+            pm2 reload next-shop || pm2 start npm --name "next-shop" --cwd "/home/mahbub_cse_me/saas-ecommerce/frontend" -- run start -- -p 3000
 
             pm2 save
             echo "✅ Frontend Shop Client hot reloaded!"
@@ -153,8 +153,8 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          username: mahbub_cse_me
+          password: ${{ secrets.SERVER_PASSWORD }}
           port: 22
           script: |
             pm2 list
