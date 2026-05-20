@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 async function getSeoSettings() {
   const baseUrl =
     typeof window === 'undefined'
-      ? 'https://api.mahbuburrahman.xyz/api'
+      ? (process.env.INTERNAL_API_URL || 'http://localhost:5000/api')
       : process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
   const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
   try {

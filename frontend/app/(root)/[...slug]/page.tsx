@@ -14,9 +14,15 @@ export function generateStaticParams() {
 }
 
 // Data Fetching Utils
+function getApiUrl(): string {
+  const baseUrl = typeof window === 'undefined'
+    ? (process.env.INTERNAL_API_URL || 'http://localhost:5000/api')
+    : (process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api');
+  return baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
+}
+
 async function getProduct(slug: string): Promise<Product | null> {
-  const baseUrl = typeof window === 'undefined' ? 'https://api.mahbuburrahman.xyz/api' : (process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api');
-  const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
+  const apiUrl = getApiUrl();
 
   try {
     const res = await fetch(`${apiUrl}/products/${slug}`, { cache: 'no-store' });
@@ -30,8 +36,7 @@ async function getProduct(slug: string): Promise<Product | null> {
 }
 
 async function getCategory(slug: string) {
-  const baseUrl = typeof window === 'undefined' ? 'https://api.mahbuburrahman.xyz/api' : (process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api');
-  const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
+  const apiUrl = getApiUrl();
 
   try {
     const res = await fetch(`${apiUrl}/categories/${slug}`, { cache: 'no-store' });
@@ -45,8 +50,7 @@ async function getCategory(slug: string) {
 }
 
 async function getProductsByCategory(categorySlug: string, searchParams: any) {
-  const baseUrl = typeof window === 'undefined' ? 'https://api.mahbuburrahman.xyz/api' : (process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api');
-  const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
+  const apiUrl = getApiUrl();
 
   const query = new URLSearchParams();
   query.append('category', categorySlug); // Filter by category slug
@@ -73,8 +77,7 @@ async function getProductsByCategory(categorySlug: string, searchParams: any) {
 }
 
 async function getAllCategories() {
-  const baseUrl = typeof window === 'undefined' ? 'https://api.mahbuburrahman.xyz/api' : (process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api');
-  const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
+  const apiUrl = getApiUrl();
   try {
     const res = await fetch(`${apiUrl}/categories`, { cache: 'force-cache' });
     if (!res.ok) return [];

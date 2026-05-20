@@ -23,6 +23,50 @@ interface ProductDetailsClientProps {
   product: Product;
 }
 
+function getVariantAttributes(variant: ProductVariant): Record<string, string> {
+  const result: Record<string, string> = {};
+  if (!variant) return result;
+
+  const rawAttrs = variant.attributes;
+
+  // 1. Array format: [ { type: "Color", value: "Black" }, ... ]
+  if (Array.isArray(rawAttrs) && rawAttrs.length > 0) {
+    rawAttrs.forEach((attr: any) => {
+      if (attr && typeof attr === 'object' && attr.type && attr.value) {
+        result[attr.type] = attr.value;
+      }
+    });
+    return result;
+  }
+
+  // 2. Object format: { color: "Black", size: "XL" }
+  if (rawAttrs && typeof rawAttrs === 'object' && !Array.isArray(rawAttrs) && Object.keys(rawAttrs).length > 0) {
+    Object.entries(rawAttrs).forEach(([key, value]) => {
+      if (value) result[key] = String(value);
+    });
+    return result;
+  }
+
+  // 3. Fallback: Parse variant name (e.g. "Black - 256GB")
+  if (variant.name) {
+    const parts = variant.name.split('-').map(s => s.trim());
+    if (parts.length > 0 && parts[0] !== '') {
+      parts.forEach((part, index) => {
+        if (index === 0) {
+          result['Color'] = part;
+        } else if (index === 1) {
+          const isStorage = /gb|tb|mb/i.test(part);
+          result[isStorage ? 'Storage' : 'Size'] = part;
+        } else {
+          result[`Option ${index + 1}`] = part;
+        }
+      });
+    }
+  }
+
+  return result;
+}
+
 export default function ProductDetailsClient({ product }: ProductDetailsClientProps) {
   const { t, locale } = useTranslations();
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
@@ -86,19 +130,11 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
     const options: Record<string, Set<string>> = {};
 
     realtimeProduct.variants.forEach((variant) => {
-      if (Array.isArray(variant.attributes)) {
-        variant.attributes.forEach((attr) => {
-          const key = attr.type;
-          const value = attr.value;
-          if (!options[key]) options[key] = new Set();
-          options[key].add(value);
-        });
-      } else if (variant.attributes && typeof variant.attributes === 'object') {
-        Object.entries(variant.attributes).forEach(([key, value]) => {
-          if (!options[key]) options[key] = new Set();
-          options[key].add(value as string);
-        });
-      }
+      const attrs = getVariantAttributes(variant);
+      Object.entries(attrs).forEach(([key, value]) => {
+        if (!options[key]) options[key] = new Set();
+        options[key].add(value);
+      });
     });
 
     return options;
@@ -109,32 +145,19 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   const getAvailableOptions = (attributeKey: string): Set<string> => {
     if (!realtimeProduct.variants) return new Set();
 
-    // Filter variants that match currently selected attributes (except the one we're checking)
     const otherSelections = Object.entries(selectedAttributes).filter(
       ([key]) => key !== attributeKey
     );
 
     const matchingVariants = realtimeProduct.variants.filter((variant) => {
-      if (!variant.attributes) return false;
-      return otherSelections.every(([key, value]) => {
-        if (Array.isArray(variant.attributes)) {
-          const attr = variant.attributes.find((a) => a.type === key);
-          return attr && attr.value === value;
-        }
-        return (variant.attributes as Record<string, string>)[key] === value;
-      });
+      const attrs = getVariantAttributes(variant);
+      return otherSelections.every(([key, value]) => attrs[key] === value);
     });
 
-    // Return unique values for this attribute from matching variants
     const available = new Set<string>();
     matchingVariants.forEach((variant) => {
-      let val: string | undefined;
-      if (Array.isArray(variant.attributes)) {
-        val = variant.attributes.find((a) => a.type === attributeKey)?.value;
-      } else {
-        val = (variant.attributes as Record<string, string>)?.[attributeKey];
-      }
-
+      const attrs = getVariantAttributes(variant);
+      const val = attrs[attributeKey];
       if (val) available.add(val);
     });
 
@@ -146,14 +169,8 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
     if (!realtimeProduct.variants || Object.keys(selectedAttributes).length === 0) return null;
 
     return realtimeProduct.variants.find((variant) => {
-      if (!variant.attributes) return false;
-      return Object.entries(selectedAttributes).every(([key, value]) => {
-        if (Array.isArray(variant.attributes)) {
-          const attr = variant.attributes.find((a) => a.type === key);
-          return attr && attr.value === value;
-        }
-        return (variant.attributes as Record<string, string>)[key] === value;
-      });
+      const attrs = getVariantAttributes(variant);
+      return Object.entries(selectedAttributes).every(([key, value]) => attrs[key] === value);
     });
   }, [realtimeProduct.variants, selectedAttributes]);
 
@@ -170,12 +187,8 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
     // For each color, get one representative variant with images
     const colorMap = new Map<string, ProductVariant>();
     realtimeProduct.variants.forEach((variant) => {
-      let color: string | undefined;
-      if (Array.isArray(variant.attributes)) {
-        color = variant.attributes.find((a) => a.type === colorKey)?.value;
-      } else {
-        color = (variant.attributes as Record<string, string>)?.[colorKey];
-      }
+      const attrs = getVariantAttributes(variant);
+      const color = attrs[colorKey];
 
       if (color && variant.images?.length > 0 && !colorMap.has(color)) {
         colorMap.set(color, variant);
@@ -190,60 +203,36 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
     // Check if this new combination exists
     const validVariant = realtimeProduct.variants?.find((variant) => {
-      if (!variant.attributes) return false;
-      return Object.entries(newAttributes).every(([attrKey, attrValue]) => {
-        if (Array.isArray(variant.attributes)) {
-          const attr = variant.attributes.find((a) => a.type === attrKey);
-          return attr && attr.value === attrValue;
-        }
-        return (variant.attributes as Record<string, string>)[attrKey] === attrValue;
-      });
+      const attrs = getVariantAttributes(variant);
+      return Object.entries(newAttributes).every(([attrKey, attrValue]) => attrs[attrKey] === attrValue);
     });
 
     if (validVariant) {
-      // Valid combination, just update
       setSelectedAttributes(newAttributes);
     } else {
-      // ... (logic comment) ...
       const potentialVariant = realtimeProduct.variants?.find((v) => {
-        if (Array.isArray(v.attributes)) {
-          const attr = v.attributes.find((a) => a.type === key);
-          return attr && attr.value === value;
-        }
-        return (v.attributes as Record<string, string>)?.[key] === value;
+        const attrs = getVariantAttributes(v);
+        return attrs[key] === value;
       });
 
-      if (potentialVariant && potentialVariant.attributes) {
-        // ... (logic comment) ...
-
+      if (potentialVariant) {
         const adjustedAttributes: Record<string, string> = { [key]: value };
 
-        // Try to keep others if they exist in SOME variant with the new selection
         Object.entries(selectedAttributes).forEach(([existingKey, existingValue]) => {
           if (existingKey === key) return;
 
-          // Check if there is a variant that has BOTH (New Key=Value) AND (Existing Key=Value)
           const compatible = realtimeProduct.variants?.some((v) => {
-            let val1, val2;
-            if (Array.isArray(v.attributes)) {
-              val1 = v.attributes.find((a) => a.type === key)?.value;
-              val2 = v.attributes.find((a) => a.type === existingKey)?.value;
-            } else {
-              val1 = (v.attributes as Record<string, string>)?.[key];
-              val2 = (v.attributes as Record<string, string>)?.[existingKey];
-            }
-            return val1 === value && val2 === existingValue;
+            const attrs = getVariantAttributes(v);
+            return attrs[key] === value && attrs[existingKey] === existingValue;
           });
 
           if (compatible) {
             adjustedAttributes[existingKey] = existingValue;
           }
-          // If not compatible, we effectively "deselect" it (don't add to adjustedAttributes)
         });
 
         setSelectedAttributes(adjustedAttributes);
       } else {
-        // Should not happen if the option came from the list
         setSelectedAttributes(newAttributes);
       }
     }
@@ -592,12 +581,8 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
               </div>
               <div className="flex flex-wrap gap-3">
                 {colorVariants.map((variant) => {
-                  let colorValue: string | undefined;
-                  if (Array.isArray(variant.attributes)) {
-                    colorValue = variant.attributes.find((a) => a.type === colorKey)?.value;
-                  } else {
-                    colorValue = (variant.attributes as Record<string, string>)?.[colorKey];
-                  }
+                  const attrs = getVariantAttributes(variant);
+                  const colorValue = attrs[colorKey as string];
 
                   if (!colorValue) return null;
 
