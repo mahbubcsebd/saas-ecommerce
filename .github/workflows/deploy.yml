@@ -48,7 +48,6 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: mahbub_cse_me
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          key_as_base64: true # 👈 গিটহাবকে বলবে সিক্রেট কোডটি নিখুঁত মাল্টি-লাইন চাবিতে রূপান্তর করতে
           port: 22
           script: |
             cd ~/saas-ecommerce
@@ -64,7 +63,6 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: mahbub_cse_me
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          key_as_base64: true
           port: 22
           script: |
             export NVM_DIR="$HOME/.nvm"
@@ -96,7 +94,6 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: mahbub_cse_me
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          key_as_base64: true
           port: 22
           script: |
             export NVM_DIR="$HOME/.nvm"
@@ -129,7 +126,6 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: mahbub_cse_me
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          key_as_base64: true
           port: 22
           script: |
             export NVM_DIR="$HOME/.nvm"
@@ -160,7 +156,6 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: mahbub_cse_me
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          key_as_base64: true
           port: 22
           script: |
             pm2 list
