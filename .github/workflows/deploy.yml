@@ -17,7 +17,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Advanced Filter: Detects code changes vs dependency updates separately
+      # Detect which directories have code changes vs dependency updates
       - name: Check Changed Paths and Dependencies
         uses: dorny/paths-filter@v3
         id: filter
@@ -41,38 +41,39 @@ jobs:
             workflow:
               - '.github/workflows/deploy.yml'
 
-      # Setup Native SSH Client with proper Multi-line Key Formatting
-      - name: Configure Native SSH Client
-        run: |
-          mkdir -p ~/.ssh
-          # Fix: Use EOF to preserve exact multi-line structure of the private key
-          cat << 'EOF' > ~/.ssh/id_rsa
-          ${{ secrets.SSH_PRIVATE_KEY }}
-          EOF
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p 22 -H "${{ secrets.SERVER_HOST }}" >> ~/.ssh/known_hosts
-
-      # STEP 0: Base Git Synchronization
+      # STEP 0: Base Git Synchronization using Bulletproof Base64 SSH Key format
       - name: Pull Latest Codebase
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no mahbub_cse_me@${{ secrets.SERVER_HOST }} << 'EOF'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: mahbub_cse_me
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key_as_base64: true # 👈 গিটহাবকে বলবে সিক্রেট কোডটি নিখুঁত মাল্টি-লাইন চাবিতে রূপান্তর করতে
+          port: 22
+          script: |
             cd ~/saas-ecommerce
             git reset --hard HEAD
             git pull origin main
             echo "🚀 Codebase hard synchronized with main branch!"
-          EOF
 
       # STEP 1: Express API Backend Pipeline
       - name: Deploy Express API Backend
         if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.backend_server_code == 'true'
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no mahbub_cse_me@${{ secrets.SERVER_HOST }} << 'EOF'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: mahbub_cse_me
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key_as_base64: true
+          port: 22
+          script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use 26 || nvm use default
 
             cd ~/saas-ecommerce/backend/server
 
+            # Conditional Optimization: Only install if package.json changed OR node_modules missing
             if [ "${{ steps.filter.outputs.backend_server_deps }}" = "true" ] || [ ! -d "node_modules" ]; then
               echo "📦 Dependency changes detected. Running fresh npm install..."
               rm -rf node_modules package-lock.json
@@ -81,17 +82,23 @@ jobs:
 
             npm run db:generate
 
+            # Zero-Downtime Reload using explicit path binding
             PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 reload express-api --update-env || PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz" pm2 start src/server.js --name "express-api" --cwd "/home/mahbub_cse_me/saas-ecommerce/backend/server"
 
             pm2 save
             echo "✅ Express API Backend hot reloaded!"
-          EOF
 
       # STEP 2: Admin Dashboard Client Pipeline
       - name: Deploy Admin Dashboard Client
         if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.backend_client_code == 'true'
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no mahbub_cse_me@${{ secrets.SERVER_HOST }} << 'EOF'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: mahbub_cse_me
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key_as_base64: true
+          port: 22
+          script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use 26 || nvm use default
@@ -104,20 +111,27 @@ jobs:
               npm install --legacy-peer-deps
             fi
 
+            # Clean old build cache and re-build with Next.js 16 environment setup
             rm -rf .next
             NODE_OPTIONS="--max-old-space-size=1024" npm run build
 
+            # Zero-Downtime Swap with bounded directory path
             pm2 reload next-dashboard || pm2 start npm --name "next-dashboard" --cwd "/home/mahbub_cse_me/saas-ecommerce/backend/client" -- run start -- -p 3001
 
             pm2 save
             echo "✅ Admin Dashboard Client hot reloaded!"
-          EOF
 
       # STEP 3: Frontend Shop Client Pipeline
       - name: Deploy Frontend Shop Client
         if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.frontend_code == 'true'
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no mahbub_cse_me@${{ secrets.SERVER_HOST }} << 'EOF'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: mahbub_cse_me
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key_as_base64: true
+          port: 22
+          script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use 26 || nvm use default
@@ -133,14 +147,21 @@ jobs:
             rm -rf .next
             NODE_OPTIONS="--max-old-space-size=1024" npm run build
 
+            # Zero-Downtime Swap with bounded directory path
             pm2 reload next-shop || pm2 start npm --name "next-shop" --cwd "/home/mahbub_cse_me/saas-ecommerce/frontend" -- run start -- -p 3000
 
             pm2 save
             echo "✅ Frontend Shop Client hot reloaded!"
-          EOF
 
       # STEP 4: Global Verification State
       - name: Show Running Status
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no mahbub_cse_me@${{ secrets.SERVER_HOST }} "pm2 list"
-          echo "🚀 Monorepo processes verified successfully using native secure shell connection!"
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: mahbub_cse_me
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key_as_base64: true
+          port: 22
+          script: |
+            pm2 list
+            echo "🚀 Professional Enterprise pipeline executed flawlessly!"
