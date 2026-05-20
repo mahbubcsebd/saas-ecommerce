@@ -9,9 +9,7 @@ import { Product } from '@/types/product';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-export function generateStaticParams() {
-  return [];
-}
+export const dynamic = 'force-dynamic';
 
 // Data Fetching Utils
 function getApiUrl(): string {

@@ -23,6 +23,13 @@ interface ProductDetailsClientProps {
   product: Product;
 }
 
+function normalizeKey(key: string): string {
+  if (!key) return '';
+  const trimmed = key.trim();
+  if (trimmed.length === 0) return '';
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+}
+
 function getVariantAttributes(variant: ProductVariant): Record<string, string> {
   const result: Record<string, string> = {};
   if (!variant) return result;
@@ -33,7 +40,8 @@ function getVariantAttributes(variant: ProductVariant): Record<string, string> {
   if (Array.isArray(rawAttrs) && rawAttrs.length > 0) {
     rawAttrs.forEach((attr: any) => {
       if (attr && typeof attr === 'object' && attr.type && attr.value) {
-        result[attr.type] = attr.value;
+        const normKey = normalizeKey(attr.type);
+        if (normKey) result[normKey] = attr.value;
       }
     });
     return result;
@@ -42,7 +50,10 @@ function getVariantAttributes(variant: ProductVariant): Record<string, string> {
   // 2. Object format: { color: "Black", size: "XL" }
   if (rawAttrs && typeof rawAttrs === 'object' && !Array.isArray(rawAttrs) && Object.keys(rawAttrs).length > 0) {
     Object.entries(rawAttrs).forEach(([key, value]) => {
-      if (value) result[key] = String(value);
+      if (value) {
+        const normKey = normalizeKey(key);
+        if (normKey) result[normKey] = String(value);
+      }
     });
     return result;
   }
@@ -164,13 +175,23 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
     return available;
   };
 
-  // Find variant that matches current selections
+  // Find variant that matches current selections exactly
   const selectedVariant = useMemo(() => {
     if (!realtimeProduct.variants || Object.keys(selectedAttributes).length === 0) return null;
 
     return realtimeProduct.variants.find((variant) => {
       const attrs = getVariantAttributes(variant);
-      return Object.entries(selectedAttributes).every(([key, value]) => attrs[key] === value);
+      
+      // All selected attributes must match the variant's attributes
+      const matchSelected = Object.entries(selectedAttributes).every(
+        ([key, value]) => attrs[key] === value
+      );
+      if (!matchSelected) return false;
+
+      // The variant must not have any other attributes that aren't in selectedAttributes
+      const variantKeys = Object.keys(attrs);
+      const selectedKeys = Object.keys(selectedAttributes);
+      return variantKeys.length === selectedKeys.length;
     });
   }, [realtimeProduct.variants, selectedAttributes]);
 
@@ -184,14 +205,18 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
     if (!colorKey) return [];
 
-    // For each color, get one representative variant with images
+    // For each color, get one representative variant (prioritizing the one with images)
     const colorMap = new Map<string, ProductVariant>();
     realtimeProduct.variants.forEach((variant) => {
       const attrs = getVariantAttributes(variant);
       const color = attrs[colorKey];
 
-      if (color && variant.images?.length > 0 && !colorMap.has(color)) {
-        colorMap.set(color, variant);
+      if (color) {
+        const existing = colorMap.get(color);
+        // If we don't have a variant for this color yet, OR the new one has images while the existing one doesn't
+        if (!existing || (variant.images?.length > 0 && (!existing.images || existing.images.length === 0))) {
+          colorMap.set(color, variant);
+        }
       }
     });
 
@@ -199,7 +224,19 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   }, [realtimeProduct.variants, attributeOptions]);
 
   const handleAttributeSelect = (key: string, value: string) => {
-    const newAttributes = { ...selectedAttributes, [key]: value };
+    let newAttributes = { ...selectedAttributes };
+
+    if (selectedAttributes[key] === value) {
+      // Toggle off / deselect
+      delete newAttributes[key];
+      setSelectedAttributes(newAttributes);
+      setErrorMessage(null);
+      setSuccessMessage(null);
+      setQty(1);
+      return;
+    }
+
+    newAttributes[key] = value;
 
     // Check if this new combination exists
     const validVariant = realtimeProduct.variants?.find((variant) => {
@@ -256,29 +293,35 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
     // Check if product has variants but none selected
     if (realtimeProduct.variants && realtimeProduct.variants.length > 0) {
-      // Check if all attributes are selected
-      const allKeys = Object.keys(attributeOptions);
-
-      // Filter out Color if it's not visible
-      const requiredKeys = allKeys.filter((k) => {
-        if (k === colorKey && !isColorVisible) return false;
-        return true;
-      });
-
-      const selectedKeys = Object.keys(selectedAttributes);
-      const missingKeys = requiredKeys.filter((k) => !selectedKeys.includes(k));
-
-      if (missingKeys.length > 0) {
-        setErrorMessage(
-          t('product', 'pleaseSelect', {
-            missing: missingKeys.join(', '),
-            defaultValue: `Please select ${missingKeys.join(', ')}`,
-          })
-        );
-        return;
-      }
-
       if (!selectedVariant) {
+        // Find which required attributes are missing for any potentially matching variants
+        const compatibleVariants = realtimeProduct.variants.filter((variant) => {
+          const attrs = getVariantAttributes(variant);
+          return Object.entries(selectedAttributes).every(([key, value]) => attrs[key] === value);
+        });
+
+        if (compatibleVariants.length > 0) {
+          // Find the attributes that are present in these compatible variants but not yet selected
+          const missingKeys = new Set<string>();
+          compatibleVariants.forEach((variant) => {
+            const attrs = getVariantAttributes(variant);
+            Object.keys(attrs).forEach((k) => {
+              if (!selectedAttributes[k]) missingKeys.add(k);
+            });
+          });
+
+          if (missingKeys.size > 0) {
+            const missingList = Array.from(missingKeys);
+            setErrorMessage(
+              t('product', 'pleaseSelect', {
+                missing: missingList.join(', '),
+                defaultValue: `Please select ${missingList.join(', ')}`,
+              })
+            );
+            return;
+          }
+        }
+
         setErrorMessage(
           t('product', 'combinationUnavailable', {
             defaultValue: 'Selected combination is unavailable.',
@@ -753,6 +796,41 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                 className="flex-1 text-base py-6 font-bold transition-all active:scale-[0.98]"
                 disabled={isOutOfStock || loading}
                 onClick={() => {
+                  if (realtimeProduct.variants && realtimeProduct.variants.length > 0 && !selectedVariant) {
+                    const compatibleVariants = realtimeProduct.variants.filter((variant) => {
+                      const attrs = getVariantAttributes(variant);
+                      return Object.entries(selectedAttributes).every(([key, value]) => attrs[key] === value);
+                    });
+
+                    if (compatibleVariants.length > 0) {
+                      const missingKeys = new Set<string>();
+                      compatibleVariants.forEach((variant) => {
+                        const attrs = getVariantAttributes(variant);
+                        Object.keys(attrs).forEach((k) => {
+                          if (!selectedAttributes[k]) missingKeys.add(k);
+                        });
+                      });
+
+                      if (missingKeys.size > 0) {
+                        const missingList = Array.from(missingKeys);
+                        setErrorMessage(
+                          t('product', 'pleaseSelect', {
+                            missing: missingList.join(', '),
+                            defaultValue: `Please select ${missingList.join(', ')}`,
+                          })
+                        );
+                        return;
+                      }
+                    }
+
+                    setErrorMessage(
+                      t('product', 'combinationUnavailable', {
+                        defaultValue: 'Selected combination is unavailable.',
+                      })
+                    );
+                    return;
+                  }
+
                   const store = useCartStore.getState();
                   store.setBuyNowItem({
                     id: 'buy_now_temp',

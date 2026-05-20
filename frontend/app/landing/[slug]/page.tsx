@@ -4,9 +4,7 @@ import { Check, Clock, ShieldCheck, Star, Truck } from 'lucide-react';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
-export function generateStaticParams() {
-  return [];
-}
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
