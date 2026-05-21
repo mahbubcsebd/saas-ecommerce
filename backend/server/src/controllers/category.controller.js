@@ -4,6 +4,7 @@ const asyncHandler = require('../middlewares/asyncHandler');
 const ApiError = require('../utils/ApiError');
 const { successResponse, createdResponse } = require('../utils/response');
 const contentTranslationService = require('../services/contentTranslation.service');
+const { stripImagePrefix } = require('../utils/image.utils');
 
 exports.getAllCategories = asyncHandler(async (req, res) => {
   const { isHomeShown, search } = req.query;
@@ -144,7 +145,7 @@ exports.createCategory = asyncHandler(async (req, res) => {
   }
 
   // Handle image upload from multer
-  const imageUrl = req.file ? req.file.path : null;
+  const imageUrl = req.file ? stripImagePrefix(req.file.path) : null;
 
   let parsedTranslations = [];
   if (req.body.translations) {
@@ -218,7 +219,7 @@ exports.updateCategory = asyncHandler(async (req, res) => {
       const { deleteImageFromCloudinary } = require('../utils/cloudinary.utils');
       await deleteImageFromCloudinary(existingCategory.image);
     }
-    imageUrl = req.file.path;
+    imageUrl = stripImagePrefix(req.file.path);
   }
 
   const data = {

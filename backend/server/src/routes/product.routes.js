@@ -69,6 +69,18 @@ router.delete(
 router.get('/admin/low-stock', authMiddleware, isManager, productController.getLowStockProducts);
 router.get('/admin/export', authMiddleware, isManager, productController.exportProducts);
 router.post(
+  '/admin/barcodes/generate',
+  authMiddleware,
+  isManager,
+  productController.generateBarcodes
+);
+router.post(
+  '/admin/barcodes/pdf',
+  authMiddleware,
+  isManager,
+  productController.generateBarcodesPDF
+);
+router.post(
   '/admin/import',
   authMiddleware,
   isManager,

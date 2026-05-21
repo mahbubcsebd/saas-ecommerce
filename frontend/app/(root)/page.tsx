@@ -1,5 +1,6 @@
 import CategorySections from '@/components/home/CategorySections';
 import FeaturedCategoriesSection from '@/components/home/FeaturedCategoriesSection';
+import FeaturedBrandsSection from '@/components/home/FeaturedBrandsSection';
 import FlashSaleSection from '@/components/home/FlashSaleSection';
 import HeroSection from '@/components/home/HeroSection';
 import NewArrivalsSection from '@/components/home/NewArrivalsSection';
@@ -32,17 +33,22 @@ export default async function Home() {
         <FeaturedCategoriesSection />
       </Suspense>
 
-      {/* 5. Top Selling (Streaming) */}
+      {/* 5. Featured Brands (Streaming) */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <FeaturedBrandsSection />
+      </Suspense>
+
+      {/* 6. Top Selling (Streaming) */}
       <Suspense fallback={<SectionSkeleton />}>
         <TopSellingSection />
       </Suspense>
 
-      {/* 6. New Arrivals (Streaming) */}
+      {/* 7. New Arrivals (Streaming) */}
       <Suspense fallback={<SectionSkeleton />}>
         <NewArrivalsSection />
       </Suspense>
 
-      {/* 7. Dynamic Category Sections (Streaming) */}
+      {/* 8. Dynamic Category Sections (Streaming) */}
       <Suspense fallback={<SectionSkeleton />}>
         <CategorySections />
       </Suspense>

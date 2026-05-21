@@ -135,6 +135,11 @@ const getSidebarItems = (counts: any): SidebarItem[] => [
         icon: FolderTree,
       },
       {
+        title: 'Brands',
+        href: '/dashboard/brands',
+        icon: Tag,
+      },
+      {
         title: 'Reviews',
         href: '/dashboard/reviews',
         icon: Star,

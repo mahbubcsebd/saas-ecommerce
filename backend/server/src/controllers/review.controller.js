@@ -1,5 +1,7 @@
 const prisma = require('../config/prisma');
 const { errorResponse } = require('../helpers/responseHandler');
+const { stripImagePrefix } = require('../utils/image.utils');
+const { successResponse, createdResponse } = require('../utils/response');
 
 exports.createReview = async (req, res, next) => {
   try {
@@ -13,7 +15,7 @@ exports.createReview = async (req, res, next) => {
     }
 
     // Extract uploaded images
-    const images = req.files ? req.files.map((file) => file.path) : [];
+    const images = req.files ? req.files.map((file) => stripImagePrefix(file.path)) : [];
 
     // Create review
     const review = await prisma.review.create({
@@ -40,7 +42,10 @@ exports.createReview = async (req, res, next) => {
       },
     });
 
-    res.status(201).json({ success: true, data: review });
+    return createdResponse(res, {
+      message: 'Review created successfully',
+      data: review,
+    });
   } catch (error) {
     next(error);
   }
@@ -58,7 +63,10 @@ exports.getProductReviews = async (req, res, next) => {
       },
       orderBy: { createdAt: 'desc' },
     });
-    res.status(200).json({ success: true, data: reviews });
+    return successResponse(res, {
+      message: 'Product reviews retrieved successfully',
+      data: reviews,
+    });
   } catch (error) {
     next(error);
   }
@@ -113,14 +121,16 @@ exports.getAllReviews = async (req, res, next) => {
       prisma.review.count({ where: whereClause }),
     ]);
 
-    res.status(200).json({
-      success: true,
+    return successResponse(res, {
+      message: 'All reviews retrieved successfully',
       data: reviews,
-      pagination: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
+      meta: {
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
       },
     });
   } catch (error) {
@@ -161,7 +171,10 @@ exports.updateReviewStatus = async (req, res, next) => {
       });
     }
 
-    res.status(200).json({ success: true, data: review });
+    return successResponse(res, {
+      message: 'Review status updated successfully',
+      data: review,
+    });
   } catch (error) {
     next(error);
   }
@@ -178,7 +191,10 @@ exports.replyToReview = async (req, res, next) => {
       data: { adminReply },
     });
 
-    res.status(200).json({ success: true, data: review });
+    return successResponse(res, {
+      message: 'Admin reply added successfully',
+      data: review,
+    });
   } catch (error) {
     next(error);
   }
@@ -210,7 +226,9 @@ exports.deleteReview = async (req, res, next) => {
       data: { numReviews, rating: avgRating },
     });
 
-    res.status(200).json({ success: true, message: 'Review deleted successfully' });
+    return successResponse(res, {
+      message: 'Review deleted successfully',
+    });
   } catch (error) {
     next(error);
   }

@@ -4,6 +4,7 @@ const asyncHandler = require('../middlewares/asyncHandler');
 const ApiError = require('../utils/ApiError');
 const { successResponse } = require('../utils/response');
 const emailService = require('../services/emailService');
+const { stripImagePrefix } = require('../utils/image.utils');
 
 // Role hierarchy helper function
 const getRoleHierarchy = (role) => {
@@ -252,13 +253,15 @@ exports.updateUser = asyncHandler(async (req, res) => {
 
   // Handle file upload
   if (req.file) {
-    updateData.avatar = req.file.path;
+    updateData.avatar = stripImagePrefix(req.file.filename);
   }
 
   allowedFields.forEach((field) => {
     if (req.body[field] !== undefined) {
       if (field === 'dob' && req.body[field]) {
         updateData[field] = new Date(req.body[field]);
+      } else if (field === 'avatar') {
+        updateData[field] = stripImagePrefix(req.body[field]);
       } else {
         updateData[field] = req.body[field];
       }

@@ -202,6 +202,72 @@ class ContentTranslationService {
   }
 
   /**
+   * Auto-translate Brand content
+   */
+  async autoTranslateBrand(brandId, targetLangCode, forceUpdate = false) {
+    const brand = await prisma.brand.findUnique({
+      where: { id: brandId },
+      include: { translations: true },
+    });
+
+    if (!brand) {
+      throw new Error('Brand not found');
+    }
+
+    // Check if translation already exists
+    const existing = brand.translations.find((t) => t.langCode === targetLangCode);
+    if (existing && !forceUpdate) {
+      console.log(`Translation for ${targetLangCode} already exists`);
+      return existing;
+    }
+
+    // Get target language
+    const targetLanguage = await prisma.language.findUnique({
+      where: { code: targetLangCode },
+    });
+
+    if (!targetLanguage) {
+      throw new Error(`Language ${targetLangCode} not found`);
+    }
+
+    // Translate using AI
+    const translated = await this.translateWithAI(
+      [
+        { key: 'name', text: brand.name },
+        { key: 'description', text: brand.description || '' },
+      ],
+      targetLanguage.name
+    );
+
+    // Create or update translation
+    let translation;
+    if (existing) {
+      translation = await prisma.brandTranslation.update({
+        where: { id: existing.id },
+        data: {
+          name: translated.find((t) => t.key === 'name')?.translated || brand.name,
+          description:
+            translated.find((t) => t.key === 'description')?.translated || brand.description,
+          isAutoTranslated: true,
+        },
+      });
+    } else {
+      translation = await prisma.brandTranslation.create({
+        data: {
+          brandId: brand.id,
+          langCode: targetLangCode,
+          name: translated.find((t) => t.key === 'name')?.translated || brand.name,
+          description:
+            translated.find((t) => t.key === 'description')?.translated || brand.description,
+          isAutoTranslated: true,
+        },
+      });
+    }
+
+    return translation;
+  }
+
+  /**
    * Translate text using AI (Groq, Grok, or OpenAI)
    */
   async translateWithAI(texts, targetLanguageName) {
@@ -299,6 +365,17 @@ class ContentTranslationService {
       }
     }
 
+    // Translate all brands
+    const brands = await prisma.brand.findMany();
+    for (const brand of brands) {
+      try {
+        await this.autoTranslateBrand(brand.id, targetLangCode);
+        console.log(`Translated brand: ${brand.name}`);
+      } catch (error) {
+        console.error(`Error translating brand ${brand.id}:`, error.message);
+      }
+    }
+
     // Translate all hero slides
     const heroSlides = await prisma.heroSlide.findMany();
     for (const heroSlide of heroSlides) {
@@ -360,6 +437,22 @@ class ContentTranslationService {
           `Error translating hero slide ${heroSlideId} to ${lang.code}:`,
           error.message
         );
+      }
+    }
+  }
+
+  /**
+   * Auto-translate a specific brand into all active languages
+   */
+  async autoTranslateBrandForAll(brandId, forceUpdate = false) {
+    const languages = await prisma.language.findMany({
+      where: { isActive: true, code: { not: 'en' } },
+    });
+    for (const lang of languages) {
+      try {
+        await this.autoTranslateBrand(brandId, lang.code, forceUpdate);
+      } catch (error) {
+        console.error(`Error translating brand ${brandId} to ${lang.code}:`, error.message);
       }
     }
   }

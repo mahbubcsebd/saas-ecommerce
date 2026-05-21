@@ -68,6 +68,8 @@ To keep context focused, detailed feature logic is separated into specialized sk
 - **[api-conventions](file:///d:/mahbub-shop/.agents/skills/api-conventions/SKILL.md)**: Response standards.
 - **[ui-conventions](file:///d:/mahbub-shop/.agents/skills/ui-conventions/SKILL.md)**: Global responsive UI standards.
 - **[dashboard-ui](file:///d:/mahbub-shop/backend/client/skills/dashboard-ui/SKILL.md)**: Centralized Dashboard Table & Button standards.
+- **[context7](file:///d:/mahbub-shop/.agents/skills/context7/SKILL.md)**: Documentation and API resolution standard.
+- **[superpowers](file:///d:/mahbub-shop/.agents/skills/superpowers/SKILL.md)**: Agentic TDD and systematic methodology standard.
 
 ## Dashboard Feature Skills
 - **[sales-orders](file:///d:/mahbub-shop/.agents/skills/features/sales/orders.md)**: Order lifecycle and status.

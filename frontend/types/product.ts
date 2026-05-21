@@ -12,6 +12,7 @@ export interface ProductVariant {
   attributes: Record<string, string> | { type: string; value: string }[]; // Support both formats
   images: string[];
   isActive: boolean;
+  videoUrls?: string[];
 }
 
 export interface Discount {
@@ -24,6 +25,21 @@ export interface Discount {
   startDate: string;
   endDate?: string;
   isActive: boolean;
+}
+
+export interface Brand {
+  id: string;
+  name: string;
+  slug: string;
+  image?: string | null;
+  description?: string | null;
+  isActive: boolean;
+  isFeatured: boolean;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  translations?: { langCode: string; name: string; description: string }[];
+  _count?: { products: number };
 }
 
 export interface Product {
@@ -51,6 +67,9 @@ export interface Product {
   categoryId: string;
   category: string | { name: string; slug: string }; // The category object or name depending on API response
   brand?: string;
+  brandId?: string;
+  brandRel?: Brand;
+  videoUrls?: string[];
   tags: string[];
 
   // Weight & Dimensions

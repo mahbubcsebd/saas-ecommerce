@@ -30,7 +30,8 @@ import {
     SortingState,
     useReactTable,
 } from "@tanstack/react-table";
-import { Download, Edit, Eye, Filter, LayoutGrid, List, Plus, Search, Trash2, Upload, X } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Download, Edit, Eye, Filter, LayoutGrid, List, Plus, Search, Trash2, Upload, X, Tag, Barcode, Printer, Settings, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -110,6 +111,32 @@ export default function ProductsPage() {
   const [viewProduct, setViewProduct] = useState<Product | null>(null);
   const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+
+  // Bulk actions modal/drawer visibility states
+  const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
+  const [isBulkStatusOpen, setIsBulkStatusOpen] = useState(false);
+  const [isBulkStockOpen, setIsBulkStockOpen] = useState(false);
+  const [isBulkPriceOpen, setIsBulkPriceOpen] = useState(false);
+  const [isBulkPrintOpen, setIsBulkPrintOpen] = useState(false);
+  const [bulkActionLoading, setBulkActionLoading] = useState(false);
+
+  // Individual parameters for bulk adjustments
+  const [bulkStatus, setBulkStatus] = useState("PUBLISHED");
+  const [priceAdjustType, setPriceAdjustType] = useState<"percentage" | "flat">("percentage");
+  const [priceAdjustAmount, setPriceAdjustAmount] = useState("");
+  const [priceAdjustDirection, setPriceAdjustDirection] = useState<"increase" | "decrease">("increase");
+  const [stockAdjustAmount, setStockAdjustAmount] = useState("");
+  const [stockAdjustDirection, setStockAdjustDirection] = useState<"add" | "subtract">("add");
+
+  // Barcode config
+  const [printConfig, setPrintConfig] = useState({
+    showName: true,
+    showSku: true,
+    showPrice: true,
+    showBarcode: true,
+    layout: "3col", // 'roll', '2col', '3col'
+  });
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
 
@@ -123,6 +150,7 @@ export default function ProductsPage() {
     if (!session?.accessToken) return;
 
     setLoading(true);
+    setRowSelection({});
     try {
       const params = new URLSearchParams({
         page: (pagination.pageIndex + 1).toString(),
@@ -134,7 +162,7 @@ export default function ProductsPage() {
       if (filters.maxPrice) params.append("maxPrice", filters.maxPrice);
       if (filters.minStock) params.append("minStock", filters.minStock);
       if (filters.maxStock) params.append("maxStock", filters.maxStock);
-      if (filters.status !== "all") params.append("status", filters.status);
+      if (filters.status) params.append("status", filters.status);
       if (filters.brand) params.append("brand", filters.brand);
 
       const res = await fetch(
@@ -155,6 +183,289 @@ export default function ProductsPage() {
       console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handler for Bulk Status Change
+  const handleBulkStatusUpdate = async () => {
+    if (!session?.accessToken) return;
+    const selectedRows = table.getSelectedRowModel().rows;
+    if (selectedRows.length === 0) return;
+
+    setBulkActionLoading(true);
+    const loadingToast = toast.loading(`Updating status for ${selectedRows.length} products...`);
+    
+    try {
+      const promises = selectedRows.map(async (row) => {
+        const prod = row.original;
+        const res = await fetch(`${API_URL}/products/${prod.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+          body: JSON.stringify({ status: bulkStatus }),
+        });
+        return res.ok;
+      });
+
+      const results = await Promise.all(promises);
+      const successCount = results.filter(Boolean).length;
+      
+      toast.dismiss(loadingToast);
+      if (successCount === selectedRows.length) {
+        toast.success(`Successfully updated status for all ${successCount} products`);
+      } else {
+        toast.warning(`Updated status for ${successCount} of ${selectedRows.length} products`);
+      }
+      
+      setIsBulkStatusOpen(false);
+      fetchProducts();
+    } catch (error) {
+      console.error("Bulk status update error:", error);
+      toast.dismiss(loadingToast);
+      toast.error("Failed to perform bulk status update");
+    } finally {
+      setBulkActionLoading(false);
+    }
+  };
+
+  // Handler for Bulk Delete
+  const handleBulkDelete = async () => {
+    if (!session?.accessToken) return;
+    const selectedRows = table.getSelectedRowModel().rows;
+    if (selectedRows.length === 0) return;
+
+    setBulkActionLoading(true);
+    const loadingToast = toast.loading(`Deleting ${selectedRows.length} products...`);
+
+    try {
+      const promises = selectedRows.map(async (row) => {
+        const prod = row.original;
+        const res = await fetch(`${API_URL}/products/${prod.id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+        });
+        return res.ok;
+      });
+
+      const results = await Promise.all(promises);
+      const successCount = results.filter(Boolean).length;
+
+      toast.dismiss(loadingToast);
+      if (successCount === selectedRows.length) {
+        toast.success(`Successfully deleted ${successCount} products`);
+      } else {
+        toast.warning(`Deleted ${successCount} of ${selectedRows.length} products`);
+      }
+
+      setIsBulkDeleteOpen(false);
+      fetchProducts();
+    } catch (error) {
+      console.error("Bulk delete error:", error);
+      toast.dismiss(loadingToast);
+      toast.error("Failed to delete products in bulk");
+    } finally {
+      setBulkActionLoading(false);
+    }
+  };
+
+  // Handler for Bulk Stock Adjust
+  const handleBulkStockAdjust = async () => {
+    if (!session?.accessToken) return;
+    const selectedRows = table.getSelectedRowModel().rows;
+    if (selectedRows.length === 0) return;
+
+    const adjustNum = parseInt(stockAdjustAmount);
+    if (isNaN(adjustNum) || adjustNum <= 0) {
+      toast.error("Please enter a valid positive number for stock adjustment");
+      return;
+    }
+
+    setBulkActionLoading(true);
+    const loadingToast = toast.loading(`Adjusting stock for ${selectedRows.length} products...`);
+
+    try {
+      const promises = selectedRows.map(async (row) => {
+        const prod = row.original;
+        const delta = stockAdjustDirection === "add" ? adjustNum : -adjustNum;
+        const newStock = Math.max(0, prod.stock + delta);
+
+        const res = await fetch(`${API_URL}/products/${prod.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+          body: JSON.stringify({ stock: newStock }),
+        });
+        return res.ok;
+      });
+
+      const results = await Promise.all(promises);
+      const successCount = results.filter(Boolean).length;
+
+      toast.dismiss(loadingToast);
+      if (successCount === selectedRows.length) {
+        toast.success(`Adjusted stock for all ${successCount} products`);
+      } else {
+        toast.warning(`Adjusted stock for ${successCount} of ${selectedRows.length} products`);
+      }
+
+      setIsBulkStockOpen(false);
+      setStockAdjustAmount("");
+      fetchProducts();
+    } catch (error) {
+      console.error("Bulk stock adjust error:", error);
+      toast.dismiss(loadingToast);
+      toast.error("Failed to adjust stock in bulk");
+    } finally {
+      setBulkActionLoading(false);
+    }
+  };
+
+  // Handler for Bulk Price Adjust
+  const handleBulkPriceAdjust = async () => {
+    if (!session?.accessToken) return;
+    const selectedRows = table.getSelectedRowModel().rows;
+    if (selectedRows.length === 0) return;
+
+    const adjustNum = parseFloat(priceAdjustAmount);
+    if (isNaN(adjustNum) || adjustNum <= 0) {
+      toast.error("Please enter a valid positive number for price adjustment");
+      return;
+    }
+
+    setBulkActionLoading(true);
+    const loadingToast = toast.loading(`Adjusting price for ${selectedRows.length} products...`);
+
+    try {
+      const promises = selectedRows.map(async (row) => {
+        const prod = row.original;
+        let newBase = prod.basePrice;
+        let newSelling = prod.sellingPrice;
+
+        if (priceAdjustType === "percentage") {
+          const factor = priceAdjustDirection === "increase" ? 1 + adjustNum / 100 : 1 - adjustNum / 100;
+          newBase = Math.round(prod.basePrice * factor);
+          newSelling = Math.round(prod.sellingPrice * factor);
+        } else {
+          const delta = priceAdjustDirection === "increase" ? adjustNum : -adjustNum;
+          newBase = Math.max(0, Math.round(prod.basePrice + delta));
+          newSelling = Math.max(0, Math.round(prod.sellingPrice + delta));
+        }
+
+        const res = await fetch(`${API_URL}/products/${prod.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+          body: JSON.stringify({ basePrice: newBase, sellingPrice: newSelling }),
+        });
+        return res.ok;
+      });
+
+      const results = await Promise.all(promises);
+      const successCount = results.filter(Boolean).length;
+
+      toast.dismiss(loadingToast);
+      if (successCount === selectedRows.length) {
+        toast.success(`Adjusted pricing for all ${successCount} products`);
+      } else {
+        toast.warning(`Adjusted pricing for ${successCount} of ${selectedRows.length} products`);
+      }
+
+      setIsBulkPriceOpen(false);
+      setPriceAdjustAmount("");
+      fetchProducts();
+    } catch (error) {
+      console.error("Bulk price adjust error:", error);
+      toast.dismiss(loadingToast);
+      toast.error("Failed to adjust prices in bulk");
+    } finally {
+      setBulkActionLoading(false);
+    }
+  };
+
+  const handlePrintLabels = async () => {
+    if (!session?.accessToken) return;
+    const selectedRows = table.getSelectedRowModel().rows;
+    if (selectedRows.length === 0) return;
+
+    // Gather all item details (parent products and their variants)
+    const itemsList: { sku: string; name: string; price: number }[] = [];
+    selectedRows.forEach((row) => {
+      const prod = row.original;
+      const translatedName = t(prod, 'name') || prod.name;
+      if (prod.sku) {
+        itemsList.push({
+          sku: prod.sku,
+          name: translatedName,
+          price: prod.sellingPrice,
+        });
+      }
+      if (prod.variants && prod.variants.length > 0) {
+        prod.variants.forEach((v) => {
+          if (v.sku) {
+            itemsList.push({
+              sku: v.sku,
+              name: `${translatedName} - ${v.name}`,
+              price: v.sellingPrice || prod.sellingPrice,
+            });
+          }
+        });
+      }
+    });
+
+    if (itemsList.length === 0) {
+      toast.error("No valid SKUs found to generate barcodes");
+      return;
+    }
+
+    const loadingToast = toast.loading("Generating barcodes PDF on the server...");
+    try {
+      const res = await fetch(`${API_URL}/products/admin/barcodes/pdf`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.accessToken}`,
+        },
+        body: JSON.stringify({
+          items: itemsList,
+          config: printConfig,
+        }),
+      });
+
+      if (res.ok) {
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString("en-CA"); // YYYY-MM-DD
+        const formattedTime = now.toLocaleTimeString("en-GB", { hour12: false }).replace(/:/g, "-"); // HH-MM-SS
+        a.download = `barcodes-${formattedDate}_${formattedTime}.pdf`;
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+
+        toast.dismiss(loadingToast);
+        toast.success("Barcodes PDF downloaded successfully!");
+        setIsBulkPrintOpen(false);
+      } else {
+        toast.dismiss(loadingToast);
+        toast.error("Failed to generate PDF barcodes");
+      }
+    } catch (error) {
+      console.error("Barcode PDF generation error:", error);
+      toast.dismiss(loadingToast);
+      toast.error("Error generating barcodes PDF");
     }
   };
 
@@ -242,6 +553,30 @@ export default function ProductsPage() {
   };
 
   const columns: ColumnDef<Product>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+          className="translate-y-[2px]"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          className="translate-y-[2px]"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       accessorKey: "images",
       header: "Image",
@@ -358,11 +693,13 @@ export default function ProductsPage() {
       columnFilters,
       globalFilter,
       pagination,
+      rowSelection,
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
+    onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -379,7 +716,8 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 print:p-0">
+      <div className="print:hidden">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Products</h1>
@@ -781,6 +1119,504 @@ export default function ProductsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </div>
+
+      {/* Floating Bulk Actions Bar */}
+      {table.getSelectedRowModel().rows.length > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-4xl px-4 animate-in slide-in-from-bottom-5 duration-300 print-hidden no-print">
+          <div className="bg-white/85 dark:bg-gray-900/85 backdrop-blur-xl border border-gray-200/80 dark:border-gray-800/80 shadow-2xl rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="h-9 w-9 bg-blue-100 dark:bg-blue-900/40 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">
+                {table.getSelectedRowModel().rows.length}
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Products Selected</h4>
+                <p className="text-xs text-gray-500">Perform bulk operation on selected items</p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsBulkStatusOpen(true)}
+                className="flex items-center gap-1.5 h-9 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 text-xs font-medium hover:bg-gray-50 dark:hover:bg-gray-700"
+              >
+                <Settings size={14} className="text-purple-500" />
+                Change Status
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsBulkStockOpen(true)}
+                className="flex items-center gap-1.5 h-9 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 text-xs font-medium hover:bg-gray-50 dark:hover:bg-gray-700"
+              >
+                <Tag size={14} className="text-emerald-500" />
+                Adjust Stock
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsBulkPriceOpen(true)}
+                className="flex items-center gap-1.5 h-9 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 text-xs font-medium hover:bg-gray-50 dark:hover:bg-gray-700"
+              >
+                <Tag size={14} className="text-amber-500" />
+                Adjust Price
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsBulkPrintOpen(true)}
+                className="flex items-center gap-1.5 h-9 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 text-xs font-medium hover:bg-gray-50 dark:hover:bg-gray-700"
+              >
+                <Barcode size={14} className="text-blue-500" />
+                Print Labels
+              </Button>
+
+              <div className="w-[1px] h-6 bg-gray-200 dark:bg-gray-800 mx-1 hidden md:block" />
+
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setIsBulkDeleteOpen(true)}
+                className="flex items-center gap-1.5 h-9 text-xs font-semibold"
+              >
+                <Trash2 size={14} />
+                Delete Selected
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => table.resetRowSelection()}
+                className="flex items-center justify-center p-0 h-9 w-9 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                title="Deselect All"
+              >
+                <X size={16} />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Delete Modal */}
+      <Dialog open={isBulkDeleteOpen} onOpenChange={(open) => !open && setIsBulkDeleteOpen(false)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <Trash2 className="h-5 w-5" />
+              Delete Multiple Products
+            </DialogTitle>
+            <DialogDescription className="text-sm text-gray-500">
+              Are you sure you want to delete the <span className="font-semibold text-gray-900">{table.getSelectedRowModel().rows.length}</span> selected products? This will permanently delete these items, and this action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-4 gap-2 md:gap-0">
+            <Button 
+              variant="outline" 
+              onClick={() => setIsBulkDeleteOpen(false)} 
+              disabled={bulkActionLoading}
+              className="w-full md:w-auto"
+            >
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={handleBulkDelete} 
+              disabled={bulkActionLoading}
+              className="w-full md:w-auto flex items-center justify-center gap-2"
+            >
+              {bulkActionLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Yes, Delete All"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Status Update Modal */}
+      <Dialog open={isBulkStatusOpen} onOpenChange={(open) => !open && setIsBulkStatusOpen(false)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5 text-purple-600" />
+              Bulk Status Update
+            </DialogTitle>
+            <DialogDescription className="text-sm text-gray-500">
+              Choose a new status to apply to all <span className="font-semibold text-gray-900">{table.getSelectedRowModel().rows.length}</span> selected products.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4 space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700">Target Status</label>
+              <select
+                value={bulkStatus}
+                onChange={(e) => setBulkStatus(e.target.value)}
+                className="w-full text-sm border border-gray-300 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none h-11"
+              >
+                <option value="PUBLISHED">Published</option>
+                <option value="DRAFT">Draft</option>
+                <option value="ARCHIVED">Archived</option>
+              </select>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 md:gap-0">
+            <Button 
+              variant="outline" 
+              onClick={() => setIsBulkStatusOpen(false)} 
+              disabled={bulkActionLoading}
+              className="w-full md:w-auto"
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleBulkStatusUpdate} 
+              disabled={bulkActionLoading}
+              className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2 text-white"
+            >
+              {bulkActionLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                "Apply Status"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Stock Adjustment Modal */}
+      <Dialog open={isBulkStockOpen} onOpenChange={(open) => !open && setIsBulkStockOpen(false)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Tag className="h-5 w-5 text-emerald-600" />
+              Adjust Stock Inventory
+            </DialogTitle>
+            <DialogDescription className="text-sm text-gray-500">
+              Modify inventory counts for all <span className="font-semibold text-gray-900">{table.getSelectedRowModel().rows.length}</span> selected products in one action.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-4 space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setStockAdjustDirection("add")}
+                className={`py-2 px-3 border rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all ${
+                  stockAdjustDirection === "add"
+                    ? "border-emerald-600 bg-emerald-50 text-emerald-700 shadow-sm"
+                    : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                Add Inventory
+              </button>
+              <button
+                type="button"
+                onClick={() => setStockAdjustDirection("subtract")}
+                className={`py-2 px-3 border rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all ${
+                  stockAdjustDirection === "subtract"
+                    ? "border-amber-600 bg-amber-50 text-amber-700 shadow-sm"
+                    : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                Subtract Inventory
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700">Stock Count</label>
+              <div className="relative">
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="e.g. 10"
+                  value={stockAdjustAmount}
+                  onChange={(e) => setStockAdjustAmount(e.target.value)}
+                  className="w-full text-sm border border-gray-300 rounded-lg pl-3 pr-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none h-11"
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 md:gap-0">
+            <Button 
+              variant="outline" 
+              onClick={() => setIsBulkStockOpen(false)} 
+              disabled={bulkActionLoading}
+              className="w-full md:w-auto"
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleBulkStockAdjust} 
+              disabled={bulkActionLoading || !stockAdjustAmount}
+              className="w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2"
+            >
+              {bulkActionLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                "Update Inventory"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Price Adjustment Modal */}
+      <Dialog open={isBulkPriceOpen} onOpenChange={(open) => !open && setIsBulkPriceOpen(false)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Tag className="h-5 w-5 text-amber-600" />
+              Adjust Product Pricing
+            </DialogTitle>
+            <DialogDescription className="text-sm text-gray-500">
+              Bulk update the pricing (both Base Price and Selling Price) for all <span className="font-semibold text-gray-900">{table.getSelectedRowModel().rows.length}</span> selected items.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-4 space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setPriceAdjustDirection("increase")}
+                className={`py-2 px-3 border rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all ${
+                  priceAdjustDirection === "increase"
+                    ? "border-blue-600 bg-blue-50 text-blue-700 shadow-sm"
+                    : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                Mark Up (Increase)
+              </button>
+              <button
+                type="button"
+                onClick={() => setPriceAdjustDirection("decrease")}
+                className={`py-2 px-3 border rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all ${
+                  priceAdjustDirection === "decrease"
+                    ? "border-amber-600 bg-amber-50 text-amber-700 shadow-sm"
+                    : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                Mark Down (Discount)
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setPriceAdjustType("percentage")}
+                className={`py-2 px-3 border rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${
+                  priceAdjustType === "percentage"
+                    ? "border-indigo-600 bg-indigo-50 text-indigo-700 shadow-sm"
+                    : "border-gray-200 text-gray-500 hover:bg-gray-50"
+                }`}
+              >
+                Percentage (%)
+              </button>
+              <button
+                type="button"
+                onClick={() => setPriceAdjustType("flat")}
+                className={`py-2 px-3 border rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${
+                  priceAdjustType === "flat"
+                    ? "border-indigo-600 bg-indigo-50 text-indigo-700 shadow-sm"
+                    : "border-gray-200 text-gray-500 hover:bg-gray-50"
+                }`}
+              >
+                Flat Amount (৳)
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700">
+                {priceAdjustType === "percentage" ? "Percentage Amount" : "Flat Price Value (৳)"}
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  min="0.01"
+                  step="any"
+                  placeholder={priceAdjustType === "percentage" ? "e.g. 10" : "e.g. 200"}
+                  value={priceAdjustAmount}
+                  onChange={(e) => setPriceAdjustAmount(e.target.value)}
+                  className="w-full text-sm border border-gray-300 rounded-lg pl-3 pr-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none h-11"
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 md:gap-0">
+            <Button 
+              variant="outline" 
+              onClick={() => setIsBulkPriceOpen(false)} 
+              disabled={bulkActionLoading}
+              className="w-full md:w-auto"
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleBulkPriceAdjust} 
+              disabled={bulkActionLoading || !priceAdjustAmount}
+              className="w-full md:w-auto bg-amber-600 hover:bg-amber-700 text-white flex items-center justify-center gap-2"
+            >
+              {bulkActionLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                "Update Prices"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Barcode / Price Tag Printing Config Modal */}
+      <Dialog open={isBulkPrintOpen} onOpenChange={(open) => !open && setIsBulkPrintOpen(false)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-blue-600">
+              <Printer className="h-5 w-5" />
+              Configure Barcode & Price Tag Labels
+            </DialogTitle>
+            <DialogDescription className="text-sm text-gray-500">
+              Customize what is displayed on the printed sheets and select your preferred page structure.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-4 space-y-5">
+            {/* Field Visibility Configuration */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500">Label Content Fields</h4>
+              <div className="grid grid-cols-2 gap-3">
+                <label className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer transition-all">
+                  <Checkbox
+                    checked={printConfig.showName}
+                    onCheckedChange={(checked) => setPrintConfig({ ...printConfig, showName: !!checked })}
+                  />
+                  <div>
+                    <div className="text-xs font-semibold text-gray-700">Product Name</div>
+                    <div className="text-[10px] text-gray-400">Include name & options</div>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer transition-all">
+                  <Checkbox
+                    checked={printConfig.showSku}
+                    onCheckedChange={(checked) => setPrintConfig({ ...printConfig, showSku: !!checked })}
+                  />
+                  <div>
+                    <div className="text-xs font-semibold text-gray-700">SKU Code</div>
+                    <div className="text-[10px] text-gray-400">Display item sku ID</div>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer transition-all">
+                  <Checkbox
+                    checked={printConfig.showBarcode}
+                    onCheckedChange={(checked) => setPrintConfig({ ...printConfig, showBarcode: !!checked })}
+                  />
+                  <div>
+                    <div className="text-xs font-semibold text-gray-700">Barcode Graphic</div>
+                    <div className="text-[10px] text-gray-400">Scannable barcode font</div>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer transition-all">
+                  <Checkbox
+                    checked={printConfig.showPrice}
+                    onCheckedChange={(checked) => setPrintConfig({ ...printConfig, showPrice: !!checked })}
+                  />
+                  <div>
+                    <div className="text-xs font-semibold text-gray-700">Selling Price</div>
+                    <div className="text-[10px] text-gray-400">Display BDT (৳) pricing</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            {/* Layout Configuration */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500">Sheet Layout Format</h4>
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPrintConfig({ ...printConfig, layout: "roll" })}
+                  className={`flex flex-col items-center justify-center p-3 border rounded-lg transition-all text-center ${
+                    printConfig.layout === "roll"
+                      ? "border-blue-600 bg-blue-50 text-blue-700 shadow-sm"
+                      : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  <span className="text-xs font-bold block">1 Column Roll</span>
+                  <span className="text-[10px] text-gray-400 mt-1 block font-normal">Barcode roll printers</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPrintConfig({ ...printConfig, layout: "2col" })}
+                  className={`flex flex-col items-center justify-center p-3 border rounded-lg transition-all text-center ${
+                    printConfig.layout === "2col"
+                      ? "border-blue-600 bg-blue-50 text-blue-700 shadow-sm"
+                      : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  <span className="text-xs font-bold block">2 Columns</span>
+                  <span className="text-[10px] text-gray-400 mt-1 block font-normal">Medium labels grid</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPrintConfig({ ...printConfig, layout: "3col" })}
+                  className={`flex flex-col items-center justify-center p-3 border rounded-lg transition-all text-center ${
+                    printConfig.layout === "3col"
+                      ? "border-blue-600 bg-blue-50 text-blue-700 shadow-sm"
+                      : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  <span className="text-xs font-bold block">3 Columns</span>
+                  <span className="text-[10px] text-gray-400 mt-1 block font-normal">Avery 5160 sheets</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 md:gap-0 border-t pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setIsBulkPrintOpen(false)}
+              className="w-full md:w-auto"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handlePrintLabels}
+              className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 font-medium"
+            >
+              <Download className="h-4 w-4" />
+              Generate & Download PDF
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+
     </div>
   );
 }

@@ -65,6 +65,7 @@ model User {
 
   createdProducts   Product[]  @relation("CreatedProducts")
   createdCategories Category[] @relation("CreatedCategories")
+  createdBrands     Brand[]    @relation("CreatedBrands")
 
   returns ReturnRequest[]
 
@@ -392,8 +393,11 @@ model Product {
   images     String[]
   categoryId String   @db.ObjectId
   category   Category @relation(fields: [categoryId], references: [id])
+  brandId    String?  @db.ObjectId
+  brandRel   Brand?   @relation("ProductBrand", fields: [brandId], references: [id])
   brand      String?
   tags       String[]
+  videoUrls  String[]
 
   // Weight & Dimensions (for shipping)
   weight Float? // in kg
@@ -514,6 +518,7 @@ model ProductVariant {
   minStockLevel Int      @default(2) // New: threshold for variant low stock alert
   attributes    Json? // { color: "Red", size: "XL" }
   images        String[] // Variant specific images
+  videoUrls     String[]
 
   damageReports  DamageReport[]
   stockMovements StockMovement[]
@@ -1694,6 +1699,40 @@ model ProductTranslation {
   @@index([langCode])
 }
 
+model Brand {
+  id              String             @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  slug            String             @unique
+  image           String?
+  description     String?
+  isActive        Boolean            @default(true)
+  isFeatured      Boolean            @default(false)
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  order           Int                @default(0) // Display order
+  products        Product[]          @relation("ProductBrand")
+  translations    BrandTranslation[]
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  createdById     String?            @db.ObjectId
+  createdBy       User?              @relation("CreatedBrands", fields: [createdById], references: [id])
+}
+
+model BrandTranslation {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  brandId          String   @db.ObjectId
+  langCode         String
+  name             String
+  description      String?
+  brand            Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  isAutoTranslated Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  @@unique([brandId, langCode])
+  @@index([langCode])
+}
+
 model HeroSlideTranslation {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
   heroSlideId String  @db.ObjectId
@@ -2391,3 +2430,14 @@ model OrderPayment {
   updatedAt     DateTime @updatedAt
 }
 
+// ==================== ATTRIBUTE SYSTEM ====================
+model Attribute {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique // e.g. "color", "size", "material", "storage", "style", "pattern", "weight"
+  label     String   // e.g. "Color", "Size", "Material", "Storage", "Style", "Pattern", "Weight"
+  values    String[] // e.g. ["Red", "Blue", "Green"]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("attributes")
+}

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Barcode+39&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -318,4 +319,136 @@
 .gjs-block:hover {
   background-color: #e2e8f0;
   transform: translateY(-2px);
+}
+
+/* ==========================================
+   ROBUST MEDIA PRINT STYLES
+   ========================================== */
+@media print {
+  /* Force hide all layout chrome, headers, sidebars, and non-print elements */
+  header,
+  aside,
+  footer,
+  .print-hidden,
+  .print\:hidden,
+  .no-print,
+  [role="dialog"],
+  [role="presentation"],
+  div[data-radix-portal],
+  .fixed:not(.print\:block) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+  }
+
+  /* Reset layout margins, paddings, and background constraints */
+  body, 
+  html, 
+  main,
+  #root,
+  #__next,
+  .flex-1 {
+    background: white !important;
+    background-color: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    margin-left: 0 !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+  }
+
+  /* Override specific grid/flex alignments for main area */
+  .lg\:ml-64,
+  .lg\:ml-16,
+  .ml-64,
+  .ml-16 {
+    margin-left: 0 !important;
+  }
+
+  /* Clean up card shadows and borders for paper output */
+  .shadow-sm,
+  .shadow,
+  .shadow-md,
+  .shadow-lg,
+  .print\:shadow-none {
+    box-shadow: none !important;
+  }
+  
+  .border,
+  .border-b,
+  .border-t,
+  .border-l,
+  .border-r,
+  .print\:border-none {
+    border-color: #e2e8f0 !important;
+  }
+
+  /* Explicit force visible classes */
+  .print\:block {
+    display: block !important;
+  }
+
+  .print\:flex {
+    display: flex !important;
+  }
+
+  /* Barcode sheet print layouts */
+  .barcode-sheet-roll {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    padding: 1rem !important;
+    width: 100% !important;
+  }
+
+  .barcode-sheet-2col {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 15px !important;
+    padding: 10px !important;
+    width: 100% !important;
+  }
+
+  .barcode-sheet-3col {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    padding: 10px !important;
+    width: 100% !important;
+  }
+
+  .barcode-label-card {
+    border: 1px dashed #000 !important;
+    padding: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: white !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    overflow: hidden !important;
+    min-height: 120px !important;
+  }
+
+  .barcode-text {
+    font-family: 'Libre Barcode 39', sans-serif !important;
+    font-size: 42px !important;
+    line-height: 1.2 !important;
+    margin: 6px 0 !important;
+    text-align: center !important;
+    letter-spacing: 1px !important;
+  }
 }

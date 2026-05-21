@@ -1,4 +1,5 @@
 const { successResponse } = require('../utils/response');
+const { formatImageUrl, stripImagePrefix } = require('../utils/image.utils');
 
 /**
  * Upload single or multiple files
@@ -20,11 +21,14 @@ exports.uploadFile = async (req, res, next) => {
       });
     }
 
-    const uploadedUrls = files.map((file) => ({
-      url: file.path,
-      filename: file.filename,
-      originalName: file.originalname,
-    }));
+    const uploadedUrls = files.map((file) => {
+      const cleanPath = stripImagePrefix(file.filename);
+      return {
+        url: formatImageUrl(cleanPath),
+        filename: cleanPath,
+        originalName: file.originalname,
+      };
+    });
 
     return successResponse(res, {
       message: 'Files uploaded successfully',

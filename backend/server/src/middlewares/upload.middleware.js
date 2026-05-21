@@ -2,13 +2,26 @@ const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('../config/cloudinary');
 
+const getPrefixedFolder = (folderName) => {
+  const prefix = process.env.IMAGE_FOLDER_PREFIX !== undefined ? process.env.IMAGE_FOLDER_PREFIX : 'ecommerce';
+  if (!prefix) return folderName || '';
+  if (!folderName) return prefix;
+
+  // If already prefixed, return as is
+  if (folderName.startsWith(prefix + '/') || folderName === prefix) {
+    return folderName;
+  }
+
+  return `${prefix}/${folderName}`;
+};
+
 // Configuration for single image upload
 const singleImageUpload = (folderName, fieldName) => {
   return multer({
     storage: new CloudinaryStorage({
       cloudinary,
       params: {
-        folder: folderName, // Dynamic folder name
+        folder: getPrefixedFolder(folderName), // Dynamic folder name prefixed with env prefix
         format: 'webp', // Optional: Convert images to a specific format
         transformation: { width: 500, height: 500, crop: 'fill' }, // Optional: Resize and crop the image
       },
@@ -22,7 +35,7 @@ const multipleImageUpload = (folderName, fieldName, maxCount = 5) => {
     storage: new CloudinaryStorage({
       cloudinary,
       params: {
-        folder: folderName, // Dynamic folder name
+        folder: getPrefixedFolder(folderName), // Dynamic folder name prefixed with env prefix
         format: 'webp', // Optional: Convert images to a specific format
         transformation: { width: 500, height: 500, crop: 'fill' }, // Optional: Resize and crop the image
       },
@@ -38,7 +51,7 @@ const singleFileUpload = (folderName, fieldName, options = {}) => {
     storage: new CloudinaryStorage({
       cloudinary,
       params: {
-        folder: folderName, // Dynamic folder name
+        folder: getPrefixedFolder(folderName), // Dynamic folder name prefixed with env prefix
         format, // Use 'auto' to detect the file format
         transformation: {
           ...transformation, // Allow custom transformations (optional for non-image files)
@@ -64,7 +77,7 @@ const multipleFileUpload = (folderName, fieldName, maxCount = 5, options = {}) =
     storage: new CloudinaryStorage({
       cloudinary,
       params: {
-        folder: folderName, // Dynamic folder name
+        folder: getPrefixedFolder(folderName), // Dynamic folder name prefixed with env prefix
         format, // Use 'auto' to detect the file format
         transformation: {
           ...transformation, // Allow custom transformations (optional for non-image files)
@@ -88,7 +101,7 @@ const anyImageUpload = (folderName) => {
     storage: new CloudinaryStorage({
       cloudinary,
       params: {
-        folder: folderName,
+        folder: getPrefixedFolder(folderName),
         format: 'webp',
         transformation: { width: 500, height: 500, crop: 'fill' },
       },

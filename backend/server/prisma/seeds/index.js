@@ -6,6 +6,7 @@ const seedShipping = require('./shipping.seed');
 const seedUsers = require('./users.seed');
 const seedCategories = require('./categories.seed');
 const seedSuppliers = require('./suppliers.seed');
+const seedAttributes = require('./attributes.seed');
 const seedProducts = require('./products.seed');
 const seedDiscounts = require('./discounts.seed');
 const seedExpenses = require('./expenses.seed');
@@ -19,6 +20,7 @@ async function main() {
   await seedUsers();
   await seedCategories();
   await seedSuppliers();
+  await seedAttributes();
   await seedProducts();
   await seedDiscounts();
   await seedExpenses();

@@ -111,3 +111,49 @@ export async function getCategories() {
     return [];
   }
 }
+
+export async function getBrands() {
+  try {
+    return await api.get<any[]>('/brands?isActive=true', {
+      revalidate: 3600,
+      tags: ['brands'],
+    });
+  } catch (error) {
+    console.error('Error fetching brands:', error);
+    return [];
+  }
+}
+
+export async function getFeaturedBrands() {
+  try {
+    let brands = await api.get<any[]>('/brands?isActive=true&isFeatured=true', {
+      revalidate: 3600,
+      tags: ['brands', 'featured-brands'],
+    });
+
+    if (!brands || brands.length === 0) {
+      brands = await api.get<any[]>('/brands?isActive=true&limit=6', {
+        revalidate: 3600,
+        tags: ['brands'],
+      });
+    }
+
+    return brands;
+  } catch (error) {
+    console.error('Error fetching featured brands:', error);
+    return [];
+  }
+}
+
+export async function getBrandBySlug(slug: string) {
+  try {
+    return await api.get<any>(`/brands/${slug}`, {
+      revalidate: 60,
+      tags: [`brand-${slug}`],
+    });
+  } catch (error) {
+    console.error(`Error fetching brand ${slug}:`, error);
+    return null;
+  }
+}
+

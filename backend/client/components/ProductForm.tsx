@@ -12,6 +12,7 @@ import GlobalSelect, { Option } from "./forms/GlobalSelect";
 import { LocalizedInput, LocalizedTextEditor } from "./forms/LocalizedFields";
 import ImageUploadManager from "./ImageUploadManager";
 import VariantManager, { ProductVariant } from "./VariantManager";
+import { Trash2 } from "lucide-react";
 
 interface Category {
   id: string;
@@ -83,11 +84,14 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
   const { alert, confirm } = useConfirm();
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(mode === "edit");
+  const [fetchingLanguages, setFetchingLanguages] = useState(true);
   const [categories, setCategories] = useState<Category[]>([]);
   const [images, setImages] = useState<Array<{ file?: File; url: string; id: string; isPrimary?: boolean }>>([]);
   const [selectedTags, setSelectedTags] = useState<any[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [variants, setVariants] = useState<ProductVariant[]>([]);
+  const [brands, setBrands] = useState<any[]>([]);
 
   // Multi-language state
   const [languages, setLanguages] = useState<Language[]>([]);
@@ -105,6 +109,8 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
     lowStockAlert: "10",
     categoryId: "",
     brand: "",
+    brandId: "",
+    videoUrls: [] as string[],
     weight: "",
     length: "",
     width: "",
@@ -130,6 +136,7 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
 
   const fetchLanguages = async () => {
+      setFetchingLanguages(true);
       try {
         const res = await fetch(`${API_URL}/languages/active`);
         if (res.ok) {
@@ -148,12 +155,27 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
         }
       } catch (e) {
           console.error("Failed to fetch languages", e);
+      } finally {
+          setFetchingLanguages(false);
       }
+  };
+
+  const fetchBrands = async () => {
+    try {
+      const res = await fetch(`${API_URL}/brands?isActive=true`);
+      if (res.ok) {
+        const data = await res.json();
+        setBrands(data.data || []);
+      }
+    } catch (e) {
+      console.error("Failed to fetch brands", e);
+    }
   };
 
   useEffect(() => {
     fetchLanguages();
     fetchCategories();
+    fetchBrands();
   }, []);
 
   // Fetch product data only after languages are loaded to correctly populate translations
@@ -177,7 +199,7 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
 
   const fetchProduct = async () => {
     if (!session?.accessToken) return;
-
+    setFetching(true);
     try {
       const res = await fetch(`${API_URL}/products/${productId}`, {
         headers: {
@@ -225,6 +247,8 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
           lowStockAlert: data.lowStockAlert?.toString() || "10",
           categoryId: data.categoryId || "",
           brand: data.brand || "",
+          brandId: data.brandId || "",
+          videoUrls: data.videoUrls || [],
           weight: data.weight?.toString() || "",
           length: data.length?.toString() || "",
           width: data.width?.toString() || "",
@@ -286,6 +310,8 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
       }
     } catch (error) {
       console.error("Error fetching product:", error);
+    } finally {
+      setFetching(false);
     }
   };
 
@@ -495,6 +521,8 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
       formDataToSend.append("minStockLevel", formData.minStockLevel);
       formDataToSend.append("lowStockAlert", formData.lowStockAlert);
       formDataToSend.append("categoryId", formData.categoryId);
+      formDataToSend.append("brandId", formData.brandId || "");
+      formDataToSend.append("videoUrls", JSON.stringify(formData.videoUrls.filter(url => url.trim() !== "")));
       if (formData.brand) formDataToSend.append("brand", formData.brand);
       if (formData.weight) formDataToSend.append("weight", formData.weight);
       if (formData.length) formDataToSend.append("length", formData.length);
@@ -533,6 +561,7 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
           minStockLevel: parseInt(variant.minStockLevel) || 0,
           isActive: variant.isActive,
           images: variant.images.filter(img => !img.file).map(img => img.url),
+          videoUrls: variant.videoUrls ? variant.videoUrls.filter(url => url.trim() !== "") : [],
         }));
         formDataToSend.append("variants", JSON.stringify(variantsData));
       }
@@ -546,6 +575,10 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
           formDataToSend.append("primaryImageIndex", index.toString());
         }
       });
+
+      // Filter and append existing images (which have no file property)
+      const existingImages = images.filter(img => !img.file).map(img => img.url);
+      formDataToSend.append("existingImages", JSON.stringify(existingImages));
 
       // Append variant images (Files)
       if (variants.length > 0) {
@@ -597,6 +630,17 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-gray-500">Please login to continue...</div>
+      </div>
+    );
+  }
+
+  if (fetching || fetchingLanguages) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="flex flex-col items-center gap-3">
+          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-600"></div>
+          <div className="text-gray-500 font-medium">Loading form data...</div>
+        </div>
       </div>
     );
   }
@@ -776,10 +820,12 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
               placeholder="Select Category"
               error={errors.categoryId}
             />
-            <GlobalInput
+            <GlobalSelect
               label="Brand"
-              value={formData.brand}
-              onChange={(e) => setFormData({ ...formData, brand: (e.target as HTMLInputElement).value })}
+              value={formData.brandId}
+              onChange={(value) => setFormData({ ...formData, brandId: value.toString() })}
+              options={[{ value: "", label: "None / Generic" }, ...brands.map(b => ({ value: b.id, label: b.name }))]}
+              placeholder="Select Brand"
             />
           </div>
           <div>
@@ -794,6 +840,58 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
               placeholder="Select tags..."
             />
           </div>
+        </div>
+
+        {/* Global YouTube Videos */}
+        <div className="bg-white p-6 rounded-lg shadow space-y-4">
+          <div className="flex items-center justify-between border-b pb-2">
+            <h2 className="text-lg font-semibold">Product YouTube Videos</h2>
+            <button
+              type="button"
+              onClick={() => setFormData(prev => ({ ...prev, videoUrls: [...prev.videoUrls, ""] }))}
+              className="px-3 py-1 text-xs bg-purple-600 text-white rounded hover:bg-purple-700 font-medium transition-colors"
+            >
+              + Add Video URL
+            </button>
+          </div>
+          <p className="text-xs text-gray-500">
+            Paste full YouTube video watch or share links (e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ). These will be featured dynamically in the media gallery.
+          </p>
+          {formData.videoUrls && formData.videoUrls.length > 0 ? (
+            <div className="space-y-3">
+              {formData.videoUrls.map((url, idx) => (
+                <div key={idx} className="flex gap-2 items-center">
+                  <div className="flex-1">
+                    <GlobalInput
+                      label=""
+                      placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                      value={url}
+                      onChange={(e) => {
+                        const updated = [...formData.videoUrls];
+                        updated[idx] = (e.target as HTMLInputElement).value;
+                        setFormData(prev => ({ ...prev, videoUrls: updated }));
+                      }}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = formData.videoUrls.filter((_, i) => i !== idx);
+                      setFormData(prev => ({ ...prev, videoUrls: updated }));
+                    }}
+                    className="p-3 text-red-500 hover:bg-red-50 hover:text-red-600 rounded-lg border border-red-200 mt-2 transition-colors"
+                    title="Remove Video URL"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 border border-dashed rounded-lg text-sm text-gray-400">
+              No product video links specified yet. Click "Add Video URL" above to insert.
+            </div>
+          )}
         </div>
 
         {/* Main Product Images */}

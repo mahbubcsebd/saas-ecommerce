@@ -178,7 +178,15 @@ export default function OrdersPage() {
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => format(new Date(row.getValue("createdAt")), "dd MMM yyyy"),
+      cell: ({ row }) => {
+        const date = new Date(row.getValue("createdAt"));
+        return (
+          <div className="flex flex-col gap-0.5 px-4">
+            <span className="font-medium whitespace-nowrap">{format(date, "dd MMM yyyy")}</span>
+            <span className="text-xs text-muted-foreground whitespace-nowrap">{format(date, "hh:mm a")}</span>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "user",

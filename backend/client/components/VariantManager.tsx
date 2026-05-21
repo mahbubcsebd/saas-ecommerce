@@ -2,7 +2,7 @@
 
 import { useConfirm } from "@/hooks/use-confirm";
 import { Plus, Trash2, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import GlobalInput from "./forms/GlobalInput";
 import GlobalSelect from "./forms/GlobalSelect";
@@ -26,6 +26,7 @@ export interface ProductVariant {
   minStockLevel: string;
   images: Array<{ file?: File; url: string; id: string; isPrimary?: boolean }>;
   isActive: boolean;
+  videoUrls?: string[];
 }
 
 interface VariantManagerProps {
@@ -35,27 +36,20 @@ interface VariantManagerProps {
   productSellingPrice?: string;
 }
 
-const VARIANT_TYPES = [
-  { value: "color", label: "Color" },
-  { value: "size", label: "Size" },
-  { value: "material", label: "Material" },
-  { value: "storage", label: "Storage" },
-  { value: "style", label: "Style" },
-  { value: "pattern", label: "Pattern" },
-];
+interface Attribute {
+  id: string;
+  name: string;
+  label: string;
+  values: string[];
+}
 
-const COLOR_OPTIONS = [
-  "Red", "Blue", "Green", "Black", "White", "Yellow", "Orange", "Purple",
-  "Pink", "Brown", "Gray", "Navy", "Beige", "Gold", "Silver"
-];
-
-const SIZE_OPTIONS = [
-  "XS", "S", "M", "L", "XL", "XXL", "XXXL",
-  "28", "30", "32", "34", "36", "38", "40", "42"
-];
-
-const STORAGE_OPTIONS = [
-  "64GB", "128GB", "256GB", "512GB", "1TB", "2TB"
+const FALLBACK_ATTRIBUTES: Attribute[] = [
+  { id: "fb-1", name: "color", label: "Color", values: ["Red", "Blue", "Green", "Black", "White", "Yellow", "Orange", "Purple", "Pink", "Brown", "Gray", "Navy", "Beige", "Gold", "Silver"] },
+  { id: "fb-2", name: "size", label: "Size", values: ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "28", "30", "32", "34", "36", "38", "40", "42"] },
+  { id: "fb-3", name: "material", label: "Material", values: ["Cotton", "Polyester", "Leather", "Silk", "Wool", "Denim"] },
+  { id: "fb-4", name: "storage", label: "Storage", values: ["64GB", "128GB", "256GB", "512GB", "1TB", "2TB"] },
+  { id: "fb-5", name: "style", label: "Style", values: ["Casual", "Formal", "Vintage", "Modern", "Sporty"] },
+  { id: "fb-6", name: "pattern", label: "Pattern", values: ["Solid", "Striped", "Checkered", "Printed", "Camouflage", "Floral"] },
 ];
 
 export default function VariantManager({
@@ -68,10 +62,44 @@ export default function VariantManager({
   const [expandedVariant, setExpandedVariant] = useState<string | null>(null);
   const [showAddVariant, setShowAddVariant] = useState(false);
   const [newVariantAttributes, setNewVariantAttributes] = useState<VariantAttribute[]>([]);
+  
+  // Dynamic attribute states
+  const [attributes, setAttributes] = useState<Attribute[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [currentAttribute, setCurrentAttribute] = useState<{
     type: string;
     value: string;
-  }>({ type: "color", value: "" });
+  }>({ type: "", value: "" });
+
+  // Fetch dynamic attributes from database
+  useEffect(() => {
+    const fetchAttributes = async () => {
+      try {
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const res = await fetch(`${apiBase}/attributes`);
+        const result = await res.json();
+        if (result.success && Array.isArray(result.data)) {
+          setAttributes(result.data);
+        } else {
+          setAttributes(FALLBACK_ATTRIBUTES);
+        }
+      } catch (err) {
+        console.error("Failed to load dynamic attributes:", err);
+        setAttributes(FALLBACK_ATTRIBUTES);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAttributes();
+  }, []);
+
+  // Update default selected type when attributes list is loaded or changed
+  useEffect(() => {
+    if (attributes.length > 0 && !currentAttribute.type) {
+      setCurrentAttribute((prev) => ({ ...prev, type: attributes[0].name }));
+    }
+  }, [attributes, currentAttribute.type]);
 
   const handleAddAttribute = () => {
     if (!currentAttribute.value.trim()) return;
@@ -120,6 +148,7 @@ export default function VariantManager({
       stock: "0",
       minStockLevel: "2",
       images: [],
+      videoUrls: [],
       isActive: true,
     };
 
@@ -144,15 +173,13 @@ export default function VariantManager({
   };
 
   const getSuggestions = () => {
-    if (currentAttribute.type === "color") return COLOR_OPTIONS;
-    if (currentAttribute.type === "size") return SIZE_OPTIONS;
-    if (currentAttribute.type === "storage") return STORAGE_OPTIONS;
-    return [];
+    const matched = attributes.find((attr) => attr.name === currentAttribute.type);
+    return matched ? matched.values : [];
   };
 
   const getAttributeLabel = (type: string) => {
-    const found = VARIANT_TYPES.find((t) => t.value === type);
-    return found ? found.label : type;
+    const found = attributes.find((t) => t.name === type);
+    return found ? found.label : type.charAt(0).toUpperCase() + type.slice(1);
   };
 
   return (
@@ -224,7 +251,7 @@ export default function VariantManager({
               label="Attribute Type"
               value={currentAttribute.type}
               onChange={(value) => setCurrentAttribute({ ...currentAttribute, type: value.toString(), value: "" })}
-              options={VARIANT_TYPES}
+              options={attributes.map(attr => ({ value: attr.name, label: attr.label }))}
             />
 
             <div>
@@ -440,6 +467,60 @@ export default function VariantManager({
                     variantLabel={variant.name}
                     maxImages={5}
                   />
+
+                  {/* Variant YouTube Video URLs */}
+                  <div className="space-y-2 border-t pt-4">
+                    <div className="flex items-center justify-between">
+                      <label className="block text-sm font-medium text-gray-700">Variant YouTube Videos</label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const urls = variant.videoUrls || [];
+                          handleUpdateVariant(variant.id, { videoUrls: [...urls, ""] });
+                        }}
+                        className="px-2.5 py-1 text-xs bg-purple-600 text-white rounded hover:bg-purple-700 font-medium transition-colors"
+                      >
+                        + Add Video URL
+                      </button>
+                    </div>
+                    <p className="text-[11px] text-gray-500">
+                      Add YouTube videos showcasing specifically this variant (e.g. {variant.name}).
+                    </p>
+                    
+                    {variant.videoUrls && variant.videoUrls.length > 0 ? (
+                      <div className="space-y-2">
+                        {variant.videoUrls.map((url, idx) => (
+                          <div key={idx} className="flex gap-2 items-center">
+                            <div className="flex-1">
+                              <GlobalInput
+                                label=""
+                                placeholder="Paste YouTube Link (e.g. https://youtu.be/...)"
+                                value={url}
+                                onChange={(e) => {
+                                  const updatedUrls = [...(variant.videoUrls || [])];
+                                  updatedUrls[idx] = (e.target as HTMLInputElement).value;
+                                  handleUpdateVariant(variant.id, { videoUrls: updatedUrls });
+                                }}
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updatedUrls = (variant.videoUrls || []).filter((_, i) => i !== idx);
+                                handleUpdateVariant(variant.id, { videoUrls: updatedUrls });
+                              }}
+                              className="p-3 text-red-500 hover:bg-red-50 hover:text-red-600 rounded-lg border border-red-200 mt-2 transition-colors"
+                              title="Remove URL"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-gray-400 italic py-2">No videos linked to this variant.</p>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

@@ -14,6 +14,8 @@ routes.use('/auth', authRouter);
 routes.use('/user', userRouter);
 const productRouter = require('./product.routes');
 routes.use('/products', productRouter);
+const attributeRouter = require('./attribute.routes');
+routes.use('/attributes', attributeRouter);
 
 const addressRouter = require('./address.routes');
 routes.use('/addresses', addressRouter);
@@ -29,6 +31,9 @@ routes.use('/hero-slides', heroRouter);
 
 const categoryRouter = require('./category.routes');
 routes.use('/categories', categoryRouter);
+
+const brandRouter = require('./brand.routes');
+routes.use('/brands', brandRouter);
 
 const reviewRouter = require('./review.routes');
 routes.use('/reviews', reviewRouter);

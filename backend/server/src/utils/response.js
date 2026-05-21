@@ -1,4 +1,63 @@
 const HTTP_STATUS = require('./httpStatus');
+const { formatImageUrl } = require('./image.utils');
+
+/**
+ * Recursively formats all image fields in response data using formatImageUrl
+ */
+const formatUrlsInObject = (obj) => {
+  if (obj === null || obj === undefined) return obj;
+
+  if (Array.isArray(obj)) {
+    return obj.map((item) => formatUrlsInObject(item));
+  }
+
+  if (typeof obj === 'object') {
+    if (obj instanceof Date || obj instanceof RegExp) {
+      return obj;
+    }
+
+    const formatted = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const val = obj[key];
+
+        // Specific keys to format
+        if (
+          key === 'avatar' ||
+          key === 'image' ||
+          key === 'ogImage' ||
+          key === 'heroImage' ||
+          key === 'logoUrl' ||
+          key === 'headerLogo' ||
+          key === 'footerLogo' ||
+          key === 'faviconUrl' ||
+          key === 'favicon'
+        ) {
+          if (typeof val === 'string') {
+            formatted[key] = formatImageUrl(val);
+          } else {
+            formatted[key] = formatUrlsInObject(val);
+          }
+        } else if (key === 'images' || key === 'attachments') {
+          if (Array.isArray(val)) {
+            formatted[key] = val.map((img) =>
+              typeof img === 'string' ? formatImageUrl(img) : formatUrlsInObject(img)
+            );
+          } else if (typeof val === 'string') {
+            formatted[key] = formatImageUrl(val);
+          } else {
+            formatted[key] = formatUrlsInObject(val);
+          }
+        } else {
+          formatted[key] = formatUrlsInObject(val);
+        }
+      }
+    }
+    return formatted;
+  }
+
+  return obj;
+};
 
 /**
  * Success Response Handler
@@ -19,7 +78,7 @@ const successResponse = (
   };
 
   if (data !== null && data !== undefined) {
-    response.data = data;
+    response.data = formatUrlsInObject(data);
   }
 
   if (meta) {

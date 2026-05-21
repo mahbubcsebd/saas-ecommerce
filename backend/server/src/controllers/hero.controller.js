@@ -2,6 +2,8 @@ const { PrismaClient } = require('@prisma/client');
 const createError = require('http-errors');
 const prisma = require('../config/prisma');
 const contentTranslationService = require('../services/contentTranslation.service');
+const { stripImagePrefix } = require('../utils/image.utils');
+const { successResponse, createdResponse } = require('../utils/response');
 
 // Get all hero slides (Public)
 exports.getAllSlides = async (req, res, next) => {
@@ -21,8 +23,8 @@ exports.getAllSlides = async (req, res, next) => {
       orderBy: { order: 'asc' },
     });
 
-    res.status(200).json({
-      success: true,
+    return successResponse(res, {
+      message: 'Slides retrieved successfully',
       data: slides,
     });
   } catch (error) {
@@ -58,8 +60,8 @@ exports.getAdminSlides = async (req, res, next) => {
       })
     );
 
-    res.status(200).json({
-      success: true,
+    return successResponse(res, {
+      message: 'Admin slides retrieved successfully',
       data: populatedSlides,
     });
   } catch (error) {
@@ -100,7 +102,7 @@ exports.createSlide = async (req, res, next) => {
 
         return prisma.heroSlide.create({
           data: {
-            image: file.path,
+            image: stripImagePrefix(file.path),
             title: slideMetadata.title || req.body.title || '',
             subtitle: slideMetadata.subtitle || req.body.subtitle || '',
             linkType: slideMetadata.linkType || req.body.linkType || 'NONE',
@@ -125,10 +127,9 @@ exports.createSlide = async (req, res, next) => {
       })
     );
 
-    res.status(201).json({
-      success: true,
-      data: slides,
+    return createdResponse(res, {
       message: `${slides.length} slide(s) created successfully`,
+      data: slides,
     });
 
     // Trigger background auto-translation
@@ -167,8 +168,8 @@ exports.updateSlide = async (req, res, next) => {
       },
     });
 
-    res.status(200).json({
-      success: true,
+    return successResponse(res, {
+      message: 'Slide updated successfully',
       data: slide,
     });
 
@@ -209,8 +210,7 @@ exports.deleteSlide = async (req, res, next) => {
       where: { id },
     });
 
-    res.status(200).json({
-      success: true,
+    return successResponse(res, {
       message: 'Slide deleted successfully',
     });
   } catch (error) {
@@ -245,8 +245,8 @@ exports.updateSlideOrders = async (req, res, next) => {
       orderBy: { order: 'asc' },
     });
 
-    res.status(200).json({
-      success: true,
+    return successResponse(res, {
+      message: 'Slide orders updated successfully',
       data: updatedSlides,
     });
   } catch (error) {

@@ -5,7 +5,7 @@ import "@blocknote/core/fonts/inter.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
 import "@blocknote/shadcn/style.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 interface Language {
   code: string;
@@ -115,27 +115,23 @@ export function LocalizedTextEditor({
 }: LocalizedTextEditorProps) {
     const [activeTab, setActiveTab] = useState(languages.find(l => l.isDefault)?.code || "en");
 
-    // We need separate editor instances or carefully manage state.
-    // BlockNote is heavy, creating N instances might be okay for < 20 langs but heavy.
-    // Better: Single editor, save on tab switch.
-
-    // Actually, for simplicity and ensuring state doesn't get lost, let's try single editor.
-    // BUT user wants tabs.
-    // Let's implement a wrapper that switches content.
-
     const editor = useCreateBlockNote();
+    const lastSavedHtmlRef = useRef("");
 
     useEffect(() => {
         if (!editor) return;
 
         const loadContent = async () => {
             const html = translations[activeTab]?.[field] || "";
-            const blocks = await editor.tryParseHTMLToBlocks(html);
-            editor.replaceBlocks(editor.topLevelBlocks, blocks);
+            if (html !== lastSavedHtmlRef.current) {
+                lastSavedHtmlRef.current = html;
+                const blocks = await editor.tryParseHTMLToBlocks(html);
+                editor.replaceBlocks(editor.topLevelBlocks, blocks);
+            }
         };
         loadContent();
 
-    }, [activeTab, editor]); // translations dependency omitted to avoid loops, we handle save manually
+    }, [activeTab, editor, translations, field]);
 
     const handleTabChange = async (newTab: string) => {
         if (newTab === activeTab) return;
@@ -143,15 +139,12 @@ export function LocalizedTextEditor({
         // Save current
         if (editor) {
             const html = await editor.blocksToHTMLLossy(editor.topLevelBlocks);
+            lastSavedHtmlRef.current = html;
             onChange(activeTab, html);
         }
 
         setActiveTab(newTab);
     };
-
-    // Auto-save on blur or periodic?
-    // Better: listen to editor changes.
-    // BlockNote `onEditorContentChange`?
 
     return (
         <div className="space-y-2">
@@ -176,9 +169,8 @@ export function LocalizedTextEditor({
                      <BlockNoteView
                         editor={editor}
                         onChange={async () => {
-                             // This triggers on every keystroke, might be too frequent for updating parent state if it causes re-renders.
-                             // But we need to keep parent state in sync.
                              const html = await editor.blocksToHTMLLossy(editor.topLevelBlocks);
+                             lastSavedHtmlRef.current = html;
                              onChange(activeTab, html);
                         }}
                         theme="light"

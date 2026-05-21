@@ -367,6 +367,9 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   const currentImages = selectedVariant?.images?.length
     ? selectedVariant.images
     : realtimeProduct.images;
+  const currentVideoUrls = selectedVariant?.videoUrls?.length
+    ? selectedVariant.videoUrls
+    : (realtimeProduct.videoUrls || []);
   const isOutOfStock = currentStock <= 0;
 
   const otherAttributes = Object.keys(attributeOptions).filter((key) => key !== colorKey);
@@ -396,7 +399,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
     <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
       {/* Left Column: Gallery and Information Tabs */}
       <div className="w-full lg:w-[60%] xl:w-2/3 flex flex-col gap-8">
-        <ProductGallery images={currentImages} title={productName} />
+        <ProductGallery images={currentImages} videoUrls={currentVideoUrls} title={productName} />
 
         {/* Information Tabs */}
         <div className="mt-4">

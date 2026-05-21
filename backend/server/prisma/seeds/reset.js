@@ -56,6 +56,7 @@ async function resetDatabase() {
     'currencySetting',
     'expense',
     'expenseCategory',
+    'attribute',
     'productVariant',
     'product',
     'category',
