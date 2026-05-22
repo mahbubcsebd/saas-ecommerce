@@ -82,8 +82,13 @@ jobs:
 
             npm run db:generate
 
-            # Zero-Downtime Reload using explicit path binding
-            PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz,https://min.mahbuburrahman.xyz" pm2 reload express-api --update-env || PORT=5000 CLIENT_URL="https://mahbuburrahman.xyz" ALLOWED_ORIGINS="https://mahbuburrahman.xyz,https://admin.mahbuburrahman.xyz,https://min.mahbuburrahman.xyz" pm2 start src/server.js --name "express-api" --cwd "/home/mahbub_cse_me/saas-ecommerce/backend/server"
+            # Sourcing environment variables from VM server's local .env file
+            if [ -f .env ]; then
+              export $(grep -v '^#' .env | xargs)
+            fi
+
+            # Zero-Downtime Reload using VM server's local .env values
+            pm2 reload express-api --update-env || pm2 start src/server.js --name "express-api" --cwd "/home/mahbub_cse_me/saas-ecommerce/backend/server"
 
             pm2 save
             echo "✅ Express API Backend hot reloaded!"
