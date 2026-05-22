@@ -52,6 +52,7 @@ const defaultOrigins = [
   'http://127.0.0.1:8050',
   'http://127.0.0.1:8060',
   'https://admin.mahbuburrahman.xyz',
+  'https://mahbuburrahman.xyz',
   'https://shop.mahbuburrahman.xyz',
 ];
 
@@ -65,7 +66,7 @@ app.use(
       if (!origin) return callback(null, true);
 
       // Allow any localhost, local subnets (192.168.x.x, 10.x.x.x, 127.0.0.1, etc.), or if in development
-      const isLocal = 
+      const isLocal =
         /^http:\/\/localhost(:\d+)?$/.test(origin) ||
         /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin) ||
         /^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/.test(origin) ||
