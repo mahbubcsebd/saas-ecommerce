@@ -6204,3 +6204,19 @@
 {"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-21 17:53:27"}
 {"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-21 17:53:32"}
 {"level":"info","message":"GET /api/analytics/overview 304 1386.540 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-21 17:53:32"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 09:52:48"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 09:52:53"}
+{"level":"info","message":"GET /api/settings/public 200 1251.979 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:57:50"}
+{"level":"info","message":"GET /api/settings/public 200 1287.538 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:57:50"}
+{"level":"info","message":"GET /api/settings/public 200 1241.575 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:57:50"}
+{"level":"info","message":"GET /api/settings/public 200 1276.573 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:57:50"}
+{"level":"info","message":"GET /api/settings/public 200 1270.810 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:57:50"}
+{"level":"info","message":"GET /api/settings/public 200 1347.480 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:57:50"}
+{"level":"info","message":"GET /api/settings/public 200 1361.881 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:57:50"}
+{"level":"info","message":"GET /api/products/pharmacy 404 71.874 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:58:53"}
+{"level":"info","message":"GET /api/categories/pharmacy 200 219.642 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:58:53"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 532.268 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:58:55"}
+{"level":"info","message":"GET /api/products/categories 404 45.726 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:58:58"}
+{"level":"info","message":"GET /api/categories/categories 404 44.813 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:58:58"}
+{"level":"info","message":"GET /api/products/about 404 325.433 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:58:58"}
+{"level":"info","message":"GET /api/categories/about 404 43.598 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:58:58"}
