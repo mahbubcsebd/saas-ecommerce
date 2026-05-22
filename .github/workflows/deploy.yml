@@ -24,15 +24,15 @@ jobs:
         with:
           filters: |
             backend_server_code:
-              - 'backend/server/**'
+              - 'backend/**'
             backend_server_deps:
-              - 'backend/server/package.json'
-              - 'backend/server/package-lock.json'
-            backend_client_code:
-              - 'backend/client/**'
-            backend_client_deps:
-              - 'backend/client/package.json'
-              - 'backend/client/package-lock.json'
+              - 'backend/package.json'
+              - 'backend/package-lock.json'
+            dashboard_code:
+              - 'dashboard/**'
+            dashboard_deps:
+              - 'dashboard/package.json'
+              - 'dashboard/package-lock.json'
             frontend_code:
               - 'frontend/**'
             frontend_deps:
@@ -41,7 +41,7 @@ jobs:
             workflow:
               - '.github/workflows/deploy.yml'
 
-      # STEP 0: Base Git Synchronization using Bulletproof Base64 SSH Key format
+      # STEP 0: Base Git Synchronization
       - name: Pull Latest Codebase
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -71,31 +71,28 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use 26 || nvm use default
 
-            cd ~/saas-ecommerce/backend/server
+            cd ~/saas-ecommerce/backend
 
-            # Conditional Optimization: Only install if package.json changed OR node_modules missing
             if [ "${{ steps.filter.outputs.backend_server_deps }}" = "true" ] || [ ! -d "node_modules" ]; then
               echo "📦 Dependency changes detected. Running fresh npm install..."
               rm -rf node_modules package-lock.json
               npm install --legacy-peer-deps
             fi
 
-            npm run db:generate
-
             # Sourcing environment variables from VM server's local .env file
             if [ -f .env ]; then
               export $(grep -v '^#' .env | xargs)
             fi
 
-            # Zero-Downtime Reload using VM server's local .env values
-            pm2 reload express-api --update-env || pm2 start src/server.js --name "express-api" --cwd "/home/mahbub_cse_me/saas-ecommerce/backend/server"
+            # Zero-Downtime Reload for Backend
+            pm2 reload ecommerce-backend || pm2 start index.js --name "ecommerce-backend" --cwd "/home/mahbub_cse_me/saas-ecommerce/backend"
 
             pm2 save
             echo "✅ Express API Backend hot reloaded!"
 
-      # STEP 2: Admin Dashboard Client Pipeline
+      # STEP 2: Admin Dashboard Client Pipeline (Port 3001)
       - name: Deploy Admin Dashboard Client
-        if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.backend_client_code == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.dashboard_code == 'true'
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -108,25 +105,25 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use 26 || nvm use default
 
-            cd ~/saas-ecommerce/backend/client
+            cd ~/saas-ecommerce/dashboard
 
-            if [ "${{ steps.filter.outputs.backend_client_deps }}" = "true" ] || [ ! -d "node_modules" ]; then
+            if [ "${{ steps.filter.outputs.dashboard_deps }}" = "true" ] || [ ! -d "node_modules" ]; then
               echo "📦 Dependency changes detected for Dashboard. Installing packages..."
               rm -rf node_modules package-lock.json
               npm install --legacy-peer-deps
             fi
 
-            # Clean old build cache and re-build with Next.js 16 environment setup
+            # 🚀 FIXED: Allocation of 3GB RAM to prevent build timeout crash
             rm -rf .next
-            NODE_OPTIONS="--max-old-space-size=1024" npm run build
+            NODE_OPTIONS="--max-old-space-size=3072" npm run build
 
-            # Zero-Downtime Swap with bounded directory path
-            pm2 reload ecommerce-dashboad || pm2 start npm --name "ecommerce-dashboad" --cwd "/home/mahbub_cse_me/saas-ecommerce/backend/client" -- run start -- -p 3001
+            # 🚀 FIXED: Text Typo and Correct PM2 NPM launch flags for Port 3001
+            pm2 reload ecommerce-dashboard || pm2 start npm --name "ecommerce-dashboard" --cwd "/home/mahbub_cse_me/saas-ecommerce/dashboard" -- start -- -p 3001
 
             pm2 save
             echo "✅ Admin Dashboard Client hot reloaded!"
 
-      # STEP 3: Frontend Shop Client Pipeline
+      # STEP 3: Frontend Shop Client Pipeline (Port 3000)
       - name: Deploy Frontend Shop Client
         if: github.event_name == 'workflow_dispatch' || steps.filter.outputs.workflow == 'true' || steps.filter.outputs.frontend_code == 'true'
         uses: appleboy/ssh-action@v1.0.3
@@ -149,11 +146,12 @@ jobs:
               npm install --legacy-peer-deps
             fi
 
+            # 🚀 FIXED: Allocated 3GB RAM for smooth frontend compilation
             rm -rf .next
-            NODE_OPTIONS="--max-old-space-size=1024" npm run build
+            NODE_OPTIONS="--max-old-space-size=3072" npm run build
 
-            # Zero-Downtime Swap with bounded directory path
-            pm2 reload ecommerce-frontend || pm2 start npm --name "ecommerce-frontend" --cwd "/home/mahbub_cse_me/saas-ecommerce/frontend" -- run start -- -p 3000
+            # 🚀 FIXED: Correct PM2 NPM launch flags for Port 3000
+            pm2 reload ecommerce-frontend || pm2 start npm --name "ecommerce-frontend" --cwd "/home/mahbub_cse_me/saas-ecommerce/frontend" -- start -- -p 3000
 
             pm2 save
             echo "✅ Frontend Shop Client hot reloaded!"
@@ -168,4 +166,5 @@ jobs:
           port: 22
           script: |
             pm2 list
+            sudo ss -tulpn | grep -E "3000|3001|5000"
             echo "🚀 Professional Enterprise pipeline executed flawlessly!"
