@@ -176,11 +176,10 @@ function SortableCategoryItem({
         {isDraggingActive && activeId !== category.id && (
           <div
             ref={setDropRef}
-            className={`w-16 h-full flex items-center justify-center border-2 border-dashed rounded-lg transition-all ${
-              isBeingDraggedOver
+            className={`w-16 h-full flex items-center justify-center border-2 border-dashed rounded-lg transition-all ${isBeingDraggedOver
                 ? 'border-green-500 bg-green-50'
                 : 'border-gray-300 bg-gray-50 hover:border-green-400'
-            }`}
+              }`}
             title="Drop here to make child"
           >
             {isBeingDraggedOver ? (
@@ -230,15 +229,14 @@ function RootDropZone({ activeId }: { activeId: string | null }) {
   return (
     <div
       ref={setNodeRef}
-      className={`w-full h-16 mb-6 border-2 border-dashed rounded-xl flex items-center justify-center transition-all animate-in fade-in slide-in-from-top-2 duration-300 ${
-        isOver 
-          ? 'border-blue-500 bg-blue-50 scale-[1.01] shadow-md' 
+      className={`w-full h-16 mb-6 border-2 border-dashed rounded-xl flex items-center justify-center transition-all animate-in fade-in slide-in-from-top-2 duration-300 ${isOver
+          ? 'border-blue-500 bg-blue-50 scale-[1.01] shadow-md'
           : 'border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-50'
-      }`}
+        }`}
     >
       <div className="flex items-center gap-3">
         <div className={`p-2 rounded-lg transition-colors ${isOver ? 'bg-blue-600 text-white' : 'bg-white text-gray-400 border'}`}>
-           <Plus className="w-5 h-5" />
+          <Plus className="w-5 h-5" />
         </div>
         <div className="flex flex-col">
           <span className={`text-sm font-bold ${isOver ? 'text-blue-700' : 'text-gray-700'}`}>
@@ -286,23 +284,23 @@ export default function CategoriesPage() {
     imagePreview: null,
   });
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   // Fetch languages
   const fetchLanguages = async () => {
     try {
       const res = await fetch(`${API_URL}/languages/active`);
       if (res.ok) {
-          const data = await res.json();
-          const langs = data.data || [];
-          setLanguages(langs);
+        const data = await res.json();
+        const langs = data.data || [];
+        setLanguages(langs);
 
-          // Set default lang
-          const defaultLang = langs.find((l: Language) => l.isDefault)?.code || "en";
-          setSelectedLang(defaultLang);
+        // Set default lang
+        const defaultLang = langs.find((l: Language) => l.isDefault)?.code || "en";
+        setSelectedLang(defaultLang);
       }
     } catch (e) {
-        console.error("Failed to fetch languages", e);
+      console.error("Failed to fetch languages", e);
     }
   };
 
@@ -337,13 +335,13 @@ export default function CategoriesPage() {
 
   // Update translation state helper
   const updateTranslation = (field: 'name' | 'description', value: string) => {
-      setTranslations(prev => ({
-          ...prev,
-          [selectedLang]: {
-              ...prev[selectedLang],
-              [field]: value
-          }
-      }));
+    setTranslations(prev => ({
+      ...prev,
+      [selectedLang]: {
+        ...prev[selectedLang],
+        [field]: value
+      }
+    }));
   };
 
   // Flatten categories for parent selector
@@ -426,7 +424,7 @@ export default function CategoriesPage() {
     // Reset translations
     const initTrans: Record<string, { name: string; description: string }> = {};
     languages.forEach(l => {
-        initTrans[l.code] = { name: "", description: "" };
+      initTrans[l.code] = { name: "", description: "" };
     });
     setTranslations(initTrans);
 
@@ -455,25 +453,25 @@ export default function CategoriesPage() {
     // Populate translations
     const initTrans: Record<string, { name: string; description: string }> = {};
     languages.forEach(l => {
-        initTrans[l.code] = { name: "", description: "" };
+      initTrans[l.code] = { name: "", description: "" };
     });
 
     const defaultLang = languages.find(l => l.isDefault)?.code || "en";
 
     // Fill default
     initTrans[defaultLang] = {
-        name: category.name,
-        description: category.description || ""
+      name: category.name,
+      description: category.description || ""
     };
 
     // Fill others if exist in category data (need to ensure backend sends it)
     if (category.translations && Array.isArray(category.translations)) {
-        category.translations.forEach(t => {
-            initTrans[t.langCode] = {
-                name: t.name,
-                description: t.description || ""
-            };
-        });
+      category.translations.forEach(t => {
+        initTrans[t.langCode] = {
+          name: t.name,
+          description: t.description || ""
+        };
+      });
     }
 
     setTranslations(initTrans);
@@ -510,134 +508,134 @@ export default function CategoriesPage() {
     // Only update slug if checking default language
     const defaultLang = languages.find(l => l.isDefault)?.code || "en";
     if (selectedLang === defaultLang) {
-        const slug = name
+      const slug = name
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
-        setFormData((prev) => ({ ...prev, slug }));
+      setFormData((prev) => ({ ...prev, slug }));
     }
   };
 
   // Auto-translate
   const handleAutoTranslate = async () => {
-      // 1. Get source text from current language
-      const sourceName = translations[selectedLang]?.name;
-      const sourceDesc = translations[selectedLang]?.description;
+    // 1. Get source text from current language
+    const sourceName = translations[selectedLang]?.name;
+    const sourceDesc = translations[selectedLang]?.description;
 
-      if (!sourceName && !sourceDesc) {
-          await alert({
-              title: "Source Text Required",
-              message: "Please enter some text in the current language to translate.",
-              type: "warning"
+    if (!sourceName && !sourceDesc) {
+      await alert({
+        title: "Source Text Required",
+        message: "Please enter some text in the current language to translate.",
+        type: "warning"
+      });
+      return;
+    }
+
+    // 2. Identify target languages (all active languages except current)
+    const targetLangs = languages
+      .filter(l => l.code !== selectedLang)
+      .map(l => l.code);
+
+    if (targetLangs.length === 0) {
+      await alert({
+        title: "No Target Languages",
+        message: "No other active languages available to translate to.",
+        type: "info"
+      });
+      return;
+    }
+
+    setSaving(true); // Re-using saving state to disable buttons
+    try {
+      const updates = { ...translations };
+
+      // Translate Name
+      if (sourceName) {
+        const res = await fetch(`${API_URL}/ai/translate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session?.accessToken}`
+          },
+          body: JSON.stringify({
+            text: sourceName,
+            targetLangs,
+            context: 'Category Name'
+          })
+        });
+        if (res.ok) {
+          const { data } = await res.json();
+          Object.entries(data).forEach(([code, text]) => {
+            if (updates[code]) updates[code].name = text as string;
           });
-          return;
+        }
       }
 
-      // 2. Identify target languages (all active languages except current)
-      const targetLangs = languages
-          .filter(l => l.code !== selectedLang)
-          .map(l => l.code);
-
-      if (targetLangs.length === 0) {
-          await alert({
-              title: "No Target Languages",
-              message: "No other active languages available to translate to.",
-              type: "info"
+      // Translate Description
+      if (sourceDesc) {
+        const res = await fetch(`${API_URL}/ai/translate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session?.accessToken}`
+          },
+          body: JSON.stringify({
+            text: sourceDesc,
+            targetLangs,
+            context: 'Category Description'
+          })
+        });
+        if (res.ok) {
+          const { data } = await res.json();
+          Object.entries(data).forEach(([code, text]) => {
+            if (updates[code]) updates[code].description = text as string;
           });
-          return;
+        }
       }
 
-      setSaving(true); // Re-using saving state to disable buttons
-      try {
-          const updates = { ...translations };
+      setTranslations(updates);
+      toast.success("Auto-translation complete!");
 
-          // Translate Name
-          if (sourceName) {
-              const res = await fetch(`${API_URL}/ai/translate`, {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${session?.accessToken}`
-                  },
-                  body: JSON.stringify({
-                      text: sourceName,
-                      targetLangs,
-                      context: 'Category Name'
-                  })
-              });
-              if (res.ok) {
-                  const { data } = await res.json();
-                  Object.entries(data).forEach(([code, text]) => {
-                      if (updates[code]) updates[code].name = text as string;
-                  });
-              }
-          }
-
-          // Translate Description
-          if (sourceDesc) {
-               const res = await fetch(`${API_URL}/ai/translate`, {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${session?.accessToken}`
-                  },
-                  body: JSON.stringify({
-                      text: sourceDesc,
-                      targetLangs,
-                      context: 'Category Description'
-                  })
-              });
-              if (res.ok) {
-                  const { data } = await res.json();
-                  Object.entries(data).forEach(([code, text]) => {
-                      if (updates[code]) updates[code].description = text as string;
-                  });
-              }
-          }
-
-          setTranslations(updates);
-          toast.success("Auto-translation complete!");
-
-      } catch (error) {
-          console.error("Auto translation error:", error);
-          toast.error("Failed to auto-translate.");
-      } finally {
-          setSaving(false);
-      }
+    } catch (error) {
+      console.error("Auto translation error:", error);
+      toast.error("Failed to auto-translate.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   // Generate SEO Description using AI
   const handleGenerateSEO = async () => {
     if (!formData.id) {
-        toast.error("Please save the category first to generate AI content.");
-        return;
+      toast.error("Please save the category first to generate AI content.");
+      return;
     }
 
     setSaving(true);
     try {
-        const res = await fetch(`${API_URL}/ai/seo/category-content`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${session?.accessToken}`
-            },
-            body: JSON.stringify({ categoryId: formData.id })
-        });
+      const res = await fetch(`${API_URL}/ai/seo/category-content`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.accessToken}`
+        },
+        body: JSON.stringify({ categoryId: formData.id })
+      });
 
-        if (res.ok) {
-            const { data } = await res.json();
-            if (data.content) {
-                updateTranslation('description', data.content);
-                toast.success("SEO Description generated!");
-            }
-        } else {
-            toast.error("Failed to generate SEO content.");
+      if (res.ok) {
+        const { data } = await res.json();
+        if (data.content) {
+          updateTranslation('description', data.content);
+          toast.success("SEO Description generated!");
         }
+      } else {
+        toast.error("Failed to generate SEO content.");
+      }
     } catch (error) {
-        console.error("AI Generation error:", error);
-        toast.error("AI Generation failed.");
+      console.error("AI Generation error:", error);
+      toast.error("AI Generation failed.");
     } finally {
-        setSaving(false);
+      setSaving(false);
     }
   };
 
@@ -651,12 +649,12 @@ export default function CategoriesPage() {
     // Validate default lang name
     const defaultLang = languages.find(l => l.isDefault)?.code || "en";
     if (!translations[defaultLang]?.name?.trim()) {
-        await alert({
-            title: "Name Required",
-            message: "A name is required for the platform's default language.",
-            type: "warning"
-        });
-        return;
+      await alert({
+        title: "Name Required",
+        message: "A name is required for the platform's default language.",
+        type: "warning"
+      });
+      return;
     }
 
     setSaving(true);
@@ -670,9 +668,9 @@ export default function CategoriesPage() {
 
       // Append translations array
       const translationsArray = Object.entries(translations).map(([code, val]) => ({
-          langCode: code,
-          name: val.name,
-          description: val.description
+        langCode: code,
+        name: val.name,
+        description: val.description
       }));
       data.append("translations", JSON.stringify(translationsArray));
 
@@ -720,10 +718,10 @@ export default function CategoriesPage() {
   // Delete category
   const handleDelete = async (id: string) => {
     if (!await confirm({
-        title: "Delete Category",
-        message: "Are you sure you want to delete this category? This will also delete all child categories and cannot be undone.",
-        type: "danger",
-        confirmText: "Delete"
+      title: "Delete Category",
+      message: "Are you sure you want to delete this category? This will also delete all child categories and cannot be undone.",
+      type: "danger",
+      confirmText: "Delete"
     })) return;
 
     try {
@@ -781,9 +779,9 @@ export default function CategoriesPage() {
       // Prevent dragging parent into its own child
       if (isDescendant(draggedCat.id, targetCat.id)) {
         await alert({
-            title: "Invalid Move",
-            message: "Cannot move a category into its own child.",
-            type: "warning"
+          title: "Invalid Move",
+          message: "Cannot move a category into its own child.",
+          type: "warning"
         });
         return;
       }
@@ -809,9 +807,9 @@ export default function CategoriesPage() {
       // Prevent dragging parent into its own child
       if (isDescendant(draggedCat.id, targetCat.id)) {
         await alert({
-            title: "Invalid Move",
-            message: "Cannot move a category into its own child.",
-            type: "warning"
+          title: "Invalid Move",
+          message: "Cannot move a category into its own child.",
+          type: "warning"
         });
         return;
       }
@@ -957,211 +955,210 @@ export default function CategoriesPage() {
       <Dialog open={showModal} onOpenChange={setShowModal}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-             <DialogTitle className="text-2xl font-bold">
-               {formData.id ? "Edit Category" : "Create Category"}
-             </DialogTitle>
+            <DialogTitle className="text-2xl font-bold">
+              {formData.id ? "Edit Category" : "Create Category"}
+            </DialogTitle>
           </DialogHeader>
 
           <form onSubmit={handleSave} className="space-y-6 mt-4">
 
             <div className="flex items-center justify-between gap-4">
-                    <LanguageTabs
-                        languages={languages}
-                        selectedLang={selectedLang}
-                        onChange={setSelectedLang}
-                    />
-                    <button
-                        type="button"
-                        onClick={handleAutoTranslate}
-                        disabled={saving}
-                        className="px-3 py-1 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50 flex items-center gap-1"
-                    >
-                        <span>✨ Auto Translate</span>
-                    </button>
-                </div>
-
-                {/* Name */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Name ({selectedLang.toUpperCase()}) *
-                  </label>
-                  <input
-                    type="text"
-                    value={translations[selectedLang]?.name || ""}
-                    onChange={(e) => handleNameChange(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
-                  />
-                </div>
-
-                {/* Slug */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Slug * (URL Friendly)</label>
-                  <input
-                    type="text"
-                    value={formData.slug}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Generated from default language name but can be customized.</p>
-                </div>
-
-                {/* Description */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium">Description ({selectedLang.toUpperCase()})</label>
+              <LanguageTabs
+                languages={languages}
+                selectedLang={selectedLang}
+                onChange={setSelectedLang}
+              />
               <button
                 type="button"
-                onClick={handleGenerateSEO}
-                disabled={saving || !formData.id}
-                className="flex items-center gap-1.5 text-xs font-semibold text-purple-600 hover:text-purple-700 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-full border border-purple-200 transition-all disabled:opacity-50"
+                onClick={handleAutoTranslate}
+                disabled={saving}
+                className="px-3 py-1 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50 flex items-center gap-1"
               >
-                <LucideSparkles className="w-3.5 h-3.5" />
-                AI Generate
+                <span>✨ Auto Translate</span>
               </button>
             </div>
-            <textarea
-              className="w-full h-32 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 transition-all"
-              placeholder="Enter category description or generate with AI..."
-              value={translations[selectedLang]?.description || ""}
-              onChange={(e) => updateTranslation("description", e.target.value)}
-            />
-          </div>
 
-                <div className="border-t pt-4 mt-4">
-                    <h3 className="font-semibold mb-4 text-gray-900">General Settings</h3>
+            {/* Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Name ({selectedLang.toUpperCase()}) *
+              </label>
+              <input
+                type="text"
+                value={translations[selectedLang]?.name || ""}
+                onChange={(e) => handleNameChange(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
+              />
+            </div>
 
-                    {/* Parent Category */}
-                    <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Parent Category</label>
-                    <select
-                        value={formData.parentId}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, parentId: e.target.value }))}
-                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                        <option value="">None (Root Level)</option>
-                        {flatCategories
-                        .filter((c) => c.id !== formData.id)
-                        .map((cat) => (
-                            <option key={cat.id} value={cat.id}>
-                            {"—".repeat((cat as any).level || 0)} {cat.name}
-                            </option>
-                        ))}
-                    </select>
-                    </div>
+            {/* Slug */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Slug * (URL Friendly)</label>
+              <input
+                type="text"
+                value={formData.slug}
+                onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))}
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
+              />
+              <p className="text-xs text-gray-500 mt-1">Generated from default language name but can be customized.</p>
+            </div>
 
-                    {/* Image Upload */}
-                    <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
-                    <div
-                        {...getRootProps()}
-                        className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
-                        isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-blue-400"
-                        }`}
-                    >
-                        <input {...getInputProps()} />
-                        {formData.imagePreview ? (
-                        <div className="space-y-2">
-                            <div className="relative w-32 h-32 mx-auto bg-gray-100 rounded overflow-hidden">
-                            <Image src={formData.imagePreview} alt="Preview" fill className="object-cover" />
-                            </div>
-                            <p className="text-sm text-gray-600">Click or drag to change image</p>
-                        </div>
-                        ) : (
-                        <div>
-                            <ImageIcon className="w-12 h-12 mx-auto text-gray-400 mb-2" />
-                            <p className="text-gray-600">Drag & drop an image, or click to select</p>
-                            <p className="text-sm text-gray-500 mt-1">PNG, JPG, JPEG, WebP, SVG</p>
-                        </div>
-                        )}
-                    </div>
-                    </div>
+            {/* Description */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium">Description ({selectedLang.toUpperCase()})</label>
+                <button
+                  type="button"
+                  onClick={handleGenerateSEO}
+                  disabled={saving || !formData.id}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-purple-600 hover:text-purple-700 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-full border border-purple-200 transition-all disabled:opacity-50"
+                >
+                  <LucideSparkles className="w-3.5 h-3.5" />
+                  AI Generate
+                </button>
+              </div>
+              <textarea
+                className="w-full h-32 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 transition-all"
+                placeholder="Enter category description or generate with AI..."
+                value={translations[selectedLang]?.description || ""}
+                onChange={(e) => updateTranslation("description", e.target.value)}
+              />
+            </div>
 
-                    {/* Show on Home */}
-                    <div className="flex items-center gap-6">
-                        <div className="flex items-center gap-2">
-                        <input
-                            type="checkbox"
-                            id="isHomeShown"
-                            checked={formData.isHomeShown}
-                            onChange={(e) => setFormData((prev) => ({ ...prev, isHomeShown: e.target.checked }))}
-                            className="w-4 h-4 text-blue-600 rounded"
-                        />
-                        <label htmlFor="isHomeShown" className="text-sm font-medium text-gray-700">
-                            Show on Homepage
-                        </label>
-                        </div>
-                        <div className="flex items-center gap-2">
-                        <input
-                            type="checkbox"
-                            id="isActive"
-                            checked={formData.isActive}
-                            onChange={(e) => setFormData((prev) => ({ ...prev, isActive: e.target.checked }))}
-                            className="w-4 h-4 text-blue-600 rounded"
-                        />
-                        <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
-                            Active Status
-                        </label>
-                        </div>
-                    </div>
+            <div className="border-t pt-4 mt-4">
+              <h3 className="font-semibold mb-4 text-gray-900">General Settings</h3>
 
-                    <div className="border-t pt-4 mt-4">
-                        <h3 className="font-semibold mb-4 text-gray-900">SEO Meta (Optional)</h3>
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
-                                <input
-                                    type="text"
-                                    value={formData.metaTitle}
-                                    onChange={(e) => setFormData((prev) => ({ ...prev, metaTitle: e.target.value }))}
-                                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="SEO Title"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
-                                <textarea
-                                    value={formData.metaDescription}
-                                    onChange={(e) => setFormData((prev) => ({ ...prev, metaDescription: e.target.value }))}
-                                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="SEO Description"
-                                    rows={2}
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Meta Keywords</label>
-                                <input
-                                    type="text"
-                                    value={formData.metaKeywords}
-                                    onChange={(e) => setFormData((prev) => ({ ...prev, metaKeywords: e.target.value }))}
-                                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="shoes, apparel, electronics"
-                                />
-                            </div>
-                        </div>
+              {/* Parent Category */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Parent Category</label>
+                <select
+                  value={formData.parentId}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, parentId: e.target.value }))}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">None (Root Level)</option>
+                  {flatCategories
+                    .filter((c) => c.id !== formData.id)
+                    .map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {"—".repeat((cat as any).level || 0)} {cat.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              {/* Image Upload */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
+                <div
+                  {...getRootProps()}
+                  className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-blue-400"
+                    }`}
+                >
+                  <input {...getInputProps()} />
+                  {formData.imagePreview ? (
+                    <div className="space-y-2">
+                      <div className="relative w-32 h-32 mx-auto bg-gray-100 rounded overflow-hidden">
+                        <Image src={formData.imagePreview} alt="Preview" fill className="object-cover" />
+                      </div>
+                      <p className="text-sm text-gray-600">Click or drag to change image</p>
                     </div>
+                  ) : (
+                    <div>
+                      <ImageIcon className="w-12 h-12 mx-auto text-gray-400 mb-2" />
+                      <p className="text-gray-600">Drag & drop an image, or click to select</p>
+                      <p className="text-sm text-gray-500 mt-1">PNG, JPG, JPEG, WebP, SVG</p>
+                    </div>
+                  )}
                 </div>
+              </div>
 
-                {/* Actions */}
-                <div className="flex gap-3 pt-4">
-                  <button
-                    type="submit"
-                    disabled={saving}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-                  >
-                    <Save className="w-5 h-5" />
-                    {saving ? "Saving..." : formData.id ? "Update Category" : "Create Category"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                  >
-                    Cancel
-                  </button>
+              {/* Show on Home */}
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="isHomeShown"
+                    checked={formData.isHomeShown}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, isHomeShown: e.target.checked }))}
+                    className="w-4 h-4 text-blue-600 rounded"
+                  />
+                  <label htmlFor="isHomeShown" className="text-sm font-medium text-gray-700">
+                    Show on Homepage
+                  </label>
                 </div>
-              </form>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="isActive"
+                    checked={formData.isActive}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, isActive: e.target.checked }))}
+                    className="w-4 h-4 text-blue-600 rounded"
+                  />
+                  <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
+                    Active Status
+                  </label>
+                </div>
+              </div>
+
+              <div className="border-t pt-4 mt-4">
+                <h3 className="font-semibold mb-4 text-gray-900">SEO Meta (Optional)</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
+                    <input
+                      type="text"
+                      value={formData.metaTitle}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, metaTitle: e.target.value }))}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="SEO Title"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
+                    <textarea
+                      value={formData.metaDescription}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, metaDescription: e.target.value }))}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="SEO Description"
+                      rows={2}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Meta Keywords</label>
+                    <input
+                      type="text"
+                      value={formData.metaKeywords}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, metaKeywords: e.target.value }))}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="shoes, apparel, electronics"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-3 pt-4">
+              <button
+                type="submit"
+                disabled={saving}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              >
+                <Save className="w-5 h-5" />
+                {saving ? "Saving..." : formData.id ? "Update Category" : "Create Category"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
         </DialogContent>
       </Dialog>
 
@@ -1169,9 +1166,9 @@ export default function CategoriesPage() {
       <Dialog open={showViewModal} onOpenChange={setShowViewModal}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-             <DialogTitle className="text-2xl font-bold">
-               View Category Details
-             </DialogTitle>
+            <DialogTitle className="text-2xl font-bold">
+              View Category Details
+            </DialogTitle>
           </DialogHeader>
 
           {viewingCategory && (
@@ -1183,7 +1180,7 @@ export default function CategoriesPage() {
                   </div>
                 ) : (
                   <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center border">
-                     <ImageIcon className="w-8 h-8 text-gray-400" />
+                    <ImageIcon className="w-8 h-8 text-gray-400" />
                   </div>
                 )}
                 <div>
@@ -1193,54 +1190,54 @@ export default function CategoriesPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-4 text-sm">
-                 <div>
-                    <span className="font-semibold text-gray-700 block mb-1">Status</span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${viewingCategory.isActive !== false ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                        {viewingCategory.isActive !== false ? "Active" : "Inactive"}
-                    </span>
-                 </div>
-                 <div>
-                    <span className="font-semibold text-gray-700 block mb-1">Visibility</span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${viewingCategory.isHomeShown ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`}>
-                        {viewingCategory.isHomeShown ? "Shown on Home" : "Hidden on Home"}
-                    </span>
-                 </div>
+                <div>
+                  <span className="font-semibold text-gray-700 block mb-1">Status</span>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${viewingCategory.isActive !== false ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    {viewingCategory.isActive !== false ? "Active" : "Inactive"}
+                  </span>
+                </div>
+                <div>
+                  <span className="font-semibold text-gray-700 block mb-1">Visibility</span>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${viewingCategory.isHomeShown ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`}>
+                    {viewingCategory.isHomeShown ? "Shown on Home" : "Hidden on Home"}
+                  </span>
+                </div>
               </div>
 
-               <div>
-                 <span className="font-semibold text-gray-700 block mb-1">Description</span>
-                 <p className="text-gray-600 bg-gray-50 p-3 rounded-md border min-h-[60px]">
-                    {viewingCategory.description || <span className="text-gray-400 italic">No description provided</span>}
-                 </p>
-               </div>
+              <div>
+                <span className="font-semibold text-gray-700 block mb-1">Description</span>
+                <p className="text-gray-600 bg-gray-50 p-3 rounded-md border min-h-[60px]">
+                  {viewingCategory.description || <span className="text-gray-400 italic">No description provided</span>}
+                </p>
+              </div>
 
-               {/* View SEO Fields */}
-               <div className="border border-purple-100 bg-purple-50/30 rounded-lg p-4">
-                  <h4 className="font-semibold text-purple-900 mb-3 text-sm">SEO Meta Information</h4>
-                  <div className="space-y-3 text-sm">
-                     <div>
-                        <span className="text-gray-600 font-medium block">Title</span>
-                        <p className="text-gray-800">{viewingCategory.metaTitle || "-"}</p>
-                     </div>
-                     <div>
-                        <span className="text-gray-600 font-medium block">Description</span>
-                        <p className="text-gray-800">{viewingCategory.metaDescription || "-"}</p>
-                     </div>
-                     <div>
-                        <span className="text-gray-600 font-medium block">Keywords</span>
-                        <p className="text-gray-800">{viewingCategory.metaKeywords || "-"}</p>
-                     </div>
+              {/* View SEO Fields */}
+              <div className="border border-purple-100 bg-purple-50/30 rounded-lg p-4">
+                <h4 className="font-semibold text-purple-900 mb-3 text-sm">SEO Meta Information</h4>
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <span className="text-gray-600 font-medium block">Title</span>
+                    <p className="text-gray-800">{viewingCategory.metaTitle || "-"}</p>
                   </div>
-               </div>
+                  <div>
+                    <span className="text-gray-600 font-medium block">Description</span>
+                    <p className="text-gray-800">{viewingCategory.metaDescription || "-"}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-600 font-medium block">Keywords</span>
+                    <p className="text-gray-800">{viewingCategory.metaKeywords || "-"}</p>
+                  </div>
+                </div>
+              </div>
 
-               <div className="pt-4 flex justify-end px-2">
-                  <button
-                    onClick={() => setShowViewModal(false)}
-                    className="px-6 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
-                  >
-                    Close
-                  </button>
-               </div>
+              <div className="pt-4 flex justify-end px-2">
+                <button
+                  onClick={() => setShowViewModal(false)}
+                  className="px-6 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           )}
         </DialogContent>

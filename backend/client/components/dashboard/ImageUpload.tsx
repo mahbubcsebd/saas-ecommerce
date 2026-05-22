@@ -35,7 +35,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     try {
       setLoading(true);
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api'}/upload`,
+        `${process.env.NEXT_PUBLIC_API_URL}/upload`,
         {
           method: 'POST',
           headers: {

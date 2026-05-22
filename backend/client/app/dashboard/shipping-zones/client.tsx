@@ -110,7 +110,7 @@ export default function ShippingZonesClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${BACKEND_URL}/shipping/zones`, {
         headers: { Authorization: `Bearer ${session.accessToken}` },
       });
@@ -148,7 +148,7 @@ export default function ShippingZonesClient() {
 
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       const method = editingZone ? 'PUT' : 'POST';
       const url = editingZone
         ? `${BACKEND_URL}/shipping/zones/${editingZone.id}`
@@ -192,7 +192,7 @@ export default function ShippingZonesClient() {
 
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${BACKEND_URL}/shipping/zones/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${session.accessToken}` },
@@ -223,7 +223,7 @@ export default function ShippingZonesClient() {
 
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       const method = editingRate ? 'PUT' : 'POST';
       const url = editingRate
         ? `${BACKEND_URL}/shipping/rates/${editingRate.id}`
@@ -265,7 +265,7 @@ export default function ShippingZonesClient() {
 
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       await fetch(`${BACKEND_URL}/shipping/rates/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${session.accessToken}` },
@@ -400,8 +400,8 @@ export default function ShippingZonesClient() {
                           <h3 className="text-lg font-bold text-slate-900">
                             {zone.name}
                           </h3>
-                          <Badge 
-                            variant={zone.isActive ? "default" : "secondary"} 
+                          <Badge
+                            variant={zone.isActive ? "default" : "secondary"}
                             className={`text-[10px] uppercase font-bold tracking-wider px-1.5 py-0 ${zone.isActive ? 'bg-emerald-500 hover:bg-emerald-600' : ''}`}
                           >
                             {zone.isActive ? 'Active' : 'Inactive'}
@@ -426,7 +426,7 @@ export default function ShippingZonesClient() {
                           <DropdownMenuItem onClick={() => openRateModal(zone)} className="text-primary font-medium">
                             <Plus className="w-4 h-4 mr-2" /> Add Shipping Rate
                           </DropdownMenuItem>
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             onClick={() => handleDeleteZone(zone.id)}
                             className="text-destructive"
                           >
@@ -447,7 +447,7 @@ export default function ShippingZonesClient() {
                           ))}
                         </div>
                       </div>
-                      
+
                       <div>
                         <Label className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-2 block">Regions</Label>
                         <p className="text-sm text-slate-600 leading-relaxed">
@@ -524,11 +524,11 @@ export default function ShippingZonesClient() {
                                 {rate.calculationType === 'FLAT' && `${rate.flatRate?.toLocaleString()} ৳`}
                                 {rate.calculationType === 'WEIGHT_BASED' && `${rate.baseRate?.toLocaleString()} ৳ + ${rate.perKgRate} ৳/kg`}
                                 {rate.calculationType === 'ORDER_VALUE' && (
-                                  rate.freeShippingThreshold 
+                                  rate.freeShippingThreshold
                                     ? <span className="flex flex-col items-end">
-                                        <span>{rate.flatRate?.toLocaleString()} ৳</span>
-                                        <span className="text-[10px] text-emerald-600 font-medium leading-none mt-1 uppercase tracking-tight">Free over {rate.freeShippingThreshold.toLocaleString()} ৳</span>
-                                      </span>
+                                      <span>{rate.flatRate?.toLocaleString()} ৳</span>
+                                      <span className="text-[10px] text-emerald-600 font-medium leading-none mt-1 uppercase tracking-tight">Free over {rate.freeShippingThreshold.toLocaleString()} ৳</span>
+                                    </span>
                                     : `${rate.flatRate?.toLocaleString()} ৳`
                                 )}
                               </div>
@@ -536,7 +536,7 @@ export default function ShippingZonesClient() {
                                 {rate.calculationType.replace('_', ' ')}
                               </div>
                             </div>
-                            
+
                             <div className="flex gap-1.5">
                               <Button
                                 variant="ghost"

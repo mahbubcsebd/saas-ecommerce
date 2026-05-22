@@ -1,31 +1,14 @@
 import { Metadata } from 'next';
+import { getPublicSettings } from '@/lib/fetchers';
 
 export const metadata: Metadata = {
   title: 'Terms and Conditions',
   description: 'Read our Terms and Conditions',
 };
 
-async function getTerms() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
-  const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
-
-  try {
-    const res = await fetch(`${apiUrl}/settings/public`, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
-    });
-
-    if (!res.ok) return null;
-
-    const data = await res.json();
-    return data?.data?.legal?.termsAndConditions || null;
-  } catch (error) {
-    console.error('Error fetching terms:', error);
-    return null;
-  }
-}
-
 export default async function TermsPage() {
-  const termsContent = await getTerms();
+  const settings = await getPublicSettings();
+  const termsContent = settings?.legal?.termsAndConditions || null;
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-20 max-w-4xl">

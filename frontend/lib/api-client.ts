@@ -1,6 +1,25 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz';
+const BASE_URL = (() => {
+  const envUrl = typeof window === 'undefined'
+    ? (process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL)
+    : process.env.NEXT_PUBLIC_API_URL;
 
-type FetchOptions = RequestInit & {
+  if (envUrl) {
+    return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+  }
+
+  // Fallback if envUrl is not specified or is an empty string
+  if (typeof window === 'undefined') {
+    const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+    if (isBuildPhase || process.env.NODE_ENV !== 'production') {
+      return 'http://localhost:5000/api';
+    }
+    return 'https://api.mahbuburrahman.xyz/api';
+  } else {
+    return 'http://localhost:5000/api';
+  }
+})();
+
+export type FetchOptions = RequestInit & {
   tags?: string[];
   revalidate?: number;
 };
@@ -32,15 +51,20 @@ async function apiClient<T>(endpoint: string, options: FetchOptions = {}): Promi
   }
 
   // Inject locale header
+  const isStaticFetch = options.revalidate !== undefined && options.revalidate !== 0;
+  const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+
   if (typeof window === 'undefined') {
-    try {
-      // Dynamic import to avoid client-side bundling issues
-      const { cookies } = await import('next/headers');
-      const cookieStore = await cookies();
-      const locale = cookieStore.get('next-locale')?.value || 'en';
-      headers.set('x-lang', locale);
-    } catch (e) {
-      console.error('Failed to read cookies on server', e);
+    if (!isStaticFetch && !isBuildPhase) {
+      try {
+        // Dynamic import to avoid client-side bundling issues
+        const { cookies } = await import('next/headers');
+        const cookieStore = await cookies();
+        const locale = cookieStore.get('next-locale')?.value || 'en';
+        headers.set('x-lang', locale);
+      } catch (e) {
+        console.error('Failed to read cookies on server', e);
+      }
     }
   } else {
     // Client-side: read from document.cookie

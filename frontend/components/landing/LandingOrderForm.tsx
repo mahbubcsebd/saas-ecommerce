@@ -68,7 +68,7 @@ export default function LandingOrderForm({ product, offerData }: LandingOrderFor
       };
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api'}/orders`,
+        `${process.env.NEXT_PUBLIC_API_URL}/orders`,
         {
           method: 'POST',
           headers: {

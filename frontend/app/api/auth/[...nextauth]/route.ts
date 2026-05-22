@@ -3,7 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 
 const API_URL = typeof window === 'undefined'
   ? (process.env.INTERNAL_API_URL || 'http://localhost:5000/api')
-  : (process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api');
+  : (process.env.NEXT_PUBLIC_API_URL);
 
 export const authOptions: NextAuthOptions = {
   providers: [

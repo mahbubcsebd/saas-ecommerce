@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export default function EditLandingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -201,106 +201,106 @@ export default function EditLandingPage({ params }: { params: Promise<{ id: stri
 
           <TabsContent value="settings" className="flex-1 m-0 overflow-auto p-6 bg-muted/10">
             <div className="max-w-2xl space-y-6 mx-auto">
-               <div className="bg-background p-6 rounded-xl border shadow-sm space-y-6">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="title" className="text-xs font-semibold">Page Title</Label>
+              <div className="bg-background p-6 rounded-xl border shadow-sm space-y-6">
+                <div className="space-y-1.5">
+                  <Label htmlFor="title" className="text-xs font-semibold">Page Title</Label>
+                  <Input
+                    id="title"
+                    value={pageData.title}
+                    onChange={(e) => {
+                      const title = e.target.value;
+                      setPageData({
+                        ...pageData,
+                        title,
+                        slug: pageData.slug || generateSlug(title),
+                      });
+                    }}
+                    className="h-9"
+                    placeholder="e.g. Summer Sale 2025"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="slug" className="text-xs font-semibold">URL Slug</Label>
+                  <div className="flex items-center">
+                    <span className="h-9 flex items-center px-3 bg-muted border border-r-0 rounded-l-md text-xs font-medium text-muted-foreground">/landing/</span>
                     <Input
-                      id="title"
-                      value={pageData.title}
-                      onChange={(e) => {
-                        const title = e.target.value;
-                        setPageData({
-                          ...pageData,
-                          title,
-                          slug: pageData.slug || generateSlug(title),
-                        });
-                      }}
-                      className="h-9"
-                      placeholder="e.g. Summer Sale 2025"
-                    />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <Label htmlFor="slug" className="text-xs font-semibold">URL Slug</Label>
-                    <div className="flex items-center">
-                      <span className="h-9 flex items-center px-3 bg-muted border border-r-0 rounded-l-md text-xs font-medium text-muted-foreground">/landing/</span>
-                      <Input
-                        id="slug"
-                        value={pageData.slug}
-                        onChange={(e) => setPageData({
-                          ...pageData,
-                          slug: generateSlug(e.target.value),
-                        })}
-                        className="h-9 rounded-l-none font-medium"
-                        placeholder="summer-sale"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <Label htmlFor="description" className="text-xs font-semibold text-muted-foreground">Internal Description</Label>
-                    <Textarea
-                      id="description"
-                      value={pageData.description || ""}
+                      id="slug"
+                      value={pageData.slug}
                       onChange={(e) => setPageData({
                         ...pageData,
-                        description: e.target.value,
+                        slug: generateSlug(e.target.value),
                       })}
-                      className="min-h-[120px] resize-none"
-                      placeholder="Brief notes for reference..."
+                      className="h-9 rounded-l-none font-medium"
+                      placeholder="summer-sale"
                     />
                   </div>
-               </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="description" className="text-xs font-semibold text-muted-foreground">Internal Description</Label>
+                  <Textarea
+                    id="description"
+                    value={pageData.description || ""}
+                    onChange={(e) => setPageData({
+                      ...pageData,
+                      description: e.target.value,
+                    })}
+                    className="min-h-[120px] resize-none"
+                    placeholder="Brief notes for reference..."
+                  />
+                </div>
+              </div>
             </div>
           </TabsContent>
 
           <TabsContent value="seo" className="flex-1 m-0 overflow-auto p-6 bg-muted/10">
             <div className="max-w-2xl space-y-6 mx-auto">
-               <div className="bg-background p-6 rounded-xl border shadow-sm space-y-6">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="metaTitle" className="text-xs font-semibold">Search Title</Label>
-                    <Input
-                      id="metaTitle"
-                      value={pageData.metaTitle || ""}
-                      onChange={(e) => setPageData({
-                        ...pageData,
-                        metaTitle: e.target.value,
-                      })}
-                      className="h-9"
-                      placeholder="Appears in Google results"
-                      maxLength={60}
-                    />
-                  </div>
+              <div className="bg-background p-6 rounded-xl border shadow-sm space-y-6">
+                <div className="space-y-1.5">
+                  <Label htmlFor="metaTitle" className="text-xs font-semibold">Search Title</Label>
+                  <Input
+                    id="metaTitle"
+                    value={pageData.metaTitle || ""}
+                    onChange={(e) => setPageData({
+                      ...pageData,
+                      metaTitle: e.target.value,
+                    })}
+                    className="h-9"
+                    placeholder="Appears in Google results"
+                    maxLength={60}
+                  />
+                </div>
 
-                  <div className="space-y-1.5">
-                    <Label htmlFor="metaDescription" className="text-xs font-semibold">Search Description</Label>
-                    <Textarea
-                      id="metaDescription"
-                      value={pageData.metaDescription || ""}
-                      onChange={(e) => setPageData({
-                        ...pageData,
-                        metaDescription: e.target.value,
-                      })}
-                      className="min-h-[100px] resize-none"
-                      placeholder="Summary for search results..."
-                      maxLength={160}
-                    />
-                  </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="metaDescription" className="text-xs font-semibold">Search Description</Label>
+                  <Textarea
+                    id="metaDescription"
+                    value={pageData.metaDescription || ""}
+                    onChange={(e) => setPageData({
+                      ...pageData,
+                      metaDescription: e.target.value,
+                    })}
+                    className="min-h-[100px] resize-none"
+                    placeholder="Summary for search results..."
+                    maxLength={160}
+                  />
+                </div>
 
-                  <div className="space-y-1.5">
-                    <Label htmlFor="ogImage" className="text-xs font-semibold">OG Image (Share Preview)</Label>
-                    <Input
-                      id="ogImage"
-                      value={pageData.ogImage || ""}
-                      onChange={(e) => setPageData({
-                        ...pageData,
-                        ogImage: e.target.value,
-                      })}
-                      className="h-9"
-                      placeholder="https://example.com/share-image.jpg"
-                    />
-                  </div>
-               </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="ogImage" className="text-xs font-semibold">OG Image (Share Preview)</Label>
+                  <Input
+                    id="ogImage"
+                    value={pageData.ogImage || ""}
+                    onChange={(e) => setPageData({
+                      ...pageData,
+                      ogImage: e.target.value,
+                    })}
+                    className="h-9"
+                    placeholder="https://example.com/share-image.jpg"
+                  />
+                </div>
+              </div>
             </div>
           </TabsContent>
         </Tabs>

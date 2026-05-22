@@ -6,7 +6,7 @@ import { BannerForm } from '@/components/dashboard/hero/BannerForm';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 const HERO_API = `${API_BASE}/hero-slides`;
 
 export default function NewHeroSlidePage() {
@@ -25,7 +25,7 @@ export default function NewHeroSlidePage() {
     try {
       const formData = new FormData();
       form.imageFiles.forEach((file: any) => formData.append('images', file));
-      
+
       formData.append(
         'metadata',
         JSON.stringify({

@@ -1,6 +1,6 @@
 const API_URL = typeof window === 'undefined'
   ? 'http://127.0.0.1:5000/api'
-  : (process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api');
+  : (process.env.NEXT_PUBLIC_API_URL);
 
 export interface Order {
   id: string;
@@ -9,13 +9,13 @@ export interface Order {
   userId?: string;
   source: 'ONLINE' | 'POS';
   status:
-    | 'PENDING'
-    | 'PROCESSING'
-    | 'SHIPPED'
-    | 'DELIVERED'
-    | 'CANCELLED'
-    | 'COMPLETED'
-    | 'REFUNDED';
+  | 'PENDING'
+  | 'PROCESSING'
+  | 'SHIPPED'
+  | 'DELIVERED'
+  | 'CANCELLED'
+  | 'COMPLETED'
+  | 'REFUNDED';
   paymentStatus: 'PENDING' | 'PAID' | 'FAILED' | 'PARTIAL';
   paymentMethod: string;
   total: number;

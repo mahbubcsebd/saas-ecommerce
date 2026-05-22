@@ -1,5 +1,5 @@
 async function main() {
-  const url = 'https://api.mahbuburrahman.xyz/api/products/iphone-15-pro-max-858092';
+  const url = '/products/iphone-15-pro-max-858092';
   console.log('Fetching production API:', url);
   try {
     const res = await fetch(url);

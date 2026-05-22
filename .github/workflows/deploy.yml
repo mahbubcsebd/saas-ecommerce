@@ -113,7 +113,7 @@ jobs:
             NODE_OPTIONS="--max-old-space-size=1024" npm run build
 
             # Zero-Downtime Swap with bounded directory path
-            pm2 reload next-dashboard || pm2 start npm --name "next-dashboard" --cwd "/home/mahbub_cse_me/saas-ecommerce/backend/client" -- run start -- -p 3001
+            pm2 reload ecommerce-dashboad || pm2 start npm --name "ecommerce-dashboad" --cwd "/home/mahbub_cse_me/saas-ecommerce/backend/client" -- run start -- -p 3001
 
             pm2 save
             echo "✅ Admin Dashboard Client hot reloaded!"
@@ -144,7 +144,7 @@ jobs:
             NODE_OPTIONS="--max-old-space-size=1024" npm run build
 
             # Zero-Downtime Swap with bounded directory path
-            pm2 reload next-shop || pm2 start npm --name "next-shop" --cwd "/home/mahbub_cse_me/saas-ecommerce/frontend" -- run start -- -p 3000
+            pm2 reload ecommerce-frontend || pm2 start npm --name "ecommerce-frontend" --cwd "/home/mahbub_cse_me/saas-ecommerce/frontend" -- run start -- -p 3000
 
             pm2 save
             echo "✅ Frontend Shop Client hot reloaded!"

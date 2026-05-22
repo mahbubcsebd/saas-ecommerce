@@ -63,7 +63,16 @@ app.use(
     origin: function (origin, callback) {
       // Allow requests with no origin (mobile apps, curl, Postman, etc.)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
+
+      // Allow any localhost, local subnets (192.168.x.x, 10.x.x.x, 127.0.0.1, etc.), or if in development
+      const isLocal = 
+        /^http:\/\/localhost(:\d+)?$/.test(origin) ||
+        /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin) ||
+        /^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/.test(origin) ||
+        /^http:\/\/10\.\d+\.\d+\.\d+(:\d+)?$/.test(origin) ||
+        process.env.NODE_ENV === 'development';
+
+      if (isLocal || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));

@@ -4,45 +4,45 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { useConfirm } from "@/hooks/use-confirm";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import {
-    BarChart,
-    Copy,
-    Edit,
-    ExternalLink,
-    Eye,
-    FileText,
-    Loader2,
-    MoreVertical,
-    MousePointer2,
-    Plus,
-    Search,
-    ShoppingBag,
-    Trash,
-    Zap
+  BarChart,
+  Copy,
+  Edit,
+  ExternalLink,
+  Eye,
+  FileText,
+  Loader2,
+  MoreVertical,
+  MousePointer2,
+  Plus,
+  Search,
+  ShoppingBag,
+  Trash,
+  Zap
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 interface LandingPage {
   id: string;
@@ -87,10 +87,10 @@ export default function LandingPagesPage() {
 
   const handleDelete = async (id: string) => {
     if (!await confirm({
-        title: "Delete Landing Page",
-        message: "Are you sure you want to delete this promotional funnel? All associated content and tracking will be lost permanently.",
-        type: "danger",
-        confirmText: "Delete Page"
+      title: "Delete Landing Page",
+      message: "Are you sure you want to delete this promotional funnel? All associated content and tracking will be lost permanently.",
+      type: "danger",
+      confirmText: "Delete Page"
     })) return;
 
     try {
@@ -152,10 +152,10 @@ export default function LandingPagesPage() {
 
   const filteredPages = pages.filter(page => {
     const matchesSearch = page.title.toLowerCase().includes(search.toLowerCase()) ||
-                         page.slug.toLowerCase().includes(search.toLowerCase());
+      page.slug.toLowerCase().includes(search.toLowerCase());
     const matchesFilter = filter === "all" ||
-                         (filter === "published" && page.isActive) ||
-                         (filter === "draft" && !page.isActive);
+      (filter === "published" && page.isActive) ||
+      (filter === "draft" && !page.isActive);
     return matchesSearch && matchesFilter;
   });
 
@@ -308,18 +308,18 @@ export default function LandingPagesPage() {
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center justify-center gap-6">
-                             <div className="text-center">
-                                <p className="text-[10px] font-bold text-slate-900 leading-tight">{page.viewCount}</p>
-                                <p className="text-[8px] font-medium text-muted-foreground uppercase tracking-wider">Views</p>
-                             </div>
-                             <div className="text-center">
-                                <p className="text-[10px] font-bold text-emerald-600 leading-tight">{page.orderCount}</p>
-                                <p className="text-[8px] font-medium text-muted-foreground uppercase tracking-wider">Orders</p>
-                             </div>
-                             <div className="text-center">
-                                <p className="text-[10px] font-bold text-blue-600 leading-tight">{conversionRate}%</p>
-                                <p className="text-[8px] font-medium text-muted-foreground uppercase tracking-wider">Conv.</p>
-                             </div>
+                            <div className="text-center">
+                              <p className="text-[10px] font-bold text-slate-900 leading-tight">{page.viewCount}</p>
+                              <p className="text-[8px] font-medium text-muted-foreground uppercase tracking-wider">Views</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-[10px] font-bold text-emerald-600 leading-tight">{page.orderCount}</p>
+                              <p className="text-[8px] font-medium text-muted-foreground uppercase tracking-wider">Orders</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-[10px] font-bold text-blue-600 leading-tight">{conversionRate}%</p>
+                              <p className="text-[8px] font-medium text-muted-foreground uppercase tracking-wider">Conv.</p>
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">

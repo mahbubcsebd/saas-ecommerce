@@ -11,7 +11,9 @@ export default function StoreHydration() {
     // Initialize Guest ID if not present
     let storedGuestId = localStorage.getItem('guestId');
     if (!storedGuestId) {
-      storedGuestId = crypto.randomUUID();
+      storedGuestId = typeof crypto !== 'undefined' && crypto.randomUUID 
+        ? crypto.randomUUID() 
+        : 'guest_' + Math.random().toString(36).substring(2, 15) + '_' + Date.now();
       localStorage.setItem('guestId', storedGuestId);
     }
 

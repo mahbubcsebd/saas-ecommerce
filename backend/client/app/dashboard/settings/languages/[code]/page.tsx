@@ -38,9 +38,9 @@ export default function TranslationEditorPage() {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [saving, setSaving] = useState<string | null>(null);
-    const [languageInfo, setLanguageInfo] = useState<{name: string, isRtl: boolean} | null>(null);
+    const [languageInfo, setLanguageInfo] = useState<{ name: string, isRtl: boolean } | null>(null);
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
     useEffect(() => {
         if (session?.accessToken && code) {
@@ -113,8 +113,8 @@ export default function TranslationEditorPage() {
     const handleUpdate = (namespace: string, key: string, newValue: string) => {
         setTranslations(prev => prev.map(item =>
             (item.namespace === namespace && item.key === key)
-            ? { ...item, targetValue: newValue, isModified: true }
-            : item
+                ? { ...item, targetValue: newValue, isModified: true }
+                : item
         ));
     };
 
@@ -140,8 +140,8 @@ export default function TranslationEditorPage() {
                 toast.success("Sync successful");
                 setTranslations(prev => prev.map(t =>
                     (t.namespace === item.namespace && t.key === item.key)
-                    ? { ...t, isModified: false }
-                    : t
+                        ? { ...t, isModified: false }
+                        : t
                 ));
             } else {
                 throw new Error();
@@ -194,7 +194,7 @@ export default function TranslationEditorPage() {
                 </div>
 
                 <div className="flex items-center gap-6">
-                   <div className="relative w-64 md:w-80">
+                    <div className="relative w-64 md:w-80">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <Input
                             value={searchQuery}
@@ -202,7 +202,7 @@ export default function TranslationEditorPage() {
                             placeholder="Search by key or text..."
                             className="h-11 pl-10 bg-white shadow-sm ring-1 ring-slate-100"
                         />
-                   </div>
+                    </div>
                 </div>
             </div>
 
@@ -240,9 +240,8 @@ export default function TranslationEditorPage() {
                                         </td>
                                         <td className="px-6 py-5">
                                             <textarea
-                                                className={`w-full min-h-[60px] p-3 text-sm rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none ${
-                                                    item.isModified ? 'border-amber-200 bg-white ring-1 ring-amber-100' : 'border-slate-100 bg-transparent'
-                                                }`}
+                                                className={`w-full min-h-[60px] p-3 text-sm rounded-lg border focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none ${item.isModified ? 'border-amber-200 bg-white ring-1 ring-amber-100' : 'border-slate-100 bg-transparent'
+                                                    }`}
                                                 rows={2}
                                                 value={item.targetValue}
                                                 dir={languageInfo?.isRtl ? 'rtl' : 'ltr'}

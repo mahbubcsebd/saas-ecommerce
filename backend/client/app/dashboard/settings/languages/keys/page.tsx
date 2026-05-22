@@ -80,14 +80,14 @@ export default function KeyManagerPage() {
     const [newNamespaceName, setNewNamespaceName] = useState("");
     const [editingNamespace, setEditingNamespace] = useState<Namespace | null>(null);
     const [formData, setFormData] = useState({ namespace: "", key: "", value: "" });
-    const [renamingKey, setRenamingKey] = useState<{oldKey: string, newName: string} | null>(null);
+    const [renamingKey, setRenamingKey] = useState<{ oldKey: string, newName: string } | null>(null);
     const [isTranslatingRow, setIsTranslatingRow] = useState<string | null>(null);
     const [showNamespaceModal, setShowNamespaceModal] = useState(false);
     const [isResetting, setIsResetting] = useState(false);
     const [showResetConfirm, setShowResetConfirm] = useState(false);
     const [resetConfirmText, setResetConfirmText] = useState("");
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
     const fetchData = async (silent = false) => {
         if (!session?.accessToken) return;
@@ -611,7 +611,7 @@ export default function KeyManagerPage() {
                                                         {renamingKey?.oldKey === compositeKey ? (
                                                             <Input
                                                                 value={renamingKey.newName}
-                                                                onChange={(e) => setRenamingKey({...renamingKey, newName: e.target.value})}
+                                                                onChange={(e) => setRenamingKey({ ...renamingKey, newName: e.target.value })}
                                                                 onBlur={handleRenameKey}
                                                                 onKeyDown={(e) => {
                                                                     if (e.key === 'Enter') handleRenameKey();
@@ -623,7 +623,7 @@ export default function KeyManagerPage() {
                                                         ) : (
                                                             <div
                                                                 className="flex items-center gap-2 cursor-pointer"
-                                                                onDoubleClick={() => setRenamingKey({oldKey: compositeKey, newName: compositeKey.split(':')[1]})}
+                                                                onDoubleClick={() => setRenamingKey({ oldKey: compositeKey, newName: compositeKey.split(':')[1] })}
                                                                 title="Double-click to rename"
                                                             >
                                                                 <span className="text-[8px] font-bold text-slate-400 uppercase bg-slate-100 px-1.5 py-0.5 rounded leading-none whitespace-nowrap">
@@ -739,7 +739,7 @@ export default function KeyManagerPage() {
                                 <Label className="text-[10px] font-bold uppercase text-slate-400 ml-1">UI Namespace</Label>
                                 <Select
                                     value={formData.namespace}
-                                    onValueChange={(val: string) => setFormData({...formData, namespace: val})}
+                                    onValueChange={(val: string) => setFormData({ ...formData, namespace: val })}
                                     required
                                 >
                                     <SelectTrigger className="h-11 bg-slate-50 border-slate-200 rounded-xl">
@@ -747,8 +747,8 @@ export default function KeyManagerPage() {
                                     </SelectTrigger>
                                     <SelectContent className="rounded-xl border-slate-200 shadow-xl font-bold uppercase text-[10px]">
                                         {namespaces.map(ns => <SelectItem key={ns.id} value={ns.name}>{ns.name.toUpperCase()}</SelectItem>)}
-                                    <SelectSeparator />
-                                    <Button
+                                        <SelectSeparator />
+                                        <Button
                                             variant="ghost"
                                             className="w-full text-xs font-bold uppercase text-indigo-600 h-10 justify-start px-2 hover:bg-indigo-50 transition-all"
                                             onClick={(e) => { e.preventDefault(); setShowAddModal(false); setShowNamespaceModal(true); }}
@@ -763,7 +763,7 @@ export default function KeyManagerPage() {
                                 <Input
                                     placeholder="e.g. login_welcome_message"
                                     value={formData.key}
-                                    onChange={e => setFormData({...formData, key: e.target.value.toLowerCase().replace(/\s+/g, '_')})}
+                                    onChange={e => setFormData({ ...formData, key: e.target.value.toLowerCase().replace(/\s+/g, '_') })}
                                     required
                                     className="h-11 bg-slate-50 border-slate-200 rounded-xl shadow-inner-sm text-xs font-bold"
                                 />
@@ -774,7 +774,7 @@ export default function KeyManagerPage() {
                                     className="w-full min-h-[100px] p-4 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-100 outline-none resize-none bg-slate-50 transition-all"
                                     placeholder="The default text to be displayed and used as base for auto-translations..."
                                     value={formData.value}
-                                    onChange={e => setFormData({...formData, value: e.target.value})}
+                                    onChange={e => setFormData({ ...formData, value: e.target.value })}
                                     required
                                 />
                             </div>
@@ -802,8 +802,8 @@ export default function KeyManagerPage() {
                     </DialogHeader>
                     <div className="py-4 space-y-4">
                         <div className="p-4 bg-rose-50 rounded-xl border border-rose-100 space-y-2">
-                             <p className="text-[11px] font-bold uppercase text-rose-400 tracking-wider">Verification Required</p>
-                             <p className="text-sm text-rose-700 font-medium leading-relaxed">Please type <span className="font-bold underline">OK</span> below to proceed with this destructive action.</p>
+                            <p className="text-[11px] font-bold uppercase text-rose-400 tracking-wider">Verification Required</p>
+                            <p className="text-sm text-rose-700 font-medium leading-relaxed">Please type <span className="font-bold underline">OK</span> below to proceed with this destructive action.</p>
                         </div>
                         <Input
                             placeholder="Type OK here..."

@@ -5,86 +5,17 @@ import {
   generateProductMetadata,
   generateProductSchema,
 } from '@/lib/seo-utils';
+import {
+  getProductBySlug,
+  getCategoryBySlug,
+  getProducts,
+  getCategories,
+} from '@/lib/fetchers';
 import { Product } from '@/types/product';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
-
-// Data Fetching Utils
-function getApiUrl(): string {
-  const baseUrl = typeof window === 'undefined'
-    ? (process.env.INTERNAL_API_URL || 'http://localhost:5000/api')
-    : (process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api');
-  return baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
-}
-
-async function getProduct(slug: string): Promise<Product | null> {
-  const apiUrl = getApiUrl();
-
-  try {
-    const res = await fetch(`${apiUrl}/products/${slug}`, { cache: 'no-store' });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.success ? data.data : null;
-  } catch (error) {
-    console.error('Error fetching product:', error);
-    return null;
-  }
-}
-
-async function getCategory(slug: string) {
-  const apiUrl = getApiUrl();
-
-  try {
-    const res = await fetch(`${apiUrl}/categories/${slug}`, { cache: 'no-store' });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.success ? data.data : null;
-  } catch (error) {
-    console.error('Error fetching category:', error);
-    return null;
-  }
-}
-
-async function getProductsByCategory(categorySlug: string, searchParams: any) {
-  const apiUrl = getApiUrl();
-
-  const query = new URLSearchParams();
-  query.append('category', categorySlug); // Filter by category slug
-
-  // Append other search params
-  Object.entries(searchParams).forEach(([key, value]) => {
-    if (key === 'category') return; // Skip category param if present in URL query (we use slug)
-    if (Array.isArray(value)) {
-      value.forEach((v) => query.append(key, v as string));
-    } else if (value) {
-      query.append(key, value as string);
-    }
-  });
-
-  try {
-    const res = await fetch(`${apiUrl}/products?${query.toString()}`, { cache: 'no-store' });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.success ? data.data : [];
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    return [];
-  }
-}
-
-async function getAllCategories() {
-  const apiUrl = getApiUrl();
-  try {
-    const res = await fetch(`${apiUrl}/categories`, { cache: 'force-cache' });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.success ? data.data : [];
-  } catch (e) {
-    return [];
-  }
-}
 
 // Metadata Generation
 export async function generateMetadata({
@@ -96,13 +27,13 @@ export async function generateMetadata({
   const lastSlug = slug[slug.length - 1];
 
   // 1. Try Product
-  const product = await getProduct(lastSlug);
+  const product = await getProductBySlug(lastSlug);
   if (product) {
     return generateProductMetadata(product);
   }
 
   // 2. Try Category
-  const category = await getCategory(lastSlug);
+  const category = await getCategoryBySlug(lastSlug);
   if (category) {
     return generateCategoryMetadata(category);
   }
@@ -127,10 +58,11 @@ export default async function DynamicPage({ params, searchParams }: PageProps) {
 
   // 1. GLOBAL '/all' Route -> Show ALL Products
   if (isGlobalAll) {
-    const [products, allCategories] = await Promise.all([
-      getProductsByCategory('', resolvedSearchParams), // Empty category slug fetches all
-      getAllCategories(),
+    const [productsRes, allCategories] = await Promise.all([
+      getProducts(resolvedSearchParams),
+      getCategories(),
     ]);
+    const products = productsRes?.data || [];
 
     const allProductsCategory = {
       id: 'all-products',
@@ -155,7 +87,7 @@ export default async function DynamicPage({ params, searchParams }: PageProps) {
   // If it is an 'all' route, we skip product check because 'all' is reserved for category view.
   let product = null;
   if (!isAllRoute) {
-    product = await getProduct(lastSlug);
+    product = await getProductBySlug(lastSlug);
   }
 
   if (product) {
@@ -175,13 +107,14 @@ export default async function DynamicPage({ params, searchParams }: PageProps) {
   }
 
   // 2. Try Category
-  const category = await getCategory(lastSlug);
+  const category = await getCategoryBySlug(lastSlug);
 
   if (category) {
-    const [products, allCategories] = await Promise.all([
-      getProductsByCategory(category.slug, resolvedSearchParams),
-      getAllCategories(),
+    const [productsRes, allCategories] = await Promise.all([
+      getProducts({ ...resolvedSearchParams, category: category.slug }),
+      getCategories(),
     ]);
+    const products = productsRes?.data || [];
 
     return (
       <CategoryProductList products={products} allCategories={allCategories} category={category} />
@@ -191,3 +124,4 @@ export default async function DynamicPage({ params, searchParams }: PageProps) {
   // 3. Not Found
   notFound();
 }
+

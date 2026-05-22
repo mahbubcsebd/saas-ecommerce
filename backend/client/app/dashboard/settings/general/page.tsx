@@ -93,7 +93,7 @@ export default function GeneralSettingsPage() {
   const formSeo = useForm<SeoSettings>();
 
   const API_URL =
-    process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+    process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     if (session?.accessToken) fetchAllSettings();
@@ -150,9 +150,9 @@ export default function GeneralSettingsPage() {
         const splitString = (str: string | undefined) =>
           str
             ? str
-                .split(/[\n,]+/)
-                .map((s) => s.trim())
-                .filter(Boolean)
+              .split(/[\n,]+/)
+              .map((s) => s.trim())
+              .filter(Boolean)
             : [];
 
         payload = {

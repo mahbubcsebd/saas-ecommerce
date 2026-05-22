@@ -113,7 +113,7 @@ export default function TaxReportClient() {
       const startStr = dateRange.start.toISOString();
       const endStr = dateRange.end.toISOString();
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
 
       const response = await fetch(
         `${BACKEND_URL}/analytics/tax?startDate=${startStr}&endDate=${endStr}`,
@@ -500,15 +500,15 @@ export default function TaxReportClient() {
                 ))}
                 {(!data?.detailedReport ||
                   data.detailedReport.length === 0) && (
-                  <tr>
-                    <td
-                      colSpan={6}
-                      className="px-6 py-10 text-center text-muted-foreground italic"
-                    >
-                      No tax data found for this period.
-                    </td>
-                  </tr>
-                )}
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="px-6 py-10 text-center text-muted-foreground italic"
+                      >
+                        No tax data found for this period.
+                      </td>
+                    </tr>
+                  )}
               </tbody>
             </table>
           </div>

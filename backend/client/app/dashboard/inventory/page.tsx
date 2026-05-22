@@ -84,7 +84,7 @@ export default function InventoryPage() {
   const [isDamageModalOpen, setIsDamageModalOpen] = useState(false);
 
   const API_URL =
-    process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+    process.env.NEXT_PUBLIC_API_URL;
 
   const fetchInventory = async () => {
     setLoading(true);

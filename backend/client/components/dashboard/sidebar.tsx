@@ -46,6 +46,7 @@ import {
   Shield,
   ShoppingBag,
   ShoppingCart,
+  Sliders,
   Star,
   Store,
   Tag,
@@ -138,6 +139,11 @@ const getSidebarItems = (counts: any): SidebarItem[] => [
         title: 'Brands',
         href: '/dashboard/brands',
         icon: Tag,
+      },
+      {
+        title: 'Attributes',
+        href: '/dashboard/attributes',
+        icon: Sliders,
       },
       {
         title: 'Reviews',
@@ -470,7 +476,7 @@ export function Sidebar({
 
   const fetchCounts = async () => {
     try {
-      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(`${BACKEND_URL}/analytics/overview`, {
         headers: {
           'Authorization': `Bearer ${session?.accessToken || ''}`,
@@ -544,7 +550,7 @@ export function Sidebar({
   const handleLogout = async () => {
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       await fetch(`${BACKEND_URL}/auth/logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

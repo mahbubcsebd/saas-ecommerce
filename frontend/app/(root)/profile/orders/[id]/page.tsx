@@ -26,7 +26,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function OrderDetailsPage() {
   const { id } = useParams();
@@ -275,8 +275,8 @@ export default function OrderDetailsPage() {
                               t('orders', 'statusUpdateGeneric', {
                                 defaultValue: 'The order status has been updated to ',
                               }) +
-                                step.label.toLowerCase() +
-                                '.'}
+                              step.label.toLowerCase() +
+                              '.'}
                           </p>
                         </div>
                       </div>

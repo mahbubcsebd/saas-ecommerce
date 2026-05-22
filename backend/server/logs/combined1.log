@@ -6220,3 +6220,839 @@
 {"level":"info","message":"GET /api/categories/categories 404 44.813 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:58:58"}
 {"level":"info","message":"GET /api/products/about 404 325.433 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:58:58"}
 {"level":"info","message":"GET /api/categories/about 404 43.598 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 09:58:58"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 10:11:34"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 10:11:39"}
+{"level":"info","message":"GET /api/languages/active 200 290.373 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:11:40"}
+{"level":"info","message":"GET /api/settings/public 200 528.659 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:11:40"}
+{"level":"info","message":"POST /api/analytics/track 200 867.399 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:11:41"}
+{"level":"info","message":"POST /api/auth/login 200 483.871 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:10"}
+{"level":"info","message":"GET /api/languages/active 304 46.740 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:11"}
+{"level":"info","message":"GET /api/notifications?limit=10&unreadOnly=false 200 144.872 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:11"}
+{"level":"info","message":"GET /api/notifications?limit=10 200 162.339 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:11"}
+{"level":"info","message":"GET /api/settings/public 304 316.688 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:11"}
+{"level":"info","message":"GET /api/notifications?limit=10 304 89.091 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:11"}
+{"level":"info","message":"GET /api/notifications?limit=10&unreadOnly=false 304 308.312 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:12"}
+{"level":"info","message":"GET /api/analytics/overview 200 3609.474 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:15"}
+{"level":"info","message":"POST /api/analytics/track 200 3509.932 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:15"}
+{"level":"info","message":"GET /api/analytics/overview 304 505.132 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:15"}
+{"level":"info","message":"GET /api/analytics/overview 304 474.139 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:16"}
+{"level":"info","message":"GET /api/analytics/overview 304 499.836 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:16"}
+{"level":"info","message":"GET /api/orders/admin/all?page=1&limit=10 304 227.618 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:18"}
+{"level":"info","message":"GET /api/orders/admin/all?page=1&limit=10 304 240.863 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:19"}
+{"level":"info","message":"POST /api/analytics/track 200 500.991 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:19"}
+{"level":"info","message":"GET /api/user?search=&limit=10 200 180.384 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:24"}
+{"level":"info","message":"GET /api/user?search=&limit=10 304 193.990 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:24"}
+{"level":"info","message":"GET /api/products?limit=12&page=1&status=PUBLISHED 304 369.391 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:24"}
+{"level":"info","message":"POST /api/analytics/track 200 630.156 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:25"}
+{"level":"info","message":"GET /api/products?page=1&limit=10&status=all 200 272.196 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:50"}
+{"level":"info","message":"GET /api/products?page=1&limit=10&status=all 304 260.806 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:50"}
+{"level":"info","message":"POST /api/analytics/track 200 566.663 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:12:51"}
+{"level":"info","message":"PUT /api/products/6a0dea146a9df47c2e4577c5 200 555.375 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:13:00"}
+{"level":"info","message":"PUT /api/products/6a000b10634476b3ec4de584 200 568.412 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:13:00"}
+{"level":"info","message":"GET /api/products?page=1&limit=10&status=all 200 260.851 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:13:00"}
+{"level":"info","message":"GET /api/products/pharmacy 404 48.286 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:13:06"}
+{"level":"info","message":"GET /api/categories/pharmacy 200 215.756 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:13:06"}
+{"level":"info","message":"GET /api/analytics/overview 304 488.579 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:13:12"}
+{"level":"info","message":"GET /api/analytics/overview 304 792.781 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:14:12"}
+{"level":"info","message":"GET /api/products/categories 404 61.048 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:14:36"}
+{"level":"info","message":"GET /api/categories/categories 404 48.499 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:14:36"}
+{"level":"info","message":"GET /api/products/pharmacy 404 45.921 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:14:39"}
+{"level":"info","message":"GET /api/products/categories 404 47.411 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:14:39"}
+{"level":"info","message":"GET /api/categories/categories 404 47.767 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:14:39"}
+{"level":"info","message":"GET /api/categories/pharmacy 200 230.228 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:14:39"}
+{"level":"info","message":"GET /api/products?page=1&limit=10&status=all 304 271.729 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:14:46"}
+{"level":"info","message":"GET /api/analytics/overview 304 481.121 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:14:47"}
+{"level":"info","message":"GET /api/analytics/overview 304 480.286 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:15:47"}
+{"level":"info","message":"GET /api/analytics/overview 304 497.852 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:16:47"}
+{"level":"info","message":"GET /api/analytics/overview 304 471.468 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:17:47"}
+{"level":"info","message":"GET /api/analytics/overview 304 501.139 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:18:47"}
+{"level":"info","message":"GET /api/analytics/overview 304 508.345 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:19:47"}
+{"level":"info","message":"GET /api/analytics/overview 304 524.045 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:20:47"}
+{"level":"info","message":"GET /api/analytics/overview 304 498.968 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:21:47"}
+{"level":"info","message":"GET /api/analytics/overview 304 749.257 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:23:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 498.041 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:24:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 484.507 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:25:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 490.828 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:26:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 465.513 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:27:13"}
+{"level":"info","message":"GET /api/analytics/overview 304 501.867 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:27:47"}
+{"level":"info","message":"GET /api/analytics/overview 304 793.576 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:29:33"}
+{"level":"info","message":"GET /api/products/contact-us 404 45.120 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:30:33"}
+{"level":"info","message":"GET /api/categories/contact-us 404 45.955 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:30:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 484.373 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:30:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 478.890 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:31:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 486.052 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:32:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 505.907 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:33:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 509.961 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:34:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 780.061 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:35:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 483.225 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:36:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 503.568 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:37:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 801.291 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:38:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 498.266 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:39:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 488.374 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:40:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 453.061 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:41:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 490.489 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:42:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 770.834 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:43:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 496.194 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:44:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 496.382 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:45:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 494.688 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:46:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 521.587 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:47:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 537.239 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:48:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 790.665 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:49:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 463.827 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:50:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 491.122 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:51:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 1089.792 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:52:34"}
+{"level":"info","message":"GET /api/analytics/overview 304 761.341 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:53:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 480.013 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:54:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 493.461 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:55:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 744.238 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:56:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 453.080 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:57:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 486.149 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:58:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 758.928 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 10:59:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 757.699 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:00:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 516.463 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:01:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 495.525 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:02:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 504.737 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:03:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 494.674 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:04:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 497.613 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:05:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 492.140 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:06:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 527.208 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:07:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 498.079 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:08:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 2510.376 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:09:35"}
+{"level":"info","message":"GET /api/analytics/overview 304 1080.915 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:10:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 2425.802 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:11:35"}
+{"level":"info","message":"GET /api/analytics/overview 304 453.765 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:12:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 2223.011 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:13:35"}
+{"level":"info","message":"GET /api/analytics/overview 304 510.305 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:14:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 627.951 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:15:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 483.433 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:16:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 476.447 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:17:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 777.594 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:18:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 493.562 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:19:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 579.456 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:20:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 492.322 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:21:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 759.842 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:22:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 501.344 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:23:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 489.824 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:24:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 508.706 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:25:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 464.886 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:26:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 499.624 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:27:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 493.792 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:28:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 510.869 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:29:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 508.187 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:30:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 469.416 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:31:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 761.527 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:32:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 512.873 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:33:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 508.065 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:34:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 675.613 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:35:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 471.980 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:36:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 463.028 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:37:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 462.424 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:38:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 1193.606 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:39:34"}
+{"level":"info","message":"GET /api/analytics/overview 304 725.917 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:40:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 441.680 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:41:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 491.788 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:42:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 479.041 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:43:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 540.552 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:44:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 475.533 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:45:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 471.232 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:46:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 491.248 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:47:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 445.757 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:48:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 764.039 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:49:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 708.507 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:50:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 477.197 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:51:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 558.071 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:52:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 468.322 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:53:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 556.500 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:54:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 444.438 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:55:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 473.013 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:56:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 615.328 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:57:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 486.027 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:58:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 772.501 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 11:59:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 587.714 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:00:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 505.469 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:01:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 461.645 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:02:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 471.579 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:03:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 493.070 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:04:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 474.580 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:05:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 495.298 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:06:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 478.808 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:07:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 501.509 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:08:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 472.884 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:09:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 563.961 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:10:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 494.577 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:11:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 2291.587 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:12:35"}
+{"level":"info","message":"GET /api/analytics/overview 304 470.326 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:13:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 598.400 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:14:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 503.644 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:15:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 519.879 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:16:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 775.194 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:17:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 771.914 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:18:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 498.363 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:19:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 513.176 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:20:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 585.616 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:21:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 4038.209 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:22:36"}
+{"level":"info","message":"GET /api/analytics/overview 304 1876.894 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:23:34"}
+{"level":"info","message":"GET /api/analytics/overview 304 564.949 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:24:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 564.202 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:25:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 550.306 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:26:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 551.460 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:27:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 568.387 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:28:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 1188.473 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:29:34"}
+{"level":"info","message":"GET /api/analytics/overview 304 2429.428 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:30:35"}
+{"level":"info","message":"GET /api/analytics/overview 304 780.738 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:31:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 531.509 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:32:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 556.854 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:33:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 955.870 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:34:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 753.845 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:35:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 999.596 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:36:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 747.969 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:37:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 470.448 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:38:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 585.590 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:39:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 558.581 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:40:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 564.375 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:41:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 556.718 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:42:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 590.553 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:43:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 852.520 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:44:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 2207.122 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:45:35"}
+{"level":"info","message":"GET /api/analytics/overview 304 846.487 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:46:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 567.816 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:47:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 545.402 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:48:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 576.204 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:49:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 560.424 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:50:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 554.864 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:51:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 677.288 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:52:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 1289.387 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:53:34"}
+{"level":"info","message":"GET /api/analytics/overview 304 503.688 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:54:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 571.110 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:55:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 540.476 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:56:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 550.691 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:57:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 568.289 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:58:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 499.475 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 12:59:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 534.897 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:00:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 560.541 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:01:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 533.866 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:02:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 1149.605 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:03:34"}
+{"level":"info","message":"GET /api/analytics/overview 304 522.836 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:04:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 866.685 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:05:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 963.215 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:06:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 546.622 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:07:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 520.913 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:08:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 507.556 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:09:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 531.620 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:10:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 506.867 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:11:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 554.768 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:12:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 616.664 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:13:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 530.543 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:14:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 620.858 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:15:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 526.456 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:16:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 528.357 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:17:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 1100.845 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:18:34"}
+{"level":"info","message":"GET /api/analytics/overview 304 828.308 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:19:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 513.161 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:20:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 513.205 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:21:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 532.626 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:22:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 829.935 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:23:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 844.610 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:24:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 604.333 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:25:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 516.275 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:26:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 542.583 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:27:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 507.033 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:28:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 523.410 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:29:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 517.745 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:30:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 449.323 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:31:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 525.867 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:32:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 622.508 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:33:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 505.527 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:34:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 528.289 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:35:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 561.668 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:36:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 519.985 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:37:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 545.719 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:38:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 533.877 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:39:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 775.872 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:40:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 527.719 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:41:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 501.582 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:42:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 511.192 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:43:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 814.267 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:44:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 514.832 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:45:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 531.976 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:46:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 518.500 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:47:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 512.453 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:48:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 517.454 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:49:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 521.362 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:50:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 502.816 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:51:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 532.179 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:52:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 521.914 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:53:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 516.037 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:54:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 798.688 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:55:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 509.981 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:56:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 518.155 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:57:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 578.362 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:58:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 529.333 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 13:59:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 508.718 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:00:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 929.203 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:01:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 462.850 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:02:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 661.538 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:03:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 554.070 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:04:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 517.526 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:05:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 517.504 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:06:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 534.457 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:07:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 523.774 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:08:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 548.142 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:09:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 534.903 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:10:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 526.874 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:11:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 534.550 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:12:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 507.498 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:13:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 516.520 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 14:14:33"}
+{"level":"info","message":"GET /api/settings/public 200 1122.222 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:37:02"}
+{"level":"info","message":"GET /api/products/pharmacy 404 162.915 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:37:05"}
+{"level":"info","message":"GET /api/categories/pharmacy 200 235.711 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:37:05"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 555.826 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:37:06"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 612.610 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:37:06"}
+{"level":"info","message":"GET /api/products/about 404 62.171 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:37:09"}
+{"level":"info","message":"GET /api/products/categories 404 53.198 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:37:09"}
+{"level":"info","message":"GET /api/categories/categories 404 45.609 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:37:09"}
+{"level":"info","message":"GET /api/categories/about 404 46.138 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:37:09"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 460.721 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:37:12"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 16:42:43"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 16:42:48"}
+{"level":"info","message":"GET /api/products/pharmacy 404 412.827 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:03"}
+{"level":"info","message":"GET /api/categories/pharmacy 200 263.289 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:03"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 808.090 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:04"}
+{"level":"info","message":"GET /api/products/electronics 404 71.363 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:04"}
+{"level":"info","message":"GET /api/categories/electronics 200 264.904 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:04"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 1683.627 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:04"}
+{"level":"info","message":"GET /api/products/categories 404 61.188 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:07"}
+{"level":"info","message":"GET /api/products/about 404 59.770 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:07"}
+{"level":"info","message":"GET /api/categories/categories 404 50.511 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:07"}
+{"level":"info","message":"GET /api/categories/about 404 57.425 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:07"}
+{"level":"info","message":"GET /api/products/com.chrome.devtools.json 422 5.499 ms - 694","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:15"}
+{"level":"info","message":"GET /api/categories/com.chrome.devtools.json 404 59.846 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:16"}
+{"level":"info","message":"GET /api/products/com.chrome.devtools.json 422 2.781 ms - 694","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:33"}
+{"level":"info","message":"GET /api/categories/com.chrome.devtools.json 404 55.063 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:34"}
+{"level":"info","message":"GET /api/products/electronics 404 59.250 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:45"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 485.667 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:45"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 527.085 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:45"}
+{"level":"info","message":"GET /api/categories/electronics 200 528.180 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:46"}
+{"level":"info","message":"GET /api/products/pharmacy 404 53.227 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:46"}
+{"level":"info","message":"GET /api/categories/pharmacy 200 212.196 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:45:46"}
+{"level":"info","message":"GET /api/products/com.chrome.devtools.json 422 1.882 ms - 694","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:46:03"}
+{"level":"info","message":"GET /api/categories/com.chrome.devtools.json 404 76.255 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:46:03"}
+{"level":"info","message":"GET /api/products/pharmacy 404 61.253 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:46:07"}
+{"level":"info","message":"GET /api/categories/pharmacy 200 207.599 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:46:08"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 448.823 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:46:08"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 759.039 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:46:09"}
+{"level":"info","message":"GET /api/products/electronics 404 52.792 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:46:09"}
+{"level":"info","message":"GET /api/categories/electronics 200 240.437 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:46:09"}
+{"level":"info","message":"GET /api/products/categories 404 58.964 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:46:10"}
+{"level":"info","message":"GET /api/categories/categories 404 52.471 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:46:10"}
+{"level":"info","message":"GET /api/products/about 404 59.518 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:46:11"}
+{"level":"info","message":"GET /api/categories/about 404 49.218 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:46:11"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 466.687 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:46:15"}
+{"level":"info","message":"GET /api/products/pharmacy 404 61.293 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:50:48"}
+{"level":"info","message":"GET /api/categories/pharmacy 200 262.121 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:50:49"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 515.878 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:50:49"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 487.331 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:50:49"}
+{"level":"info","message":"GET /api/products/electronics 404 53.291 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:50:50"}
+{"level":"info","message":"GET /api/categories/electronics 200 246.869 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:50:50"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 741.800 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:50:52"}
+{"level":"info","message":"GET /api/products/categories 404 50.276 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:50:56"}
+{"level":"info","message":"GET /api/categories/categories 404 57.799 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:50:56"}
+{"level":"info","message":"GET /api/products/about 404 60.045 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:50:56"}
+{"level":"info","message":"GET /api/categories/about 404 47.031 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:50:56"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 703.847 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:51:06"}
+{"level":"info","message":"GET /api/languages/active 304 83.800 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:22"}
+{"level":"info","message":"GET /api/settings/public 304 604.864 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:22"}
+{"level":"info","message":"POST /api/analytics/track 200 814.327 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:23"}
+{"level":"info","message":"POST /api/auth/login 200 1110.622 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:25"}
+{"level":"info","message":"GET /api/languages/active 304 46.191 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:26"}
+{"level":"info","message":"GET /api/settings/public 304 349.723 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:26"}
+{"level":"info","message":"GET /api/notifications?limit=10 200 112.622 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:27"}
+{"level":"info","message":"GET /api/notifications?limit=10&unreadOnly=false 200 107.896 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:27"}
+{"level":"info","message":"POST /api/analytics/track 200 666.344 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:27"}
+{"level":"info","message":"GET /api/analytics/overview 200 980.187 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:28"}
+{"level":"info","message":"GET /api/analytics/overview 304 499.453 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:28"}
+{"level":"info","message":"GET /api/orders/admin/all?page=1&limit=10 304 264.112 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:31"}
+{"level":"info","message":"POST /api/analytics/track 200 532.298 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:31"}
+{"level":"info","message":"GET /api/user?search=&limit=10 200 212.108 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:33"}
+{"level":"info","message":"GET /api/products?limit=12&page=1&status=PUBLISHED 200 304.911 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:34"}
+{"level":"info","message":"POST /api/analytics/track 200 556.245 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:34"}
+{"level":"info","message":"GET /api/invoices?page=1&limit=10 200 200.757 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:38"}
+{"level":"info","message":"POST /api/analytics/track 200 764.588 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:39"}
+{"level":"info","message":"GET /api/orders/6a0aab666169456d9728e848 200 203.150 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:46"}
+{"level":"info","message":"GET /api/orders/6a000b12634476b3ec4de58e 200 187.284 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:46"}
+{"level":"info","message":"GET /api/orders/6a0057b6c700b37231b0a9af 200 192.002 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:55:46"}
+{"level":"info","message":"GET /api/orders/6a0d6e6a3f43d59935e06d08 200 208.225 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:56:09"}
+{"level":"info","message":"GET /api/analytics/overview 200 782.138 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:56:09"}
+{"level":"info","message":"POST /api/analytics/track 200 629.390 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:56:10"}
+{"level":"info","message":"GET /api/invoices?page=1&limit=10 304 213.181 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:56:23"}
+{"level":"info","message":"POST /api/analytics/track 200 660.605 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:56:24"}
+{"level":"info","message":"GET /api/analytics/overview 304 518.731 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:56:27"}
+{"level":"info","message":"GET /api/products?page=1&limit=10&status=all 200 280.493 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:56:27"}
+{"level":"info","message":"POST /api/analytics/track 200 545.540 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:56:28"}
+{"level":"info","message":"GET /api/analytics/overview 304 793.909 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:57:28"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 16:58:34"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 16:58:39"}
+{"level":"info","message":"GET /api/analytics/overview 304 963.780 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 16:58:57"}
+{"level":"info","message":"GET /api/products/pharmacy 404 116.662 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 17:01:06"}
+{"level":"info","message":"GET /api/categories/pharmacy 200 281.150 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 17:01:06"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 540.985 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 17:01:06"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 482.095 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 17:01:06"}
+{"level":"info","message":"GET /api/products/electronics 404 69.581 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 17:01:08"}
+{"level":"info","message":"GET /api/categories/electronics 200 288.824 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 17:01:08"}
+{"level":"info","message":"GET /api/products/com.chrome.devtools.json 422 6.370 ms - 694","service":"mahbub-shop-backend","timestamp":"2026-05-22 17:01:13"}
+{"level":"info","message":"GET /api/categories/com.chrome.devtools.json 404 52.226 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 17:01:14"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:01:55"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:02:00"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:04:07"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:04:12"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:05:08"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:05:13"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:05:21"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:05:26"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:09:41"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:09:46"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:13:13"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:13:19"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:13:41"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:13:46"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:17:12"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:17:17"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:17:42"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:17:47"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:20:41"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:20:46"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:27:38"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:27:43"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:27:48"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:27:53"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:29:29"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:29:34"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:31:57"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:32:02"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:34:18"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:34:23"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:34:34"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:34:39"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:36:00"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 17:36:05"}
+{"level":"info","message":"GET /api/settings/public 200 673.987 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 17:43:42"}
+{"level":"error","message":"Cache GET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.get (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.get (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:11:33)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:108:32)\n    at exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:51)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at next (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:157:13)\n    at Route.dispatch (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:117:3)\n    at handle (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\index.js:435:11)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/brands?isActive=true&isFeatured=true 200 99.304 ms - 68","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/hero-slides?featured=true&isActive=true 200 134.569 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"error","message":"Cache GET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.get (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.get (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:11:33)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:108:32)\n    at exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:51)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at next (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:157:13)\n    at Route.dispatch (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:117:3)\n    at handle (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\index.js:435:11)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/categories?isHomeShown=true 200 338.765 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/products?sort=sold_desc&limit=8 200 322.993 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/wishlist 401 11.040 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/cart 200 5.177 ms - 36","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/cart?guestId=79928f5a-3ac6-42a1-a534-a443c84484d4 200 87.696 ms - 56","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/products?isNewArrival=true&limit=8 200 393.516 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/homeCategoryWiseProduct 200 431.684 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"error","message":"Cache SET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.set (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.set (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:28:19)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:135:17)\n    at async exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:26)","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/translations/en 200 233.161 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/brands?isActive=true&limit=6 200 427.363 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/flash-sales/public/active 200 521.531 ms - 28","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/translations/versions 200 44.425 ms - 234","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"error","message":"Cache SET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.set (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.set (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:28:19)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:135:17)\n    at async exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:26)","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/translations/en 200 549.175 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/settings/public 200 365.450 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:46"}
+{"level":"info","message":"GET /api/notifications?limit=10 401 0.518 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:47"}
+{"level":"info","message":"GET /api/translations/languages 200 44.481 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:47"}
+{"level":"info","message":"POST /api/analytics/track 200 803.114 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:47"}
+{"level":"info","message":"GET /api/products/pharmacy 404 48.777 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:47"}
+{"level":"info","message":"GET /api/categories 200 295.794 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:47"}
+{"level":"info","message":"GET /api/products/pharmacy 404 44.309 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:47"}
+{"level":"info","message":"GET /api/products/clinger 404 43.017 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:47"}
+{"level":"info","message":"GET /api/products/smartphones 404 46.217 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:47"}
+{"level":"info","message":"GET /api/categories/pharmacy 200 206.743 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:47"}
+{"level":"info","message":"GET /api/products/electronics 404 46.821 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:47"}
+{"level":"info","message":"GET /api/categories/pharmacy 200 230.313 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:47"}
+{"level":"info","message":"GET /api/categories/clinger 200 217.796 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:47"}
+{"level":"info","message":"POST /api/analytics/track 200 839.595 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:47"}
+{"level":"info","message":"GET /api/categories/smartphones 200 255.134 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:47"}
+{"level":"info","message":"GET /api/categories/electronics 200 244.144 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:48"}
+{"level":"info","message":"GET /api/brands/apple 200 138.039 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:48"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 429.400 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:48"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 472.335 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:48"}
+{"level":"info","message":"GET /api/products/electronics 404 47.473 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:49"}
+{"level":"error","message":"Cache GET Error [translations:bn]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.get (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.get (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:11:33)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:108:32)\n    at exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:51)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at next (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:157:13)\n    at Route.dispatch (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:117:3)\n    at handle (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\index.js:435:11)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)","timestamp":"2026-05-22 18:37:55"}
+{"level":"error","message":"Cache GET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.get (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.get (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:11:33)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:108:32)\n    at exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:51)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at next (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:157:13)\n    at Route.dispatch (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:117:3)\n    at handle (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\index.js:435:11)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)","timestamp":"2026-05-22 18:37:55"}
+{"level":"info","message":"GET /api/wishlist 401 1.727 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:55"}
+{"level":"info","message":"GET /api/cart?guestId=79928f5a-3ac6-42a1-a534-a443c84484d4 200 50.513 ms - 56","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:55"}
+{"level":"info","message":"GET /api/cart 200 2.332 ms - 36","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:55"}
+{"level":"error","message":"Cache SET Error [translations:bn]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.set (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.set (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:28:19)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:135:17)\n    at async exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:26)","timestamp":"2026-05-22 18:37:55"}
+{"level":"info","message":"GET /api/translations/bn 200 324.279 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:55"}
+{"level":"error","message":"Cache SET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.set (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.set (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:28:19)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:135:17)\n    at async exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:26)","timestamp":"2026-05-22 18:37:55"}
+{"level":"info","message":"GET /api/translations/en 200 223.529 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:55"}
+{"level":"info","message":"GET /api/translations/versions 200 49.524 ms - 234","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:55"}
+{"level":"info","message":"GET /api/settings/public 200 295.071 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:55"}
+{"level":"info","message":"GET /api/notifications?limit=10 401 0.417 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:55"}
+{"level":"info","message":"GET /api/translations/languages 304 44.935 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:55"}
+{"level":"info","message":"GET /api/products/pharmacy 404 62.841 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:55"}
+{"level":"info","message":"POST /api/analytics/track 200 619.515 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:56"}
+{"level":"info","message":"GET /api/categories 304 354.454 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:56"}
+{"level":"info","message":"POST /api/analytics/track 200 489.787 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:56"}
+{"level":"info","message":"GET /api/products/electronics 404 43.766 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:56"}
+{"level":"info","message":"GET /api/products/about 404 45.729 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:57"}
+{"level":"info","message":"GET /api/products/categories 404 55.834 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:57"}
+{"level":"info","message":"GET /api/categories/about 404 47.349 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:57"}
+{"level":"info","message":"GET /api/categories/categories 404 45.914 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:37:57"}
+{"level":"info","message":"GET /api/products?brandSlug=apple 200 97.810 ms - 124","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:38:02"}
+{"level":"info","message":"GET /api/categories 200 307.685 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:38:02"}
+{"level":"info","message":"GET /api/products/clothing 404 59.457 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:38:02"}
+{"level":"info","message":"GET /api/products/pharmacy 404 56.600 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:38:02"}
+{"level":"info","message":"GET /api/products/smartphones 404 54.286 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:38:02"}
+{"level":"info","message":"GET /api/products/clinger 404 53.363 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:38:02"}
+{"level":"info","message":"GET /api/products/electronics 404 53.094 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:38:02"}
+{"level":"info","message":"GET /api/products/clothing 404 51.608 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:38:02"}
+{"level":"info","message":"GET /api/categories/clothing 200 180.248 ms - 446","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:38:02"}
+{"level":"info","message":"GET /api/categories/clothing 200 192.598 ms - 446","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:38:02"}
+{"level":"info","message":"POST /api/analytics/track 200 614.856 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:38:03"}
+{"level":"info","message":"GET /api/products?brandSlug=apple 200 96.985 ms - 124","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:45"}
+{"level":"info","message":"GET /api/brands/apple 200 120.679 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:45"}
+{"level":"error","message":"Cache GET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.get (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.get (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:11:33)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:108:32)\n    at exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:51)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at next (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:157:13)\n    at Route.dispatch (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:117:3)\n    at handle (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\index.js:435:11)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)","timestamp":"2026-05-22 18:41:45"}
+{"level":"info","message":"GET /api/cart?guestId=79928f5a-3ac6-42a1-a534-a443c84484d4 200 44.890 ms - 56","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:45"}
+{"level":"info","message":"GET /api/notifications?limit=10 401 0.808 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:45"}
+{"level":"info","message":"GET /api/wishlist 401 0.837 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:45"}
+{"level":"info","message":"GET /api/cart 200 1.502 ms - 36","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:45"}
+{"level":"info","message":"GET /api/translations/languages 200 51.498 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:45"}
+{"level":"info","message":"GET /api/settings/public 200 118.547 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:45"}
+{"level":"info","message":"GET /api/products/electronics 404 47.185 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:45"}
+{"level":"info","message":"GET /api/products/pharmacy 404 50.784 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:45"}
+{"level":"info","message":"GET /api/products/clothing 404 43.411 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:45"}
+{"level":"error","message":"Cache SET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.set (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.set (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:28:19)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:135:17)\n    at async exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:26)","timestamp":"2026-05-22 18:41:45"}
+{"level":"info","message":"GET /api/translations/en 200 220.318 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:45"}
+{"level":"info","message":"GET /api/categories 200 308.094 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:46"}
+{"level":"info","message":"GET /api/categories/clothing 200 168.365 ms - 446","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:46"}
+{"level":"info","message":"GET /api/categories/pharmacy 200 212.017 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:46"}
+{"level":"info","message":"GET /api/categories/electronics 200 239.817 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:46"}
+{"level":"info","message":"GET /api/products/pharmacy 404 44.137 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:46"}
+{"level":"info","message":"GET /api/products/clinger 404 44.404 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:46"}
+{"level":"info","message":"GET /api/products/smartphones 404 47.326 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:46"}
+{"level":"info","message":"GET /api/products/electronics 404 45.900 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:46"}
+{"level":"info","message":"GET /api/products/clothing 404 51.247 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:46"}
+{"level":"info","message":"GET /api/categories/clinger 200 212.950 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:46"}
+{"level":"info","message":"POST /api/analytics/track 200 684.198 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:46"}
+{"level":"info","message":"GET /api/categories/smartphones 200 266.434 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:46"}
+{"level":"info","message":"POST /api/analytics/track 200 746.293 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:46"}
+{"level":"info","message":"GET /api/flash-sales/public/active 200 85.035 ms - 28","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:54"}
+{"level":"info","message":"POST /api/analytics/track 200 1467.533 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:56"}
+{"level":"info","message":"GET /api/products/pharmacy 404 41.819 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:59"}
+{"level":"info","message":"GET /api/products?category=pharmacy 200 157.451 ms - 124","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:41:59"}
+{"level":"info","message":"GET /api/products/clinger 404 42.828 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:00"}
+{"level":"info","message":"POST /api/analytics/track 200 768.164 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:00"}
+{"level":"info","message":"POST /api/analytics/track 200 462.662 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:03"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 416.174 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:03"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 468.348 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:03"}
+{"level":"info","message":"GET /api/products?brandSlug=apple 200 84.394 ms - 124","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:04"}
+{"level":"info","message":"POST /api/analytics/track 200 474.673 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:04"}
+{"level":"info","message":"POST /api/analytics/track 200 485.073 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:06"}
+{"level":"info","message":"GET /api/settings/public 304 124.472 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:07"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 469.039 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:07"}
+{"level":"info","message":"POST /api/analytics/track 200 523.421 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:07"}
+{"level":"info","message":"POST /api/analytics/track 200 796.577 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:07"}
+{"level":"info","message":"POST /api/analytics/track 200 521.562 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:08"}
+{"level":"info","message":"GET /api/settings/public 304 133.691 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:09"}
+{"level":"info","message":"POST /api/analytics/track 200 498.357 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:09"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 548.000 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:09"}
+{"level":"info","message":"POST /api/analytics/track 200 739.158 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:10"}
+{"level":"info","message":"GET /api/products/about 404 47.085 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:10"}
+{"level":"info","message":"GET /api/products/categories 404 45.994 ms - 263","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:10"}
+{"level":"info","message":"GET /api/categories/categories 404 45.479 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:10"}
+{"level":"info","message":"GET /api/categories/about 404 48.542 ms - 266","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:10"}
+{"level":"info","message":"POST /api/analytics/track 200 647.641 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:16"}
+{"level":"info","message":"GET /api/settings/public 304 120.631 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:17"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 429.354 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:17"}
+{"level":"info","message":"POST /api/analytics/track 200 597.468 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:17"}
+{"level":"info","message":"POST /api/analytics/track 200 801.394 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:42:18"}
+{"level":"info","message":"GET /api/languages/active 304 39.376 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:24"}
+{"level":"info","message":"GET /api/settings/public 304 83.487 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:24"}
+{"level":"info","message":"GET /api/notifications?limit=10 200 97.792 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:25"}
+{"level":"info","message":"GET /api/notifications?limit=10&unreadOnly=false 200 96.680 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:25"}
+{"level":"info","message":"GET /api/notifications?limit=10 304 81.696 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:25"}
+{"level":"info","message":"GET /api/notifications?limit=10&unreadOnly=false 304 89.578 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:25"}
+{"level":"info","message":"POST /api/analytics/track 200 801.591 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:25"}
+{"level":"info","message":"GET /api/analytics/overview 304 748.282 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:25"}
+{"level":"info","message":"GET /api/analytics/overview 304 488.778 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:26"}
+{"level":"info","message":"GET /api/analytics/overview 304 498.730 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:26"}
+{"level":"info","message":"GET /api/analytics/overview 304 512.200 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:27"}
+{"level":"info","message":"GET /api/products?page=1&limit=10&status=all 200 553.820 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:31"}
+{"level":"info","message":"GET /api/products?page=1&limit=10&status=all 304 657.745 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:31"}
+{"level":"info","message":"POST /api/analytics/track 200 1940.033 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:33"}
+{"level":"info","message":"GET /api/languages/active 304 875.178 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:34"}
+{"level":"info","message":"GET /api/languages/active 304 529.404 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:35"}
+{"level":"info","message":"GET /api/brands?isActive=true 304 1402.996 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:35"}
+{"level":"info","message":"GET /api/brands?isActive=true 304 286.314 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:35"}
+{"level":"info","message":"GET /api/categories 304 2029.131 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:35"}
+{"level":"info","message":"POST /api/analytics/track 200 1735.281 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:36"}
+{"level":"info","message":"GET /api/products/6a0dea146a9df47c2e4577c5 200 1741.528 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:36"}
+{"level":"info","message":"GET /api/attributes 500 13.810 ms - 56","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:36"}
+{"level":"info","message":"GET /api/attributes 500 2.520 ms - 56","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:36"}
+{"level":"info","message":"GET /api/categories 304 1020.621 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:36"}
+{"level":"info","message":"GET /api/products/6a0dea146a9df47c2e4577c5 200 2420.861 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:43:38"}
+{"level":"info","message":"GET /api/analytics/overview 304 493.544 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:44:25"}
+{"level":"info","message":"GET /api/analytics/overview 304 793.821 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:45:25"}
+{"level":"info","message":"GET /api/analytics/overview 304 447.433 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:46:25"}
+{"level":"info","message":"GET /api/analytics/overview 304 807.631 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:47:25"}
+{"level":"info","message":"GET /api/analytics/overview 304 455.903 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:48:25"}
+{"level":"info","message":"GET /api/analytics/overview 304 520.864 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:49:25"}
+{"level":"info","message":"GET /api/analytics/overview 304 1069.308 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:50:26"}
+{"level":"info","message":"GET /api/analytics/overview 304 1052.297 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:51:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 476.961 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:52:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 1386.473 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:53:34"}
+{"level":"info","message":"GET /api/analytics/overview 304 559.505 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:54:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 813.695 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:55:00"}
+{"level":"info","message":"GET /api/analytics/overview 304 459.210 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:56:01"}
+{"level":"info","message":"GET /api/analytics/overview 304 3899.741 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:57:04"}
+{"level":"info","message":"GET /api/analytics/overview 304 2834.140 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:58:03"}
+{"level":"info","message":"GET /api/analytics/overview 304 572.217 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 18:59:01"}
+{"level":"info","message":"GET /api/analytics/overview 304 568.821 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:00:01"}
+{"level":"info","message":"GET /api/attributes/run-setup 200 10019.333 ms - 1027","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:00:21"}
+{"level":"info","message":"GET /api/attributes 500 7.662 ms - 56","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:00:25"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:00:56"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:01:01"}
+{"level":"info","message":"GET /api/attributes 200 50.056 ms - 1598","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:01:03"}
+{"level":"info","message":"GET /api/analytics/overview 304 818.603 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:01:15"}
+{"level":"info","message":"GET /api/languages/active 304 150.389 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:02:10"}
+{"level":"info","message":"GET /api/settings/public 304 377.195 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:02:10"}
+{"level":"info","message":"GET /api/languages/active 304 60.141 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:02:11"}
+{"level":"info","message":"GET /api/settings/public 304 306.632 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:02:12"}
+{"level":"info","message":"GET /api/languages/active 304 57.993 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:09"}
+{"level":"info","message":"GET /api/languages/active 304 51.704 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:10"}
+{"level":"info","message":"GET /api/notifications?limit=10 304 87.630 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:10"}
+{"level":"info","message":"GET /api/notifications?limit=10&unreadOnly=false 304 97.647 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:10"}
+{"level":"info","message":"GET /api/settings/public 304 406.825 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:10"}
+{"level":"info","message":"GET /api/languages/active 304 44.849 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:10"}
+{"level":"info","message":"GET /api/brands?isActive=true 304 103.866 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:10"}
+{"level":"info","message":"GET /api/notifications?limit=10 304 100.697 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:10"}
+{"level":"info","message":"GET /api/notifications?limit=10&unreadOnly=false 304 112.988 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:10"}
+{"level":"info","message":"GET /api/brands?isActive=true 304 85.942 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:10"}
+{"level":"info","message":"GET /api/categories 304 325.630 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:10"}
+{"level":"info","message":"GET /api/categories 304 278.734 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:10"}
+{"level":"info","message":"GET /api/products/6a0dea146a9df47c2e4577c5 200 515.673 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:10"}
+{"level":"info","message":"GET /api/analytics/overview 304 714.833 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:10"}
+{"level":"info","message":"GET /api/attributes 200 52.178 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:11"}
+{"level":"info","message":"GET /api/attributes 304 48.403 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:11"}
+{"level":"info","message":"POST /api/analytics/track 200 702.274 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:11"}
+{"level":"info","message":"GET /api/analytics/overview 304 469.042 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:11"}
+{"level":"info","message":"GET /api/products/6a0dea146a9df47c2e4577c5 200 535.159 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:03:11"}
+{"level":"info","message":"GET /api/analytics/overview 304 518.197 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:04:10"}
+{"level":"info","message":"GET /api/analytics/overview 304 542.495 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:05:10"}
+{"level":"info","message":"GET /api/attributes 304 47.005 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:06:08"}
+{"level":"info","message":"GET /api/attributes 304 46.373 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:06:08"}
+{"level":"info","message":"POST /api/analytics/track 200 659.965 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:06:09"}
+{"level":"info","message":"GET /api/analytics/overview 304 521.355 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:06:10"}
+{"level":"info","message":"GET /api/analytics/overview 304 556.593 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:07:11"}
+{"level":"info","message":"GET /api/analytics/overview 304 547.630 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:08:11"}
+{"level":"info","message":"GET /api/analytics/overview 304 574.857 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:09:11"}
+{"level":"info","message":"GET /api/analytics/overview 304 479.583 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:10:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 469.880 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:11:33"}
+{"level":"info","message":"GET /api/attributes 304 42.686 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:12:01"}
+{"level":"info","message":"GET /api/analytics/overview 304 776.716 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:12:02"}
+{"level":"info","message":"GET /api/analytics/overview 304 455.645 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:13:02"}
+{"level":"info","message":"GET /api/analytics/overview 304 506.269 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:14:02"}
+{"level":"info","message":"GET /api/analytics/overview 304 499.240 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:15:02"}
+{"level":"info","message":"GET /api/analytics/overview 304 543.339 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:16:03"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:16:42"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:16:42"}
+{"level":"error","message":"UNCAUGHT EXCEPTION! 💥 Shutting down...","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:16:42"}
+{"level":"error","message":"Error: listen EADDRINUSE: address already in use :::5000\nError: listen EADDRINUSE: address already in use :::5000\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at Server.listen (node:net:2102:7)\n    at startServer (D:\\mahbub-shop\\backend\\server\\src\\server.js:41:12)","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:16:42"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:16:47"}
+{"level":"info","message":"GET /api/analytics/overview 304 757.122 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:17:03"}
+{"level":"info","message":"GET /api/attributes 200 44.814 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:17:05"}
+{"level":"info","message":"GET /api/attributes 304 44.721 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:17:19"}
+{"level":"info","message":"GET /api/analytics/overview 304 690.767 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:17:20"}
+{"level":"info","message":"GET /api/analytics/overview 304 824.221 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:18:20"}
+{"level":"info","message":"GET /api/settings/public 200 402.904 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:18:31"}
+{"level":"info","message":"GET /api/settings/public 200 411.375 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:18:31"}
+{"level":"info","message":"GET /api/settings/public 200 402.771 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:18:31"}
+{"level":"info","message":"GET /api/settings/public 200 401.139 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:18:31"}
+{"level":"info","message":"GET /api/settings/public 200 414.971 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:18:31"}
+{"level":"info","message":"GET /api/settings/public 200 423.427 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:18:31"}
+{"level":"info","message":"GET /api/settings/public 200 483.131 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:18:31"}
+{"level":"info","message":"POST /api/attributes 200 230.312 ms - 262","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:19:00"}
+{"level":"info","message":"GET /api/attributes 200 41.388 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:19:00"}
+{"level":"info","message":"GET /api/languages/active 304 44.166 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:19:07"}
+{"level":"info","message":"GET /api/languages/active 304 58.550 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:19:07"}
+{"level":"info","message":"GET /api/brands?isActive=true 304 105.001 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:19:07"}
+{"level":"info","message":"GET /api/brands?isActive=true 304 87.939 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:19:07"}
+{"level":"info","message":"GET /api/attributes 304 41.571 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:19:07"}
+{"level":"info","message":"GET /api/attributes 304 41.671 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:19:07"}
+{"level":"info","message":"GET /api/categories 304 315.419 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:19:07"}
+{"level":"info","message":"GET /api/categories 304 292.069 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:19:08"}
+{"level":"info","message":"POST /api/analytics/track 200 676.892 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:19:08"}
+{"level":"info","message":"GET /api/analytics/overview 304 469.591 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:19:19"}
+{"level":"info","message":"GET /api/analytics/overview 304 488.653 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:20:19"}
+{"level":"info","message":"GET /api/analytics/overview 304 477.452 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:21:19"}
+{"level":"info","message":"GET /api/analytics/overview 304 487.453 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:22:20"}
+{"level":"info","message":"GET /api/analytics/overview 304 482.942 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:23:20"}
+{"level":"info","message":"GET /api/analytics/overview 304 489.908 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:24:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 740.899 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:25:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 447.831 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:26:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 475.566 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:27:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 482.119 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:28:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 483.487 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:29:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 768.267 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:30:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 468.094 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:31:29"}
+{"level":"info","message":"GET /api/analytics/overview 304 464.067 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:31:29"}
+{"level":"info","message":"GET /api/analytics/overview 304 1012.162 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:32:30"}
+{"level":"info","message":"GET /api/analytics/overview 304 680.774 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:33:30"}
+{"level":"info","message":"GET /api/analytics/overview 304 477.033 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:34:30"}
+{"level":"info","message":"GET /api/analytics/overview 304 481.529 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:35:30"}
+{"level":"info","message":"GET /api/analytics/overview 304 1640.442 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:36:31"}
+{"level":"info","message":"GET /api/analytics/overview 304 487.806 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:37:30"}
+{"level":"info","message":"GET /api/analytics/overview 304 453.275 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:33"}
+{"level":"error","message":"Cache GET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.get (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.get (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:11:33)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:108:32)\n    at exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:51)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at next (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:157:13)\n    at Route.dispatch (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:117:3)\n    at handle (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\index.js:435:11)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)","timestamp":"2026-05-22 19:38:57"}
+{"level":"info","message":"GET /api/brands?isActive=true&isFeatured=true 200 49.451 ms - 68","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:57"}
+{"level":"info","message":"GET /api/hero-slides?featured=true&isActive=true 200 142.757 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:57"}
+{"level":"info","message":"GET /api/settings/public 200 130.815 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:57"}
+{"level":"info","message":"GET /api/brands?isActive=true&limit=6 200 139.894 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:57"}
+{"level":"info","message":"GET /api/products?isNewArrival=true&limit=8 200 307.385 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:57"}
+{"level":"error","message":"Cache SET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.set (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.set (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:28:19)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:135:17)\n    at async exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:26)","timestamp":"2026-05-22 19:38:57"}
+{"level":"info","message":"GET /api/products?sort=sold_desc&limit=8 200 456.987 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:57"}
+{"level":"info","message":"GET /api/categories?isHomeShown=true 200 414.565 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:57"}
+{"level":"info","message":"GET /api/translations/en 200 397.037 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:57"}
+{"level":"info","message":"GET /api/homeCategoryWiseProduct 200 466.931 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:57"}
+{"level":"error","message":"Cache GET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.get (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.get (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:11:33)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:108:32)\n    at exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:51)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at next (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:157:13)\n    at Route.dispatch (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:117:3)\n    at handle (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\index.js:435:11)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)","timestamp":"2026-05-22 19:38:57"}
+{"level":"info","message":"GET /api/flash-sales/public/active 200 707.165 ms - 28","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:57"}
+{"level":"info","message":"GET /api/cart?guestId=6e9e0ecd-518b-4422-8286-baedffa0e401 200 101.765 ms - 384","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:57"}
+{"level":"info","message":"GET /api/settings/public 200 142.624 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:57"}
+{"level":"error","message":"Cache SET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.set (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.set (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:28:19)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:135:17)\n    at async exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:26)","timestamp":"2026-05-22 19:38:57"}
+{"level":"info","message":"GET /api/translations/en 200 241.115 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:57"}
+{"level":"info","message":"GET /api/translations/languages 200 56.527 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:58"}
+{"level":"info","message":"GET /api/translations/languages 304 49.492 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:58"}
+{"level":"info","message":"POST /api/analytics/track 200 682.914 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:58"}
+{"level":"info","message":"POST /api/analytics/track 200 788.751 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:58"}
+{"level":"info","message":"GET /api/notifications?limit=10 401 1.146 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:58"}
+{"level":"info","message":"GET /api/wishlist 401 0.849 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:58"}
+{"level":"info","message":"GET /api/cart 200 1.926 ms - 36","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:58"}
+{"level":"info","message":"GET /api/notifications?limit=10 401 0.711 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:58"}
+{"level":"info","message":"GET /api/categories 304 565.580 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:58"}
+{"level":"info","message":"POST /api/analytics/track 200 1028.884 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:58"}
+{"level":"info","message":"GET /api/categories 304 296.103 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:38:59"}
+{"level":"info","message":"GET /api/analytics/overview 304 637.079 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:39:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 502.753 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:40:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 444.867 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:41:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 456.691 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:42:33"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:42:42"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:42:42"}
+{"level":"error","message":"UNCAUGHT EXCEPTION! 💥 Shutting down...","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:42:42"}
+{"level":"error","message":"Error: listen EADDRINUSE: address already in use :::5000\nError: listen EADDRINUSE: address already in use :::5000\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at Server.listen (node:net:2102:7)\n    at startServer (D:\\mahbub-shop\\backend\\server\\src\\server.js:41:12)","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:42:42"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 460.166 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:42:45"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:42:47"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:42:49"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:42:49"}
+{"level":"error","message":"UNCAUGHT EXCEPTION! 💥 Shutting down...","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:42:50"}
+{"level":"error","message":"Error: listen EADDRINUSE: address already in use :::5000\nError: listen EADDRINUSE: address already in use :::5000\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at Server.listen (node:net:2102:7)\n    at startServer (D:\\mahbub-shop\\backend\\server\\src\\server.js:41:12)","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:42:50"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:42:54"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:43:03"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:43:03"}
+{"level":"error","message":"UNCAUGHT EXCEPTION! 💥 Shutting down...","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:43:03"}
+{"level":"error","message":"Error: listen EADDRINUSE: address already in use :::5000\nError: listen EADDRINUSE: address already in use :::5000\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at Server.listen (node:net:2102:7)\n    at startServer (D:\\mahbub-shop\\backend\\server\\src\\server.js:41:12)","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:43:03"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:43:08"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:43:13"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:43:13"}
+{"level":"error","message":"UNCAUGHT EXCEPTION! 💥 Shutting down...","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:43:13"}
+{"level":"error","message":"Error: listen EADDRINUSE: address already in use :::5000\nError: listen EADDRINUSE: address already in use :::5000\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at Server.listen (node:net:2102:7)\n    at startServer (D:\\mahbub-shop\\backend\\server\\src\\server.js:41:12)","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:43:13"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:43:18"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:43:22"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:43:22"}
+{"level":"error","message":"UNCAUGHT EXCEPTION! 💥 Shutting down...","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:43:22"}
+{"level":"error","message":"Error: listen EADDRINUSE: address already in use :::5000\nError: listen EADDRINUSE: address already in use :::5000\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at Server.listen (node:net:2102:7)\n    at startServer (D:\\mahbub-shop\\backend\\server\\src\\server.js:41:12)","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:43:22"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 446.239 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:43:26"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:43:27"}
+{"level":"info","message":"GET /api/analytics/overview 304 829.869 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:43:33"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:43:54"}
+{"level":"info","message":"GET /api/products/macbook-m5-pro-566088 200 424.357 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:43:59"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:43:59"}
+{"level":"info","message":"POST /api/analytics/track 200 973.294 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:44:10"}
+{"level":"info","message":"GET /api/analytics/overview 304 1022.244 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:44:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 778.992 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:45:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 1001.476 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:46:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 1060.587 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:47:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 496.530 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:48:33"}
+{"level":"info","message":"GET /api/cart 304 7.366 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:14"}
+{"level":"error","message":"Cache GET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.get (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.get (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:11:33)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:108:32)\n    at exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:51)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at next (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:157:13)\n    at Route.dispatch (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:117:3)\n    at handle (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\index.js:435:11)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)","timestamp":"2026-05-22 19:49:17"}
+{"level":"info","message":"GET /api/brands?isActive=true&isFeatured=true 200 52.351 ms - 68","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:17"}
+{"level":"info","message":"GET /api/hero-slides?featured=true&isActive=true 200 53.995 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:17"}
+{"level":"info","message":"GET /api/brands?isActive=true&limit=6 200 143.622 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:17"}
+{"level":"error","message":"Cache SET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.set (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.set (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:28:19)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:135:17)\n    at async exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:26)","timestamp":"2026-05-22 19:49:17"}
+{"level":"info","message":"GET /api/translations/en 200 264.334 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:17"}
+{"level":"info","message":"GET /api/products?sort=sold_desc&limit=8 200 307.471 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:17"}
+{"level":"info","message":"GET /api/products?isNewArrival=true&limit=8 200 307.856 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:17"}
+{"level":"info","message":"GET /api/settings/public 200 355.810 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:17"}
+{"level":"info","message":"GET /api/categories?isHomeShown=true 200 372.964 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:17"}
+{"level":"info","message":"GET /api/homeCategoryWiseProduct 200 397.208 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:17"}
+{"level":"info","message":"GET /api/flash-sales/public/active 200 523.626 ms - 28","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:17"}
+{"level":"error","message":"Cache GET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.get (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.get (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:11:33)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:108:32)\n    at exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:51)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at next (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:157:13)\n    at Route.dispatch (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\route.js:117:3)\n    at handle (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\index.js:435:11)\n    at Layer.handleRequest (D:\\mahbub-shop\\backend\\server\\node_modules\\router\\lib\\layer.js:152:17)","timestamp":"2026-05-22 19:49:17"}
+{"level":"info","message":"GET /api/translations/languages 200 50.853 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:18"}
+{"level":"info","message":"GET /api/cart?guestId=6e9e0ecd-518b-4422-8286-baedffa0e401 200 119.667 ms - 384","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:18"}
+{"level":"error","message":"Cache SET Error [translations:en]: Connection is closed.","service":"mahbub-shop-backend","stack":"Error: Connection is closed.\n    at EventEmitter.sendCommand (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\Redis.js:333:28)\n    at EventEmitter.set (D:\\mahbub-shop\\backend\\server\\node_modules\\ioredis\\built\\utils\\Commander.js:90:25)\n    at Object.set (D:\\mahbub-shop\\backend\\server\\src\\utils\\cache.js:28:19)\n    at TranslationService.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\services\\translation.service.js:135:17)\n    at async exports.getTranslations (D:\\mahbub-shop\\backend\\server\\src\\controllers\\translation.controller.js:9:26)","timestamp":"2026-05-22 19:49:18"}
+{"level":"info","message":"GET /api/translations/en 200 169.866 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:18"}
+{"level":"info","message":"GET /api/settings/public 200 283.054 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:18"}
+{"level":"info","message":"GET /api/notifications?limit=10 401 0.529 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:18"}
+{"level":"info","message":"GET /api/wishlist 401 0.695 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:18"}
+{"level":"info","message":"GET /api/cart 200 0.750 ms - 36","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:18"}
+{"level":"info","message":"GET /api/notifications?limit=10 401 0.909 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:18"}
+{"level":"info","message":"GET /api/categories 200 309.200 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:18"}
+{"level":"info","message":"POST /api/analytics/track 200 659.107 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:19"}
+{"level":"info","message":"POST /api/analytics/track 200 963.649 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:19"}
+{"level":"info","message":"GET /api/brands/apple 200 123.351 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:30"}
+{"level":"info","message":"GET /api/products?brandSlug=apple 200 86.350 ms - 124","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:30"}
+{"level":"info","message":"GET /api/categories 200 374.710 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:30"}
+{"level":"info","message":"POST /api/analytics/track 200 1861.060 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:32"}
+{"level":"info","message":"GET /api/analytics/overview 304 454.275 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:33"}
+{"level":"info","message":"POST /api/analytics/track 200 595.304 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:49:56"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 487.120 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:50:00"}
+{"level":"info","message":"GET /api/settings/public 304 116.954 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:50:00"}
+{"level":"info","message":"GET /api/settings/public 304 138.145 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:50:00"}
+{"level":"info","message":"POST /api/analytics/track 200 499.430 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:50:00"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 492.204 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:50:00"}
+{"level":"info","message":"POST /api/analytics/track 200 656.802 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:50:01"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 469.017 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:50:01"}
+{"level":"info","message":"POST /api/analytics/track 200 1113.303 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:50:01"}
+{"level":"info","message":"GET /api/analytics/overview 304 436.779 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:50:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 466.782 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:51:08"}
+{"level":"info","message":"GET /api/attributes 304 41.667 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:51:12"}
+{"level":"info","message":"GET /api/attributes 304 41.964 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:51:12"}
+{"level":"info","message":"POST /api/analytics/track 200 842.295 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:51:14"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:51:48"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:51:48"}
+{"level":"error","message":"UNCAUGHT EXCEPTION! 💥 Shutting down...","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:51:49"}
+{"level":"error","message":"Error: listen EADDRINUSE: address already in use :::5000\nError: listen EADDRINUSE: address already in use :::5000\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at Server.listen (node:net:2102:7)\n    at startServer (D:\\mahbub-shop\\backend\\server\\src\\server.js:41:12)","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:51:49"}
+{"code":"ECONNREFUSED","level":"error","message":"❌ Redis connection error:","service":"mahbub-shop-backend","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1134:18)\n    at afterConnectMultiple (node:net:1715:7)","timestamp":"2026-05-22 19:51:53"}
+{"level":"info","message":"GET /api/analytics/overview 304 689.025 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:52:09"}
+{"level":"info","message":"GET /api/analytics/overview 304 733.180 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:53:09"}
+{"level":"info","message":"GET /api/analytics/overview 304 767.986 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:54:09"}
+{"level":"info","message":"GET /api/analytics/overview 304 680.767 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:55:09"}
+{"level":"info","message":"GET /api/cart 304 6.666 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:55:20"}
+{"level":"info","message":"GET /api/analytics/overview 304 439.838 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:56:09"}
+{"level":"info","message":"POST /api/analytics/track 200 713.768 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:56:59"}
+{"level":"info","message":"POST /api/analytics/track 200 597.394 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:57:02"}
+{"level":"info","message":"POST /api/analytics/track 200 662.040 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:57:05"}
+{"level":"info","message":"POST /api/analytics/track 200 551.002 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:57:06"}
+{"level":"info","message":"GET /api/analytics/overview 304 2257.744 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:57:11"}
+{"level":"info","message":"GET /api/reviews/6a000b10634476b3ec4de584 200 86.530 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:57:42"}
+{"level":"info","message":"GET /api/reviews/6a000b10634476b3ec4de584 304 86.227 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:57:42"}
+{"level":"info","message":"GET /api/analytics/overview 304 940.396 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:58:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 490.886 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 19:59:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 667.847 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:00:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 483.387 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:01:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 775.273 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:02:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 486.071 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:03:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 697.245 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:04:33"}
+{"level":"info","message":"GET /api/analytics/overview 304 1253.941 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:05:34"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 481.788 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:21"}
+{"level":"info","message":"GET /api/cart?guestId=6e9e0ecd-518b-4422-8286-baedffa0e401 304 440.074 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:22"}
+{"level":"info","message":"GET /api/translations/languages 304 70.412 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:22"}
+{"level":"info","message":"GET /api/settings/public 200 445.944 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:22"}
+{"level":"info","message":"GET /api/settings/public 304 308.383 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:22"}
+{"level":"info","message":"GET /api/categories 304 402.820 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:22"}
+{"level":"info","message":"GET /api/products/iphone-15-pro-max-858092 200 504.776 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:23"}
+{"level":"info","message":"GET /api/notifications?limit=10 401 0.515 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:23"}
+{"level":"info","message":"GET /api/wishlist 401 0.557 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:23"}
+{"level":"info","message":"GET /api/cart 304 1.198 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:23"}
+{"level":"info","message":"GET /api/notifications?limit=10 401 0.469 ms - 73","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:23"}
+{"level":"info","message":"POST /api/analytics/track 200 712.918 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:23"}
+{"level":"info","message":"POST /api/analytics/track 200 596.065 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:23"}
+{"level":"info","message":"POST /api/analytics/track 200 795.064 ms - 88","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:23"}
+{"level":"info","message":"GET /api/analytics/overview 304 937.619 ms - -","service":"mahbub-shop-backend","timestamp":"2026-05-22 20:06:33"}

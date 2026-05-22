@@ -24,7 +24,7 @@ export default function AnalyticsScripts() {
       try {
         // Use relative URL or ensure NEXT_PUBLIC_API_URL is available
         const API_URL =
-          process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+          process.env.NEXT_PUBLIC_API_URL;
         const res = await fetch(`${API_URL}/settings/public`);
         const data = await res.json();
 

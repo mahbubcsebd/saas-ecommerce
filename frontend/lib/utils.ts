@@ -23,3 +23,46 @@ export function getLocalized(data: any, locale: string, field: string = 'name') 
   // 3. Fallback to main field
   return data[field] || '';
 }
+
+export function getImageUrl(path: string | undefined | null): string {
+  if (!path) return '/placeholder.jpg';
+  
+  // If it's already an absolute URL or data URI, return it as is
+  if (
+    path.startsWith('http://') ||
+    path.startsWith('https://') ||
+    path.startsWith('data:')
+  ) {
+    return path;
+  }
+  
+  // If it has a leading slash, Next.js can resolve it locally
+  if (path.startsWith('/')) {
+    return path;
+  }
+  
+  // Fallback settings matches backend's default environment values
+  const imageBaseUrl = process.env.NEXT_PUBLIC_IMAGE_BASE_URL || 'https://res.cloudinary.com/dfigg4e5e/image/upload';
+  const prefix = process.env.NEXT_PUBLIC_IMAGE_FOLDER_PREFIX || 'ecommerce';
+  
+  // 1. Clean the path from any versioning patterns (e.g. v1716.../)
+  let cleanedPath = path.replace(/^v\d+\//, '');
+  
+  // 2. Clean the path from redundant/duplicated prefix patterns
+  if (prefix) {
+    if (cleanedPath.startsWith(prefix + '/')) {
+      cleanedPath = cleanedPath.substring(prefix.length + 1);
+    }
+    cleanedPath = cleanedPath.replace(/^v\d+\//, '');
+    if (cleanedPath.startsWith(prefix + '/')) {
+      cleanedPath = cleanedPath.substring(prefix.length + 1);
+    }
+  }
+  
+  const cleanBase = imageBaseUrl.endsWith('/') ? imageBaseUrl.slice(0, -1) : imageBaseUrl;
+  const relativePath = prefix ? `${prefix}/${cleanedPath}` : cleanedPath;
+  const cleanPath = relativePath.startsWith('/') ? relativePath : `/${relativePath}`;
+  
+  return `${cleanBase}${cleanPath}`;
+}
+

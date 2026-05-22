@@ -50,7 +50,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [localCart, setLocalCart] = useState<CartItem[]>([]);
   const [isMounted, setIsMounted] = useState(false);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const getHeaders = () => {
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -246,11 +246,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     status === 'authenticated'
       ? serverCart
       : {
-          id: 'local-cart',
-          items: localCart,
-          subtotal: localCart.reduce((acc, item) => acc + item.total, 0),
-          total: localCart.reduce((acc, item) => acc + item.total, 0),
-        };
+        id: 'local-cart',
+        items: localCart,
+        subtotal: localCart.reduce((acc, item) => acc + item.total, 0),
+        total: localCart.reduce((acc, item) => acc + item.total, 0),
+      };
 
   return (
     <CartContext.Provider

@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 const HERO_API = `${API_BASE}/hero-slides`;
 
 export default function EditHeroSlidePage({ params }: { params: Promise<{ id: string }> }) {
@@ -15,7 +15,7 @@ export default function EditHeroSlidePage({ params }: { params: Promise<{ id: st
   const { id } = use(params);
   const { data: session } = useSession();
   const token = (session as any)?.accessToken || '';
-  
+
   const [slide, setSlide] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -50,7 +50,7 @@ export default function EditHeroSlidePage({ params }: { params: Promise<{ id: st
     try {
       // If new image was picked, we might need a different endpoint or FormData
       // But typically Edit only updates metadata if no new image, or we might need a multipart if new image
-      
+
       let res;
       if (form.imageFiles.length > 0) {
         // Update with NEW image
@@ -68,7 +68,7 @@ export default function EditHeroSlidePage({ params }: { params: Promise<{ id: st
             endDate: form.endDate || null,
           }),
         );
-        
+
         res = await fetch(`${HERO_API}/${id}`, {
           method: 'PUT',
           headers: { Authorization: `Bearer ${token}` },
@@ -88,9 +88,9 @@ export default function EditHeroSlidePage({ params }: { params: Promise<{ id: st
 
         res = await fetch(`${HERO_API}/${id}`, {
           method: 'PUT',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}` 
+            Authorization: `Bearer ${token}`
           },
           body: JSON.stringify(payload),
         });
@@ -122,11 +122,11 @@ export default function EditHeroSlidePage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="p-6 md:p-10 bg-gray-50/30 min-h-screen">
-      <BannerForm 
-        initialData={slide} 
-        onSubmit={handleSubmit} 
-        isEditing={true} 
-        loading={saving} 
+      <BannerForm
+        initialData={slide}
+        onSubmit={handleSubmit}
+        isEditing={true}
+        loading={saving}
       />
     </div>
   );

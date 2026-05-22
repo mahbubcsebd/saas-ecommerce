@@ -2,44 +2,12 @@ import ProductBreadcrumbs from '@/components/product/ProductBreadcrumbs';
 import ProductDetailsClient from '@/components/product/ProductDetailsClient';
 import RelatedProducts from '@/components/product/RelatedProducts';
 import { generateProductMetadata, generateProductSchema } from '@/lib/seo-utils';
+import { getProductBySlug } from '@/lib/fetchers';
 import { Product } from '@/types/product';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
-
-async function getProduct(slug: string): Promise<Product | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
-  // Ensure we don't have double /api if the env var already includes it
-  const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
-
-  console.log(`Fetching Product: ${apiUrl}/products/${slug}`);
-
-  try {
-    const res = await fetch(`${apiUrl}/products/${slug}`, {
-      cache: 'no-store',
-    });
-
-    if (!res.ok) {
-      console.error(`Fetch failed: ${res.status} ${res.statusText}`);
-      // Try reading body for more info
-      const text = await res.text();
-      console.error(`Response body: ${text}`);
-      return null;
-    }
-
-    const data = await res.json();
-    if (!data.success) {
-      console.error(`API Error: ${data.message}`);
-      return null;
-    }
-
-    return data.data || null;
-  } catch (error) {
-    console.error('Error fetching product:', error);
-    return null;
-  }
-}
 
 // Generate metadata for SEO
 export async function generateMetadata({
@@ -48,7 +16,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = await getProduct(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     return {
@@ -66,7 +34,7 @@ interface PageProps {
 
 export default async function ProductDetailsPage({ params }: PageProps) {
   const { slug } = await params;
-  const product = await getProduct(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();

@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const RETURN_REASONS = [
   { id: 'DEFECTIVE', labelKey: 'reasonDefective', defaultLabel: 'Item is defective/damaged' },

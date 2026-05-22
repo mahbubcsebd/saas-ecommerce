@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function testLogin() {
   try {

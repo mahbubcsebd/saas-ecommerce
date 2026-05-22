@@ -29,7 +29,7 @@ export function Header({ onMenuClick }: HeaderProps) {
   const handleLogout = async () => {
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       await fetch(`${BACKEND_URL}/auth/logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

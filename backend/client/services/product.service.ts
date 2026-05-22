@@ -1,14 +1,14 @@
 const API_URL = typeof window === 'undefined'
   ? 'http://127.0.0.1:5000/api'
-  : (process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api');
+  : (process.env.NEXT_PUBLIC_API_URL);
 
 export const ProductService = {
   getProducts: async (token?: string, params?: any) => {
     // Filter out undefined or null params
     const cleanParams = params
       ? Object.fromEntries(
-          Object.entries(params).filter(([_, v]) => v != null && v !== ''),
-        )
+        Object.entries(params).filter(([_, v]) => v != null && v !== ''),
+      )
       : {};
 
     const query =

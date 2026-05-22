@@ -295,7 +295,7 @@ const GroupCombobox = ({
                 className={cn(
                   'w-full text-left px-3 py-2.5 text-sm hover:bg-blue-50 transition-colors flex items-center justify-between',
                   selectedGroupId === g.id &&
-                    'bg-blue-50 text-blue-700 font-semibold',
+                  'bg-blue-50 text-blue-700 font-semibold',
                 )}
               >
                 <span className="truncate">{g.name}</span>
@@ -439,7 +439,7 @@ export const CampaignComposer: React.FC<CampaignComposerProps> = ({
 }) => {
   const { data: session } = useSession();
   const token = (session as any)?.accessToken ?? '';
-  const API = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+  const API = process.env.NEXT_PUBLIC_API_URL;
   const CAMPAIGN_API = `${API}/campaigns`;
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -508,7 +508,7 @@ export const CampaignComposer: React.FC<CampaignComposerProps> = ({
       .then((d) => {
         if (d.success) setCustomerGroups(d.data);
       })
-      .catch(() => {});
+      .catch(() => { });
 
     // Pre-load all users (up to 200)
     setLoadingUsers(true);
@@ -519,7 +519,7 @@ export const CampaignComposer: React.FC<CampaignComposerProps> = ({
       .then((d) => {
         if (d.success) setAllUsers(d.data);
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoadingUsers(false));
   }, [isOpen, token]);
 
@@ -1524,7 +1524,7 @@ export const CampaignComposer: React.FC<CampaignComposerProps> = ({
         onClose={() => setPickerOpen(false)}
         onSelect={handleLoadTemplate}
         token={token}
-        API={API}
+        API={API || ''}
       />
     </>
   );

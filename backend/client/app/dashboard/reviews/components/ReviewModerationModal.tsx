@@ -26,7 +26,7 @@ export function ReviewModerationModal({
   const [adminReply, setAdminReply] = useState(review.adminReply || "");
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const updateStatus = async (status: string) => {
     setIsUpdating(true);
@@ -43,13 +43,13 @@ export function ReviewModerationModal({
       if (res.ok) {
         onUpdate();
         if (status !== review.status) {
-             onClose(); // Optional: close on status change or keep open to allow reply
+          onClose(); // Optional: close on status change or keep open to allow reply
         }
       } else {
         await alert({
-            title: "Update Failed",
-            message: "Failed to update review status.",
-            type: "warning"
+          title: "Update Failed",
+          message: "Failed to update review status.",
+          type: "warning"
         });
       }
     } catch (error) {
@@ -108,10 +108,10 @@ export function ReviewModerationModal({
 
   const deleteReview = async () => {
     if (!await confirm({
-        title: "Delete Review",
-        message: "Are you sure you want to completely delete this review? This action cannot be undone.",
-        type: "danger",
-        confirmText: "Delete Review"
+      title: "Delete Review",
+      message: "Are you sure you want to completely delete this review? This action cannot be undone.",
+      type: "danger",
+      confirmText: "Delete Review"
     })) return;
 
     setIsUpdating(true);
@@ -150,9 +150,8 @@ export function ReviewModerationModal({
             <DialogTitle className="text-xl font-semibold">Review Details</DialogTitle>
             <div className="flex items-center gap-2">
               <span
-                className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide ${
-                  statusColors[review.status]
-                }`}
+                className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide ${statusColors[review.status]
+                  }`}
               >
                 {review.status}
               </span>
@@ -231,9 +230,8 @@ export function ReviewModerationModal({
                 {[1, 2, 3, 4, 5].map((star) => (
                   <svg
                     key={star}
-                    className={`w-5 h-5 ${
-                      star <= review.rating ? "text-yellow-400" : "text-gray-300"
-                    }`}
+                    className={`w-5 h-5 ${star <= review.rating ? "text-yellow-400" : "text-gray-300"
+                      }`}
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -261,7 +259,7 @@ export function ReviewModerationModal({
               onChange={(e) => setAdminReply(e.target.value)}
             />
             <div className="flex justify-end">
-               <Button
+              <Button
                 variant="outline"
                 size="sm"
                 onClick={submitReply}
@@ -269,46 +267,46 @@ export function ReviewModerationModal({
                 className="bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200"
               >
                 Save Reply
-               </Button>
+              </Button>
             </div>
           </div>
         </div>
 
         {/* Actions Footer */}
         <div className="bg-gray-50 p-4 border-t flex items-center justify-between">
-            <Button
-              variant="ghost"
-              className="text-red-600 hover:text-red-700 hover:bg-red-50"
-              onClick={deleteReview}
-              disabled={isUpdating}
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Delete Review
-            </Button>
+          <Button
+            variant="ghost"
+            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+            onClick={deleteReview}
+            disabled={isUpdating}
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Delete Review
+          </Button>
 
-            <div className="flex gap-3">
-              {review.status !== "APPROVED" && (
-                <Button
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                  onClick={() => updateStatus("APPROVED")}
-                  disabled={isUpdating}
-                >
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Approve
-                </Button>
-              )}
-              {review.status !== "REJECTED" && (
-                <Button
-                  variant="outline"
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
-                  onClick={() => updateStatus("REJECTED")}
-                  disabled={isUpdating}
-                >
-                  <XCircle className="w-4 h-4 mr-2" />
-                  Reject
-                </Button>
-              )}
-            </div>
+          <div className="flex gap-3">
+            {review.status !== "APPROVED" && (
+              <Button
+                className="bg-green-600 hover:bg-green-700 text-white"
+                onClick={() => updateStatus("APPROVED")}
+                disabled={isUpdating}
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Approve
+              </Button>
+            )}
+            {review.status !== "REJECTED" && (
+              <Button
+                variant="outline"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                onClick={() => updateStatus("REJECTED")}
+                disabled={isUpdating}
+              >
+                <XCircle className="w-4 h-4 mr-2" />
+                Reject
+              </Button>
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>

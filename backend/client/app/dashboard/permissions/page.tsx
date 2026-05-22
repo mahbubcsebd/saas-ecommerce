@@ -4,6 +4,8 @@ import { ShieldCheck, Users } from 'lucide-react';
 import { RoleDefinitions } from './components/RoleDefinitions';
 import { StaffClient } from './components/StaffClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function PermissionsPage() {
   let users: User[] = [];
 

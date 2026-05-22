@@ -133,31 +133,31 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
 
 
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const fetchLanguages = async () => {
-      setFetchingLanguages(true);
-      try {
-        const res = await fetch(`${API_URL}/languages/active`);
-        if (res.ok) {
-            const data = await res.json();
-            const langs = data.data || [];
-            setLanguages(langs);
+    setFetchingLanguages(true);
+    try {
+      const res = await fetch(`${API_URL}/languages/active`);
+      if (res.ok) {
+        const data = await res.json();
+        const langs = data.data || [];
+        setLanguages(langs);
 
-            // Initialize translations
-            const initTrans: Record<string, { name: string; description: string }> = {};
-            langs.forEach((l: Language) => {
-                initTrans[l.code] = { name: "", description: "" };
-            });
-            setTranslations(prev => ({ ...initTrans, ...prev })); // Merge to keep if any existing
+        // Initialize translations
+        const initTrans: Record<string, { name: string; description: string }> = {};
+        langs.forEach((l: Language) => {
+          initTrans[l.code] = { name: "", description: "" };
+        });
+        setTranslations(prev => ({ ...initTrans, ...prev })); // Merge to keep if any existing
 
 
-        }
-      } catch (e) {
-          console.error("Failed to fetch languages", e);
-      } finally {
-          setFetchingLanguages(false);
       }
+    } catch (e) {
+      console.error("Failed to fetch languages", e);
+    } finally {
+      setFetchingLanguages(false);
+    }
   };
 
   const fetchBrands = async () => {
@@ -180,9 +180,9 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
 
   // Fetch product data only after languages are loaded to correctly populate translations
   useEffect(() => {
-      if (mode === "edit" && productId && languages.length > 0) {
-          fetchProduct();
-      }
+    if (mode === "edit" && productId && languages.length > 0) {
+      fetchProduct();
+    }
   }, [mode, productId, languages]);
 
   const fetchCategories = async () => {
@@ -214,24 +214,24 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
 
         // Initialize with empty
         languages.forEach(l => {
-            newTranslations[l.code] = { name: "", description: "" };
+          newTranslations[l.code] = { name: "", description: "" };
         });
 
         // Fill with default data for default lang (usually 'en' or from basic fields)
         const defaultLangCode = languages.find(l => l.isDefault)?.code || "en";
         newTranslations[defaultLangCode] = {
-            name: data.name || "",
-            description: data.description || ""
+          name: data.name || "",
+          description: data.description || ""
         };
 
         // Fill from translations array if exists
         if (data.translations && Array.isArray(data.translations)) {
-            data.translations.forEach((t: any) => {
-                newTranslations[t.langCode] = {
-                    name: t.name || "",
-                    description: t.description || ""
-                };
-            });
+          data.translations.forEach((t: any) => {
+            newTranslations[t.langCode] = {
+              name: t.name || "",
+              description: t.description || ""
+            };
+          });
         }
         setTranslations(newTranslations);
 
@@ -316,99 +316,99 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
   };
 
   const handleTranslationChange = (lang: string, field: 'name' | 'description', value: string) => {
-      setTranslations(prev => ({
-          ...prev,
-          [lang]: { ...prev[lang], [field]: value }
-      }));
+    setTranslations(prev => ({
+      ...prev,
+      [lang]: { ...prev[lang], [field]: value }
+    }));
   };
 
   const handleAutoTranslate = async () => {
-      const defaultLang = languages.find(l => l.isDefault)?.code || "en";
+    const defaultLang = languages.find(l => l.isDefault)?.code || "en";
 
-      // 1. Get source text from default language
-      const sourceName = translations[defaultLang]?.name;
-      const sourceDesc = translations[defaultLang]?.description;
+    // 1. Get source text from default language
+    const sourceName = translations[defaultLang]?.name;
+    const sourceDesc = translations[defaultLang]?.description;
 
-      if (!sourceName && !sourceDesc) {
-          await alert({
-              title: "Source Missing",
-              message: `Please enter text in the default language (${defaultLang.toUpperCase()}) to translate.`,
-              type: "warning"
+    if (!sourceName && !sourceDesc) {
+      await alert({
+        title: "Source Missing",
+        message: `Please enter text in the default language (${defaultLang.toUpperCase()}) to translate.`,
+        type: "warning"
+      });
+      return;
+    }
+
+    // 2. Identify target languages (all active languages except default)
+    const targetLangs = languages
+      .filter(l => l.code !== defaultLang)
+      .map(l => l.code);
+
+    if (targetLangs.length === 0) {
+      await alert({
+        title: "No Target Languages",
+        message: "No other active languages available to translate to.",
+        type: "info"
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const updates = { ...translations };
+
+      // Translate Name
+      if (sourceName) {
+        const res = await fetch(`${API_URL}/ai/translate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session?.accessToken}`
+          },
+          body: JSON.stringify({
+            text: sourceName,
+            targetLangs,
+            context: 'Product Name'
+          })
+        });
+        if (res.ok) {
+          const { data } = await res.json();
+          Object.entries(data).forEach(([code, text]) => {
+            if (updates[code]) updates[code].name = text as string;
           });
-          return;
+        }
       }
 
-      // 2. Identify target languages (all active languages except default)
-      const targetLangs = languages
-          .filter(l => l.code !== defaultLang)
-          .map(l => l.code);
-
-      if (targetLangs.length === 0) {
-          await alert({
-              title: "No Target Languages",
-              message: "No other active languages available to translate to.",
-              type: "info"
+      // Translate Description
+      if (sourceDesc) {
+        const res = await fetch(`${API_URL}/ai/translate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session?.accessToken}`
+          },
+          body: JSON.stringify({
+            text: sourceDesc,
+            targetLangs,
+            context: 'Product Description (HTML)'
+          })
+        });
+        if (res.ok) {
+          const { data } = await res.json();
+          Object.entries(data).forEach(([code, text]) => {
+            if (updates[code]) updates[code].description = text as string;
           });
-          return;
+        }
       }
 
-      setLoading(true);
-      try {
-          const updates = { ...translations };
+      setTranslations(updates);
+      toast.success("Auto-translation complete!");
 
-          // Translate Name
-          if (sourceName) {
-              const res = await fetch(`${API_URL}/ai/translate`, {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${session?.accessToken}`
-                  },
-                  body: JSON.stringify({
-                      text: sourceName,
-                      targetLangs,
-                      context: 'Product Name'
-                  })
-              });
-              if (res.ok) {
-                  const { data } = await res.json();
-                  Object.entries(data).forEach(([code, text]) => {
-                      if (updates[code]) updates[code].name = text as string;
-                  });
-              }
-          }
-
-          // Translate Description
-          if (sourceDesc) {
-               const res = await fetch(`${API_URL}/ai/translate`, {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                      Authorization: `Bearer ${session?.accessToken}`
-                  },
-                  body: JSON.stringify({
-                      text: sourceDesc,
-                      targetLangs,
-                      context: 'Product Description (HTML)'
-                  })
-              });
-              if (res.ok) {
-                  const { data } = await res.json();
-                  Object.entries(data).forEach(([code, text]) => {
-                      if (updates[code]) updates[code].description = text as string;
-                  });
-              }
-          }
-
-          setTranslations(updates);
-          toast.success("Auto-translation complete!");
-
-      } catch (error) {
-          console.error("Auto translation error:", error);
-          toast.error("Failed to auto-translate.");
-      } finally {
-          setLoading(false);
-      }
+    } catch (error) {
+      console.error("Auto translation error:", error);
+      toast.error("Failed to auto-translate.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const slugify = (text: string) => {
@@ -428,9 +428,9 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
       setFormData(prev => ({ ...prev, slug: `${slugify(name)}-${Date.now().toString().slice(-6)}` }));
     } else {
       await alert({
-          title: "Name Required",
-          message: "Please enter product name first to generate a slug.",
-          type: "warning"
+        title: "Name Required",
+        message: "Please enter product name first to generate a slug.",
+        type: "warning"
       });
     }
   };
@@ -448,8 +448,8 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
     // Simple check digit
     let sum = 0;
     for (let i = 0; i < 12; i++) {
-        const digit = parseInt(barcode[i]);
-        sum += i % 2 === 0 ? digit : digit * 3;
+      const digit = parseInt(barcode[i]);
+      sum += i % 2 === 0 ? digit : digit * 3;
     }
     const checkDigit = (10 - (sum % 10)) % 10;
     setFormData(prev => ({ ...prev, barcode: barcode + checkDigit }));
@@ -461,7 +461,7 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
     // Validate default language at least
     const defaultLang = languages.find(l => l.isDefault)?.code || "en";
     if (!translations[defaultLang]?.name?.trim()) {
-        newErrors.name = `Product name (${defaultLang.toUpperCase()}) is required`;
+      newErrors.name = `Product name (${defaultLang.toUpperCase()}) is required`;
     }
 
     if (!formData.basePrice) newErrors.basePrice = "Base price is required";
@@ -484,9 +484,9 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
 
     if (!session?.accessToken) {
       await alert({
-          title: "Authentication Required",
-          message: "Please login to continue saving this product.",
-          type: "danger"
+        title: "Authentication Required",
+        message: "Please login to continue saving this product.",
+        type: "danger"
       });
       return;
     }
@@ -505,9 +505,9 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
 
       // Append translations array
       const translationsArray = Object.entries(translations).map(([code, data]) => ({
-          langCode: code,
-          name: data.name,
-          description: data.description
+        langCode: code,
+        name: data.name,
+        description: data.description
       }));
       formDataToSend.append("translations", JSON.stringify(translationsArray));
 
@@ -658,27 +658,27 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
         {/* Basic Info */}
         <div className="bg-white p-6 rounded-lg shadow space-y-4">
           <div className="flex items-center justify-between border-b pb-2">
-              <h2 className="text-lg font-semibold">Basic Information</h2>
-              <button
-                type="button"
-                onClick={handleAutoTranslate}
-                disabled={loading}
-                className="px-3 py-1 text-xs bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50 flex items-center gap-1"
-              >
-                <span>✨ Auto Translate Missing Fields</span>
-              </button>
+            <h2 className="text-lg font-semibold">Basic Information</h2>
+            <button
+              type="button"
+              onClick={handleAutoTranslate}
+              disabled={loading}
+              className="px-3 py-1 text-xs bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50 flex items-center gap-1"
+            >
+              <span>✨ Auto Translate Missing Fields</span>
+            </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <LocalizedInput
-                label="Product Name"
-                languages={languages}
-                translations={translations}
-                field="name"
-                onChange={(lang, val) => handleTranslationChange(lang, 'name', val)}
-                required
-                error={errors.name}
-                placeholder="Enter product name"
+              label="Product Name"
+              languages={languages}
+              translations={translations}
+              field="name"
+              onChange={(lang, val) => handleTranslationChange(lang, 'name', val)}
+              required
+              error={errors.name}
+              placeholder="Enter product name"
             />
             {/* Slug is universal, unrelated to lang usually, or auto-generated from default name */}
             <GlobalInput
@@ -699,13 +699,13 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
           </div>
 
           <div>
-             <LocalizedTextEditor
-                label="Description"
-                languages={languages}
-                translations={translations}
-                field="description"
-                onChange={(lang, val) => handleTranslationChange(lang, 'description', val)}
-             />
+            <LocalizedTextEditor
+              label="Description"
+              languages={languages}
+              translations={translations}
+              field="description"
+              onChange={(lang, val) => handleTranslationChange(lang, 'description', val)}
+            />
           </div>
         </div>
 
@@ -971,7 +971,7 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
               <div className="mt-4 pt-4 border-t space-y-4">
                 <h3 className="text-sm font-bold text-gray-800 uppercase tracking-wider">Home Page & Warranty</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                   <div className="space-y-2">
+                  <div className="space-y-2">
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
@@ -988,13 +988,13 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
                       onChange={(e) => setFormData({ ...formData, homeOrder: (e.target as HTMLInputElement).value })}
                       placeholder="e.g. 1"
                     />
-                   </div>
-                   <GlobalInput
-                     label="Warranty Info"
-                     value={formData.warranty}
-                     onChange={(e) => setFormData({ ...formData, warranty: (e.target as HTMLInputElement).value })}
-                     placeholder="e.g. 1 Year Official"
-                   />
+                  </div>
+                  <GlobalInput
+                    label="Warranty Info"
+                    value={formData.warranty}
+                    onChange={(e) => setFormData({ ...formData, warranty: (e.target as HTMLInputElement).value })}
+                    placeholder="e.g. 1 Year Official"
+                  />
                 </div>
               </div>
             </div>
@@ -1021,13 +1021,13 @@ export default function ProductForm({ mode, productId }: ProductFormProps) {
                 onChange={(newValue) => setFormData({ ...formData, metaKeywords: newValue as any })}
                 className="text-sm"
                 styles={{
-                    control: (base) => ({
-                        ...base,
-                        minHeight: '48px',
-                        backgroundColor: '#F9FAFB',
-                        borderRadius: '8px',
-                        borderColor: '#E5E7EB'
-                    })
+                  control: (base) => ({
+                    ...base,
+                    minHeight: '48px',
+                    backgroundColor: '#F9FAFB',
+                    borderRadius: '8px',
+                    borderColor: '#E5E7EB'
+                  })
                 }}
               />
             </div>

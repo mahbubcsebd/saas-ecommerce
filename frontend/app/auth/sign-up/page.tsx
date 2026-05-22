@@ -29,7 +29,7 @@ export default function SignUpPage() {
     setErrors({}); // Clear previous errors
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -41,7 +41,7 @@ export default function SignUpPage() {
       if (res.ok && data.success) {
         toast.success(
           data.message ||
-            t('auth', 'registrationSuccess', { defaultValue: 'Account created successfully!' })
+          t('auth', 'registrationSuccess', { defaultValue: 'Account created successfully!' })
         );
         router.push('/auth/login');
       } else {

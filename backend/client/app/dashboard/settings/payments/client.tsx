@@ -39,7 +39,7 @@ export default function PaymentSettingsClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${BACKEND_URL}/settings/payment`, {
         headers: { Authorization: `Bearer ${session.accessToken}` },
       });
@@ -64,7 +64,7 @@ export default function PaymentSettingsClient() {
     setIsSaving(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${BACKEND_URL}/settings/payment`, {
         method: 'PUT',
         headers: {

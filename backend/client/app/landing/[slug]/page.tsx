@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 interface PageProps {
   params: Promise<{

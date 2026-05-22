@@ -1,4 +1,4 @@
-import { api } from './api-client';
+import { api, FetchOptions } from './api-client';
 
 export async function getHeroSlides() {
   try {
@@ -151,9 +151,74 @@ export async function getBrandBySlug(slug: string) {
       revalidate: 60,
       tags: [`brand-${slug}`],
     });
-  } catch (error) {
-    console.error(`Error fetching brand ${slug}:`, error);
+  } catch (error: any) {
+    if (error?.status !== 404) {
+      console.error(`Error fetching brand ${slug}:`, error);
+    }
     return null;
   }
 }
 
+export async function getProductBySlug(slug: string) {
+  try {
+    return await api.get<any>(`/products/${slug}`, {
+      revalidate: 60,
+      tags: ['products', `product-${slug}`],
+    });
+  } catch (error: any) {
+    if (error?.status !== 404) {
+      console.error(`Error fetching product ${slug}:`, error);
+    }
+    return null;
+  }
+}
+
+export async function getCategoryBySlug(slug: string) {
+  try {
+    return await api.get<any>(`/categories/${slug}`, {
+      revalidate: 60,
+      tags: ['categories', `category-${slug}`],
+    });
+  } catch (error: any) {
+    if (error?.status !== 404) {
+      console.error(`Error fetching category ${slug}:`, error);
+    }
+    return null;
+  }
+}
+
+export async function getPublicSettings(options?: FetchOptions) {
+  try {
+    return await api.get<any>('/settings/public', {
+      revalidate: 3600,
+      tags: ['settings'],
+      ...options,
+    });
+  } catch (error) {
+    console.error('Error fetching public settings:', error);
+    return null;
+  }
+}
+
+export async function getRelatedProducts(currentProductId: string, limit = 4) {
+  try {
+    return await api.get<any[]>(`/products/related/${currentProductId}?limit=${limit}`, {
+      cache: 'no-store',
+    });
+  } catch (error) {
+    console.error('Error fetching related products:', error);
+    return [];
+  }
+}
+
+export async function getLanguages() {
+  try {
+    return await api.get<any[]>('/translations/languages', {
+      revalidate: 3600,
+      tags: ['languages'],
+    });
+  } catch (error) {
+    console.error('Error fetching languages:', error);
+    return [];
+  }
+}

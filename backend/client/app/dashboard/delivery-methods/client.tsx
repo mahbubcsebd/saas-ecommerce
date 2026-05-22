@@ -100,7 +100,7 @@ export default function DeliveryMethodsClient() {
         if (!session?.accessToken) return;
         setIsLoading(true);
         try {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
             // Fetch Zones to get rates
             const zonesRes = await fetch(`${BACKEND_URL}/shipping/zones`, {
@@ -155,7 +155,7 @@ export default function DeliveryMethodsClient() {
         };
 
         try {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
             const res = await fetch(`${BACKEND_URL}/shipping/rates/${editingRate.id}`, {
                 method: 'PUT',
                 headers: {
@@ -355,7 +355,7 @@ export default function DeliveryMethodsClient() {
                                     id="method"
                                     className="rounded-2xl h-12 bg-slate-50 border-slate-200 focus:ring-emerald-500"
                                     value={rateForm.method}
-                                    onChange={e => setRateForm({...rateForm, method: e.target.value})}
+                                    onChange={e => setRateForm({ ...rateForm, method: e.target.value })}
                                     required
                                 />
                             </div>
@@ -363,7 +363,7 @@ export default function DeliveryMethodsClient() {
                                 <Label htmlFor="courierId" className="text-xs font-black uppercase text-slate-500 pl-1">Associate Courier</Label>
                                 <Select
                                     value={rateForm.courierId}
-                                    onValueChange={val => setRateForm({...rateForm, courierId: val})}
+                                    onValueChange={val => setRateForm({ ...rateForm, courierId: val })}
                                 >
                                     <SelectTrigger className="rounded-2xl h-12 bg-slate-50 border-slate-200">
                                         <SelectValue placeholder="Internal/Direct" />
@@ -382,7 +382,7 @@ export default function DeliveryMethodsClient() {
                             <Label className="text-xs font-black uppercase text-slate-500 pl-1">Pricing Strategy</Label>
                             <Select
                                 value={rateForm.calculationType}
-                                onValueChange={(val: any) => setRateForm({...rateForm, calculationType: val})}
+                                onValueChange={(val: any) => setRateForm({ ...rateForm, calculationType: val })}
                             >
                                 <SelectTrigger className="rounded-2xl h-12 bg-emerald-50 border-emerald-100 text-emerald-900 font-bold">
                                     <SelectValue />
@@ -403,7 +403,7 @@ export default function DeliveryMethodsClient() {
                                         id="flatRate" type="number"
                                         className="h-12 rounded-xl bg-white border-none shadow-inner"
                                         value={rateForm.flatRate}
-                                        onChange={e => setRateForm({...rateForm, flatRate: Number(e.target.value)})}
+                                        onChange={e => setRateForm({ ...rateForm, flatRate: Number(e.target.value) })}
                                     />
                                 </div>
                             )}
@@ -416,7 +416,7 @@ export default function DeliveryMethodsClient() {
                                             id="baseRate" type="number"
                                             className="h-12 rounded-xl bg-white border-none shadow-inner"
                                             value={rateForm.baseRate}
-                                            onChange={e => setRateForm({...rateForm, baseRate: Number(e.target.value)})}
+                                            onChange={e => setRateForm({ ...rateForm, baseRate: Number(e.target.value) })}
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -425,7 +425,7 @@ export default function DeliveryMethodsClient() {
                                             id="perKgRate" type="number"
                                             className="h-12 rounded-xl bg-white border-none shadow-inner"
                                             value={rateForm.perKgRate}
-                                            onChange={e => setRateForm({...rateForm, perKgRate: Number(e.target.value)})}
+                                            onChange={e => setRateForm({ ...rateForm, perKgRate: Number(e.target.value) })}
                                         />
                                     </div>
                                 </>
@@ -439,7 +439,7 @@ export default function DeliveryMethodsClient() {
                                             id="flatRate" type="number"
                                             className="h-12 rounded-xl bg-white border-none shadow-inner"
                                             value={rateForm.flatRate}
-                                            onChange={e => setRateForm({...rateForm, flatRate: Number(e.target.value)})}
+                                            onChange={e => setRateForm({ ...rateForm, flatRate: Number(e.target.value) })}
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -448,7 +448,7 @@ export default function DeliveryMethodsClient() {
                                             id="freeShippingThreshold" type="number"
                                             className="h-12 rounded-xl bg-white border-none shadow-inner"
                                             value={rateForm.freeShippingThreshold}
-                                            onChange={e => setRateForm({...rateForm, freeShippingThreshold: Number(e.target.value)})}
+                                            onChange={e => setRateForm({ ...rateForm, freeShippingThreshold: Number(e.target.value) })}
                                         />
                                     </div>
                                 </>
@@ -463,7 +463,7 @@ export default function DeliveryMethodsClient() {
                                     className="rounded-xl bg-slate-50 border-slate-200"
                                     placeholder="2-3"
                                     value={rateForm.estimatedDays}
-                                    onChange={e => setRateForm({...rateForm, estimatedDays: e.target.value})}
+                                    onChange={e => setRateForm({ ...rateForm, estimatedDays: e.target.value })}
                                 />
                             </div>
                             <div className="space-y-2">
@@ -472,7 +472,7 @@ export default function DeliveryMethodsClient() {
                                     id="minWeight" type="number" step="0.1"
                                     className="rounded-xl bg-slate-50 border-slate-200"
                                     value={rateForm.minWeight}
-                                    onChange={e => setRateForm({...rateForm, minWeight: Number(e.target.value)})}
+                                    onChange={e => setRateForm({ ...rateForm, minWeight: Number(e.target.value) })}
                                 />
                             </div>
                             <div className="space-y-2">
@@ -481,7 +481,7 @@ export default function DeliveryMethodsClient() {
                                     id="maxWeight" type="number" step="0.1"
                                     className="rounded-xl bg-slate-50 border-slate-200"
                                     value={rateForm.maxWeight}
-                                    onChange={e => setRateForm({...rateForm, maxWeight: Number(e.target.value)})}
+                                    onChange={e => setRateForm({ ...rateForm, maxWeight: Number(e.target.value) })}
                                 />
                             </div>
                         </div>
@@ -498,7 +498,7 @@ export default function DeliveryMethodsClient() {
                             </div>
                             <Switch
                                 checked={rateForm.isActive}
-                                onCheckedChange={checked => setRateForm({...rateForm, isActive: checked})}
+                                onCheckedChange={checked => setRateForm({ ...rateForm, isActive: checked })}
                                 className="data-[state=checked]:bg-emerald-500"
                             />
                         </div>

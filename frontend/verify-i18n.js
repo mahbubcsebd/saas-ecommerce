@@ -1,5 +1,5 @@
 async function verifyI18n() {
-  const API_URL = 'https://api.mahbuburrahman.xyz/api';
+  const API_URL = '';
   const locale = 'bn';
 
   try {

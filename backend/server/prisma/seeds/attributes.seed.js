@@ -6,8 +6,21 @@ const predefinedAttributes = [
     name: 'color',
     label: 'Color',
     values: [
-      'Red', 'Blue', 'Green', 'Black', 'White', 'Yellow', 'Orange', 'Purple',
-      'Pink', 'Brown', 'Gray', 'Navy', 'Beige', 'Gold', 'Silver'
+      'Red:#EF4444',
+      'Blue:#3B82F6',
+      'Green:#10B981',
+      'Black:#000000',
+      'White:#FFFFFF',
+      'Yellow:#FBBF24',
+      'Orange:#F97316',
+      'Purple:#8B5CF6',
+      'Pink:#EC4899',
+      'Brown:#78350F',
+      'Gray:#6B7280',
+      'Navy:#1E3A8A',
+      'Beige:#F5F5DC',
+      'Gold:#FFD700',
+      'Silver:#C0C0C0'
     ],
   },
   {

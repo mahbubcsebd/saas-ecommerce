@@ -90,7 +90,7 @@ export default function LanguageSettingsClient() {
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedLang, setSelectedLang] = useState<Language | null>(null);
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
     const fetchData = async () => {
         if (!session?.accessToken) return;
@@ -266,7 +266,7 @@ export default function LanguageSettingsClient() {
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="h-14 w-14 bg-slate-900 rounded-2xl flex items-center justify-center shadow-lg shadow-slate-100">
-                             <Languages className="w-7 h-7 text-white" />
+                            <Languages className="w-7 h-7 text-white" />
                         </div>
                         <div>
                             <h1 className="text-3xl font-bold tracking-tight text-slate-900 uppercase leading-none">
@@ -453,21 +453,21 @@ export default function LanguageSettingsClient() {
                                     <Label className="text-xs font-bold uppercase">Public Name</Label>
                                     <Input
                                         value={selectedLang.name}
-                                        onChange={e => setSelectedLang({...selectedLang, name: e.target.value})}
+                                        onChange={e => setSelectedLang({ ...selectedLang, name: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-xs font-bold uppercase">Native Title</Label>
                                     <Input
                                         value={selectedLang.nativeName}
-                                        onChange={e => setSelectedLang({...selectedLang, nativeName: e.target.value})}
+                                        onChange={e => setSelectedLang({ ...selectedLang, nativeName: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-xs font-bold uppercase">Emoji Flag</Label>
                                     <Input
                                         value={selectedLang.flag}
-                                        onChange={e => setSelectedLang({...selectedLang, flag: e.target.value})}
+                                        onChange={e => setSelectedLang({ ...selectedLang, flag: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -475,7 +475,7 @@ export default function LanguageSettingsClient() {
                                     <div className="flex items-center gap-3 pt-2">
                                         <Switch
                                             checked={selectedLang.isRtl}
-                                            onCheckedChange={val => setSelectedLang({...selectedLang, isRtl: val})}
+                                            onCheckedChange={val => setSelectedLang({ ...selectedLang, isRtl: val })}
                                         />
                                         <span className="text-xs font-medium text-slate-600 uppercase">RTL Support</span>
                                     </div>

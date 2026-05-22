@@ -1,5 +1,5 @@
 async function testProductTranslations() {
-  const API_URL = "https://api.mahbuburrahman.xyz/api";
+  const API_URL = "";
 
   try {
     console.log("Fetching /products...");
@@ -14,22 +14,22 @@ async function testProductTranslations() {
         console.log(`Translations count: ${product.translations.length}`);
         console.log(`Available languages: ${product.translations.map(t => t.langCode).join(', ')}`);
       }
-    console.log("\nFetching /categories...");
-    const resCat = await fetch(`${API_URL}/categories`);
-    const jsonCat = await resCat.json();
+      console.log("\nFetching /categories...");
+      const resCat = await fetch(`${API_URL}/categories`);
+      const jsonCat = await resCat.json();
 
-    if (jsonCat.success && jsonCat.data.length > 0) {
-      const cat = jsonCat.data[0];
-      console.log(`Category: ${cat.name}`);
-      console.log(`Translations present: ${!!cat.translations}`);
-      if (cat.translations) {
-        console.log(`Translations count: ${cat.translations.length}`);
-        console.log(`Available languages: ${cat.translations.map(t => t.langCode).join(', ')}`);
+      if (jsonCat.success && jsonCat.data.length > 0) {
+        const cat = jsonCat.data[0];
+        console.log(`Category: ${cat.name}`);
+        console.log(`Translations present: ${!!cat.translations}`);
+        if (cat.translations) {
+          console.log(`Translations count: ${cat.translations.length}`);
+          console.log(`Available languages: ${cat.translations.map(t => t.langCode).join(', ')}`);
+        }
       }
+    } catch (error) {
+      console.error("Test failed:", error);
     }
-  } catch (error) {
-    console.error("Test failed:", error);
   }
-}
 
 testProductTranslations();

@@ -28,7 +28,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const initLanguage = async () => {
@@ -90,17 +90,17 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
     // 1. If data is the translation array itself
     if (Array.isArray(data)) {
-        const trans = data.find((t: any) => t.langCode === language.code);
-        if (trans && trans[field]) return trans[field];
-        // Fallback to default/first
-        const def = data.find((t: any) => t.langCode === languages.find(l=>l.isDefault)?.code);
-        return def?.[field] || data[0]?.[field] || "";
+      const trans = data.find((t: any) => t.langCode === language.code);
+      if (trans && trans[field]) return trans[field];
+      // Fallback to default/first
+      const def = data.find((t: any) => t.langCode === languages.find(l => l.isDefault)?.code);
+      return def?.[field] || data[0]?.[field] || "";
     }
 
     // 2. If data is an object with `translations` property (e.g. Product)
     if (data.translations && Array.isArray(data.translations)) {
-        const trans = data.translations.find((t: any) => t.langCode === language.code);
-        if (trans && trans[field]) return trans[field];
+      const trans = data.translations.find((t: any) => t.langCode === language.code);
+      if (trans && trans[field]) return trans[field];
     }
 
     // 3. Fallback to direct property on object (default lang usually)

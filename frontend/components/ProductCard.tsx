@@ -4,7 +4,7 @@ import { useTranslations } from '@/context/TranslationContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useCurrency } from '@/hooks/useCurrency';
 import { trackAddToCart } from '@/lib/analytics';
-import { cn, getLocalized } from '@/lib/utils';
+import { cn, getLocalized, getImageUrl } from '@/lib/utils';
 import { useCartStore } from '@/store/useCartStore';
 import { Product } from '@/types/product';
 import { Eye, Heart, ShoppingCart } from 'lucide-react';
@@ -79,7 +79,7 @@ export default function ProductCard({ product, layout = 'grid' }: ProductCardPro
         <Link href={`/${product.slug}`} className="block h-full w-full">
           {product.images && product.images.length > 0 ? (
             <Image
-              src={product.images[0]}
+              src={getImageUrl(product.images[0])}
               alt={product.name}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-110"

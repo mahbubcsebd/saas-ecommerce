@@ -24,7 +24,7 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -55,10 +55,10 @@ export default function Home() {
 
           <div className="flex items-center gap-4">
             <Link
-                href="/auth/login"
-                className="text-sm font-medium text-gray-600 hover:text-blue-600 dark:text-gray-300"
+              href="/auth/login"
+              className="text-sm font-medium text-gray-600 hover:text-blue-600 dark:text-gray-300"
             >
-                Login
+              Login
             </Link>
             <LanguageSwitcher />
           </div>
@@ -70,18 +70,18 @@ export default function Home() {
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             {t({
-                translations: [
-                    { langCode: 'en', title: 'Welcome to Our Store' },
-                    { langCode: 'bn', title: 'আমাদের স্টোরে স্বাগতম' }
-                ]
+              translations: [
+                { langCode: 'en', title: 'Welcome to Our Store' },
+                { langCode: 'bn', title: 'আমাদের স্টোরে স্বাগতম' }
+              ]
             }, 'title') || "Welcome to Our Store"}
           </h1>
           <p className="text-xl opacity-90">
-             {t({
-                translations: [
-                    { langCode: 'en', subtitle: 'Find the best products at the best prices.' },
-                    { langCode: 'bn', subtitle: 'সেরা দামে সেরা পণ্য খুঁজুন।' }
-                ]
+            {t({
+              translations: [
+                { langCode: 'en', subtitle: 'Find the best products at the best prices.' },
+                { langCode: 'bn', subtitle: 'সেরা দামে সেরা পণ্য খুঁজুন।' }
+              ]
             }, 'subtitle') || "Find the best products at the best prices."}
           </p>
         </div>
@@ -90,12 +90,12 @@ export default function Home() {
       {/* Product Grid */}
       <main className="container mx-auto px-4 py-8">
         <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-            {t({
-                translations: [
-                    { langCode: 'en', label: 'Latest Products' },
-                    { langCode: 'bn', label: 'সর্বশেষ পণ্য' }
-                ]
-            }, 'label') || "Latest Products"}
+          {t({
+            translations: [
+              { langCode: 'en', label: 'Latest Products' },
+              { langCode: 'bn', label: 'সর্বশেষ পণ্য' }
+            ]
+          }, 'label') || "Latest Products"}
         </h2>
 
         {loading ? (

@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import { getImageUrl } from '@/lib/utils';
 import type { Swiper as SwiperType } from 'swiper';
 import { FreeMode, Navigation, Pagination, Thumbs } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -56,7 +57,10 @@ export default function ProductGallery({ images, videoUrls = [], title }: Produc
 
   // Consolidate images and videos into unified gallery items list
   const galleryItems = [
-    ...images.map((img) => ({ type: 'image' as const, url: img, thumbnail: img, id: null })),
+    ...images.map((img) => {
+      const url = getImageUrl(img);
+      return { type: 'image' as const, url, thumbnail: url, id: null };
+    }),
     ...videoUrls
       .map((video) => {
         const videoId = getYouTubeId(video);

@@ -142,7 +142,7 @@ export default function StaffClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
 
       // Get Staff
       const staffRes = await fetch(`${BACKEND_URL}/staff`, {
@@ -179,7 +179,7 @@ export default function StaffClient() {
     e.preventDefault();
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${BACKEND_URL}/admin/users`, {
         method: 'POST',
         headers: {
@@ -205,7 +205,7 @@ export default function StaffClient() {
     if (!selectedStaff) return;
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(
         `${BACKEND_URL}/staff/${selectedStaff.id}/permissions`,
         {
@@ -401,15 +401,14 @@ export default function StaffClient() {
                       </td>
                       <td className="px-8 py-6">
                         <Badge
-                          className={`rounded-lg font-[900] text-[10px] uppercase tracking-widest px-3 py-1 border-none ${
-                            member.role === 'SUPER_ADMIN'
+                          className={`rounded-lg font-[900] text-[10px] uppercase tracking-widest px-3 py-1 border-none ${member.role === 'SUPER_ADMIN'
                               ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100'
                               : member.role === 'ADMIN'
                                 ? 'bg-blue-600 text-white shadow-lg shadow-blue-100'
                                 : member.role === 'MANAGER'
                                   ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100'
                                   : 'bg-slate-900 text-white'
-                          }`}
+                            }`}
                         >
                           {member.role.replace('_', ' ')}
                         </Badge>
@@ -425,13 +424,12 @@ export default function StaffClient() {
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-2">
                           <div
-                            className={`w-2 h-2 rounded-full ${
-                              member.status === 'ACTIVE'
+                            className={`w-2 h-2 rounded-full ${member.status === 'ACTIVE'
                                 ? 'bg-emerald-500'
                                 : member.status === 'PENDING'
                                   ? 'bg-amber-500 animate-pulse'
                                   : 'bg-slate-300'
-                            }`}
+                              }`}
                           />
                           <span className="text-xs font-black uppercase tracking-tight text-slate-600">
                             {member.status}
@@ -754,11 +752,10 @@ export default function StaffClient() {
                       <div
                         key={perm.id}
                         onClick={() => togglePermission(perm.id)}
-                        className={`p-5 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between group ${
-                          selectedPermissions.includes(perm.id)
+                        className={`p-5 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between group ${selectedPermissions.includes(perm.id)
                             ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-200'
                             : 'bg-white border-slate-100 hover:border-blue-200'
-                        }`}
+                          }`}
                       >
                         <div className="space-y-0.5">
                           <p className="text-xs font-black uppercase tracking-tight">
@@ -771,11 +768,10 @@ export default function StaffClient() {
                           </p>
                         </div>
                         <div
-                          className={`h-6 w-6 rounded-lg flex items-center justify-center transition-all ${
-                            selectedPermissions.includes(perm.id)
+                          className={`h-6 w-6 rounded-lg flex items-center justify-center transition-all ${selectedPermissions.includes(perm.id)
                               ? 'bg-white text-blue-600'
                               : 'bg-slate-50 text-slate-200 group-hover:bg-blue-50'
-                          }`}
+                            }`}
                         >
                           {selectedPermissions.includes(perm.id) ? (
                             <CheckCircle2 className="w-4 h-4" />

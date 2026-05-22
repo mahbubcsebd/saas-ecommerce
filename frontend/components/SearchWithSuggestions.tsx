@@ -74,7 +74,7 @@ export default function SearchWithSuggestions() {
       setIsOpen(true);
 
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
         // Fetch Products
         const prodRes = await fetch(

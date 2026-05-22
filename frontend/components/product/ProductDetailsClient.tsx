@@ -9,7 +9,7 @@ import { useTranslations } from '@/context/TranslationContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useCurrency } from '@/hooks/useCurrency';
 import { trackAddToCart, trackViewContent } from '@/lib/analytics';
-import { cn, getLocalized } from '@/lib/utils';
+import { cn, getLocalized, getImageUrl } from '@/lib/utils';
 import { useCartStore } from '@/store/useCartStore';
 import { Product, ProductVariant } from '@/types/product';
 import { CreditCard, Heart, Minus, Plus, ShieldCheck, Truck } from 'lucide-react';
@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import Reviews from '../Reviews';
 import ProductGallery from './ProductGallery';
+import { getProductBySlug, getPublicSettings } from '@/lib/fetchers';
 
 interface ProductDetailsClientProps {
   product: Product;
@@ -78,6 +79,41 @@ function getVariantAttributes(variant: ProductVariant): Record<string, string> {
   return result;
 }
 
+const COMMON_COLORS: Record<string, string> = {
+  orange: '#F97316',
+  white: '#FFFFFF',
+  black: '#18181B', // Premium Zinc-900 / dark black
+  red: '#EF4444',
+  blue: '#3B82F6',
+  green: '#22C55E',
+  yellow: '#EAB308',
+  purple: '#A855F7',
+  pink: '#EC4899',
+  gray: '#71717A',
+  grey: '#71717A',
+  silver: '#E4E4E7',
+  gold: '#F59E0B',
+  brown: '#78350F',
+  indigo: '#4F46E5',
+  teal: '#0D9488',
+  cyan: '#0891B2',
+  'rose gold': '#B76E79',
+  'space gray': '#4E5054',
+  'space grey': '#4E5054',
+  'space black': '#1C1C1E',
+  'midnight': '#191F28',
+  'starlight': '#F2EFE9',
+  'natural titanium': '#A6A6A6',
+  'blue titanium': '#2F4452',
+  'white titanium': '#F2F1ED',
+  'black titanium': '#3C3D3A',
+  'deep purple': '#4B3E52',
+  'sierra blue': '#9FB2C6',
+  'pacific blue': '#2E4C5A',
+  'alpine green': '#4F5D4E',
+  'graphite': '#424244',
+};
+
 export default function ProductDetailsClient({ product }: ProductDetailsClientProps) {
   const { t, locale } = useTranslations();
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
@@ -102,30 +138,21 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
   // Fetch real-time data on mount to ensure stock is fresh
   useEffect(() => {
-    const fetchProduct = async () => {
+  const fetchProduct = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
-        const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
-
         // Fetch product and settings concurrently
-        const [productRes, settingsRes] = await Promise.all([
-          fetch(`${apiUrl}/products/${product.slug}`),
-          fetch(`${apiUrl}/settings/public`),
+        const [productData, settingsData] = await Promise.all([
+          getProductBySlug(product.slug),
+          getPublicSettings(),
         ]);
 
-        if (productRes.ok) {
-          const data = await productRes.json();
-          if (data.success && data.data) {
-            setRealtimeProduct(data.data);
-          }
+        if (productData) {
+          setRealtimeProduct(productData);
         }
 
-        if (settingsRes.ok) {
-          const data = await settingsRes.json();
-          if (data.success && data.data?.legal) {
-            if (data.data.legal.shippingPolicy) setShippingPolicy(data.data.legal.shippingPolicy);
-            if (data.data.legal.returnPolicy) setReturnPolicy(data.data.legal.returnPolicy);
-          }
+        if (settingsData?.legal) {
+          if (settingsData.legal.shippingPolicy) setShippingPolicy(settingsData.legal.shippingPolicy);
+          if (settingsData.legal.returnPolicy) setReturnPolicy(settingsData.legal.returnPolicy);
         }
       } catch (error) {
         console.error('Failed to fetch real-time product data:', error);
@@ -181,7 +208,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
     return realtimeProduct.variants.find((variant) => {
       const attrs = getVariantAttributes(variant);
-      
+
       // All selected attributes must match the variant's attributes
       const matchSelected = Object.entries(selectedAttributes).every(
         ([key, value]) => attrs[key] === value
@@ -353,7 +380,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
       console.error(error);
       setErrorMessage(
         error.message ||
-          t('common', 'failedToAddToCart', { defaultValue: 'Failed to add to cart.' })
+        t('common', 'failedToAddToCart', { defaultValue: 'Failed to add to cart.' })
       );
     } finally {
       setLoading(false);
@@ -447,7 +474,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                 className="pt-6 animate-in fade-in-50 duration-500"
               >
                 {realtimeProduct.specifications &&
-                Object.keys(realtimeProduct.specifications).length > 0 ? (
+                  Object.keys(realtimeProduct.specifications).length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm">
                     {Object.entries(realtimeProduct.specifications).map(([key, value]) => (
                       <div
@@ -621,8 +648,13 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
               <div className="flex items-center justify-between">
                 <h4 className="font-semibold text-sm">{colorKey}:</h4>
                 <span className="text-sm text-muted-foreground">
-                  {selectedAttributes[colorKey as string] ||
-                    t('product', 'selectColor', { defaultValue: 'Select a color' })}
+                  {selectedAttributes[colorKey as string] ? (
+                    selectedAttributes[colorKey as string].includes(':')
+                      ? selectedAttributes[colorKey as string].split(':')[0]
+                      : selectedAttributes[colorKey as string]
+                  ) : (
+                    t('product', 'selectColor', { defaultValue: 'Select a color' })
+                  )}
                 </span>
               </div>
               <div className="flex flex-wrap gap-3">
@@ -631,6 +663,11 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                   const colorValue = attrs[colorKey as string];
 
                   if (!colorValue) return null;
+
+                  const hasHex = colorValue.includes(':');
+                  const displayName = hasHex ? colorValue.split(':')[0] : colorValue;
+                  const dbHex = hasHex ? colorValue.split(':')[1] : null;
+                  const resolvedHex = dbHex || COMMON_COLORS[displayName.toLowerCase().trim()] || null;
 
                   const isSelected = selectedAttributes[colorKey as string] === colorValue;
                   const isCompatible = getAvailableOptions(colorKey as string).has(colorValue);
@@ -642,28 +679,35 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                         handleAttributeSelect(colorKey as string, colorValue as string)
                       }
                       className={cn(
-                        'relative w-16 h-16 rounded-lg border-2 overflow-hidden transition-all',
-                        isSelected && 'ring-2 ring-primary ring-offset-2 border-primary',
+                        'relative w-10 h-10 rounded-lg border transition-all flex items-center justify-center p-[3px] bg-background shadow-sm',
+                        isSelected && 'border-primary ring-[1px] ring-primary/30 scale-105',
                         !isSelected && isCompatible && 'border-muted hover:border-primary/50',
                         !isSelected &&
-                          !isCompatible &&
-                          'border-muted opacity-50 grayscale hover:opacity-100 hover:grayscale-0'
+                        !isCompatible &&
+                        'border-muted opacity-40 grayscale hover:opacity-80 hover:grayscale-0'
                       )}
-                      title={colorValue}
+                      title={displayName}
                     >
-                      {variant.images?.[0] ? (
-                        <Image
-                          src={variant.images[0]}
-                          alt={colorValue}
-                          fill
-                          className="object-cover"
-                          sizes="64px"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-xs bg-muted">
-                          {colorValue}
-                        </div>
-                      )}
+                      <div
+                        className="w-full h-full rounded-[5px] transition-all flex items-center justify-center overflow-hidden"
+                        style={resolvedHex ? { backgroundColor: resolvedHex } : undefined}
+                      >
+                        {variant.images?.[0] && !resolvedHex ? (
+                          <div className="relative w-full h-full">
+                            <Image
+                              src={getImageUrl(variant.images[0])}
+                              alt={displayName}
+                              fill
+                              className="object-cover"
+                              sizes="40px"
+                            />
+                          </div>
+                        ) : !resolvedHex ? (
+                          <div className="w-full h-full flex items-center justify-center text-[10px] bg-muted font-semibold leading-none uppercase">
+                            {displayName.slice(0, 2)}
+                          </div>
+                        ) : null}
+                      </div>
                     </button>
                   );
                 })}
@@ -696,13 +740,13 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                         className={cn(
                           'px-4 py-2.5 rounded-lg border text-sm font-medium transition-all min-w-[60px]',
                           isSelected &&
-                            'border-primary bg-primary text-primary-foreground shadow-sm',
+                          'border-primary bg-primary text-primary-foreground shadow-sm',
                           !isSelected &&
-                            isCompatible &&
-                            'border-input bg-background hover:border-primary hover:bg-accent',
+                          isCompatible &&
+                          'border-input bg-background hover:border-primary hover:bg-accent',
                           !isSelected &&
-                            !isCompatible &&
-                            'border-input bg-background opacity-50 hover:opacity-100 hover:bg-accent'
+                          !isCompatible &&
+                          'border-input bg-background opacity-50 hover:opacity-100 hover:bg-accent'
                         )}
                       >
                         {value}
@@ -771,9 +815,9 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                 ? t('product', 'outOfStock', { defaultValue: 'Out of Stock' })
                 : currentStock < 10
                   ? t('product', 'onlyLeft', {
-                      count: String(currentStock),
-                      defaultValue: `Only ${currentStock} left!`,
-                    })
+                    count: String(currentStock),
+                    defaultValue: `Only ${currentStock} left!`,
+                  })
                   : t('product', 'inStock', { defaultValue: 'In Stock' })}
             </span>
           </div>
@@ -850,11 +894,11 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                     },
                     variant: selectedVariant
                       ? {
-                          name: selectedVariant.name,
-                          sellingPrice: selectedVariant.sellingPrice,
-                          basePrice: selectedVariant.basePrice,
-                          images: selectedVariant.images,
-                        }
+                        name: selectedVariant.name,
+                        sellingPrice: selectedVariant.sellingPrice,
+                        basePrice: selectedVariant.basePrice,
+                        images: selectedVariant.images,
+                      }
                       : undefined,
                   });
                   router.push('/checkout');

@@ -105,7 +105,7 @@ export default function RolesClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${BACKEND_URL}/roles`, {
         headers: { Authorization: `Bearer ${session.accessToken}` },
       });
@@ -127,7 +127,7 @@ export default function RolesClient() {
 
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       const method = selectedRole ? 'PATCH' : 'POST';
       const url = selectedRole
         ? `${BACKEND_URL}/roles/${selectedRole.id}`
@@ -168,7 +168,7 @@ export default function RolesClient() {
       return;
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${BACKEND_URL}/roles/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${session?.accessToken}` },
@@ -412,18 +412,16 @@ export default function RolesClient() {
                             onClick={() =>
                               togglePermission(module.id, action.id)
                             }
-                            className={`p-6 rounded-3xl border-2 cursor-pointer transition-all duration-300 flex flex-col gap-4 group ${
-                              isSelected
+                            className={`p-6 rounded-3xl border-2 cursor-pointer transition-all duration-300 flex flex-col gap-4 group ${isSelected
                                 ? 'bg-white border-blue-600 shadow-2xl shadow-blue-100'
                                 : 'bg-white border-white hover:border-blue-100'
-                            }`}
+                              }`}
                           >
                             <div
-                              className={`h-10 w-10 rounded-xl flex items-center justify-center transition-all ${
-                                isSelected
+                              className={`h-10 w-10 rounded-xl flex items-center justify-center transition-all ${isSelected
                                   ? 'bg-blue-600 text-white'
                                   : 'bg-slate-50 text-slate-300 group-hover:bg-blue-50 group-hover:text-blue-600'
-                              }`}
+                                }`}
                             >
                               {isSelected ? (
                                 <CheckCircle2 className="w-5 h-5" />

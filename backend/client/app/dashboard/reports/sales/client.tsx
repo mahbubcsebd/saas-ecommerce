@@ -115,7 +115,7 @@ export default function SalesReportClient() {
       const startStr = dateRange.start.toISOString();
       const endStr = dateRange.end.toISOString();
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
 
       const response = await fetch(
         `${BACKEND_URL}/analytics/advanced?startDate=${startStr}&endDate=${endStr}&groupBy=${groupBy}`,
@@ -143,7 +143,7 @@ export default function SalesReportClient() {
       const startStr = dateRange.start.toISOString();
       const endStr = dateRange.end.toISOString();
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
 
       const response = await fetch(
         `${BACKEND_URL}/analytics/export?startDate=${startStr}&endDate=${endStr}`,

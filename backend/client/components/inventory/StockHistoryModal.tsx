@@ -33,7 +33,7 @@ export function StockHistoryModal({ item, isOpen, onClose }: StockHistoryModalPr
   const [history, setHistory] = useState<StockMovement[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     if (isOpen && session?.accessToken) {
@@ -98,7 +98,7 @@ export function StockHistoryModal({ item, isOpen, onClose }: StockHistoryModalPr
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8">
-                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
                   </TableCell>
                 </TableRow>
               ) : history.length === 0 ? (
@@ -123,7 +123,7 @@ export function StockHistoryModal({ item, isOpen, onClose }: StockHistoryModalPr
                     </TableCell>
                     <TableCell className="text-right font-medium">
                       <span className={record.quantity > 0 ? "text-green-600" : "text-red-600"}>
-                         {record.quantity > 0 ? `+${record.quantity}` : record.quantity}
+                        {record.quantity > 0 ? `+${record.quantity}` : record.quantity}
                       </span>
                     </TableCell>
                     <TableCell className="text-right font-bold text-gray-900">

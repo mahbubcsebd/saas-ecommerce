@@ -19,7 +19,7 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
   const [isLoading, setIsLoading] = useState(true);
   const [dir, setDir] = useState<'ltr' | 'rtl'>('ltr');
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz';
   const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
 
   useEffect(() => {

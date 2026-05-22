@@ -60,7 +60,7 @@ export default function SettingsClient() {
     setIsLoading(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
 
       const [genRes, curRes, conRes] = await Promise.all([
         fetch(`${BACKEND_URL}/settings/general`, {
@@ -99,7 +99,7 @@ export default function SettingsClient() {
     setIsSaving(true);
     try {
       const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+        process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${BACKEND_URL}/settings/${type}`, {
         method: 'PUT',
         headers: {

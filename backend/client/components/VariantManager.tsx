@@ -136,9 +136,12 @@ export default function VariantManager({
       return;
     }
 
-    // Generate variant name from attributes
+    // Generate variant name from attributes (only use plain name, stripping hex codes)
     const variantName = newVariantAttributes
-      .map((attr) => `${attr.value}`)
+      .map((attr) => {
+        const hasHex = attr.value.includes(":");
+        return hasHex ? attr.value.split(":")[0] : attr.value;
+      })
       .join(" / ");
 
     const variant: ProductVariant = {
@@ -223,24 +226,39 @@ export default function VariantManager({
             <div className="bg-white border border-gray-200 rounded-lg p-3">
               <p className="text-xs font-medium text-gray-500 mb-2">Selected Attributes:</p>
               <div className="flex flex-wrap gap-2">
-                {newVariantAttributes.map((attr) => (
-                  <div
-                    key={attr.type}
-                    className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-3 py-1.5"
-                  >
-                    <span className="text-xs font-medium text-blue-900">
-                      {getAttributeLabel(attr.type)}:
-                    </span>
-                    <span className="text-sm text-blue-700">{attr.value}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveAttribute(attr.type)}
-                      className="text-blue-400 hover:text-blue-600"
+                {newVariantAttributes.map((attr) => {
+                  const isColor = attr.type.toLowerCase() === "color";
+                  const hasHex = attr.value.includes(":");
+                  const displayName = hasHex ? attr.value.split(":")[0] : attr.value;
+                  const hexCode = hasHex ? attr.value.split(":")[1] : null;
+
+                  return (
+                    <div
+                      key={attr.type}
+                      className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-3 py-1.5"
                     >
-                      <X size={14} />
-                    </button>
-                  </div>
-                ))}
+                      <span className="text-xs font-medium text-blue-900">
+                        {getAttributeLabel(attr.type)}:
+                      </span>
+                      <span className="text-sm text-blue-700 flex items-center gap-1.5">
+                        {isColor && hexCode && (
+                          <span
+                            className="w-3.5 h-3.5 rounded-full border border-black/15 shrink-0"
+                            style={{ backgroundColor: hexCode }}
+                          />
+                        )}
+                        {displayName}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveAttribute(attr.type)}
+                        className="text-blue-400 hover:text-blue-600 inline-flex items-center"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -262,18 +280,35 @@ export default function VariantManager({
                 placeholder={`Enter ${currentAttribute.type}`}
               />
               {/* Suggestions */}
-              {getSuggestions().length > 0 && !currentAttribute.value && (
+              {getSuggestions().length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {getSuggestions().map((suggestion) => (
-                    <button
-                      key={suggestion}
-                      type="button"
-                      onClick={() => setCurrentAttribute({ ...currentAttribute, value: suggestion })}
-                      className="px-2 py-1 text-xs bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
+                  {getSuggestions().map((suggestion) => {
+                    const isColor = currentAttribute.type.toLowerCase() === "color";
+                    const hasHex = suggestion.includes(":");
+                    const displayName = hasHex ? suggestion.split(":")[0] : suggestion;
+                    const hexCode = hasHex ? suggestion.split(":")[1] : null;
+
+                    return (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => setCurrentAttribute({ ...currentAttribute, value: suggestion })}
+                        className={`px-2.5 py-1 text-xs border rounded transition-colors flex items-center gap-1.5 ${
+                          currentAttribute.value === suggestion
+                            ? "bg-blue-600 text-white border-blue-600 font-medium"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                        }`}
+                      >
+                        {isColor && hexCode && (
+                          <span
+                            className="w-3 h-3 rounded-full border border-black/15 shrink-0"
+                            style={{ backgroundColor: hexCode }}
+                          />
+                        )}
+                        {displayName}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -335,14 +370,28 @@ export default function VariantManager({
                   <div className="flex-1">
                     <h4 className="font-medium text-gray-900">{variant.name}</h4>
                     <div className="flex flex-wrap gap-2 mt-1">
-                      {variant.attributes.map((attr) => (
-                        <span
-                          key={attr.type}
-                          className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded"
-                        >
-                          {getAttributeLabel(attr.type)}: {attr.value}
-                        </span>
-                      ))}
+                      {variant.attributes.map((attr) => {
+                        const isColor = attr.type.toLowerCase() === "color";
+                        const hasHex = attr.value.includes(":");
+                        const displayName = hasHex ? attr.value.split(":")[0] : attr.value;
+                        const hexCode = hasHex ? attr.value.split(":")[1] : null;
+
+                        return (
+                          <span
+                            key={attr.type}
+                            className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded flex items-center gap-1"
+                          >
+                            {getAttributeLabel(attr.type)}:
+                            {isColor && hexCode && (
+                              <span
+                                className="w-3 h-3 rounded-full border border-black/15 shrink-0 mx-0.5"
+                                style={{ backgroundColor: hexCode }}
+                              />
+                            )}
+                            {displayName}
+                          </span>
+                        );
+                      })}
                     </div>
                     <p className="text-sm text-gray-500 mt-1">
                       Stock: {variant.stock} • Min: {variant.minStockLevel} • Images: {variant.images.length}

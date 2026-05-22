@@ -7,31 +7,31 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
-    AlertCircle,
-    Calendar,
-    Check,
-    ChevronLeft,
-    ChevronRight,
-    Loader2,
-    Mail,
-    Megaphone,
-    Send,
-    Users
+  AlertCircle,
+  Calendar,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  Mail,
+  Megaphone,
+  Send,
+  Users
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 type Group = { id: string; name: string };
 
@@ -121,9 +121,8 @@ export default function NewCampaignPage() {
         <div className="absolute top-1/2 left-0 w-full h-0.5 bg-slate-100 -translate-y-1/2 z-0" />
         {steps.map((s) => (
           <div key={s.id} className="relative z-10 flex flex-col items-center gap-2">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors ${
-              step >= s.id ? "bg-blue-600 border-blue-600 text-white" : "bg-white border-slate-200 text-slate-400"
-            }`}>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors ${step >= s.id ? "bg-blue-600 border-blue-600 text-white" : "bg-white border-slate-200 text-slate-400"
+              }`}>
               <s.icon className="h-5 w-5" />
             </div>
             <span className={`text-xs font-bold ${step >= s.id ? "text-blue-600" : "text-slate-400"}`}>{s.title}</span>
@@ -138,13 +137,13 @@ export default function NewCampaignPage() {
             <div className="space-y-6">
               <div className="space-y-2">
                 <Label>Campaign Name (Internal)</Label>
-                <Input value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="e.g. Summer Sale 2024" />
+                <Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="e.g. Summer Sale 2024" />
                 <p className="text-[10px] text-slate-500">Only visible to admins. Use a descriptive name.</p>
               </div>
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label>Channel Type</Label>
-                  <Select value={form.type} onValueChange={v => setForm({...form, type: v})}>
+                  <Select value={form.type} onValueChange={v => setForm({ ...form, type: v })}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -158,7 +157,7 @@ export default function NewCampaignPage() {
                 {form.type === 'EMAIL' && (
                   <div className="space-y-2">
                     <Label>Email Subject</Label>
-                    <Input value={form.subject} onChange={e => setForm({...form, subject: e.target.value})} placeholder="e.g. You don't want to miss this!" />
+                    <Input value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })} placeholder="e.g. You don't want to miss this!" />
                   </div>
                 )}
               </div>
@@ -169,22 +168,22 @@ export default function NewCampaignPage() {
             <div className="space-y-8">
               <div className="space-y-4">
                 <Label className="text-lg font-bold">Who should receive this?</Label>
-                <RadioGroup value={form.targetType} onValueChange={v => setForm({...form, targetType: v})} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer ${form.targetType === 'ALL' ? 'border-blue-600 bg-blue-50/50' : 'border-slate-200 bg-white'}`} onClick={() => setForm({...form, targetType: 'ALL'})}>
+                <RadioGroup value={form.targetType} onValueChange={v => setForm({ ...form, targetType: v })} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer ${form.targetType === 'ALL' ? 'border-blue-600 bg-blue-50/50' : 'border-slate-200 bg-white'}`} onClick={() => setForm({ ...form, targetType: 'ALL' })}>
                     <RadioGroupItem value="ALL" className="mt-1" />
                     <div>
                       <p className="font-bold text-sm">All Customers</p>
                       <p className="text-[10px] text-slate-500">Reach everyone in your database.</p>
                     </div>
                   </div>
-                  <div className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer ${form.targetType === 'GROUP' ? 'border-blue-600 bg-blue-50/50' : 'border-slate-200 bg-white'}`} onClick={() => setForm({...form, targetType: 'GROUP'})}>
+                  <div className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer ${form.targetType === 'GROUP' ? 'border-blue-600 bg-blue-50/50' : 'border-slate-200 bg-white'}`} onClick={() => setForm({ ...form, targetType: 'GROUP' })}>
                     <RadioGroupItem value="GROUP" className="mt-1" />
                     <div>
                       <p className="font-bold text-sm">Customer Groups</p>
                       <p className="text-[10px] text-slate-500">Target specific segments.</p>
                     </div>
                   </div>
-                  <div className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer ${form.targetType === 'CUSTOM' ? 'border-blue-600 bg-blue-50/50' : 'border-slate-200 bg-white'}`} onClick={() => setForm({...form, targetType: 'CUSTOM'})}>
+                  <div className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer ${form.targetType === 'CUSTOM' ? 'border-blue-600 bg-blue-50/50' : 'border-slate-200 bg-white'}`} onClick={() => setForm({ ...form, targetType: 'CUSTOM' })}>
                     <RadioGroupItem value="CUSTOM" className="mt-1" />
                     <div>
                       <p className="font-bold text-sm">Custom List</p>
@@ -207,7 +206,7 @@ export default function NewCampaignPage() {
                           const ids = form.targetGroupIds.includes(g.id)
                             ? form.targetGroupIds.filter(i => i !== g.id)
                             : [...form.targetGroupIds, g.id];
-                          setForm({...form, targetGroupIds: ids});
+                          setForm({ ...form, targetGroupIds: ids });
                         }}
                       >
                         {g.name}
@@ -232,7 +231,7 @@ export default function NewCampaignPage() {
                     <Label className="text-xs">HTML/Plain Text Source</Label>
                     <Textarea
                       value={form.content}
-                      onChange={e => setForm({...form, content: e.target.value})}
+                      onChange={e => setForm({ ...form, content: e.target.value })}
                       placeholder="Start writing your email content here (HTML supported)..."
                       className="h-full resize-none font-mono text-sm leading-relaxed"
                     />
@@ -247,7 +246,7 @@ export default function NewCampaignPage() {
                   <Label>Message Content</Label>
                   <Textarea
                     value={form.content}
-                    onChange={e => setForm({...form, content: e.target.value})}
+                    onChange={e => setForm({ ...form, content: e.target.value })}
                     placeholder="Type your message..."
                     className="h-40"
                     maxLength={160}
@@ -272,7 +271,7 @@ export default function NewCampaignPage() {
 
                   <div className="space-y-2 p-4 bg-orange-50 rounded-xl border border-orange-200">
                     <Label className="text-orange-800 font-bold flex items-center gap-2"><Calendar className="h-4 w-4" /> Schedule for later?</Label>
-                    <Input type="datetime-local" value={form.scheduledAt} onChange={e => setForm({...form, scheduledAt: e.target.value})} className="bg-white border-orange-200" />
+                    <Input type="datetime-local" value={form.scheduledAt} onChange={e => setForm({ ...form, scheduledAt: e.target.value })} className="bg-white border-orange-200" />
                     <p className="text-[10px] text-orange-600 italic">Leave blank to send immediately or save as draft.</p>
                   </div>
                 </div>

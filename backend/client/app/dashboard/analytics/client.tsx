@@ -100,7 +100,7 @@ export default function SiteAnalyticsClient() {
         try {
             const startStr = dateRange.start.toISOString();
             const endStr = dateRange.end.toISOString();
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
             const response = await fetch(`${BACKEND_URL}/analytics/site?startDate=${startStr}&endDate=${endStr}`, {
                 headers: { 'Authorization': `Bearer ${session.accessToken}` }
@@ -163,8 +163,8 @@ export default function SiteAnalyticsClient() {
                 <div className="space-y-1">
                     <div className="flex items-center gap-2 text-primary font-semibold text-sm tracking-wide uppercase">
                         <span className="relative flex h-3 w-3">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
                         </span>
                         Live Traffic Pulse
                     </div>
@@ -215,7 +215,7 @@ export default function SiteAnalyticsClient() {
                     <CardContent>
                         <div className="text-2xl font-bold">{data?.kpi?.totalPageViews || 0}</div>
                         <p className="text-xs text-muted-foreground mt-1 font-medium">
-                           {data?.kpi?.avgPageViews || 0} views per session
+                            {data?.kpi?.avgPageViews || 0} views per session
                         </p>
                     </CardContent>
                 </Card>
@@ -239,7 +239,7 @@ export default function SiteAnalyticsClient() {
                         <Activity className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                         {/* Simple CR calc: purchase / sessions */}
+                        {/* Simple CR calc: purchase / sessions */}
                         <div className="text-2xl font-bold">
                             {((data?.funnel?.find((f: any) => f.stage === 'purchase')?.count / (data?.kpi?.totalSessions || 1)) * 100).toFixed(2)}%
                         </div>
@@ -326,7 +326,7 @@ export default function SiteAnalyticsClient() {
                             </ResponsiveContainer>
                         </div>
                         <div className="mt-4 space-y-2">
-                             {(data?.trafficSources || []).slice(0, 3).map((source: any, idx: number) => (
+                            {(data?.trafficSources || []).slice(0, 3).map((source: any, idx: number) => (
                                 <div key={source.name} className="flex items-center justify-between text-sm">
                                     <div className="flex items-center gap-2 font-medium">
                                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[idx] }} />
@@ -334,7 +334,7 @@ export default function SiteAnalyticsClient() {
                                     </div>
                                     <span className="text-muted-foreground">{source.value} sessions</span>
                                 </div>
-                             ))}
+                            ))}
                         </div>
                     </CardContent>
                 </Card>
@@ -400,12 +400,12 @@ export default function SiteAnalyticsClient() {
                                     Insights
                                 </h4>
                                 <div className="space-y-2 text-xs">
-                                     <p className="text-muted-foreground leading-relaxed">
+                                    <p className="text-muted-foreground leading-relaxed">
                                         Traffic is mainly from <strong>{data?.geoDistribution?.[0]?.name || 'direct'}</strong> via <strong>{data?.deviceDistribution?.[0]?.name || 'desktop'}</strong> devices.
-                                     </p>
-                                     <div className="p-2 bg-primary/10 rounded-md border border-primary/20 text-primary font-bold">
-                                         Conv. Rate: {((data?.funnel?.find((f: any) => f.stage === 'purchase')?.count / (data?.kpi?.totalSessions || 1)) * 100).toFixed(1)}%
-                                     </div>
+                                    </p>
+                                    <div className="p-2 bg-primary/10 rounded-md border border-primary/20 text-primary font-bold">
+                                        Conv. Rate: {((data?.funnel?.find((f: any) => f.stage === 'purchase')?.count / (data?.kpi?.totalSessions || 1)) * 100).toFixed(1)}%
+                                    </div>
                                 </div>
                             </div>
                         </div>

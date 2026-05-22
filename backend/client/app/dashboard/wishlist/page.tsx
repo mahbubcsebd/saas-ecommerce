@@ -28,7 +28,7 @@ import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat('en-BD', {
@@ -140,13 +140,13 @@ export default function WishlistAdminPage() {
   // Client-side search filter for wishlist entries
   const filteredWishlists = search.trim()
     ? wishlists.filter(
-        (w) =>
-          w.product?.name?.toLowerCase().includes(search.toLowerCase()) ||
-          w.user?.email?.toLowerCase().includes(search.toLowerCase()) ||
-          `${w.user?.firstName} ${w.user?.lastName}`
-            .toLowerCase()
-            .includes(search.toLowerCase()),
-      )
+      (w) =>
+        w.product?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        w.user?.email?.toLowerCase().includes(search.toLowerCase()) ||
+        `${w.user?.firstName} ${w.user?.lastName}`
+          .toLowerCase()
+          .includes(search.toLowerCase()),
+    )
     : wishlists;
 
   return (
@@ -256,26 +256,26 @@ export default function WishlistAdminPage() {
                         {p.name}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
-                         <span className="text-xs text-muted-foreground">
-                           {p.category?.name || 'Uncategorized'}
-                         </span>
-                         <span className="text-slate-300">•</span>
-                         <span className="text-xs font-semibold">
-                           {formatCurrency(p.sellingPrice)}
-                         </span>
+                        <span className="text-xs text-muted-foreground">
+                          {p.category?.name || 'Uncategorized'}
+                        </span>
+                        <span className="text-slate-300">•</span>
+                        <span className="text-xs font-semibold">
+                          {formatCurrency(p.sellingPrice)}
+                        </span>
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0 flex items-center gap-6">
                       <div className="flex flex-col items-end">
-                         <div className="flex items-center gap-1">
-                           <Heart
-                             className="h-3 w-3 text-rose-500 fill-current"
-                           />
-                           <span className="text-lg font-bold">
-                             {p.wishlistCount}
-                           </span>
-                         </div>
-                         <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tight">Saves</p>
+                        <div className="flex items-center gap-1">
+                          <Heart
+                            className="h-3 w-3 text-rose-500 fill-current"
+                          />
+                          <span className="text-lg font-bold">
+                            {p.wishlistCount}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tight">Saves</p>
                       </div>
                       <Badge
                         variant={
@@ -366,18 +366,18 @@ export default function WishlistAdminPage() {
       <Card>
         <CardHeader className="border-b">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-             <div>
-                <CardTitle>Customer Engagement</CardTitle>
-             </div>
-             <div className="relative w-full md:w-80">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search products or customers..."
-                  className="pl-9"
-                />
-             </div>
+            <div>
+              <CardTitle>Customer Engagement</CardTitle>
+            </div>
+            <div className="relative w-full md:w-80">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search products or customers..."
+                className="pl-9"
+              />
+            </div>
           </div>
         </CardHeader>
         <CardContent className="p-0">
@@ -435,10 +435,10 @@ export default function WishlistAdminPage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-col">
-                           <p className="text-sm font-medium">
-                             {w.user?.firstName} {w.user?.lastName}
-                           </p>
-                           <p className="text-xs text-muted-foreground">{w.user?.email}</p>
+                          <p className="text-sm font-medium">
+                            {w.user?.firstName} {w.user?.lastName}
+                          </p>
+                          <p className="text-xs text-muted-foreground">{w.user?.email}</p>
                         </div>
                       </TableCell>
                       <TableCell className="text-right font-semibold">
@@ -462,7 +462,7 @@ export default function WishlistAdminPage() {
                       </TableCell>
                       <TableCell className="pr-6">
                         <span className="text-xs text-muted-foreground">
-                           {w.createdAt ? format(new Date(w.createdAt), 'dd MMM yyyy') : '—'}
+                          {w.createdAt ? format(new Date(w.createdAt), 'dd MMM yyyy') : '—'}
                         </span>
                       </TableCell>
                     </TableRow>

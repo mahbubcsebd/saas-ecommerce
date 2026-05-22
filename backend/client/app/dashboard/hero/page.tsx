@@ -51,7 +51,7 @@ import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 const HERO_API = `${API_BASE}/hero-slides`;
 
 type LinkType = 'NONE' | 'PRODUCT' | 'CATEGORY' | 'EXTERNAL';
@@ -223,7 +223,7 @@ function SortableSlideItem({
         className={cn(
           'bg-white border-b border-gray-100/80 transition-all hover:bg-gray-50 flex items-center h-11 px-2 gap-3',
           isDragging &&
-            'shadow-2xl z-50 bg-white ring-1 ring-black/10 rounded-lg scale-[1.01]',
+          'shadow-2xl z-50 bg-white ring-1 ring-black/10 rounded-lg scale-[1.01]',
         )}
       >
         {/* Handle */}

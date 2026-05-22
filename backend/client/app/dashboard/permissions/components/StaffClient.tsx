@@ -4,19 +4,19 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from '@/components/ui/table';
 import { User } from '@/lib/api';
 import { Loader2, Search, ShieldAlert, ShieldCheck, ShieldEllipsis, User as UserIcon } from 'lucide-react';
@@ -54,13 +54,13 @@ export const StaffClient: React.FC<StaffClientProps> = ({ initialData }) => {
     try {
       setUpdatingId(userId);
       const token = (session as any)?.accessToken;
-      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
       const res = await fetch(`${BACKEND_URL}/user/${userId}/role`, {
         method: 'PATCH',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ role: newRole }),
       });

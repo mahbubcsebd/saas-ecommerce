@@ -5,16 +5,16 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
-import { 
-  Tag, 
-  Plus, 
-  Search, 
-  Edit2, 
-  Trash2, 
-  Globe, 
-  Sparkles, 
-  Eye, 
-  Check, 
+import {
+  Tag,
+  Plus,
+  Search,
+  Edit2,
+  Trash2,
+  Globe,
+  Sparkles,
+  Eye,
+  Check,
   X,
   Megaphone,
   FolderTree,
@@ -23,19 +23,19 @@ import {
   GripVertical
 } from "lucide-react";
 
-import { 
-  DndContext, 
-  closestCenter, 
-  KeyboardSensor, 
-  PointerSensor, 
-  useSensor, 
-  useSensors 
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors
 } from "@dnd-kit/core";
-import { 
-  SortableContext, 
-  useSortable, 
-  verticalListSortingStrategy, 
-  sortableKeyboardCoordinates 
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+  sortableKeyboardCoordinates
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
@@ -124,16 +124,16 @@ function SortableBrandItem({
   };
 
   return (
-    <div 
-      ref={setNodeRef} 
+    <div
+      ref={setNodeRef}
       style={style}
       className={`bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all flex items-center p-4 gap-4 ${isDragging ? 'shadow-lg border-indigo-200 dark:border-indigo-900 bg-indigo-50/20 scale-[1.01]' : ''}`}
     >
       {/* Drag Handle */}
       {!isDragDisabled ? (
-        <div 
-          {...attributes} 
-          {...listeners} 
+        <div
+          {...attributes}
+          {...listeners}
           className="cursor-grab active:cursor-grabbing p-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded text-slate-400 hover:text-indigo-600 transition-colors"
           title="Drag to reorder"
         >
@@ -148,10 +148,10 @@ function SortableBrandItem({
       {/* Brand logo image */}
       <div className="relative w-12 h-12 rounded-lg border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 overflow-hidden flex-shrink-0 flex items-center justify-center">
         {brand.image ? (
-          <Image 
-            src={brand.image.startsWith("http") ? brand.image : `${process.env.NEXT_PUBLIC_IMAGE_URL || "https://images.mahbuburrahman.xyz"}/${brand.image}`} 
-            alt={brand.name} 
-            fill 
+          <Image
+            src={brand.image.startsWith("http") ? brand.image : `${process.env.NEXT_PUBLIC_IMAGE_URL || "https://images.mahbuburrahman.xyz"}/${brand.image}`}
+            alt={brand.name}
+            fill
             className="object-contain p-1"
           />
         ) : (
@@ -195,41 +195,41 @@ function SortableBrandItem({
 
       {/* Action Buttons */}
       <div className="flex items-center gap-1 flex-shrink-0">
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           type="button"
-          onClick={() => onView(brand)} 
+          onClick={() => onView(brand)}
           className="h-8 w-8 text-slate-600 dark:text-slate-400 hover:text-indigo-600 hover:bg-indigo-50/50"
           title="View Details"
         >
           <Eye className="h-4 w-4" />
         </Button>
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           type="button"
-          onClick={() => onEdit(brand)} 
+          onClick={() => onEdit(brand)}
           className="h-8 w-8 text-slate-600 dark:text-slate-400 hover:text-indigo-600 hover:bg-indigo-50/50"
           title="Edit Brand"
         >
           <Edit2 className="h-4 w-4" />
         </Button>
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           type="button"
-          onClick={() => onToggleStatus(brand)} 
+          onClick={() => onToggleStatus(brand)}
           className={`h-8 w-8 ${brand.isActive ? 'text-green-500 hover:bg-green-50/50' : 'text-slate-400 hover:bg-slate-100/50'}`}
           title={brand.isActive ? "Deactivate" : "Activate"}
         >
           {brand.isActive ? <Check className="h-4 w-4" /> : <X className="h-4 w-4" />}
         </Button>
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           type="button"
-          onClick={() => onDelete(brand.id)} 
+          onClick={() => onDelete(brand.id)}
           className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50/50"
           title="Delete Brand"
         >
@@ -249,7 +249,7 @@ export default function BrandsPage() {
   const [showModal, setShowModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewingBrand, setViewingBrand] = useState<Brand | null>(null);
-  
+
   // Search and Filter State
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -331,7 +331,7 @@ export default function BrandsPage() {
     imagePreview: null,
   });
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   // Fetch languages
   const fetchLanguages = async () => {
@@ -613,9 +613,9 @@ export default function BrandsPage() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${session?.accessToken}`
         },
-        body: JSON.stringify({ 
-          name: formData.name, 
-          description: translations[selectedLang]?.description || "" 
+        body: JSON.stringify({
+          name: formData.name,
+          description: translations[selectedLang]?.description || ""
         })
       });
 
@@ -691,7 +691,7 @@ export default function BrandsPage() {
       if (formData.metaTitle) data.append("metaTitle", formData.metaTitle);
       if (formData.metaDescription) data.append("metaDescription", formData.metaDescription);
       if (formData.metaKeywords) data.append("metaKeywords", formData.metaKeywords);
-      
+
       if (formData.imageFile) {
         data.append("image", formData.imageFile);
       }
@@ -711,7 +711,7 @@ export default function BrandsPage() {
         setShowModal(false);
         fetchBrands();
         toast.success(formData.id ? "Brand updated successfully!" : "Brand created successfully!");
-        
+
         // Cleanup preview URL
         if (formData.imagePreview && formData.imageFile) {
           URL.revokeObjectURL(formData.imagePreview);
@@ -774,7 +774,7 @@ export default function BrandsPage() {
       });
 
       if (res.ok) {
-        setBrands(prev => 
+        setBrands(prev =>
           prev.map(b => b.id === brand.id ? { ...b, isActive: !b.isActive } : b)
         );
         toast.success(`Brand ${brand.name} is now ${!brand.isActive ? 'Active' : 'Inactive'}`);
@@ -802,7 +802,7 @@ export default function BrandsPage() {
             Configure dynamic, relational product brands with multi-language SEO configurations and logo imagery.
           </p>
         </div>
-        <Button 
+        <Button
           onClick={openCreateModal}
           className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium shadow-md shadow-indigo-100 hover:shadow-lg hover:shadow-indigo-200 transition-all flex items-center gap-2"
         >
@@ -814,34 +814,34 @@ export default function BrandsPage() {
       <div className="p-4 bg-white dark:bg-slate-950 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full md:max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <Input 
+          <Input
             placeholder="Search brands by name or description..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 bg-slate-50 border-slate-200 focus:bg-white transition-colors"
           />
         </div>
-        
+
         <div className="flex gap-2 w-full md:w-auto self-start md:self-auto">
-          <Button 
-            variant={statusFilter === "all" ? "default" : "outline"} 
-            size="sm" 
+          <Button
+            variant={statusFilter === "all" ? "default" : "outline"}
+            size="sm"
             onClick={() => setStatusFilter("all")}
             className="font-medium"
           >
             All
           </Button>
-          <Button 
-            variant={statusFilter === "active" ? "default" : "outline"} 
-            size="sm" 
+          <Button
+            variant={statusFilter === "active" ? "default" : "outline"}
+            size="sm"
             onClick={() => setStatusFilter("active")}
             className="font-medium"
           >
             Active Only
           </Button>
-          <Button 
-            variant={statusFilter === "inactive" ? "default" : "outline"} 
-            size="sm" 
+          <Button
+            variant={statusFilter === "inactive" ? "default" : "outline"}
+            size="sm"
             onClick={() => setStatusFilter("inactive")}
             className="font-medium"
           >
@@ -918,9 +918,9 @@ export default function BrandsPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between border-b pb-2">
                   <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">Translations & Details</Label>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
+                  <Button
+                    type="button"
+                    variant="outline"
                     size="sm"
                     onClick={handleAutoTranslate}
                     disabled={saving}
@@ -931,10 +931,10 @@ export default function BrandsPage() {
                   </Button>
                 </div>
 
-                <LanguageTabs 
-                  languages={languages} 
-                  selectedLang={selectedLang} 
-                  onChange={setSelectedLang} 
+                <LanguageTabs
+                  languages={languages}
+                  selectedLang={selectedLang}
+                  onChange={setSelectedLang}
                 />
 
                 <div className="grid grid-cols-1 gap-4 pt-2">
@@ -942,7 +942,7 @@ export default function BrandsPage() {
                     <Label htmlFor="brand-name" className="text-xs font-bold text-slate-500">
                       Brand Name ({languages.find(l => l.code === selectedLang)?.name}) <span className="text-red-500">*</span>
                     </Label>
-                    <Input 
+                    <Input
                       id="brand-name"
                       placeholder={`e.g., Apple, Samsung, Nike...`}
                       value={translations[selectedLang]?.name || ""}
@@ -956,7 +956,7 @@ export default function BrandsPage() {
                     <Label htmlFor="brand-desc" className="text-xs font-bold text-slate-500">
                       Description ({languages.find(l => l.code === selectedLang)?.name})
                     </Label>
-                    <Textarea 
+                    <Textarea
                       id="brand-desc"
                       placeholder={`Tell shoppers about the brand, its legacy, quality, or target audience...`}
                       value={translations[selectedLang]?.description || ""}
@@ -973,7 +973,7 @@ export default function BrandsPage() {
               {/* Slug (Default Lang) */}
               <div className="space-y-2">
                 <Label htmlFor="brand-slug" className="text-sm font-bold text-slate-700">Store URL Slug</Label>
-                <Input 
+                <Input
                   id="brand-slug"
                   placeholder="e.g. apple-inc"
                   value={formData.slug}
@@ -989,7 +989,7 @@ export default function BrandsPage() {
                   <Label htmlFor="brand-active" className="text-sm font-bold text-slate-700">Display Status</Label>
                   <p className="text-xs text-slate-400">Enable brand in storefront page and search menus.</p>
                 </div>
-                <Switch 
+                <Switch
                   id="brand-active"
                   checked={formData.isActive}
                   onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
@@ -1002,7 +1002,7 @@ export default function BrandsPage() {
                   <Label htmlFor="brand-featured" className="text-sm font-bold text-amber-700">⭐ Featured on Homepage</Label>
                   <p className="text-xs text-amber-600/70">Show this brand in the homepage Featured Brands showcase section.</p>
                 </div>
-                <Switch 
+                <Switch
                   id="brand-featured"
                   checked={formData.isFeatured}
                   onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isFeatured: checked }))}
@@ -1013,23 +1013,22 @@ export default function BrandsPage() {
             {/* Dropzone Logo Upload */}
             <div className="space-y-2 border-t pt-6">
               <Label className="text-sm font-bold text-slate-700">Brand Logo / Brand Image</Label>
-              <div 
-                {...getRootProps()} 
-                className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all ${
-                  isDragActive 
-                    ? "border-indigo-500 bg-indigo-50/50" 
+              <div
+                {...getRootProps()}
+                className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all ${isDragActive
+                    ? "border-indigo-500 bg-indigo-50/50"
                     : "border-slate-200 hover:border-indigo-400 bg-slate-50/50"
-                }`}
+                  }`}
               >
                 <input {...getInputProps()} />
-                
+
                 {formData.imagePreview ? (
                   <div className="flex flex-col items-center gap-4">
                     <div className="relative w-28 h-28 border rounded-lg bg-white overflow-hidden shadow-inner flex items-center justify-center">
-                      <Image 
-                        src={formData.imagePreview.startsWith("blob:") ? formData.imagePreview : formData.imagePreview.startsWith("http") ? formData.imagePreview : `${process.env.NEXT_PUBLIC_IMAGE_URL || "https://images.mahbuburrahman.xyz"}/${formData.imagePreview}`} 
-                        alt="Logo Preview" 
-                        fill 
+                      <Image
+                        src={formData.imagePreview.startsWith("blob:") ? formData.imagePreview : formData.imagePreview.startsWith("http") ? formData.imagePreview : `${process.env.NEXT_PUBLIC_IMAGE_URL || "https://images.mahbuburrahman.xyz"}/${formData.imagePreview}`}
+                        alt="Logo Preview"
+                        fill
                         className="object-contain p-2"
                       />
                     </div>
@@ -1056,9 +1055,9 @@ export default function BrandsPage() {
                   <Megaphone className="h-4 w-4 text-indigo-500" />
                   <span className="text-sm font-bold text-slate-700">SEO Meta Configuration (Optional)</span>
                 </div>
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   size="sm"
                   onClick={handleGenerateSEO}
                   disabled={saving}
@@ -1072,7 +1071,7 @@ export default function BrandsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1 md:col-span-2">
                   <Label htmlFor="meta-title" className="text-xs text-slate-500 font-semibold">Meta Title</Label>
-                  <Input 
+                  <Input
                     id="meta-title"
                     placeholder="SEO friendly page title..."
                     value={formData.metaTitle}
@@ -1082,7 +1081,7 @@ export default function BrandsPage() {
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="meta-keywords" className="text-xs text-slate-500 font-semibold">Meta Keywords</Label>
-                  <Input 
+                  <Input
                     id="meta-keywords"
                     placeholder="comma separated values, tags..."
                     value={formData.metaKeywords}
@@ -1092,7 +1091,7 @@ export default function BrandsPage() {
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="meta-desc" className="text-xs text-slate-500 font-semibold">Meta Description</Label>
-                  <Textarea 
+                  <Textarea
                     id="meta-desc"
                     placeholder="Short description for search engines (max 160 characters)..."
                     value={formData.metaDescription}
@@ -1105,17 +1104,17 @@ export default function BrandsPage() {
 
             {/* Bottom Actions */}
             <div className="flex justify-end gap-3 border-t pt-6 bg-slate-50/20 -mx-6 -mb-6 p-6 rounded-b-2xl">
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => setShowModal(false)}
                 disabled={saving}
                 className="font-medium border-slate-200"
               >
                 Cancel
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={saving}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium shadow-md shadow-indigo-100 hover:shadow-lg hover:shadow-indigo-200 transition-all flex items-center gap-1.5"
               >
@@ -1151,10 +1150,10 @@ export default function BrandsPage() {
               <div className="flex flex-col md:flex-row gap-6 border-b pb-6">
                 <div className="relative w-28 h-28 rounded-xl border border-slate-100 bg-slate-50 overflow-hidden flex items-center justify-center flex-shrink-0 mx-auto md:mx-0">
                   {viewingBrand.image ? (
-                    <Image 
-                      src={viewingBrand.image.startsWith("http") ? viewingBrand.image : `${process.env.NEXT_PUBLIC_IMAGE_URL || "https://images.mahbuburrahman.xyz"}/${viewingBrand.image}`} 
-                      alt={viewingBrand.name} 
-                      fill 
+                    <Image
+                      src={viewingBrand.image.startsWith("http") ? viewingBrand.image : `${process.env.NEXT_PUBLIC_IMAGE_URL || "https://images.mahbuburrahman.xyz"}/${viewingBrand.image}`}
+                      alt={viewingBrand.name}
+                      fill
                       className="object-contain p-2"
                     />
                   ) : (

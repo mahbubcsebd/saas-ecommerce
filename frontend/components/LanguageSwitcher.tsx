@@ -10,6 +10,7 @@ import {
 import { useTranslations } from '@/context/TranslationContext';
 import { Globe } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { getLanguages } from '@/lib/fetchers';
 
 interface Language {
   code: string;
@@ -24,12 +25,9 @@ export default function LanguageSwitcher() {
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
-        const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
-        const res = await fetch(`${apiUrl}/translations/languages`);
-        const data = await res.json();
-        if (data.success) {
-          setLanguages(data.data);
+        const data = await getLanguages();
+        if (data) {
+          setLanguages(data);
         }
       } catch (error) {
         console.error('Failed to fetch languages');

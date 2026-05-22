@@ -7,16 +7,16 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
 } from "recharts";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export default function LandingPageAnalytics({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -49,10 +49,10 @@ export default function LandingPageAnalytics({ params }: { params: Promise<{ id:
 
   if (loading) {
     return (
-       <div className="flex flex-col items-center justify-center min-h-[400px]">
-          <Loader2 className="animate-spin h-8 w-8 text-primary mb-2" />
-          <p className="text-muted-foreground text-xs font-medium">Compiling analytics data...</p>
-       </div>
+      <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <Loader2 className="animate-spin h-8 w-8 text-primary mb-2" />
+        <p className="text-muted-foreground text-xs font-medium">Compiling analytics data...</p>
+      </div>
     );
   }
 

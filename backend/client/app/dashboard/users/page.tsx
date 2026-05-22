@@ -1,6 +1,8 @@
 import { fetchApi, User } from '@/lib/api';
 import { UserClient } from './client';
 
+export const dynamic = 'force-dynamic';
+
 export default async function UsersPage() {
   let users: User[] = [];
 

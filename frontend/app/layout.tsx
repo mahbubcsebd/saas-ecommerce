@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { Toaster as SonnerToaster } from 'sonner';
 import './globals.css';
+import { getPublicSettings } from '@/lib/fetchers';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -16,24 +17,9 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-async function getSeoSettings() {
-  const baseUrl =
-    typeof window === 'undefined'
-      ? (process.env.INTERNAL_API_URL || 'http://localhost:5000/api')
-      : process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
-  const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
-  try {
-    const res = await fetch(`${apiUrl}/settings/public`, { next: { revalidate: 3600 } });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.success ? data.data.seo : null;
-  } catch (error) {
-    return null;
-  }
-}
-
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await getSeoSettings();
+  const settings = await getPublicSettings();
+  const seo = settings?.seo;
 
   const title = seo?.metaTitle || 'Mahbub Shop - Premium Ecommerce';
   const description =

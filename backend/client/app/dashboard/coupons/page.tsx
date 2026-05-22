@@ -4,53 +4,53 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { useConfirm } from "@/hooks/use-confirm";
 import { format, isBefore } from "date-fns";
 import {
-    AlertCircle,
-    CheckCircle2,
-    Clock,
-    Copy,
-    Edit2,
-    Loader2,
-    Percent,
-    Plus,
-    RefreshCw,
-    Search,
-    Tag,
-    Trash2,
-    Truck,
-    Zap,
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+  Copy,
+  Edit2,
+  Loader2,
+  Percent,
+  Plus,
+  RefreshCw,
+  Search,
+  Tag,
+  Trash2,
+  Truck,
+  Zap,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 type DiscountType = "PERCENTAGE" | "FLAT" | "FREE_SHIPPING";
@@ -90,9 +90,9 @@ const EMPTY_FORM = {
 // ─── Type badge ──────────────────────────────────────────────────────────────
 function TypeBadge({ type }: { type: DiscountType }) {
   const cfg = {
-    PERCENTAGE:    { label: "% Off",      icon: Percent, color: "bg-blue-100 text-blue-700" },
-    FLAT:          { label: "Flat Off",   icon: Tag,     color: "bg-purple-100 text-purple-700" },
-    FREE_SHIPPING: { label: "Free Ship",  icon: Truck,   color: "bg-green-100 text-green-700" },
+    PERCENTAGE: { label: "% Off", icon: Percent, color: "bg-blue-100 text-blue-700" },
+    FLAT: { label: "Flat Off", icon: Tag, color: "bg-purple-100 text-purple-700" },
+    FREE_SHIPPING: { label: "Free Ship", icon: Truck, color: "bg-green-100 text-green-700" },
   }[type];
   const Ic = cfg.icon;
   return (
@@ -157,7 +157,7 @@ export default function CouponsPage() {
       const res = await fetch(`${API_BASE}/coupons/generate-code`, { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       if (data.success) setForm((f) => ({ ...f, code: data.code }));
-    } catch {}
+    } catch { }
     finally { setGeneratingCode(false); }
   };
 
@@ -224,10 +224,10 @@ export default function CouponsPage() {
   // ─── Delete ────────────────────────────────────────────────────────────────
   const handleDelete = async (id: string) => {
     if (!await confirm({
-        title: "Delete Coupon",
-        message: "Are you sure you want to delete this coupon? Existing orders using this coupon won't be affected, but no new orders can use it.",
-        type: "danger",
-        confirmText: "Delete Coupon"
+      title: "Delete Coupon",
+      message: "Are you sure you want to delete this coupon? Existing orders using this coupon won't be affected, but no new orders can use it.",
+      type: "danger",
+      confirmText: "Delete Coupon"
     })) return;
     try {
       const res = await fetch(`${API_BASE}/coupons/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
@@ -299,97 +299,97 @@ export default function CouponsPage() {
       {/* Filters */}
       <Card>
         <CardHeader>
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                        value={search} 
-                        onChange={(e) => setSearch(e.target.value)} 
-                        placeholder="Search codes..." 
-                        className="pl-9 h-9" 
-                    />
-                </div>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-full md:w-[180px] h-9">
-                        <SelectValue placeholder="All Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
-                        <SelectItem value="expired">Expired</SelectItem>
-                    </SelectContent>
-                </Select>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search codes..."
+                className="pl-9 h-9"
+              />
             </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full md:w-[180px] h-9">
+                <SelectValue placeholder="All Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+                <SelectItem value="expired">Expired</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </CardHeader>
         <CardContent>
-            <div className="rounded-md border overflow-x-auto">
-                <Table>
-                    <TableHeader className="bg-muted/50">
-                        <TableRow>
-                            <TableHead className="font-semibold">Code</TableHead>
-                            <TableHead className="font-semibold">Name</TableHead>
-                            <TableHead className="font-semibold">Type</TableHead>
-                            <TableHead className="font-semibold">Discount</TableHead>
-                            <TableHead className="font-semibold text-center">Status</TableHead>
-                            <TableHead className="font-semibold text-right">Uses</TableHead>
-                            <TableHead className="font-semibold">Expiry</TableHead>
-                            <TableHead className="font-semibold">Active</TableHead>
-                            <TableHead className="text-right font-semibold">Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {loading ? (
-                            <TableRow><TableCell colSpan={9} className="text-center py-10"><Loader2 className="animate-spin h-6 w-6 mx-auto text-primary" /></TableCell></TableRow>
-                        ) : coupons.length === 0 ? (
-                            <TableRow><TableCell colSpan={9} className="text-center py-16 text-muted-foreground">No coupons found.</TableCell></TableRow>
-                        ) : coupons.map((c) => (
-                            <TableRow key={c.id}>
-                                <TableCell>
-                                    <button
-                                        onClick={() => copyCode(c.code)}
-                                        className="inline-flex items-center gap-1.5 font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs hover:bg-blue-100 transition-colors"
-                                    >
-                                        {c.code} <Copy className="h-3 w-3" />
-                                    </button>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="flex flex-col">
-                                        <span className="font-medium text-slate-900">{c.name}</span>
-                                        {c.description && <span className="text-[10px] text-muted-foreground line-clamp-1">{c.description}</span>}
-                                    </div>
-                                </TableCell>
-                                <TableCell><TypeBadge type={c.type} /></TableCell>
-                                <TableCell className="font-medium text-sm">
-                                    {c.type === "PERCENTAGE" ? `${c.value}%` : c.type === "FLAT" ? `৳${c.value}` : "Free"}
-                                    {c.maxDiscountCap && <span className="text-[10px] text-muted-foreground ml-1">(max ৳{c.maxDiscountCap})</span>}
-                                </TableCell>
-                                <TableCell className="text-center"><StatusBadge coupon={c} /></TableCell>
-                                <TableCell className="text-right">
-                                    <span className="font-medium text-sm">{c._count.usages}</span>
-                                    {c.usageLimit && <span className="text-muted-foreground text-[10px]">/{c.usageLimit}</span>}
-                                </TableCell>
-                                <TableCell className="text-xs text-muted-foreground">
-                                    {c.endDate ? format(new Date(c.endDate), "dd MMM, yy") : "No expiry"}
-                                </TableCell>
-                                <TableCell>
-                                    <Switch checked={c.isActive} onCheckedChange={() => handleToggle(c.id)} className="scale-75 origin-left" />
-                                </TableCell>
-                                <TableCell className="text-right">
-                                    <div className="flex justify-end gap-1">
-                                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(c)}>
-                                            <Edit2 className="h-4 w-4" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => handleDelete(c.id)}>
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
+          <div className="rounded-md border overflow-x-auto">
+            <Table>
+              <TableHeader className="bg-muted/50">
+                <TableRow>
+                  <TableHead className="font-semibold">Code</TableHead>
+                  <TableHead className="font-semibold">Name</TableHead>
+                  <TableHead className="font-semibold">Type</TableHead>
+                  <TableHead className="font-semibold">Discount</TableHead>
+                  <TableHead className="font-semibold text-center">Status</TableHead>
+                  <TableHead className="font-semibold text-right">Uses</TableHead>
+                  <TableHead className="font-semibold">Expiry</TableHead>
+                  <TableHead className="font-semibold">Active</TableHead>
+                  <TableHead className="text-right font-semibold">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  <TableRow><TableCell colSpan={9} className="text-center py-10"><Loader2 className="animate-spin h-6 w-6 mx-auto text-primary" /></TableCell></TableRow>
+                ) : coupons.length === 0 ? (
+                  <TableRow><TableCell colSpan={9} className="text-center py-16 text-muted-foreground">No coupons found.</TableCell></TableRow>
+                ) : coupons.map((c) => (
+                  <TableRow key={c.id}>
+                    <TableCell>
+                      <button
+                        onClick={() => copyCode(c.code)}
+                        className="inline-flex items-center gap-1.5 font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs hover:bg-blue-100 transition-colors"
+                      >
+                        {c.code} <Copy className="h-3 w-3" />
+                      </button>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col">
+                        <span className="font-medium text-slate-900">{c.name}</span>
+                        {c.description && <span className="text-[10px] text-muted-foreground line-clamp-1">{c.description}</span>}
+                      </div>
+                    </TableCell>
+                    <TableCell><TypeBadge type={c.type} /></TableCell>
+                    <TableCell className="font-medium text-sm">
+                      {c.type === "PERCENTAGE" ? `${c.value}%` : c.type === "FLAT" ? `৳${c.value}` : "Free"}
+                      {c.maxDiscountCap && <span className="text-[10px] text-muted-foreground ml-1">(max ৳{c.maxDiscountCap})</span>}
+                    </TableCell>
+                    <TableCell className="text-center"><StatusBadge coupon={c} /></TableCell>
+                    <TableCell className="text-right">
+                      <span className="font-medium text-sm">{c._count.usages}</span>
+                      {c.usageLimit && <span className="text-muted-foreground text-[10px]">/{c.usageLimit}</span>}
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      {c.endDate ? format(new Date(c.endDate), "dd MMM, yy") : "No expiry"}
+                    </TableCell>
+                    <TableCell>
+                      <Switch checked={c.isActive} onCheckedChange={() => handleToggle(c.id)} className="scale-75 origin-left" />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(c)}>
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => handleDelete(c.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
 
@@ -405,11 +405,11 @@ export default function CouponsPage() {
               <div className="space-y-2">
                 <Label>Coupon Code</Label>
                 <div className="flex gap-2">
-                  <Input 
-                    value={form.code} 
+                  <Input
+                    value={form.code}
                     onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
-                    placeholder="SUMMER20" 
-                    className="font-mono h-9" 
+                    placeholder="SUMMER20"
+                    className="font-mono h-9"
                   />
                   <Button type="button" variant="outline" size="icon" onClick={generateCode} className="h-9 w-9">
                     {generatingCode ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}

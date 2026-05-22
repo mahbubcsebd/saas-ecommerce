@@ -106,7 +106,7 @@ export default function CouriersClient() {
         if (!session?.accessToken) return;
         setIsLoading(true);
         try {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
             const res = await fetch(`${BACKEND_URL}/couriers`, {
                 headers: { 'Authorization': `Bearer ${session.accessToken}` }
             });
@@ -146,7 +146,7 @@ export default function CouriersClient() {
         };
 
         try {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
             const method = editingCourier ? 'PUT' : 'POST';
             const url = editingCourier
                 ? `${BACKEND_URL}/couriers/${editingCourier.id}`
@@ -184,7 +184,7 @@ export default function CouriersClient() {
         if (!session?.accessToken) return;
 
         try {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
             const res = await fetch(`${BACKEND_URL}/couriers/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${session.accessToken}` }
@@ -203,7 +203,7 @@ export default function CouriersClient() {
 
     const openModal = async (courierId?: string) => {
         if (courierId) {
-            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+            const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
             const res = await fetch(`${BACKEND_URL}/couriers/${courierId}`, {
                 headers: { 'Authorization': `Bearer ${session?.accessToken}` }
             });
@@ -423,7 +423,7 @@ export default function CouriersClient() {
                                         <Input
                                             className="h-14 rounded-2xl bg-slate-50 border-slate-200 focus:ring-blue-500 font-bold"
                                             value={form.name}
-                                            onChange={e => setForm({...form, name: e.target.value})}
+                                            onChange={e => setForm({ ...form, name: e.target.value })}
                                             required
                                         />
                                     </div>
@@ -433,7 +433,7 @@ export default function CouriersClient() {
                                             className="h-14 rounded-2xl bg-slate-50 border-slate-200 focus:ring-blue-500 font-mono text-blue-600 font-bold"
                                             value={form.code}
                                             placeholder="e.g. pathao-bd"
-                                            onChange={e => setForm({...form, code: e.target.value})}
+                                            onChange={e => setForm({ ...form, code: e.target.value })}
                                             required
                                         />
                                     </div>
@@ -444,7 +444,7 @@ export default function CouriersClient() {
                                     <Textarea
                                         className="min-h-[160px] rounded-3xl bg-slate-900 text-emerald-400 font-mono text-[11px] border-none shadow-inner p-6"
                                         value={form.apiConfig}
-                                        onChange={e => setForm({...form, apiConfig: e.target.value})}
+                                        onChange={e => setForm({ ...form, apiConfig: e.target.value })}
                                     />
                                     <div className="bg-amber-50 p-4 rounded-xl border border-amber-100 flex gap-3">
                                         <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
@@ -462,7 +462,7 @@ export default function CouriersClient() {
                                         className="h-14 rounded-2xl bg-slate-50 border-slate-200 font-bold"
                                         placeholder="BD, IN, US"
                                         value={form.supportedCountries}
-                                        onChange={e => setForm({...form, supportedCountries: e.target.value})}
+                                        onChange={e => setForm({ ...form, supportedCountries: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -471,7 +471,7 @@ export default function CouriersClient() {
                                         className="min-h-[100px] rounded-2xl bg-slate-50 border-slate-200 font-bold"
                                         placeholder="Dhaka, Chittagong, Sylhet"
                                         value={form.supportedRegions}
-                                        onChange={e => setForm({...form, supportedRegions: e.target.value})}
+                                        onChange={e => setForm({ ...form, supportedRegions: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -480,7 +480,7 @@ export default function CouriersClient() {
                                         className="h-14 rounded-2xl bg-blue-50 border-blue-100 text-blue-900 font-bold"
                                         placeholder="COD, NEXT_DAY, FRAGILE, DOOR_TO_DOOR"
                                         value={form.serviceLevels}
-                                        onChange={e => setForm({...form, serviceLevels: e.target.value})}
+                                        onChange={e => setForm({ ...form, serviceLevels: e.target.value })}
                                     />
                                 </div>
                             </TabsContent>
@@ -492,7 +492,7 @@ export default function CouriersClient() {
                                         <select
                                             className="w-full h-14 rounded-2xl bg-slate-50 border-slate-200 font-black text-xs uppercase px-4 focus:ring-blue-500"
                                             value={form.trackingType}
-                                            onChange={e => setForm({...form, trackingType: e.target.value as any})}
+                                            onChange={e => setForm({ ...form, trackingType: e.target.value as any })}
                                         >
                                             <option value="POLLING">Automated Polling</option>
                                             <option value="WEBHOOK">Real-time Webhooks</option>
@@ -505,7 +505,7 @@ export default function CouriersClient() {
                                             className="h-14 rounded-2xl bg-slate-50 border-slate-200 font-bold"
                                             placeholder="https://track.it/{{id}}"
                                             value={form.trackingUrl}
-                                            onChange={e => setForm({...form, trackingUrl: e.target.value})}
+                                            onChange={e => setForm({ ...form, trackingUrl: e.target.value })}
                                         />
                                     </div>
                                 </div>
@@ -571,7 +571,7 @@ export default function CouriersClient() {
                                 </div>
                                 <Switch
                                     checked={form.isActive}
-                                    onCheckedChange={checked => setForm({...form, isActive: checked})}
+                                    onCheckedChange={checked => setForm({ ...form, isActive: checked })}
                                     className="scale-110 data-[state=checked]:bg-emerald-500"
                                 />
                             </div>

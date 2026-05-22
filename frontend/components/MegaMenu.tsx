@@ -4,6 +4,7 @@ import { useTranslations } from '@/context/TranslationContext';
 import { getLocalized } from '@/lib/utils';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { getCategories } from '@/lib/fetchers';
 
 interface CategoryTranslation {
   langCode: string;
@@ -29,16 +30,10 @@ export default function MegaMenu() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
-        const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
-
-        // Backend now returns nested categories directly (parentId: null filter)
-        const res = await fetch(`${apiUrl}/categories`);
-        const data = await res.json();
-
-        if (data.success) {
+        const data = await getCategories();
+        if (data) {
           // Categories are already nested, no need to build tree
-          setCategories(data.data);
+          setCategories(data);
         }
       } catch (error) {
         console.error('Failed to fetch categories', error);
@@ -94,11 +89,10 @@ export default function MegaMenu() {
               {/* Mega Menu Dropdown */}
               {category.children && category.children.length > 0 && (
                 <div
-                  className={`absolute top-full left-0 w-[900px] bg-white dark:bg-zinc-900 text-gray-800 dark:text-gray-100 border-t-2 border-[#ef4a23] shadow-2xl rounded-b-md p-6 transition-all duration-200 grid grid-cols-4 gap-y-8 gap-x-6 ${
-                    hoveredCategoryId === category.id
+                  className={`absolute top-full left-0 w-[900px] bg-white dark:bg-zinc-900 text-gray-800 dark:text-gray-100 border-t-2 border-[#ef4a23] shadow-2xl rounded-b-md p-6 transition-all duration-200 grid grid-cols-4 gap-y-8 gap-x-6 ${hoveredCategoryId === category.id
                       ? 'opacity-100 visible pointer-events-auto'
                       : 'opacity-0 invisible pointer-events-none'
-                  }`}
+                    }`}
                   style={{ zIndex: 100 }}
                 >
                   {category.children.map((child: any) => (

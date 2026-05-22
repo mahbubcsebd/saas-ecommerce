@@ -1,5 +1,6 @@
 import ProductCard from '@/components/ProductCard';
 import { Product } from '@/types/product';
+import { getRelatedProducts } from '@/lib/fetchers';
 
 interface RelatedProductsProps {
   categoryId: string;
@@ -10,25 +11,7 @@ export default async function RelatedProducts({
   categoryId,
   currentProductId,
 }: RelatedProductsProps) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
-  const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
-
-  let relatedProducts: Product[] = [];
-
-  try {
-    const res = await fetch(`${apiUrl}/products/related/${currentProductId}?limit=4`, {
-      cache: 'no-store',
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      if (data.success && Array.isArray(data.data)) {
-        relatedProducts = data.data;
-      }
-    }
-  } catch (error) {
-    console.error('Failed to fetch related products:', error);
-  }
+  const relatedProducts = await getRelatedProducts(currentProductId, 4);
 
   if (relatedProducts.length === 0) {
     return null;

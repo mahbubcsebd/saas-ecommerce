@@ -5,39 +5,39 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { useConfirm } from "@/hooks/use-confirm";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import {
-    CheckCircle,
-    Copy,
-    Eye,
-    History,
-    Loader2,
-    Mail,
-    MoreVertical,
-    Search,
-    Send,
-    Trash2,
-    Zap
+  CheckCircle,
+  Copy,
+  Eye,
+  History,
+  Loader2,
+  Mail,
+  MoreVertical,
+  Search,
+  Send,
+  Trash2,
+  Zap
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 const EMAIL_API = `${API_BASE}/email-templates`;
 
 // Transactional system templates (hardcoded, always available)
@@ -84,10 +84,10 @@ export default function EmailTemplatesPage() {
 
   const handleDelete = async (id: string) => {
     if (!await confirm({
-        title: "Delete Template",
-        message: "Are you sure you want to delete this email template? This action cannot be undone and may affect scheduled campaigns.",
-        type: "danger",
-        confirmText: "Delete Template"
+      title: "Delete Template",
+      message: "Are you sure you want to delete this email template? This action cannot be undone and may affect scheduled campaigns.",
+      type: "danger",
+      confirmText: "Delete Template"
     })) return;
     const res = await fetch(`${EMAIL_API}/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
     const data = await res.json();
@@ -167,12 +167,12 @@ export default function EmailTemplatesPage() {
           {SYSTEM_TEMPLATES.map((t) => (
             <Card key={t.id} className="relative group overflow-hidden border-muted/60">
               <div className={cn("absolute top-0 right-0 p-3 opacity-10", t.color)}>
-                 <Zap className="h-10 w-10" />
+                <Zap className="h-10 w-10" />
               </div>
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2 mb-1">
-                   <div className={cn("h-2 w-2 rounded-full", t.bg.replace("bg-", "bg-").replace("50", "500"))} />
-                   <CardTitle className="text-sm">{t.name}</CardTitle>
+                  <div className={cn("h-2 w-2 rounded-full", t.bg.replace("bg-", "bg-").replace("50", "500"))} />
+                  <CardTitle className="text-sm">{t.name}</CardTitle>
                 </div>
                 <CardDescription className="text-xs line-clamp-1">{t.description}</CardDescription>
               </CardHeader>
@@ -207,7 +207,7 @@ export default function EmailTemplatesPage() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(3)].map((_, i) => (
-               <Card key={i} className="h-40 bg-muted/30 animate-pulse border-dashed" />
+              <Card key={i} className="h-40 bg-muted/30 animate-pulse border-dashed" />
             ))}
           </div>
         ) : filtered.length === 0 ? (
@@ -251,8 +251,8 @@ export default function EmailTemplatesPage() {
                       </Badge>
                     )}
                     <Badge variant="outline" className={cn(
-                        "text-[10px] font-bold border-none px-2 py-0",
-                        t.isActive ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"
+                      "text-[10px] font-bold border-none px-2 py-0",
+                      t.isActive ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"
                     )}>
                       {t.isActive ? "ACTIVE" : "INACTIVE"}
                     </Badge>
@@ -276,26 +276,26 @@ export default function EmailTemplatesPage() {
       <Dialog open={!!previewTemplate} onOpenChange={() => setPreviewTemplate(null)}>
         <DialogContent className="max-w-3xl p-0 overflow-hidden h-[85vh] flex flex-col border-none shadow-2xl">
           <DialogHeader className="px-6 py-4 border-b flex flex-row items-center justify-between shrink-0 bg-background">
-             <div className="flex items-center gap-4">
-                <div className="h-10 w-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 border border-blue-100">
-                  <Mail className="h-5 w-5" />
-                </div>
-                <div>
-                   <DialogTitle className="text-lg font-bold">{previewTemplate?.name}</DialogTitle>
-                   <p className="text-xs text-muted-foreground line-clamp-1">{previewTemplate?.subject}</p>
-                </div>
-             </div>
-             <Button variant="ghost" size="sm" onClick={() => setPreviewTemplate(null)} className="h-8">Close</Button>
+            <div className="flex items-center gap-4">
+              <div className="h-10 w-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 border border-blue-100">
+                <Mail className="h-5 w-5" />
+              </div>
+              <div>
+                <DialogTitle className="text-lg font-bold">{previewTemplate?.name}</DialogTitle>
+                <p className="text-xs text-muted-foreground line-clamp-1">{previewTemplate?.subject}</p>
+              </div>
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => setPreviewTemplate(null)} className="h-8">Close</Button>
           </DialogHeader>
 
           <div className="flex-1 bg-muted/10 p-4 overflow-hidden">
             <div className="bg-white rounded-lg border h-full overflow-hidden shadow-sm">
-               <iframe
-                 srcDoc={`<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"></script></head><body class="p-8 bg-white font-sans">${previewTemplate?.body}</body></html>`}
-                 className="w-full h-full border-0"
-                 title="Email Preview"
-                 sandbox="allow-scripts allow-same-origin"
-               />
+              <iframe
+                srcDoc={`<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"></script></head><body class="p-8 bg-white font-sans">${previewTemplate?.body}</body></html>`}
+                className="w-full h-full border-0"
+                title="Email Preview"
+                sandbox="allow-scripts allow-same-origin"
+              />
             </div>
           </div>
         </DialogContent>

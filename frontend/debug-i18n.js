@@ -1,5 +1,5 @@
 async function debugI18n() {
-  const API_URL = 'https://api.mahbuburrahman.xyz/api';
+  const API_URL = '';
 
   try {
     console.log('--- LANGUAGES ---');

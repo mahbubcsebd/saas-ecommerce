@@ -13,6 +13,7 @@ import { useSettings } from '@/context/SettingsContext';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { getCategories } from '@/lib/fetchers';
 
 export default function CategoryMenu() {
   const { settings } = useSettings();
@@ -22,13 +23,10 @@ export default function CategoryMenu() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
-        const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
-        const res = await fetch(`${apiUrl}/categories`);
-        const data = await res.json();
-        if (data.success) {
+        const data = await getCategories();
+        if (data) {
           // Filter root categories (parentId is null)
-          const rootCategories = data.data.filter((c: any) => !c.parentId);
+          const rootCategories = data.filter((c: any) => !c.parentId);
           // Sort by order if available
           rootCategories.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
           setCategories(rootCategories);

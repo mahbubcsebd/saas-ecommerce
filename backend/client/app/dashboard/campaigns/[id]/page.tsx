@@ -4,32 +4,32 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import {
-    AlertTriangle,
-    ChevronLeft,
-    Clock,
-    Eye,
-    Loader2,
-    Mail,
-    RefreshCw,
-    Send,
-    Users
+  AlertTriangle,
+  ChevronLeft,
+  Clock,
+  Eye,
+  Loader2,
+  Mail,
+  RefreshCw,
+  Send,
+  Users
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 type Recipient = {
   id: string;
@@ -145,33 +145,33 @@ export default function CampaignDetailPage() {
           </CardHeader>
           <CardContent>
             <div className="rounded-md border overflow-x-auto">
-                <Table>
-                    <TableHeader className="bg-muted/50">
-                        <TableRow>
-                            <TableHead className="font-semibold text-xs uppercase tracking-wider">Recipient</TableHead>
-                            <TableHead className="font-semibold text-xs uppercase tracking-wider">Status</TableHead>
-                            <TableHead className="font-semibold text-xs uppercase tracking-wider">Sent At</TableHead>
-                            <TableHead className="font-semibold text-xs uppercase tracking-wider">Opened At</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {campaign.recipients.map((r) => (
-                            <TableRow key={r.id}>
-                                <TableCell className="font-medium text-sm">{r.email}</TableCell>
-                                <TableCell>
-                                    <Badge variant={r.status === 'SENT' ? 'secondary' : r.status === 'OPENED' ? 'default' : 'destructive'} className="text-[10px] px-2 py-0">
-                                        {r.status}
-                                    </Badge>
-                                </TableCell>
-                                <TableCell className="text-xs text-muted-foreground">{r.sentAt ? format(new Date(r.sentAt), "HH:mm, MMM dd") : "—"}</TableCell>
-                                <TableCell className="text-xs text-muted-foreground">{r.openedAt ? format(new Date(r.openedAt), "HH:mm, MMM dd") : "—"}</TableCell>
-                            </TableRow>
-                        ))}
-                        {campaign.recipients.length === 0 && (
-                            <TableRow><TableCell colSpan={4} className="text-center py-10 text-muted-foreground">No recipients tracked yet.</TableCell></TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+              <Table>
+                <TableHeader className="bg-muted/50">
+                  <TableRow>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider">Recipient</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider">Status</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider">Sent At</TableHead>
+                    <TableHead className="font-semibold text-xs uppercase tracking-wider">Opened At</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {campaign.recipients.map((r) => (
+                    <TableRow key={r.id}>
+                      <TableCell className="font-medium text-sm">{r.email}</TableCell>
+                      <TableCell>
+                        <Badge variant={r.status === 'SENT' ? 'secondary' : r.status === 'OPENED' ? 'default' : 'destructive'} className="text-[10px] px-2 py-0">
+                          {r.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{r.sentAt ? format(new Date(r.sentAt), "HH:mm, MMM dd") : "—"}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{r.openedAt ? format(new Date(r.openedAt), "HH:mm, MMM dd") : "—"}</TableCell>
+                    </TableRow>
+                  ))}
+                  {campaign.recipients.length === 0 && (
+                    <TableRow><TableCell colSpan={4} className="text-center py-10 text-muted-foreground">No recipients tracked yet.</TableCell></TableRow>
+                  )}
+                </TableBody>
+              </Table>
             </div>
           </CardContent>
         </Card>
@@ -180,7 +180,7 @@ export default function CampaignDetailPage() {
         <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-muted-foreground" /> 
+              <Clock className="h-4 w-4 text-muted-foreground" />
               Timeline
             </CardTitle>
           </CardHeader>
@@ -203,7 +203,7 @@ export default function CampaignDetailPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Mail className="h-4 w-4 text-muted-foreground" /> 
+            <Mail className="h-4 w-4 text-muted-foreground" />
             Content Preview
           </CardTitle>
         </CardHeader>

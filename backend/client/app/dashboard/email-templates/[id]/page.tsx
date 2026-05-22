@@ -3,35 +3,35 @@
 import EmailBuilder from "@/components/email/EmailBuilder";
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select";
 import {
-    ChevronLeft,
-    Loader2,
-    Mail,
-    Save,
-    Settings
+  ChevronLeft,
+  Loader2,
+  Mail,
+  Save,
+  Settings
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 const EMAIL_API = `${API_BASE}/email-templates`;
 
 export default function EmailTemplateEditorPage() {
@@ -169,7 +169,7 @@ export default function EmailTemplateEditorPage() {
                   <Input
                     id="name"
                     value={form.name}
-                    onChange={e => setForm({...form, name: e.target.value})}
+                    onChange={e => setForm({ ...form, name: e.target.value })}
                     placeholder="e.g. Monthly Newsletter"
                     className="h-9"
                   />
@@ -179,14 +179,14 @@ export default function EmailTemplateEditorPage() {
                   <Input
                     id="subject"
                     value={form.subject}
-                    onChange={e => setForm({...form, subject: e.target.value})}
+                    onChange={e => setForm({ ...form, subject: e.target.value })}
                     placeholder="e.g. Check out our latest updates!"
                     className="h-9"
                   />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="type" className="text-xs font-semibold">Template Category</Label>
-                  <Select value={form.type} onValueChange={v => setForm({...form, type: v})}>
+                  <Select value={form.type} onValueChange={v => setForm({ ...form, type: v })}>
                     <SelectTrigger className="h-9">
                       <SelectValue placeholder="Custom Template" />
                     </SelectTrigger>
@@ -212,8 +212,8 @@ export default function EmailTemplateEditorPage() {
           </Dialog>
           <div className="h-8 w-px bg-border mx-1" />
           <Button size="sm" className="h-8 bg-blue-600 hover:bg-blue-700" disabled={saving}>
-             <Save className="h-3.5 w-3.5 mr-2" />
-             {saving ? "Saving..." : "Save Template"}
+            <Save className="h-3.5 w-3.5 mr-2" />
+            {saving ? "Saving..." : "Save Template"}
           </Button>
         </div>
       </header>

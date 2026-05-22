@@ -2,13 +2,13 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { 
-  Plus, 
-  Upload, 
-  X, 
-  Image as ImageIcon, 
-  Link as LinkIcon, 
-  Check, 
+import {
+  Plus,
+  Upload,
+  X,
+  Image as ImageIcon,
+  Link as LinkIcon,
+  Check,
   ChevronsUpDown,
   Loader2,
   ArrowLeft,
@@ -18,12 +18,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from '@/components/ui/select';
 import {
   Command,
@@ -44,7 +44,7 @@ import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 type LinkType = 'NONE' | 'PRODUCT' | 'CATEGORY' | 'EXTERNAL';
 
@@ -106,9 +106,9 @@ export function BannerForm({ initialData, onSubmit, isEditing = false, loading =
         preview: URL.createObjectURL(file),
       }),
     );
-    setForm((prev) => ({ 
-      ...prev, 
-      imageFiles: isEditing ? [filesWithPreviews[0]] : [...prev.imageFiles, ...filesWithPreviews] 
+    setForm((prev) => ({
+      ...prev,
+      imageFiles: isEditing ? [filesWithPreviews[0]] : [...prev.imageFiles, ...filesWithPreviews]
     }));
   }, [isEditing]);
 
@@ -144,27 +144,27 @@ export function BannerForm({ initialData, onSubmit, isEditing = false, loading =
           </div>
         </div>
         <div className="flex items-center gap-3">
-             <Link href="/dashboard/hero">
-                <Button variant="ghost" className="font-semibold text-gray-500">
-                Cancel
-                </Button>
-            </Link>
-            <Button 
-                onClick={handleSubmit}
-                disabled={loading}
-                className="bg-black hover:bg-gray-800 text-white rounded-xl px-8 h-11 shadow-lg shadow-gray-200 flex items-center gap-2"
-            >
-                {loading && <Loader2 className="animate-spin" size={14} />}
-                <span className="text-xs font-bold uppercase tracking-widest">
-                {isEditing ? 'Save Changes' : 'Create Banners'}
-                </span>
+          <Link href="/dashboard/hero">
+            <Button variant="ghost" className="font-semibold text-gray-500">
+              Cancel
             </Button>
+          </Link>
+          <Button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="bg-black hover:bg-gray-800 text-white rounded-xl px-8 h-11 shadow-lg shadow-gray-200 flex items-center gap-2"
+          >
+            {loading && <Loader2 className="animate-spin" size={14} />}
+            <span className="text-xs font-bold uppercase tracking-widest">
+              {isEditing ? 'Save Changes' : 'Create Banners'}
+            </span>
+          </Button>
         </div>
       </div>
 
       <div className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
-          
+
           {/* LEFT SIDE: CONTENT & LINK */}
           <div className="p-8 lg:p-10 space-y-10">
             {/* Content Details */}
@@ -173,7 +173,7 @@ export function BannerForm({ initialData, onSubmit, isEditing = false, loading =
                 <Plus size={14} />
                 Content Details
               </div>
-              
+
               <div className="space-y-4">
                 <div className="space-y-1.5">
                   <Label className="text-[10px] text-gray-400 font-bold uppercase ml-1">Headline</Label>
@@ -310,9 +310,9 @@ export function BannerForm({ initialData, onSubmit, isEditing = false, loading =
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setForm(prev => ({ 
-                              ...prev, 
-                              imageFiles: prev.imageFiles.filter((_, idx) => idx !== i) 
+                            setForm(prev => ({
+                              ...prev,
+                              imageFiles: prev.imageFiles.filter((_, idx) => idx !== i)
                             }));
                           }}
                           className="absolute top-2 right-2 h-8 w-8 bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-red-500 transition-all opacity-0 group-hover/img:opacity-100"
@@ -325,11 +325,11 @@ export function BannerForm({ initialData, onSubmit, isEditing = false, loading =
                 ) : isEditing && form.existingImage ? (
                   <div className="w-full p-4">
                     <div className="relative aspect-[16/7] w-full rounded-2xl overflow-hidden border-2 border-white shadow-xl group/existing">
-                        <img src={form.existingImage} alt="" className="h-full w-full object-cover" />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/existing:opacity-100 transition-opacity flex flex-col items-center justify-center text-white">
-                            <Upload size={24} className="mb-2" />
-                            <p className="text-xs font-bold uppercase tracking-widest">Replace Image</p>
-                        </div>
+                      <img src={form.existingImage} alt="" className="h-full w-full object-cover" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/existing:opacity-100 transition-opacity flex flex-col items-center justify-center text-white">
+                        <Upload size={24} className="mb-2" />
+                        <p className="text-xs font-bold uppercase tracking-widest">Replace Image</p>
+                      </div>
                     </div>
                   </div>
                 ) : (

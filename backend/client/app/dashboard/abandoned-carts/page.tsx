@@ -1,6 +1,8 @@
 import { Cart, fetchApi } from '@/lib/api';
 import { AbandonCartClient } from './client';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Abandoned Carts | Dashboard',
   description: 'Manage and recover abandoned shopping carts.',

@@ -5,34 +5,34 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { useConfirm } from "@/hooks/use-confirm";
 import { format } from "date-fns";
 import {
-    BarChart2,
-    Bell,
-    Eye,
-    Loader2,
-    Mail,
-    Megaphone,
-    MessageSquare,
-    Plus,
-    Search,
-    Send,
-    Trash2
+  BarChart2,
+  Bell,
+  Eye,
+  Loader2,
+  Mail,
+  Megaphone,
+  MessageSquare,
+  Plus,
+  Search,
+  Send,
+  Trash2
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 type Campaign = {
   id: string;
@@ -79,10 +79,10 @@ export default function CampaignsPage() {
 
   const handleDelete = async (id: string) => {
     if (!await confirm({
-        title: "Delete Campaign",
-        message: "Are you sure you want to delete this marketing campaign? Any pending scheduled triggers will be aborted.",
-        type: "danger",
-        confirmText: "Delete"
+      title: "Delete Campaign",
+      message: "Are you sure you want to delete this marketing campaign? Any pending scheduled triggers will be aborted.",
+      type: "danger",
+      confirmText: "Delete"
     })) return;
     try {
       const res = await fetch(`${API_BASE}/campaigns/${id}`, {
@@ -177,11 +177,11 @@ export default function CampaignsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-                {loading ? "—" : (() => {
+              {loading ? "—" : (() => {
                 const sent = campaigns.reduce((a, b) => a + b.sentCount, 0);
                 const opened = campaigns.reduce((a, b) => a + b.openCount, 0);
                 return sent > 0 ? `${((opened / sent) * 100).toFixed(1)}%` : "0%";
-                })()}
+              })()}
             </div>
             <p className="text-xs text-muted-foreground">Engagement efficiency</p>
           </CardContent>
@@ -191,90 +191,90 @@ export default function CampaignsPage() {
       {/* Table Section */}
       <Card>
         <CardHeader>
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        placeholder="Search campaigns..."
-                        className="pl-9 h-9"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                </div>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search campaigns..."
+                className="pl-9 h-9"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
             </div>
+          </div>
         </CardHeader>
         <CardContent>
-            <div className="rounded-md border overflow-x-auto">
-                <Table>
-                    <TableHeader className="bg-muted/50">
-                        <TableRow>
-                            <TableHead className="font-semibold">Campaign</TableHead>
-                            <TableHead className="font-semibold">Type</TableHead>
-                            <TableHead className="font-semibold">Status</TableHead>
-                            <TableHead className="font-semibold">Stats</TableHead>
-                            <TableHead className="font-semibold">Created</TableHead>
-                            <TableHead className="text-right font-semibold">Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {loading ? (
-                            <TableRow><TableCell colSpan={6} className="text-center py-10"><Loader2 className="animate-spin h-6 w-6 mx-auto text-primary" /></TableCell></TableRow>
-                        ) : filtered.length === 0 ? (
-                            <TableRow><TableCell colSpan={6} className="text-center py-16 text-muted-foreground">No campaigns found.</TableCell></TableRow>
-                        ) : filtered.map((c) => (
-                            <TableRow key={c.id}>
-                                <TableCell>
-                                    <div className="flex flex-col">
-                                        <span className="font-medium text-slate-900">{c.name}</span>
-                                        <span className="text-xs text-muted-foreground line-clamp-1">{c.subject || "No subject"}</span>
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="flex items-center gap-2">
-                                        {getTypeIcon(c.type)}
-                                        <span className="text-xs capitalize">{c.type.toLowerCase()}</span>
-                                    </div>
-                                </TableCell>
-                                <TableCell>{getStatusBadge(c.status)}</TableCell>
-                                <TableCell>
-                                    <div className="flex items-center gap-4">
-                                        <div className="flex flex-col">
-                                            <span className="text-[10px] uppercase font-bold text-muted-foreground">Sent</span>
-                                            <span className="text-xs font-semibold">{c.sentCount}</span>
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-[10px] uppercase font-bold text-muted-foreground">Opens</span>
-                                            <span className="text-xs font-semibold">{c.openCount}</span>
-                                        </div>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="text-xs text-muted-foreground">
-                                    {format(new Date(c.createdAt), "MMM dd, yyyy")}
-                                </TableCell>
-                                <TableCell className="text-right">
-                                    <div className="flex justify-end gap-1">
-                                        <Link href={`/dashboard/campaigns/${c.id}`}>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                <BarChart2 className="h-4 w-4" />
-                                            </Button>
-                                        </Link>
-                                        {c.status === "DRAFT" && (
-                                            <Button 
-                                                variant="ghost" 
-                                                size="icon" 
-                                                className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10" 
-                                                onClick={() => handleDelete(c.id)}
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        )}
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
+          <div className="rounded-md border overflow-x-auto">
+            <Table>
+              <TableHeader className="bg-muted/50">
+                <TableRow>
+                  <TableHead className="font-semibold">Campaign</TableHead>
+                  <TableHead className="font-semibold">Type</TableHead>
+                  <TableHead className="font-semibold">Status</TableHead>
+                  <TableHead className="font-semibold">Stats</TableHead>
+                  <TableHead className="font-semibold">Created</TableHead>
+                  <TableHead className="text-right font-semibold">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  <TableRow><TableCell colSpan={6} className="text-center py-10"><Loader2 className="animate-spin h-6 w-6 mx-auto text-primary" /></TableCell></TableRow>
+                ) : filtered.length === 0 ? (
+                  <TableRow><TableCell colSpan={6} className="text-center py-16 text-muted-foreground">No campaigns found.</TableCell></TableRow>
+                ) : filtered.map((c) => (
+                  <TableRow key={c.id}>
+                    <TableCell>
+                      <div className="flex flex-col">
+                        <span className="font-medium text-slate-900">{c.name}</span>
+                        <span className="text-xs text-muted-foreground line-clamp-1">{c.subject || "No subject"}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        {getTypeIcon(c.type)}
+                        <span className="text-xs capitalize">{c.type.toLowerCase()}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{getStatusBadge(c.status)}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-4">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] uppercase font-bold text-muted-foreground">Sent</span>
+                          <span className="text-xs font-semibold">{c.sentCount}</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[10px] uppercase font-bold text-muted-foreground">Opens</span>
+                          <span className="text-xs font-semibold">{c.openCount}</span>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      {format(new Date(c.createdAt), "MMM dd, yyyy")}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        <Link href={`/dashboard/campaigns/${c.id}`}>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <BarChart2 className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                        {c.status === "DRAFT" && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => handleDelete(c.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

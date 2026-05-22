@@ -26,7 +26,7 @@ export default function CategoryProductSlider({
 }: CategoryProductSliderProps) {
   const { t } = useTranslations();
 
-  console.log('CategoryProductSlider props:', products);
+  // console.log('CategoryProductSlider props:', products);
   if (!products || products.length === 0) return null;
 
   return (

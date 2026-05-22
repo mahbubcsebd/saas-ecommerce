@@ -4,53 +4,53 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    Command,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList
+  Command,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList
 } from "@/components/ui/command";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { useConfirm } from "@/hooks/use-confirm";
 import { cn } from "@/lib/utils";
 import { format, isAfter, isBefore } from "date-fns";
 import {
-    AlertCircle,
-    Calendar,
-    Check,
-    ChevronsUpDown,
-    Clock,
-    Edit2,
-    Loader2,
-    Plus,
-    Search,
-    Tag,
-    Trash2,
-    Zap
+  AlertCircle,
+  Calendar,
+  Check,
+  ChevronsUpDown,
+  Clock,
+  Edit2,
+  Loader2,
+  Plus,
+  Search,
+  Tag,
+  Trash2,
+  Zap
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.mahbuburrahman.xyz/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 type FlashSaleProduct = {
@@ -292,10 +292,10 @@ export default function FlashSalesPage() {
 
   const handleDelete = async (id: string) => {
     if (!await confirm({
-        title: "Delete Flash Sale",
-        message: "Are you sure you want to delete this flash sale campaign? This will immediately restore original prices for all included products.",
-        type: "danger",
-        confirmText: "Delete Campaign"
+      title: "Delete Flash Sale",
+      message: "Are you sure you want to delete this flash sale campaign? This will immediately restore original prices for all included products.",
+      type: "danger",
+      confirmText: "Delete Campaign"
     })) return;
     try {
       const res = await fetch(`${API_BASE}/flash-sales/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
@@ -325,7 +325,7 @@ export default function FlashSalesPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-                {loading ? "—" : sales.filter(s => s.isActive && isBefore(new Date(s.startDate), new Date()) && isAfter(new Date(s.endDate), new Date())).length}
+              {loading ? "—" : sales.filter(s => s.isActive && isBefore(new Date(s.startDate), new Date()) && isAfter(new Date(s.endDate), new Date())).length}
             </div>
             <p className="text-xs text-muted-foreground text-emerald-600 font-medium">Currently live now</p>
           </CardContent>
@@ -337,7 +337,7 @@ export default function FlashSalesPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-                {loading ? "—" : sales.filter(s => s.isActive && isAfter(new Date(s.startDate), new Date())).length}
+              {loading ? "—" : sales.filter(s => s.isActive && isAfter(new Date(s.startDate), new Date())).length}
             </div>
             <p className="text-xs text-muted-foreground">Scheduled for future</p>
           </CardContent>
@@ -349,7 +349,7 @@ export default function FlashSalesPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-                {loading ? "—" : sales.reduce((a, s) => a + (s._count?.products || 0), 0)}
+              {loading ? "—" : sales.reduce((a, s) => a + (s._count?.products || 0), 0)}
             </div>
             <p className="text-xs text-muted-foreground">Across all campaigns</p>
           </CardContent>

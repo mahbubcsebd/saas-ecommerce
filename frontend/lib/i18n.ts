@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import { api } from './api-client';
 
 export async function getLocale() {
   const cookieStore = await cookies();
@@ -7,20 +8,11 @@ export async function getLocale() {
 }
 
 export async function getTranslations(locale: string) {
-  const baseUrl = typeof window === 'undefined'
-    ? 'https://api.mahbuburrahman.xyz/api'
-    : (process.env.NEXT_PUBLIC_API_URL || 'https://api.mahbuburrahman.xyz/api');
-  const apiUrl = baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
-
   try {
-    const res = await fetch(`${apiUrl}/translations/${locale}`, {
-      next: {
-        revalidate: 3600,
-        tags: [`translations_${locale}`],
-      },
+    return await api.get<any>(`/translations/${locale}`, {
+      revalidate: 3600,
+      tags: [`translations_${locale}`],
     });
-    const data = await res.json();
-    return data.success ? data.data : {};
   } catch (error) {
     console.error('Failed to fetch translations on server', error);
     return {};
