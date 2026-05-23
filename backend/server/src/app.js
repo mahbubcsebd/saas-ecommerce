@@ -52,7 +52,6 @@ const defaultOrigins = [
   'http://127.0.0.1:8050',
   'http://127.0.0.1:8060',
   'https://admin.mahbuburrahman.xyz',
-  'https://min.mahbuburrahman.xyz',
   'https://mahbuburrahman.xyz',
   'https://shop.mahbuburrahman.xyz',
 ];
