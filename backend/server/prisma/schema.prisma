@@ -1027,6 +1027,9 @@ model Order {
 
   notes String?
 
+  ipAddress  String?
+  deviceInfo String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -1395,9 +1398,10 @@ model CurrencySetting {
   symbol         String         @default("৳")
   symbolPosition SymbolPosition @default(LEFT)
 
-  decimalPlaces     Int    @default(2)
-  decimalSeparator  String @default(".")
-  thousandSeparator String @default(",")
+  decimalPlaces     Int     @default(2)
+  decimalSeparator  String  @default(".")
+  thousandSeparator String  @default(",")
+  showPriceDecimals Boolean @default(false)
 
   // Multi-currency support
   supportedCurrencies Json @default("[]")
@@ -2440,4 +2444,82 @@ model Attribute {
   updatedAt DateTime @updatedAt
 
   @@map("attributes")
+}
+
+// ==================== CMS BLOG SYSTEM ====================
+model BlogPost {
+  id            String                @id @default(auto()) @map("_id") @db.ObjectId
+  slug          String                @unique
+  featuredImage String?
+  published     Boolean               @default(false)
+  publishedAt   DateTime?
+  tags          String[]
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  translations  BlogPostTranslation[]
+
+  @@map("blog_posts")
+}
+
+model BlogPostTranslation {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  blogPostId      String   @db.ObjectId
+  langCode        String   // "en", "bn", etc.
+  title           String
+  content         String   // Rich HTML content
+  excerpt         String?
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  blogPost        BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([blogPostId, langCode])
+  @@index([langCode])
+  @@map("blog_post_translations")
+}
+
+// ==================== CMS PAGES SYSTEM ====================
+model CustomPage {
+  id           String                   @id @default(auto()) @map("_id") @db.ObjectId
+  slug         String                   @unique
+  published    Boolean                  @default(false)
+  publishedAt  DateTime?
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+  translations CustomPageTranslation[]
+
+  @@map("custom_pages")
+}
+
+model CustomPageTranslation {
+  id              String     @id @default(auto()) @map("_id") @db.ObjectId
+  customPageId    String     @db.ObjectId
+  langCode        String     // "en", "bn"
+  title           String
+  content         String     // Rich HTML content
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  customPage      CustomPage @relation(fields: [customPageId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([customPageId, langCode])
+  @@index([langCode])
+  @@map("custom_page_translations")
+}
+
+model BlockedClient {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  type      String   // "IP" or "DEVICE"
+  value     String   @unique
+  reason    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("blocked_clients")
 }

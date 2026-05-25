@@ -2,7 +2,7 @@
 
 import { useTranslations } from '@/context/TranslationContext';
 import { useCartStore } from '@/store/useCartStore';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CheckoutForm from './CheckoutForm';
 import OrderReview from './OrderReview';
 
@@ -12,11 +12,17 @@ interface CheckoutPageContentProps {
 }
 
 export default function CheckoutPageContent({ session, initialAddress }: CheckoutPageContentProps) {
-  const { cart, loading: cartLoading, selectedItemIds, buyNowItem } = useCartStore();
+  const { cart, loading: cartLoading, selectedItemIds, buyNowItem, fetchCart, guestId } = useCartStore();
   const { t } = useTranslations();
   const [discount, setDiscount] = useState(0);
   const [couponCode, setCouponCode] = useState('');
   const [shippingOption, setShippingOption] = useState<any>(null);
+
+  useEffect(() => {
+    if (guestId) {
+      fetchCart(guestId);
+    }
+  }, [guestId, fetchCart]);
 
   if (cartLoading)
     return <div className="p-20 text-center">{t('common', 'loadingCart', 'Loading cart...')}</div>;

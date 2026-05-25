@@ -22,6 +22,7 @@ export interface CurrencySetting {
   symbol: string;
   symbolPosition: 'LEFT' | 'RIGHT';
   decimalPlaces: number;
+  showPriceDecimals?: boolean;
 }
 
 export interface ContactSetting {

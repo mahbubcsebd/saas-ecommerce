@@ -49,6 +49,9 @@ import {
   Trash2,
   UserCheck,
   UserPlus,
+  Globe,
+  LockKeyhole,
+  Check,
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
@@ -141,8 +144,7 @@ export default function StaffClient() {
     if (!session?.accessToken) return;
     setIsLoading(true);
     try {
-      const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL;
+      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
       // Get Staff
       const staffRes = await fetch(`${BACKEND_URL}/staff`, {
@@ -178,8 +180,7 @@ export default function StaffClient() {
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL;
+      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${BACKEND_URL}/admin/users`, {
         method: 'POST',
         headers: {
@@ -192,9 +193,17 @@ export default function StaffClient() {
       if (data.success) {
         toast.success('Invitation sent successfully');
         setIsAddModalOpen(false);
+        setInviteForm({
+          email: '',
+          firstName: '',
+          lastName: '',
+          role: 'STAFF',
+          customRoleId: 'NONE',
+          isActive: true,
+        });
         fetchData();
       } else {
-        toast.error(data.message);
+        toast.error(data.message || 'Failed to send invitation');
       }
     } catch (error) {
       toast.error('Failed to send invitation');
@@ -204,8 +213,7 @@ export default function StaffClient() {
   const handleUpdatePermissions = async () => {
     if (!selectedStaff) return;
     try {
-      const BACKEND_URL =
-        process.env.NEXT_PUBLIC_API_URL;
+      const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(
         `${BACKEND_URL}/staff/${selectedStaff.id}/permissions`,
         {
@@ -219,9 +227,11 @@ export default function StaffClient() {
       );
       const data = await res.json();
       if (data.success) {
-        toast.success('Permissions updated');
+        toast.success('Permissions updated successfully');
         setIsPermModalOpen(false);
         fetchData();
+      } else {
+        toast.error(data.message || 'Failed to update permissions');
       }
     } catch (error) {
       toast.error('Failed to update permissions');
@@ -244,324 +254,280 @@ export default function StaffClient() {
 
   if (isLoading) {
     return (
-      <div className="flex h-[400px] w-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      <div className="flex h-[50vh] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-20">
-      {/* Design-forward Hero Section */}
-      <div className="relative overflow-hidden bg-slate-900 rounded-[3rem] p-12 text-white shadow-2xl">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full -mr-32 -mt-32 blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-indigo-600/10 rounded-full -ml-20 -mb-20 blur-3xl" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-          <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-black uppercase tracking-widest">
-              <Shield className="w-4 h-4" /> Security-First Orchestration
-            </div>
-            <h1 className="text-5xl md:text-6xl font-[1000] tracking-tighter leading-none italic uppercase">
-              Team{' '}
-              <span className="text-blue-500 text-outline-white">Command</span>
+    <div className="space-y-6 mx-auto p-6 max-w-7xl animate-in fade-in duration-300">
+      {/* Header Section */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 dark:border-slate-800 pb-6">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-indigo-50 dark:bg-slate-900 rounded-lg text-indigo-600 dark:text-indigo-400">
+            <Shield className="h-6 w-6" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Staff Management
             </h1>
-            <p className="text-slate-400 font-medium max-w-xl text-lg leading-relaxed">
-              Master your workforce with granular role hierarchies, specialized
-              permission matrices, and real-time operational auditing.
+            <p className="text-muted-foreground text-sm mt-1">
+              Manage staff accounts, roles, access permissions, and audit systemic activities.
             </p>
           </div>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button
-              onClick={() => setIsAddModalOpen(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl h-16 px-10 font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-500/30 transition-all gap-2 group"
-            >
-              <UserPlus className="w-5 h-5 group-hover:scale-110 transition-transform" />{' '}
-              Recruit Staff
-            </Button>
-            <Button
-              variant="outline"
-              className="rounded-2xl h-16 px-10 border-2 border-slate-700 hover:bg-white/5 font-black text-xs uppercase tracking-widest transition-all gap-2"
-            >
-              <History className="w-5 h-5" /> Audit Logs
-            </Button>
-          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={() => setIsAddModalOpen(true)}
+            className="w-full sm:w-auto font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
+          >
+            <UserPlus className="mr-2 h-4 w-4" /> Add Staff Member
+          </Button>
         </div>
       </div>
 
-      <Tabs defaultValue="members" className="w-full">
-        <TabsList className="bg-slate-100 p-1.5 rounded-3xl h-16 w-full md:w-auto flex justify-start mb-8 gap-1 shadow-sm">
-          <TabsTrigger
-            value="members"
-            className="rounded-2xl px-10 h-13 font-black text-xs uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-lg transition-all"
-          >
+      <Tabs defaultValue="members" className="w-full space-y-6">
+        <TabsList className="bg-slate-100 dark:bg-slate-900 p-1 rounded-lg w-fit">
+          <TabsTrigger value="members" className="font-semibold text-sm px-6">
             <UserCheck className="w-4 h-4 mr-2" /> Members
           </TabsTrigger>
-          <TabsTrigger
-            value="activity"
-            className="rounded-2xl px-10 h-13 font-black text-xs uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-lg transition-all"
-          >
+          <TabsTrigger value="activity" className="font-semibold text-sm px-6">
             <Activity className="w-4 h-4 mr-2" /> Activity Stream
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="members" className="space-y-6">
           {/* Filters & Search */}
-          <div className="flex flex-col md:flex-row gap-4 items-center mb-8">
-            <div className="relative flex-1 group">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
+            <div className="relative flex-1 w-full">
+              <Search className="absolute left-3 top-2.5 h-4.5 w-4.5 text-slate-400" />
               <Input
-                placeholder="Search by name, email or ID..."
-                className="h-16 pl-14 rounded-2xl bg-white border-none shadow-[0_0_50px_-12px_rgba(0,0,0,0.08)] font-bold text-slate-700 placeholder:text-slate-300 focus-visible:ring-2 focus-visible:ring-blue-500/20"
+                placeholder="Search staff by name or email..."
+                className="pl-10 h-10 w-full bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 focus:bg-white"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <Select value={roleFilter} onValueChange={setRoleFilter}>
-              <SelectTrigger className="w-[200px] h-16 rounded-2xl bg-white border-none shadow-[0_0_50px_-12px_rgba(0,0,0,0.08)] font-black text-xs uppercase tracking-widest px-6">
+              <SelectTrigger className="w-full sm:w-[200px] h-10 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 px-3">
                 <SelectValue placeholder="All Roles" />
               </SelectTrigger>
-              <SelectContent className="rounded-2xl border-none shadow-2xl p-2">
-                <SelectItem
-                  value="ALL"
-                  className="rounded-xl font-bold py-3 text-xs uppercase"
-                >
-                  All Roles
-                </SelectItem>
-                <SelectItem
-                  value="SUPER_ADMIN"
-                  className="rounded-xl font-bold py-3 text-xs uppercase"
-                >
-                  Super Admin
-                </SelectItem>
-                <SelectItem
-                  value="ADMIN"
-                  className="rounded-xl font-bold py-3 text-xs uppercase"
-                >
-                  Admin
-                </SelectItem>
-                <SelectItem
-                  value="MANAGER"
-                  className="rounded-xl font-bold py-3 text-xs uppercase"
-                >
-                  Manager
-                </SelectItem>
-                <SelectItem
-                  value="STAFF"
-                  className="rounded-xl font-bold py-3 text-xs uppercase"
-                >
-                  Staff
-                </SelectItem>
+              <SelectContent className="border-slate-250 dark:border-slate-800">
+                <SelectItem value="ALL">All Roles</SelectItem>
+                <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
+                <SelectItem value="ADMIN">Admin</SelectItem>
+                <SelectItem value="MANAGER">Manager</SelectItem>
+                <SelectItem value="STAFF">Staff</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* Staff Table */}
-          <Card className="rounded-[2.5rem] border-none shadow-[0_32px_64px_-16px_rgba(0,0,0,0.05)] overflow-hidden bg-white">
+          {/* Staff List Card */}
+          <Card className="border border-slate-200 dark:border-slate-800 shadow-sm bg-white dark:bg-slate-950 overflow-hidden">
             <CardContent className="p-0">
-              <table className="w-full text-left border-collapse">
-                <thead className="bg-slate-50/50 border-b border-slate-100/50">
-                  <tr className="text-[11px] font-[900] uppercase tracking-[0.2em] text-slate-400">
-                    <th className="px-8 py-6">Member Identity</th>
-                    <th className="px-8 py-6">Operational Role</th>
-                    <th className="px-8 py-6">Status</th>
-                    <th className="px-8 py-6 text-right">Access Control</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {filteredStaff.map((member) => (
-                    <tr
-                      key={member.id}
-                      className="group hover:bg-slate-50/50 transition-all duration-300"
-                    >
-                      <td className="px-8 py-6">
-                        <div className="flex items-center gap-5">
-                          <div className="relative">
-                            <Avatar className="h-14 w-14 rounded-2xl border-2 border-white shadow-xl">
-                              <AvatarImage src={member.avatar || ''} />
-                              <AvatarFallback className="bg-blue-600 text-white font-black rounded-2xl">
-                                {member.firstName[0]}
-                                {member.lastName[0]}
-                              </AvatarFallback>
-                            </Avatar>
-                            {member.isOnline && (
-                              <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-4 border-white shadow-lg animate-pulse" />
-                            )}
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="text-lg font-[900] text-slate-900 leading-tight">
-                              {member.firstName} {member.lastName}
-                            </span>
-                            <span className="text-xs font-bold text-slate-400 italic">
-                              {member.email}
-                            </span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6">
-                        <Badge
-                          className={`rounded-lg font-[900] text-[10px] uppercase tracking-widest px-3 py-1 border-none ${member.role === 'SUPER_ADMIN'
-                              ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100'
-                              : member.role === 'ADMIN'
-                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-100'
-                                : member.role === 'MANAGER'
-                                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100'
-                                  : 'bg-slate-900 text-white'
-                            }`}
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+                    <tr className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">
+                      <th className="px-6 py-4">Staff Member</th>
+                      <th className="px-6 py-4">Role</th>
+                      <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4 text-right">Access Controls</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    {filteredStaff.length === 0 ? (
+                      <tr>
+                        <td colSpan={4} className="px-6 py-12 text-center text-slate-500 italic">
+                          No staff members found matching your search.
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredStaff.map((member) => (
+                        <tr
+                          key={member.id}
+                          className="group hover:bg-slate-50/50 dark:hover:bg-slate-900/10 transition-colors"
                         >
-                          {member.role.replace('_', ' ')}
-                        </Badge>
-                        {member.customRole && (
-                          <div className="mt-1 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 w-fit">
-                            <Shield className="w-3 h-3 text-blue-500" />
-                            <span className="text-[9px] font-black uppercase text-slate-600">
-                              {member.customRole.name}
-                            </span>
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-8 py-6">
-                        <div className="flex items-center gap-2">
-                          <div
-                            className={`w-2 h-2 rounded-full ${member.status === 'ACTIVE'
-                                ? 'bg-emerald-500'
-                                : member.status === 'PENDING'
-                                  ? 'bg-amber-500 animate-pulse'
-                                  : 'bg-slate-300'
-                              }`}
-                          />
-                          <span className="text-xs font-black uppercase tracking-tight text-slate-600">
-                            {member.status}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6 text-right">
-                        <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
-                          <Button
-                            onClick={() => {
-                              setSelectedStaff(member);
-                              setSelectedPermissions(member.permissions || []);
-                              setIsPermModalOpen(true);
-                            }}
-                            variant="ghost"
-                            size="icon"
-                            className="h-12 w-12 rounded-xl hover:bg-blue-50 hover:text-blue-600 border border-transparent hover:border-blue-100 transition-all"
-                          >
-                            <Lock className="w-5 h-5" />
-                          </Button>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-4">
+                              <div className="relative">
+                                <Avatar className="h-10 w-10 border border-slate-100 dark:border-slate-800">
+                                  <AvatarImage src={member.avatar || ''} />
+                                  <AvatarFallback className="bg-indigo-600 text-white font-semibold">
+                                    {member.firstName[0]}
+                                    {member.lastName[0]}
+                                  </AvatarFallback>
+                                </Avatar>
+                                {member.isOnline && (
+                                  <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-950 shadow-md" />
+                                )}
+                              </div>
+                              <div className="flex flex-col min-w-0">
+                                <span className="text-sm font-semibold text-slate-900 dark:text-white truncate">
+                                  {member.firstName} {member.lastName}
+                                </span>
+                                <span className="text-xs text-muted-foreground truncate">
+                                  {member.email}
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex flex-col gap-1">
+                              <Badge
+                                variant={member.role === 'SUPER_ADMIN' ? 'default' : 'secondary'}
+                                className="font-medium text-[10px] w-fit"
+                              >
+                                {member.role.replace('_', ' ')}
+                              </Badge>
+                              {member.customRole && (
+                                <div className="flex items-center gap-1 text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold mt-0.5">
+                                  <Shield className="w-3 h-3" />
+                                  <span>{member.customRole.name}</span>
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              <div
+                                className={`w-2 h-2 rounded-full ${
+                                  member.status === 'ACTIVE'
+                                    ? 'bg-emerald-500'
+                                    : member.status === 'PENDING'
+                                    ? 'bg-amber-500 animate-pulse'
+                                    : 'bg-slate-300'
+                                }`}
+                              />
+                              <span className="text-xs font-semibold text-slate-650 dark:text-slate-400">
+                                {member.status}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <div className="flex items-center justify-end gap-2">
                               <Button
+                                onClick={() => {
+                                  setSelectedStaff(member);
+                                  setSelectedPermissions(member.permissions || []);
+                                  setIsPermModalOpen(true);
+                                }}
                                 variant="ghost"
                                 size="icon"
-                                className="h-12 w-12 rounded-xl hover:bg-slate-100 border"
+                                className="h-8 w-8 rounded-md hover:bg-indigo-50 dark:hover:bg-slate-900 text-indigo-600 dark:text-indigo-400 border border-transparent hover:border-indigo-150"
+                                title="Edit Permissions"
                               >
-                                <MoreVertical className="w-5 h-5" />
+                                <Lock className="w-4 h-4" />
                               </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                              align="end"
-                              className="rounded-2xl border-none shadow-2xl p-2 min-w-[180px]"
-                            >
-                              <DropdownMenuItem className="rounded-xl font-bold py-3 text-xs uppercase tracking-tight">
-                                <Edit2 className="w-4 h-4 mr-3 text-blue-500" />{' '}
-                                Edit Profile
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="rounded-xl font-bold py-3 text-xs uppercase tracking-tight">
-                                <RefreshCw className="w-4 h-4 mr-3 text-amber-500" />{' '}
-                                Reset Password
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="rounded-xl font-bold py-3 text-xs uppercase tracking-tight text-rose-500 focus:bg-rose-50 focus:text-rose-600">
-                                <Trash2 className="w-4 h-4 mr-3" /> Terminate
-                                Link
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 rounded-md hover:bg-slate-100 dark:hover:bg-slate-900 border border-slate-200 dark:border-slate-800"
+                                  >
+                                    <MoreVertical className="w-4 h-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  align="end"
+                                  className="rounded-lg border-slate-200 dark:border-slate-850 shadow-lg min-w-[160px]"
+                                >
+                                  <DropdownMenuItem className="font-medium text-xs py-2 cursor-pointer">
+                                    <Edit2 className="w-3.5 h-3.5 mr-2 text-slate-500" />
+                                    Edit Profile
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem className="font-medium text-xs py-2 cursor-pointer">
+                                    <RefreshCw className="w-3.5 h-3.5 mr-2 text-slate-500" />
+                                    Reset Password
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem className="font-medium text-xs py-2 cursor-pointer text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-950/20 focus:text-rose-700">
+                                    <Trash2 className="w-3.5 h-3.5 mr-2" />
+                                    Remove Staff
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="activity" className="space-y-6">
-          <Card className="rounded-[2.5rem] border-none shadow-[0_32px_64px_-16px_rgba(0,0,0,0.05)] bg-white overflow-hidden">
-            <CardHeader className="p-10 border-b border-slate-50 bg-slate-50/30">
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-200">
-                  <Activity className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <CardTitle className="text-2xl font-black italic uppercase">
-                    Operational Narrative
+          <Card className="border border-slate-200 dark:border-slate-800 shadow-sm bg-white dark:bg-slate-950 overflow-hidden">
+            <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/10 py-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <CardTitle className="text-lg font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+                    <Activity className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> Operational Audit Logs
                   </CardTitle>
-                  <CardDescription className="text-sm font-medium text-slate-400">
-                    Comprehensive ledger of staff interactions with systemic
-                    assets.
+                  <CardDescription className="text-xs">
+                    Audit ledger records of recent administrative activities on systemic resources.
                   </CardDescription>
                 </div>
                 <Button
                   variant="outline"
-                  onClick={() => fetchData()}
-                  className="ml-auto rounded-xl border-2 font-black text-[10px] uppercase tracking-widest h-12 hover:bg-blue-50 hover:text-blue-600 transition-all"
+                  size="sm"
+                  onClick={fetchData}
+                  className="font-medium hover:bg-slate-50 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800"
                 >
-                  <RefreshCw className="w-4 h-4 mr-2" /> Live Refresh
+                  <RefreshCw className="w-4 h-4 mr-2" /> Refresh Logs
                 </Button>
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="divide-y divide-slate-50">
+              <div className="divide-y divide-slate-100 dark:divide-slate-850">
                 {activities.length === 0 ? (
-                  <div className="py-24 text-center">
-                    <History className="w-16 h-16 mx-auto mb-4 text-slate-200" />
-                    <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
-                      No activity logs recorded today.
-                    </p>
+                  <div className="py-16 text-center text-slate-500 italic">
+                    <History className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                    <p className="text-sm">No operational activities recorded.</p>
                   </div>
                 ) : (
                   activities.map((log) => (
                     <div
                       key={log.id}
-                      className="p-8 hover:bg-slate-50/50 transition-all flex items-start gap-6"
+                      className="p-6 hover:bg-slate-50/30 dark:hover:bg-slate-900/5 transition-colors flex items-start gap-4"
                     >
-                      <Avatar className="h-12 w-12 rounded-xl shadow-md border-2 border-white">
+                      <Avatar className="h-10 w-10 border border-slate-200 dark:border-slate-800">
                         <AvatarImage src={log.user.avatar || ''} />
-                        <AvatarFallback className="bg-slate-900 text-white font-black text-xs uppercase">
+                        <AvatarFallback className="bg-slate-800 text-white font-semibold text-xs">
                           {log.user.firstName[0]}
                           {log.user.lastName[0]}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="flex-1 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <p className="text-sm font-[900] text-slate-900">
+                      <div className="flex-1 space-y-1.5 min-w-0">
+                        <div className="flex items-center justify-between gap-4">
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white">
                             {log.user.firstName} {log.user.lastName}
-                            <span className="text-blue-500 mx-2">↠</span>
+                            <span className="text-indigo-500 dark:text-indigo-400 mx-2">→</span>
                             <Badge
                               variant="outline"
-                              className="rounded-lg font-black text-[9px] uppercase tracking-tighter bg-emerald-50 text-emerald-600 border-emerald-100"
+                              className="bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/40 text-[9px] font-medium"
                             >
                               {log.action}
                             </Badge>
                           </p>
-                          <span className="text-[10px] font-black uppercase text-slate-400 flex items-center gap-1.5">
+                          <span className="text-[10px] text-slate-400 flex items-center gap-1 shrink-0 font-medium">
                             <Clock className="w-3.5 h-3.5" />
-                            {new Date(log.timestamp).toLocaleTimeString()}
+                            {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
-                        <p className="text-xs font-bold text-slate-500 italic">
-                          Modified resource:{' '}
-                          <span className="text-slate-900 not-italic font-black bg-slate-100 px-2 py-0.5 rounded leading-loose">
+                        <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                          Resource Target:{' '}
+                          <span className="font-mono text-slate-900 dark:text-slate-300 bg-slate-100 dark:bg-slate-900 px-1.5 py-0.5 rounded border border-slate-200/40 dark:border-slate-800/40">
                             {log.target}
                           </span>
                         </p>
-                        <div className="flex items-center gap-4 pt-1">
-                          <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-1">
-                            <Globe className="w-3 h-3" />{' '}
-                            {log.ipAddress || 'Internal Trace'}
+                        <div className="flex items-center gap-3 text-[9px] text-slate-400 uppercase tracking-wider font-semibold pt-0.5">
+                          <span className="flex items-center gap-1">
+                            <Globe className="w-3 h-3" /> {log.ipAddress || 'Internal Call'}
                           </span>
                         </div>
                       </div>
@@ -574,66 +540,69 @@ export default function StaffClient() {
         </TabsContent>
       </Tabs>
 
-      {/* Invitation Dialog */}
+      {/* Invite Staff Dialog */}
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-        <DialogContent className="sm:max-w-xl rounded-[2.5rem] p-10 border-none shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)]">
-          <DialogHeader className="mb-8">
-            <DialogTitle className="text-3xl font-[1000] tracking-tight italic uppercase italic">
-              Recruit New Talent
+        <DialogContent className="sm:max-w-md rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-950 p-6">
+          <DialogHeader className="space-y-1.5 pb-2">
+            <DialogTitle className="text-2xl font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+              <UserPlus className="h-5.5 w-5.5 text-indigo-600 dark:text-indigo-400" /> Recruit Team Member
             </DialogTitle>
-            <DialogDescription className="text-lg font-medium text-slate-400 leading-relaxed">
-              Send an encrypted setup link to authorize a new staff member.
+            <DialogDescription className="text-sm">
+              Authorize a new staff member to join your system workspace.
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleInvite} className="space-y-6">
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase text-slate-500 pl-1">
+          <form onSubmit={handleInvite} className="space-y-4 pt-2">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-slate-600 dark:text-slate-400">
                   First Name
                 </Label>
                 <Input
-                  className="h-14 rounded-2xl bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-blue-500/20 font-bold"
+                  className="h-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:bg-white text-sm"
                   value={inviteForm.firstName}
                   onChange={(e) =>
                     setInviteForm({ ...inviteForm, firstName: e.target.value })
                   }
+                  placeholder="e.g. John"
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase text-slate-500 pl-1">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-slate-600 dark:text-slate-400">
                   Last Name
                 </Label>
                 <Input
-                  className="h-14 rounded-2xl bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-blue-500/20 font-bold"
+                  className="h-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:bg-white text-sm"
                   value={inviteForm.lastName}
                   onChange={(e) =>
                     setInviteForm({ ...inviteForm, lastName: e.target.value })
                   }
+                  placeholder="e.g. Doe"
                   required
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-[10px] font-black uppercase text-slate-500 pl-1">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-slate-600 dark:text-slate-400">
                 Official Workspace Email
               </Label>
               <Input
                 type="email"
-                className="h-14 rounded-2xl bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-blue-500/20 font-bold"
+                className="h-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:bg-white text-sm"
                 value={inviteForm.email}
                 onChange={(e) =>
                   setInviteForm({ ...inviteForm, email: e.target.value })
                 }
+                placeholder="john.doe@company.com"
                 required
               />
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-[10px] font-black uppercase text-slate-500 pl-1">
-                Operational Role assignment
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                System Role Assignment
               </Label>
               <Select
                 value={inviteForm.role}
@@ -641,36 +610,21 @@ export default function StaffClient() {
                   setInviteForm({ ...inviteForm, role: val })
                 }
               >
-                <SelectTrigger className="h-14 rounded-2xl bg-slate-50 border-none px-6 font-black text-xs uppercase tracking-widest">
+                <SelectTrigger className="h-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 px-3 text-sm">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="rounded-2xl border-none shadow-2xl p-2">
-                  <SelectItem
-                    value="STAFF"
-                    className="rounded-xl font-bold py-3 text-xs uppercase"
-                  >
-                    Field Staff
-                  </SelectItem>
-                  <SelectItem
-                    value="MANAGER"
-                    className="rounded-xl font-bold py-3 text-xs uppercase"
-                  >
-                    Department Manager
-                  </SelectItem>
-                  <SelectItem
-                    value="ADMIN"
-                    className="rounded-xl font-bold py-3 text-xs uppercase"
-                  >
-                    System Administrator
-                  </SelectItem>
+                <SelectContent className="border-slate-250 dark:border-slate-800">
+                  <SelectItem value="STAFF">Field Staff</SelectItem>
+                  <SelectItem value="MANAGER">Department Manager</SelectItem>
+                  <SelectItem value="ADMIN">System Administrator</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {customRoles.length > 0 && (
-              <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase text-slate-500 pl-1">
-                  Matrix Role (Custom)
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                  Matrix Role (Custom Roles)
                 </Label>
                 <Select
                   value={inviteForm.customRoleId}
@@ -678,22 +632,13 @@ export default function StaffClient() {
                     setInviteForm({ ...inviteForm, customRoleId: val })
                   }
                 >
-                  <SelectTrigger className="h-14 rounded-2xl bg-slate-50 border-none px-6 font-black text-xs uppercase tracking-widest">
-                    <SelectValue placeholder="Selective Matrix Alignment" />
+                  <SelectTrigger className="h-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 px-3 text-sm">
+                    <SelectValue placeholder="No Custom Role Assigned" />
                   </SelectTrigger>
-                  <SelectContent className="rounded-2xl border-none shadow-2xl p-2">
-                    <SelectItem
-                      value="NONE"
-                      className="rounded-xl font-bold py-3 text-xs uppercase"
-                    >
-                      No Custom Role
-                    </SelectItem>
+                  <SelectContent className="border-slate-250 dark:border-slate-800">
+                    <SelectItem value="NONE">No Custom Role</SelectItem>
                     {customRoles.map((role) => (
-                      <SelectItem
-                        key={role.id}
-                        value={role.id}
-                        className="rounded-xl font-bold py-3 text-xs uppercase italic"
-                      >
+                      <SelectItem key={role.id} value={role.id}>
                         {role.name}
                       </SelectItem>
                     ))}
@@ -702,20 +647,22 @@ export default function StaffClient() {
               </div>
             )}
 
-            <DialogFooter className="mt-10 pt-6">
+            <DialogFooter className="pt-4 border-t border-slate-100 dark:border-slate-900 mt-6 gap-2">
               <Button
                 type="button"
                 variant="ghost"
+                size="sm"
                 onClick={() => setIsAddModalOpen(false)}
-                className="rounded-2xl font-black text-xs uppercase tracking-widest px-8"
+                className="font-medium h-9"
               >
-                Discard
+                Cancel
               </Button>
               <Button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl px-10 h-16 font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-blue-500/20 transition-all"
+                size="sm"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold h-9"
               >
-                Dispatch Invitation Link
+                Send Invite Link
               </Button>
             </DialogFooter>
           </form>
@@ -724,83 +671,75 @@ export default function StaffClient() {
 
       {/* Permissions Matrix Dialog */}
       <Dialog open={isPermModalOpen} onOpenChange={setIsPermModalOpen}>
-        <DialogContent className="sm:max-w-2xl rounded-[2.5rem] p-10 border-none shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)]">
-          <DialogHeader className="mb-8">
-            <DialogTitle className="text-3xl font-[1000] tracking-tight italic uppercase">
-              Access Matrix Control
+        <DialogContent className="sm:max-w-2xl rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl bg-white dark:bg-slate-950 p-6 flex flex-col max-h-[90vh]">
+          <DialogHeader className="space-y-1 pb-2 border-b border-slate-100 dark:border-slate-900">
+            <DialogTitle className="text-2xl font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+              <LockKeyhole className="h-5.5 w-5.5 text-indigo-600 dark:text-indigo-400" /> Access Permission Matrix
             </DialogTitle>
-            <DialogDescription className="text-lg font-medium text-slate-400">
-              Define granular modular access for{' '}
-              <span className="text-slate-900 font-black">
+            <DialogDescription className="text-sm">
+              Define granular permissions for{' '}
+              <span className="font-semibold text-slate-900 dark:text-white">
                 {selectedStaff?.firstName} {selectedStaff?.lastName}
               </span>
               .
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-8 max-h-[60vh] overflow-y-auto pr-4 scrollbar-hide">
-            {['General', 'Inventory', 'Sales', 'CRM', 'Admin', 'Analytics'].map(
-              (cat) => (
-                <div key={cat} className="space-y-4">
-                  <h4 className="text-[10px] font-[900] uppercase tracking-[0.3em] text-blue-600 pl-2 flex items-center gap-4">
-                    {cat} <div className="h-px flex-1 bg-blue-100" />
-                  </h4>
-                  <div className="grid grid-cols-2 gap-4">
-                    {AVAILABLE_PERMISSIONS.filter(
-                      (p) => p.category === cat,
-                    ).map((perm) => (
-                      <div
-                        key={perm.id}
-                        onClick={() => togglePermission(perm.id)}
-                        className={`p-5 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between group ${selectedPermissions.includes(perm.id)
-                            ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-200'
-                            : 'bg-white border-slate-100 hover:border-blue-200'
-                          }`}
-                      >
-                        <div className="space-y-0.5">
-                          <p className="text-xs font-black uppercase tracking-tight">
-                            {perm.label}
-                          </p>
-                          <p
-                            className={`text-[9px] font-bold uppercase transition-colors ${selectedPermissions.includes(perm.id) ? 'text-blue-100' : 'text-slate-300'}`}
-                          >
-                            System Node: {perm.id}
-                          </p>
-                        </div>
-                        <div
-                          className={`h-6 w-6 rounded-lg flex items-center justify-center transition-all ${selectedPermissions.includes(perm.id)
-                              ? 'bg-white text-blue-600'
-                              : 'bg-slate-50 text-slate-200 group-hover:bg-blue-50'
-                            }`}
-                        >
-                          {selectedPermissions.includes(perm.id) ? (
-                            <CheckCircle2 className="w-4 h-4" />
-                          ) : (
-                            <Shield className="w-4 h-4 text-slate-200" />
-                          )}
-                        </div>
+          <div className="flex-1 overflow-y-auto py-4 space-y-6 pr-1 scrollbar-thin">
+            {['General', 'Inventory', 'Sales', 'CRM', 'Admin', 'Analytics'].map((cat) => (
+              <div key={cat} className="space-y-3">
+                <h4 className="text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-3">
+                  {cat} <div className="h-px flex-1 bg-slate-100 dark:bg-slate-900" />
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {AVAILABLE_PERMISSIONS.filter((p) => p.category === cat).map((perm) => (
+                    <div
+                      key={perm.id}
+                      onClick={() => togglePermission(perm.id)}
+                      className={`p-3.5 rounded-lg border cursor-pointer transition-all flex items-center justify-between gap-3 ${
+                        selectedPermissions.includes(perm.id)
+                          ? 'bg-indigo-50/40 dark:bg-indigo-950/10 border-indigo-500/40 text-indigo-950 dark:text-indigo-300'
+                          : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700'
+                      }`}
+                    >
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold truncate">{perm.label}</p>
+                        <p className="text-[9px] text-slate-400 font-mono mt-0.5 truncate">
+                          Node: {perm.id}
+                        </p>
                       </div>
-                    ))}
-                  </div>
+                      <div
+                        className={`h-5 w-5 rounded-md flex items-center justify-center shrink-0 border transition-all ${
+                          selectedPermissions.includes(perm.id)
+                            ? 'bg-indigo-600 dark:bg-indigo-500 border-indigo-600 dark:border-indigo-500 text-white'
+                            : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-transparent'
+                        }`}
+                      >
+                        <Check className="w-3.5 h-3.5 stroke-[3]" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ),
-            )}
+              </div>
+            ))}
           </div>
 
-          <DialogFooter className="mt-10 pt-6">
+          <DialogFooter className="pt-4 border-t border-slate-100 dark:border-slate-900 mt-4 gap-2 shrink-0">
             <Button
               type="button"
               variant="ghost"
+              size="sm"
               onClick={() => setIsPermModalOpen(false)}
-              className="rounded-2xl font-black text-xs uppercase tracking-widest px-8"
+              className="font-medium h-9"
             >
-              Discard
+              Cancel
             </Button>
             <Button
               onClick={handleUpdatePermissions}
-              className="bg-slate-900 hover:bg-slate-800 text-white rounded-2xl px-12 h-16 font-black text-xs uppercase tracking-widest shadow-xl transition-all"
+              size="sm"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold h-9"
             >
-              Synchronize Matrix
+              Update Permissions
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -808,6 +747,3 @@ export default function StaffClient() {
     </div>
   );
 }
-
-// Additional Components
-import { Globe } from 'lucide-react';

@@ -34,7 +34,7 @@ export default function CartPage() {
     }
   }, [cart, selectedItemIds, selectAllItems]);
 
-  if (loading)
+  if (loading && !cart)
     return (
       <div className="container py-10">
         {t('common', 'loadingCart', { defaultValue: 'Loading cart...' })}

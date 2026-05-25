@@ -18,7 +18,9 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import Reviews from '../Reviews';
 import ProductGallery from './ProductGallery';
-import { getProductBySlug, getPublicSettings } from '@/lib/fetchers';
+import { getProductBySlug, getPublicSettings, getRelatedProducts, getProducts } from '@/lib/fetchers';
+import Link from 'next/link';
+import ProductCard from '@/components/ProductCard';
 
 interface ProductDetailsClientProps {
   product: Product;
@@ -126,6 +128,8 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   const [realtimeProduct, setRealtimeProduct] = useState<Product>(product);
   const [qty, setQty] = useState<number | string>(1);
   const router = useRouter();
+  const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
+  const [brandProducts, setBrandProducts] = useState<any[]>([]);
   const [shippingPolicy, setShippingPolicy] = useState<string | null>(null);
   const [returnPolicy, setReturnPolicy] = useState<string | null>(null);
 
@@ -138,12 +142,13 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
   // Fetch real-time data on mount to ensure stock is fresh
   useEffect(() => {
-  const fetchProduct = async () => {
+    const fetchProduct = async () => {
       try {
-        // Fetch product and settings concurrently
-        const [productData, settingsData] = await Promise.all([
+        // Fetch product, settings, and related products concurrently
+        const [productData, settingsData, relatedData] = await Promise.all([
           getProductBySlug(product.slug),
           getPublicSettings(),
+          getRelatedProducts(product.id, 6)
         ]);
 
         if (productData) {
@@ -154,12 +159,25 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
           if (settingsData.legal.shippingPolicy) setShippingPolicy(settingsData.legal.shippingPolicy);
           if (settingsData.legal.returnPolicy) setReturnPolicy(settingsData.legal.returnPolicy);
         }
+
+        if (relatedData) {
+          setRelatedProducts(relatedData);
+        }
+
+        // Fetch brand products if brand exists
+        if (product.brand) {
+          const brandRes = await getProducts({ brand: product.brand, limit: 9 });
+          if (brandRes?.data) {
+            const filteredBrand = brandRes.data.filter((p: any) => p.id !== product.id).slice(0, 8);
+            setBrandProducts(filteredBrand);
+          }
+        }
       } catch (error) {
         console.error('Failed to fetch real-time product data:', error);
       }
     };
     fetchProduct();
-  }, [product.slug]);
+  }, [product.slug, product.id, product.brand]);
 
   // Extract all unique attribute keys and their values
   const attributeOptions = useMemo(() => {
@@ -423,7 +441,8 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
   }, [realtimeProduct.id, selectedVariant?.id, productName, currentPrice, categoryName]);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+    <div className="space-y-16">
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
       {/* Left Column: Gallery and Information Tabs */}
       <div className="w-full lg:w-[60%] xl:w-2/3 flex flex-col gap-8">
         <ProductGallery images={currentImages} videoUrls={currentVideoUrls} title={productName} />
@@ -602,17 +621,26 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
         </div>
       </div>
 
-      {/* Right Column: Sticky Purchase Dashboard */}
+      {/* Right Column: Sticky Purchase Dashboard & Related Products */}
       <div className="w-full lg:w-[40%] xl:w-1/3">
-        <div className="sticky top-24 flex flex-col gap-6 rounded-2xl border bg-card p-6 shadow-sm">
+        <div className="sticky top-24 flex flex-col gap-6">
+          <div className="rounded-2xl border bg-card p-6 shadow-sm flex flex-col gap-6">
           <div>
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex flex-wrap items-center gap-2 mb-3">
               <Badge
                 variant="secondary"
                 className="uppercase tracking-wider text-[10px] font-semibold"
               >
                 {categoryName}
               </Badge>
+              {realtimeProduct.brand && (
+                <Badge
+                  variant="outline"
+                  className="uppercase tracking-wider text-[10px] font-semibold border-pink-600/35 text-pink-600 dark:text-pink-450 bg-pink-50/20 dark:bg-pink-950/10 px-2 py-0.5"
+                >
+                  {realtimeProduct.brand}
+                </Badge>
+              )}
               <span className="text-xs text-muted-foreground font-mono bg-muted/60 px-2 py-0.5 rounded border">
                 SKU: {selectedVariant?.sku || realtimeProduct.sku || 'N/A'}
               </span>
@@ -964,7 +992,135 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
             </div>
           </div>
         </div>
+
+        {/* Related Products Widget */}
+        {relatedProducts.length > 0 && (
+          <div className="rounded-2xl border bg-card p-6 shadow-sm flex flex-col gap-4 animate-in fade-in duration-500">
+            <h3 className="font-extrabold text-lg border-b-2 border-pink-600 dark:border-pink-500 pb-3 flex items-center gap-2">
+              <span className="text-foreground">Related</span>
+              <span className="text-pink-600 dark:text-pink-400">Products</span>
+            </h3>
+            
+            <div className="flex flex-col gap-4 max-h-[380px] overflow-y-auto pr-1 no-scrollbar scroll-smooth">
+              {relatedProducts.map((p) => {
+                const pName = getLocalized(p, locale, 'name');
+                const pImage = getImageUrl(p.images?.[0]);
+                const pPrice = p.sellingPrice;
+                const pBasePrice = p.basePrice;
+                
+                return (
+                  <div key={p.id} className="flex gap-3 items-center p-2.5 rounded-xl border border-border/50 hover:border-primary/30 dark:hover:border-primary/50 transition-all bg-muted/20 relative group">
+                    {/* Product Thumbnail */}
+                    <Link href={`/${p.slug}`} className="relative h-16 w-16 aspect-square rounded-lg overflow-hidden bg-background border flex-shrink-0">
+                      <Image
+                        src={pImage}
+                        alt={pName}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        sizes="64px"
+                      />
+                    </Link>
+                    
+                    {/* Product Info */}
+                    <div className="flex-1 min-w-0 space-y-1.5">
+                      <h4 className="font-semibold text-xs text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                        <Link href={`/${p.slug}`}>
+                          {pName}
+                        </Link>
+                      </h4>
+                      
+                      <div className="flex items-center justify-between gap-2">
+                        {/* Price */}
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="font-bold text-xs text-foreground">{formatPrice(pPrice)}</span>
+                          {pBasePrice > pPrice && (
+                            <span className="text-[10px] text-muted-foreground line-through decoration-muted-foreground/50">
+                              {formatPrice(pBasePrice)}
+                            </span>
+                          )}
+                        </div>
+                        
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            toggleWishlist(p.id);
+                          }}
+                          className="text-muted-foreground hover:text-red-500 transition-colors shrink-0"
+                          title="Wishlist"
+                        >
+                          <Heart
+                            className={cn(
+                              'h-4 w-4',
+                              isInWishlist(p.id) && 'fill-current text-red-500'
+                            )}
+                          />
+                        </button>
+                      </div>
+                      
+                      {/* Action buttons */}
+                      <div className="flex items-center gap-1.5 pt-1">
+                        <button
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            try {
+                              await addToCart(p.id, 1, p.variants?.[0]?.id);
+                              setSuccessMessage(t('common', 'addedToCart', { defaultValue: 'Added to cart!' }));
+                              setTimeout(() => setSuccessMessage(null), 3000);
+                            } catch (err: any) {
+                              setErrorMessage(err.message || 'Failed to add');
+                              setTimeout(() => setErrorMessage(null), 3000);
+                            }
+                          }}
+                          className="h-7 w-7 rounded bg-pink-600 hover:bg-pink-700 text-white flex items-center justify-center transition-colors shrink-0"
+                          title="Add to Cart"
+                        >
+                          <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                          </svg>
+                        </button>
+                        
+                        <button
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            try {
+                              await addToCart(p.id, 1, p.variants?.[0]?.id);
+                              router.push('/checkout');
+                            } catch (err: any) {
+                              setErrorMessage(err.message || 'Failed to checkout');
+                              setTimeout(() => setErrorMessage(null), 3000);
+                            }
+                          }}
+                          className="flex-1 h-7 rounded bg-pink-600 hover:bg-pink-700 text-white font-extrabold text-[10px] tracking-wider uppercase transition-colors flex items-center justify-center"
+                        >
+                          Buy Now
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        </div>
       </div>
+      </div>
+
+      {/* Brand Products Section */}
+      {brandProducts.length > 0 && (
+        <div className="border-t pt-12 space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
+          <h2 className="text-3xl font-black tracking-tight flex items-center gap-2 border-b-2 border-pink-600 dark:border-pink-500 pb-4 w-fit">
+            <span className="text-foreground">From</span>
+            <span className="text-pink-600 dark:text-pink-400">Same Brand</span>
+          </h2>
+          
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {brandProducts.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -196,68 +196,65 @@ export default function IntegrationsClient() {
 
   if (isLoading) {
     return (
-      <div className="h-[60vh] flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground italic font-medium uppercase tracking-widest">
-          Bridging External Nodes...
-        </p>
+      <div className="flex h-[50vh] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-indigo-600 dark:text-indigo-400" />
       </div>
     );
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
-      {/* Minimal Header */}
-      <div className="border-b pb-8">
-        <div className="flex items-center justify-between">
+    <div className="space-y-6 mx-auto p-6 max-w-7xl animate-in fade-in duration-300">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 dark:border-slate-800 pb-6">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-indigo-50 dark:bg-slate-900 rounded-lg text-indigo-600 dark:text-indigo-400">
+            <WebhookIcon className="h-6 w-6" />
+          </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 uppercase">
-              Integrations matrix
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Integrations & Webhooks
             </h1>
-            <p className="text-slate-500 text-sm mt-1">
-              Deploy tracking pixels, analytics engines, and system webhooks.
+            <p className="text-muted-foreground text-sm mt-1">
+              Configure tracking pixels, analytics suites, and real-time outbound webhooks.
             </p>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={fetchData}
-            className="text-[10px] font-black uppercase tracking-tighter italic text-slate-400 hover:text-primary transition-all"
-          >
-            <RefreshCw className="w-3 h-3 mr-1.5" /> Sync Engine
-          </Button>
         </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={fetchData}
+          className="w-full sm:w-auto font-medium hover:bg-slate-50 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800"
+        >
+          <RefreshCw className="w-4 h-4 mr-2" /> Sync Engine
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
         {/* Left Column: Analytics & Pixels */}
-        <div className="lg:col-span-12 xl:col-span-7 space-y-8">
-          <Card className="shadow-none border-slate-200 overflow-hidden group">
-            <CardHeader className="border-b bg-slate-50/50 relative py-6">
-              <div className="absolute top-0 left-0 w-1 h-full bg-blue-500 group-hover:w-2 transition-all duration-300" />
+        <div className="xl:col-span-7 lg:col-span-12 space-y-6">
+          <Card className="border border-slate-200 dark:border-slate-800 shadow-sm bg-white dark:bg-slate-950 overflow-hidden">
+            <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/10 py-5">
               <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-lg font-bold flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-blue-500" /> Analytics
-                    Cluster
+                <div className="space-y-1">
+                  <CardTitle className="text-lg font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+                    <Activity className="w-5 h-5 text-indigo-600 dark:text-indigo-400" /> Analytics & Pixels
                   </CardTitle>
-                  <CardDescription className="text-xs uppercase font-black tracking-widest text-slate-400 mt-1 italic">
-                    Event Tracking & Synergy
+                  <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
+                    Event tracking pixels and customer analytics platforms.
                   </CardDescription>
                 </div>
-                <Zap className="w-5 h-5 text-amber-400 animate-pulse" />
               </div>
             </CardHeader>
-            <CardContent className="p-8 space-y-8 bg-white">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <CardContent className="p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Google Analytics 4 */}
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
-                      <Globe className="w-3.5 h-3.5 text-blue-600" /> Google
-                      Analytics 4
+                    <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-indigo-500" /> Google Analytics 4
                     </Label>
-                    <p className="text-[10px] text-slate-400 italic mb-1">
-                      Measurement ID (G-XXXXXXXXXX)
+                    <p className="text-xs text-slate-400 dark:text-slate-500 font-normal">
+                      Measurement ID (e.g. G-XXXXXXXXXX)
                     </p>
                     <Input
                       value={integrations.googleAnalyticsId || ''}
@@ -268,13 +265,13 @@ export default function IntegrationsClient() {
                         })
                       }
                       placeholder="G-XXXXXX"
-                      className="h-10 bg-slate-50 border-slate-200 focus:bg-white transition-all font-mono text-xs"
+                      className="h-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-950 transition-all font-mono text-sm"
                     />
                   </div>
                   <div className="space-y-2">
-                    <p className="text-[10px] text-slate-400 italic mb-1">
-                      GA4 API Secret (Required for Purchase Tracking)
-                    </p>
+                    <Label className="text-xs font-normal text-slate-400 dark:text-slate-500">
+                      GA4 API Protocol Secret
+                    </Label>
                     <Input
                       type="password"
                       value={integrations.thirdPartyConfig?.ga4ApiSecret || ''}
@@ -287,20 +284,20 @@ export default function IntegrationsClient() {
                           },
                         })
                       }
-                      placeholder="Measurement Protocol API Secret"
-                      className="h-10 bg-slate-50 border-slate-200 focus:bg-white transition-all font-mono text-xs"
+                      placeholder="API Secret for Purchase Tracking"
+                      className="h-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-950 transition-all font-mono text-sm"
                     />
                   </div>
                 </div>
 
+                {/* Meta Pixel */}
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
-                      <Facebook className="w-3.5 h-3.5 text-blue-800" /> Meta
-                      Pixel
+                    <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                      <Facebook className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Meta Pixel
                     </Label>
-                    <p className="text-[10px] text-slate-400 italic mb-1">
-                      Pixel ID for ad tracking
+                    <p className="text-xs text-slate-400 dark:text-slate-500 font-normal">
+                      Pixel ID for active ad tracking
                     </p>
                     <Input
                       value={integrations.facebookPixelId || ''}
@@ -311,13 +308,13 @@ export default function IntegrationsClient() {
                         })
                       }
                       placeholder="1234567890"
-                      className="h-10 bg-slate-50 border-slate-200 focus:bg-white transition-all font-mono text-xs"
+                      className="h-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-950 transition-all font-mono text-sm"
                     />
                   </div>
                   <div className="space-y-2">
-                    <p className="text-[10px] text-slate-400 italic mb-1">
+                    <Label className="text-xs font-normal text-slate-400 dark:text-slate-500">
                       Conversion API Access Token
-                    </p>
+                    </Label>
                     <Input
                       type="password"
                       value={
@@ -333,18 +330,18 @@ export default function IntegrationsClient() {
                         })
                       }
                       placeholder="EAAB..."
-                      className="h-10 bg-slate-50 border-slate-200 focus:bg-white transition-all font-mono text-xs"
+                      className="h-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-950 transition-all font-mono text-sm"
                     />
                   </div>
                 </div>
 
+                {/* Google Tag Manager */}
                 <div className="md:col-span-2 space-y-2">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
-                    <Code className="w-3.5 h-3.5 text-emerald-500" /> Google Tag
-                    Manager
+                  <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                    <Code className="w-4 h-4 text-emerald-500" /> Google Tag Manager
                   </Label>
-                  <p className="text-[10px] text-slate-400 italic mb-3">
-                    Container ID (GTM-XXXXXXX)
+                  <p className="text-xs text-slate-400 dark:text-slate-500 font-normal">
+                    Container ID (e.g. GTM-XXXXXXX)
                   </p>
                   <Input
                     value={integrations.googleTagManagerId || ''}
@@ -355,119 +352,123 @@ export default function IntegrationsClient() {
                       })
                     }
                     placeholder="GTM-XXXXXXX"
-                    className="h-11 bg-slate-50 border-slate-200 focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all font-mono text-sm"
+                    className="h-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-950 transition-all font-mono text-sm"
                   />
                 </div>
               </div>
 
-              <Separator className="bg-slate-100" />
+              <Separator className="bg-slate-100 dark:bg-slate-800" />
 
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center border border-blue-100 shadow-inner">
-                    <Shield className="w-5 h-5 text-blue-500" />
+                  <div className="w-10 h-10 rounded-full bg-indigo-50 dark:bg-slate-900 flex items-center justify-center border border-indigo-100 dark:border-slate-800 shadow-inner">
+                    <Shield className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-700 uppercase italic">
+                    <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                       Server-Side Propagation
                     </p>
-                    <p className="text-[10px] text-slate-400 italic">
-                      Tracking is optimized for payload delivery
+                    <p className="text-xs text-muted-foreground">
+                      Tracking protocols are fully optimized for seamless event delivery.
                     </p>
                   </div>
                 </div>
                 <Button
                   onClick={handleUpdateIntegrations}
                   disabled={isSaving}
-                  className="px-10 h-11 bg-slate-900 hover:bg-black text-white rounded-lg shadow-lg hover:shadow-xl transition-all uppercase tracking-widest font-black text-[10px]"
+                  className="w-full sm:w-auto px-6 h-10 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-sm rounded-lg"
                 >
                   {isSaving ? (
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
                   ) : (
                     <Save className="w-4 h-4 mr-2" />
                   )}
-                  Deploy Matrix
+                  Save Integrations
                 </Button>
               </div>
             </CardContent>
           </Card>
 
-          {/* Third Party Apps Placeholder or Flexible JSON */}
-          <Card className="shadow-none border-slate-200 border-dashed bg-slate-50/50">
-            <CardHeader>
-              <CardTitle className="text-sm font-bold flex items-center gap-2 italic uppercase text-slate-500">
-                <Settings className="w-4 h-4" /> App Infrastructure
+          {/* Third Party Apps Placeholder */}
+          <Card className="border border-slate-200 dark:border-slate-800 border-dashed bg-slate-50/30 dark:bg-slate-900/10">
+            <CardHeader className="py-4">
+              <CardTitle className="text-base font-semibold flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                <Settings className="w-4 h-4 text-slate-500" /> App Infrastructure
               </CardTitle>
-              <CardDescription className="text-[10px]">
+              <CardDescription className="text-xs">
                 Configure third-party application modules via JSON schema.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="bg-slate-900 rounded-lg p-4 font-mono text-xs text-blue-300 min-h-[100px] flex items-center justify-center border border-slate-800 shadow-inner italic">
-                {'// Flexible dynamic configuration module pending deployment'}
+            <CardContent className="pb-5">
+              <div className="bg-slate-950 dark:bg-black rounded-lg p-4 font-mono text-xs text-indigo-400 min-h-[100px] flex items-center justify-center border border-slate-200 dark:border-slate-800 shadow-inner">
+                <span className="text-slate-500 select-none">// Flexible dynamic configuration module pending deployment</span>
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Right Column: Webhooks */}
-        <div className="lg:col-span-12 xl:col-span-5 space-y-8">
-          <Card className="shadow-none border-slate-200 overflow-hidden">
-            <CardHeader className="border-b bg-slate-50/50 py-6">
-              <CardTitle className="text-lg font-bold flex items-center gap-2">
-                <WebhookIcon className="w-4 h-4 text-emerald-500" /> Outbound
-                Webhooks
+        <div className="xl:col-span-5 lg:col-span-12 space-y-6">
+          <Card className="border border-slate-200 dark:border-slate-800 shadow-sm bg-white dark:bg-slate-950 overflow-hidden">
+            <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/10 py-5">
+              <CardTitle className="text-lg font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+                <WebhookIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" /> Outbound Webhooks
               </CardTitle>
-              <CardDescription className="text-xs uppercase font-black tracking-widest text-slate-400 mt-1 italic">
-                Real-time Event Delivery
+              <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
+                Deliver real-time event payloads to external endpoints.
               </CardDescription>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
               {/* Webhook List */}
               <div className="space-y-4">
                 {webhooks.length === 0 ? (
-                  <div className="py-12 border-2 border-dashed rounded-xl flex flex-col items-center justify-center bg-slate-50/30 text-slate-400 italic">
-                    <WebhookIcon className="w-8 h-8 opacity-20 mb-3" />
-                    <p className="text-xs uppercase font-bold tracking-widest">
-                      No Active Nodes
+                  <div className="py-12 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl flex flex-col items-center justify-center bg-slate-50/30 dark:bg-slate-900/10 text-slate-400 dark:text-slate-500">
+                    <WebhookIcon className="w-8 h-8 stroke-[1.5] mb-3 text-slate-400 dark:text-slate-600" />
+                    <p className="text-sm font-medium">
+                      No outbound webhooks configured
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1 text-center px-4">
+                      Add a destination URL to receive live system event webhooks.
                     </p>
                   </div>
                 ) : (
                   webhooks.map((webhook) => (
                     <div
                       key={webhook.id}
-                      className="p-4 rounded-xl border border-slate-100 bg-white hover:border-emerald-200 hover:shadow-md transition-all group relative"
+                      className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/20 hover:border-emerald-500/30 dark:hover:border-emerald-500/30 transition-all"
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-1.5 flex-1 pr-4">
-                          <div className="flex items-center gap-2">
-                            <h4 className="text-xs font-bold text-slate-900 uppercase">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-2 flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h4 className="text-sm font-semibold text-slate-900 dark:text-white truncate">
                               {webhook.name}
                             </h4>
                             <Badge
-                              variant={
-                                webhook.isActive ? 'default' : 'secondary'
+                              variant={webhook.isActive ? 'default' : 'secondary'}
+                              className={
+                                webhook.isActive
+                                  ? 'bg-emerald-100 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-950/30 font-medium'
+                                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium'
                               }
-                              className="h-4 text-[8px] uppercase font-black tracking-tighter"
                             >
-                              {webhook.isActive ? 'Online' : 'Paused'}
+                              {webhook.isActive ? 'Active' : 'Inactive'}
                             </Badge>
                           </div>
-                          <p className="text-[10px] text-slate-400 truncate max-w-[200px] italic">
+                          <p className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate">
                             {webhook.url}
                           </p>
-                          <div className="flex flex-wrap gap-1 mt-2">
+                          <div className="flex flex-wrap gap-1">
                             {webhook.events.map((ev) => (
                               <span
                                 key={ev}
-                                className="text-[8px] bg-slate-50 text-slate-500 px-1.5 py-0.5 rounded border border-slate-100 font-mono"
+                                className="text-[10px] bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-800 font-mono shadow-sm"
                               >
                                 {ev}
                               </span>
                             ))}
                           </div>
                         </div>
-                        <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-3">
                           <Switch
                             checked={webhook.isActive}
                             onCheckedChange={() => toggleWebhookStatus(webhook)}
@@ -476,9 +477,9 @@ export default function IntegrationsClient() {
                             variant="ghost"
                             size="icon"
                             onClick={() => handleDeleteWebhook(webhook.id)}
-                            className="h-8 w-8 text-slate-400 hover:text-rose-500 hover:bg-rose-50"
+                            className="h-8 w-8 text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
                       </div>
@@ -487,45 +488,45 @@ export default function IntegrationsClient() {
                 )}
               </div>
 
-              <Separator className="bg-slate-100" />
+              <Separator className="bg-slate-100 dark:bg-slate-800" />
 
               {/* Add Webhook Form */}
-              <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 border-dashed space-y-6">
-                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 italic pb-2 flex items-center gap-2">
-                  <Plus className="w-3 h-3" /> Initialize New Node
+              <div className="p-5 rounded-xl bg-slate-50/50 dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800 space-y-4">
+                <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                  <Plus className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> New Webhook Endpoint
                 </h3>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="space-y-1.5">
-                    <Label className="text-[10px] font-bold uppercase text-slate-500">
-                      Node Descriptor
+                    <Label className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                      Webhook Name
                     </Label>
                     <Input
                       value={newWebhook.name}
                       onChange={(e) =>
                         setNewWebhook({ ...newWebhook, name: e.target.value })
                       }
-                      placeholder="System API Gateway"
-                      className="h-10 bg-white text-xs border-slate-200"
+                      placeholder="e.g. ERP Integration"
+                      className="h-9 bg-white dark:bg-slate-950 text-sm border-slate-200 dark:border-slate-800"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-[10px] font-bold uppercase text-slate-500">
-                      Destination URL
+                    <Label className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                      Endpoint URL
                     </Label>
                     <Input
                       value={newWebhook.url}
                       onChange={(e) =>
                         setNewWebhook({ ...newWebhook, url: e.target.value })
                       }
-                      placeholder="https://api.example.com/webhook"
-                      className="h-10 bg-white text-xs font-mono border-slate-200"
+                      placeholder="https://yourdomain.com/webhooks"
+                      className="h-9 bg-white dark:bg-slate-950 text-sm font-mono border-slate-200 dark:border-slate-800"
                     />
                   </div>
                   <Button
                     onClick={handleAddWebhook}
-                    className="w-full h-10 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg uppercase tracking-widest font-black text-[9px]"
+                    className="w-full h-9 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-xs font-semibold shadow-sm transition-all"
                   >
-                    Deploy Webhook
+                    Create Webhook
                   </Button>
                 </div>
               </div>
@@ -533,17 +534,17 @@ export default function IntegrationsClient() {
           </Card>
 
           {/* Documentation Link Card */}
-          <div className="p-6 rounded-2xl border-2 border-dashed border-blue-100 bg-blue-50/20 flex items-center justify-between group hover:border-blue-300 transition-all cursor-help">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shadow-sm transition-transform group-hover:scale-110">
-                <ExternalLink className="w-5 h-5" />
+          <div className="p-4 rounded-xl border border-dashed border-indigo-200 dark:border-slate-800 bg-indigo-50/20 dark:bg-slate-950/20 flex items-center justify-between group hover:border-indigo-400/50 dark:hover:border-slate-700 transition-all">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-indigo-50 dark:bg-slate-900 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-sm transition-transform group-hover:scale-105">
+                <ExternalLink className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-slate-900 uppercase italic">
-                  Integrations Schema
+                <h4 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  Integrations Reference Guide
                 </h4>
-                <p className="text-[10px] text-slate-400 mt-0.5">
-                  Learn how to route events to third-party endpoints.
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Learn how to route real-time event payloads to external endpoints.
                 </p>
               </div>
             </div>

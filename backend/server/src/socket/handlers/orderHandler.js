@@ -1,6 +1,8 @@
 const prisma = require('../../config/prisma');
 const NotificationService = require('../../services/notification.service');
 
+const staffRoles = ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'STAFF', 'STAFFER'];
+
 module.exports = (io, socket) => {
   // Admin/Staff: Subscribe to order updates
   socket.on('orders:subscribe', () => {
@@ -75,7 +77,6 @@ async function emitOrderUpdate(io, orderId) {
     }
 
     // Broadcast order update to staff roles for real-time table updates (no persistent staff notifications here)
-    const staffRoles = ['ADMIN', 'SUPER_ADMIN', 'MANAGER', 'STAFF', 'STAFFER'];
     staffRoles.forEach((role) => io.to(`role:${role}`).emit('order:update', order));
   } catch (error) {
     console.error('Emit order update error:', error);

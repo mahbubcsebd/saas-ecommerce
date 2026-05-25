@@ -65,7 +65,7 @@ export default function RootLayout({
           <StoreHydration />
           {children}
           <Toaster />
-          <SonnerToaster richColors position="top-right" />
+          <SonnerToaster richColors position="bottom-right" />
         </Providers>
       </body>
     </html>

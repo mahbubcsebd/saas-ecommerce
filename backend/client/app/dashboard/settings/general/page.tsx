@@ -60,6 +60,7 @@ export default function GeneralSettingsPage() {
     code: string;
     symbol: string;
     symbolPosition: 'LEFT' | 'RIGHT';
+    showPriceDecimals: boolean;
   }
   interface ContactSettings {
     id?: string;
@@ -434,6 +435,20 @@ export default function GeneralSettingsPage() {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+              <div className="flex items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <Label className="text-base">Show Price Decimals</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Display trailing zeros (e.g. ৳100.00 instead of ৳100)
+                  </p>
+                </div>
+                <Switch
+                  checked={formCurrency.watch('showPriceDecimals') ?? false}
+                  onCheckedChange={(val) =>
+                    formCurrency.setValue('showPriceDecimals', val)
+                  }
+                />
               </div>
               <div className="flex justify-end">
                 <Button

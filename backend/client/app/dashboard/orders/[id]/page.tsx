@@ -15,6 +15,9 @@ import {
   Receipt,
   User,
   XCircle,
+  ShieldAlert,
+  Globe,
+  Monitor,
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -100,10 +103,45 @@ export default function OrderDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  
+  const [blockingIp, setBlockingIp] = useState(false);
+  const [blockingDevice, setBlockingDevice] = useState(false);
 
-  const fetchOrder = async () => {
+  const handleBlockClient = async (type: 'IP' | 'DEVICE', value: string) => {
+    if (!accessToken) return;
+    const confirmMessage = `Are you sure you want to block this ${type === 'IP' ? 'IP Address' : 'Device'} (${value})? This will instantly prevent any future checkouts from this ${type === 'IP' ? 'IP' : 'Device'}.`;
+    
+    if (!await confirm({
+      title: `Block ${type === 'IP' ? 'IP Address' : 'Device'}`,
+      message: confirmMessage,
+      type: 'danger',
+      confirmText: 'Block Client'
+    })) return;
+
+    const reason = prompt(`Enter reason for blocking this ${type.toLowerCase()} (optional):`) || `Suspicious activity/fake orders`;
+
     try {
-      setLoading(true);
+      if (type === 'IP') setBlockingIp(true);
+      else setBlockingDevice(true);
+
+      const res = await OrderService.blockClient(accessToken, type, value, reason);
+      if (res.success) {
+        toast.success(`${type} blocked successfully!`);
+      } else {
+        toast.error(res.message || `Failed to block ${type}`);
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(`Error blocking ${type}`);
+    } finally {
+      setBlockingIp(false);
+      setBlockingDevice(false);
+    }
+  };
+
+  const fetchOrder = async (showLoader = true) => {
+    try {
+      if (showLoader) setLoading(true);
       if (typeof id === 'string') {
         const res = await OrderService.getOrder(accessToken, id);
         console.log('[OrderDetail] API response:', res);
@@ -118,13 +156,13 @@ export default function OrderDetailsPage() {
       console.error('Failed to fetch order', error);
       toast.error('Error loading order details');
     } finally {
-      setLoading(false);
+      if (showLoader) setLoading(false);
     }
   };
 
   useEffect(() => {
     if (accessToken && id) {
-      fetchOrder();
+      fetchOrder(true);
     }
   }, [accessToken, id]);
 
@@ -138,7 +176,7 @@ export default function OrderDetailsPage() {
       );
       if (res.success) {
         toast.success(`Order status updated to ${status}`);
-        setOrder(res.data);
+        await fetchOrder(false); // Silent reload to fetch fully populated relation models
         window.dispatchEvent(new CustomEvent('refresh-sidebar-counts'));
       } else {
         toast.error('Failed to update status');
@@ -345,31 +383,30 @@ export default function OrderDetailsPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* Order Status Progress Bar */}
           {!isCancelledOrRefunded ? (
-            <Card className="print:hidden overflow-hidden">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base font-medium flex items-center gap-2">
-                  <Package className="h-4 w-4 text-muted-foreground" />
+            <Card className="print:hidden overflow-hidden border-slate-100 shadow-sm">
+              <CardHeader className="pb-4 bg-slate-50/50 border-b border-slate-100 dark:bg-zinc-900/50 dark:border-zinc-800">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2 text-slate-800 dark:text-zinc-200">
+                  <Package className="h-4 w-4 text-primary" />
                   Order Progress
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Progress Bar Track */}
-                <div className="relative h-2 bg-slate-100 rounded-full overflow-hidden">
+              <CardContent className="pt-8 pb-6 relative">
+                {/* Connected Progress Line */}
+                <div className="absolute left-[12.5%] right-[12.5%] top-[50px] h-1 bg-slate-100 dark:bg-zinc-800 rounded-full -translate-y-1/2">
                   <div
                     className="absolute left-0 top-0 h-full bg-primary rounded-full transition-all duration-700 ease-in-out"
                     style={{ width: `${progressPercent}%` }}
                   />
-                  {/* Animated shimmer on the active portion */}
                   {progressPercent > 0 && progressPercent < 100 && (
                     <div
-                      className="absolute top-0 h-full w-16 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-[shimmer_1.5s_infinite] rounded-full"
-                      style={{ left: `calc(${progressPercent}% - 4rem)` }}
+                      className="absolute top-0 h-full w-16 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-[shimmer_1.5s_infinite] rounded-full"
+                      style={{ left: `calc(${progressPercent}% - 2rem)` }}
                     />
                   )}
                 </div>
 
                 {/* Step Indicators */}
-                <div className="relative flex items-start justify-between">
+                <div className="relative flex items-center justify-between">
                   {steps.map((step, index) => {
                     const isCompleted =
                       index < currentStepIndex || order.status === 'COMPLETED';
@@ -380,41 +417,40 @@ export default function OrderDetailsPage() {
                     return (
                       <div
                         key={step.status}
-                        className="flex flex-col items-center gap-1.5 flex-1"
+                        className="flex flex-col items-center gap-2.5 flex-1 relative z-10"
                       >
-                        {/* Step Circle */}
-                        <div className="relative">
+                        {/* Step Circle Container (To keep line centered) */}
+                        <div className="h-9 flex items-center justify-center relative">
                           <div
                             className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
                               isCompleted
-                                ? 'bg-primary border-primary text-white shadow-sm'
+                                ? 'bg-primary border-primary text-white shadow-sm shadow-primary/20'
                                 : isCurrent
-                                  ? 'bg-primary/10 border-primary text-primary'
-                                  : 'bg-white border-slate-200 text-slate-300'
+                                  ? 'bg-white border-primary text-primary shadow-md shadow-primary/10 dark:bg-zinc-950'
+                                  : 'bg-white border-slate-200 text-slate-300 dark:bg-zinc-950 dark:border-zinc-800'
                             }`}
                           >
                             {isCompleted ? (
-                              <CheckCircle2 className="h-4 w-4" />
+                              <CheckCircle2 className="h-4.5 w-4.5 stroke-[2.5]" />
                             ) : (
-                              <span className="text-sm">{step.icon}</span>
+                              <span className="text-sm font-semibold">{step.icon}</span>
                             )}
                           </div>
-                          {/* Pulse Ring for Current Step */}
+                          
+                          {/* Pulse Glow for Current Step */}
                           {isCurrent && (
-                            <>
-                              <span className="absolute inset-0 rounded-full border-2 border-primary animate-ping opacity-60" />
-                              <span className="absolute inset-[-4px] rounded-full border border-primary/30 animate-pulse" />
-                            </>
+                            <span className="absolute w-9 h-9 rounded-full border-2 border-primary/40 animate-ping opacity-75 pointer-events-none" />
                           )}
                         </div>
+
                         {/* Label */}
                         <span
-                          className={`text-xs font-medium text-center leading-tight ${
+                          className={`text-xs font-semibold text-center leading-tight transition-colors ${
                             isCurrent
-                              ? 'text-primary font-semibold'
+                              ? 'text-primary font-bold'
                               : isCompleted
-                                ? 'text-slate-700'
-                                : 'text-muted-foreground'
+                                ? 'text-slate-700 dark:text-slate-300 font-medium'
+                                : 'text-slate-400 dark:text-zinc-600 font-normal'
                           }`}
                         >
                           {step.label}
@@ -595,7 +631,7 @@ export default function OrderDetailsPage() {
             </CardHeader>
             <CardContent className="space-y-1.5 print:px-0">
               <p className="font-semibold text-sm">
-                {order.user?.username || order.guestInfo?.name || 'Guest'}
+                {order.user ? `${order.user.firstName || ''} ${order.user.lastName || ''}`.trim() || order.user.username : order.guestInfo?.name || 'Guest'}
               </p>
               <p className="text-xs text-muted-foreground">
                 {order.user?.email || order.guestInfo?.email}
@@ -603,6 +639,68 @@ export default function OrderDetailsPage() {
               <p className="text-xs text-muted-foreground">
                 {order.user?.phone || order.guestInfo?.phone}
               </p>
+
+              {order.customerStats && (
+                <div className="mt-4 pt-4 border-t space-y-2.5 print:hidden">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground font-medium">Order History</span>
+                    <span className="font-semibold bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 rounded text-slate-700 dark:text-zinc-300">
+                      {order.customerStats.total} {order.customerStats.total === 1 ? 'order' : 'orders'}
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-muted-foreground">Delivery Success Rate</span>
+                      <span className={`font-bold ${
+                        order.customerStats.successRate >= 80 
+                          ? 'text-green-600 dark:text-green-400' 
+                          : order.customerStats.successRate >= 50 
+                            ? 'text-yellow-600 dark:text-yellow-400' 
+                            : 'text-red-600 dark:text-red-400'
+                      }`}>
+                        {order.customerStats.successRate}%
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full transition-all ${
+                          order.customerStats.successRate >= 80 
+                            ? 'bg-green-500' 
+                            : order.customerStats.successRate >= 50 
+                              ? 'bg-yellow-500' 
+                              : 'bg-red-500'
+                        }`} 
+                        style={{ width: `${order.customerStats.successRate}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-[10px] text-center">
+                    <div className="bg-green-50/50 dark:bg-green-950/10 border border-green-100 dark:border-green-900/30 p-1.5 rounded">
+                      <span className="block text-green-600 dark:text-green-400 font-bold text-sm">
+                        {order.customerStats.delivered}
+                      </span>
+                      <span className="text-muted-foreground">Delivered</span>
+                    </div>
+                    <div className="bg-red-50/50 dark:bg-red-950/10 border border-red-100 dark:border-red-900/30 p-1.5 rounded">
+                      <span className="block text-red-600 dark:text-red-400 font-bold text-sm">
+                        {order.customerStats.cancelled}
+                      </span>
+                      <span className="text-muted-foreground">Returned</span>
+                    </div>
+                  </div>
+
+                  {order.customerStats.total > 1 && order.customerStats.successRate < 75 && (
+                    <div className="bg-amber-50 dark:bg-amber-950/10 border border-amber-200 dark:border-amber-900/30 text-amber-800 dark:text-amber-400 p-2 rounded text-[10px] leading-normal flex items-start gap-1">
+                      <ShieldAlert className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>Caution:</strong> High cancellation/return history detected. Verify client before shipment.
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -673,6 +771,69 @@ export default function OrderDetailsPage() {
                 >
                   {order.paymentStatus}
                 </Badge>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Security & Fraud Blocking */}
+          <Card className="print:hidden border-red-100 bg-red-50/10 dark:bg-zinc-900/10 dark:border-zinc-800">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-red-950 dark:text-red-400">
+                <ShieldAlert className="h-4 w-4 text-red-600 dark:text-red-400" />
+                Security & Fraud Prevention
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* IP Section */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Globe className="h-3 w-3 text-slate-400" />
+                    IP Address
+                  </span>
+                  {order.ipAddress ? (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="h-6 px-2 text-[10px] uppercase font-bold rounded cursor-pointer"
+                      onClick={() => handleBlockClient('IP', order.ipAddress!)}
+                      disabled={blockingIp}
+                    >
+                      {blockingIp ? 'Blocking...' : 'Block IP'}
+                    </Button>
+                  ) : (
+                    <span className="text-[10px] text-slate-400">Not Tracked</span>
+                  )}
+                </div>
+                <p className="text-xs font-mono font-medium text-slate-800 bg-slate-100/50 p-1.5 rounded border border-slate-100 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-300">
+                  {order.ipAddress || '127.0.0.1 (Local)'}
+                </p>
+              </div>
+
+              {/* Device Section */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Monitor className="h-3 w-3 text-slate-400" />
+                    Device Agent
+                  </span>
+                  {order.deviceInfo ? (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="h-6 px-2 text-[10px] uppercase font-bold rounded cursor-pointer"
+                      onClick={() => handleBlockClient('DEVICE', order.deviceInfo!)}
+                      disabled={blockingDevice}
+                    >
+                      {blockingDevice ? 'Blocking...' : 'Block Device'}
+                    </Button>
+                  ) : (
+                    <span className="text-[10px] text-slate-400">Not Tracked</span>
+                  )}
+                </div>
+                <p className="text-[10px] font-mono text-slate-600 bg-slate-100/50 p-2 rounded border border-slate-100 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-400 line-clamp-3 leading-normal" title={order.deviceInfo || 'Unknown'}>
+                  {order.deviceInfo || 'Unknown'}
+                </p>
               </div>
             </CardContent>
           </Card>

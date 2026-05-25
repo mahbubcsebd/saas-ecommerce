@@ -222,3 +222,70 @@ export async function getLanguages() {
     return [];
   }
 }
+
+export async function getBlogPosts(params?: Record<string, any>) {
+  try {
+    const query = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          query.append(key, String(value));
+        }
+      });
+    }
+    const queryString = query.toString();
+    return await api.get<any>(`/blog${queryString ? `?${queryString}` : ''}`, {
+      revalidate: 300,
+      tags: ['blog-posts'],
+    });
+  } catch (error) {
+    console.error('Error fetching blog posts:', error);
+    return { posts: [], pagination: { total: 0, page: 1, limit: 10, totalPages: 0 } };
+  }
+}
+
+export async function getBlogPostBySlug(slug: string) {
+  try {
+    return await api.get<any>(`/blog/${slug}`, {
+      revalidate: 60,
+      tags: [`blog-post-${slug}`],
+    });
+  } catch (error) {
+    console.error(`Error fetching blog post by slug ${slug}:`, error);
+    return null;
+  }
+}
+
+export async function getCustomPages(params?: Record<string, any>) {
+  try {
+    const query = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          query.append(key, String(value));
+        }
+      });
+    }
+    const queryString = query.toString();
+    return await api.get<any>(`/pages${queryString ? `?${queryString}` : ''}`, {
+      revalidate: 300,
+      tags: ['custom-pages'],
+    });
+  } catch (error) {
+    console.error('Error fetching custom pages:', error);
+    return [];
+  }
+}
+
+export async function getCustomPageBySlug(slug: string) {
+  try {
+    return await api.get<any>(`/pages/${slug}`, {
+      revalidate: 60,
+      tags: [`custom-page-${slug}`],
+    });
+  } catch (error) {
+    console.error(`Error fetching custom page by slug ${slug}:`, error);
+    return null;
+  }
+}
+

@@ -8,15 +8,19 @@ export function cn(...inputs: ClassValue[]) {
 export function getLocalized(data: any, locale: string, field: string = 'name') {
   if (!data) return '';
 
-  // 1. Check direct field (if current locale matches default or source)
-  // This is tricky if we don't know default. Assuming 'en' is default.
-  // If locale is 'en', return data[field]
-
-  // 2. Check translations array
+  // 1. Check current locale translation
   if (data.translations && Array.isArray(data.translations)) {
     const translation = data.translations.find((t: any) => t.langCode === locale);
     if (translation && translation[field]) {
       return translation[field];
+    }
+  }
+
+  // 2. Check fallback to 'en' translation
+  if (locale !== 'en' && data.translations && Array.isArray(data.translations)) {
+    const enTranslation = data.translations.find((t: any) => t.langCode === 'en');
+    if (enTranslation && enTranslation[field]) {
+      return enTranslation[field];
     }
   }
 

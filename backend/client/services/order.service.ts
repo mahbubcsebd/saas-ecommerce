@@ -40,6 +40,15 @@ export interface Order {
   shippingAddress?: any;
   createdAt: string;
   notes?: string;
+  ipAddress?: string;
+  deviceInfo?: string;
+  customerStats?: {
+    total: number;
+    delivered: number;
+    cancelled: number;
+    successRate: number;
+    resolvedCount: number;
+  };
 }
 
 export interface OrderItem {
@@ -160,4 +169,32 @@ export const OrderService = {
     });
     return res.json();
   },
+
+  blockClient: async (token: string, type: 'IP' | 'DEVICE', value: string, reason?: string) => {
+    const res = await fetch(`${API_URL}/orders/admin/block`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ type, value, reason }),
+    });
+    return res.json();
+  },
+
+  getBlockedClients: async (token: string) => {
+    const res = await fetch(`${API_URL}/orders/admin/blocked`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.json();
+  },
+
+  unblockClient: async (token: string, id: string) => {
+    const res = await fetch(`${API_URL}/orders/admin/block/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.json();
+  },
 };
+

@@ -233,3 +233,76 @@ exports.deleteReview = async (req, res, next) => {
     next(error);
   }
 };
+
+// Create a custom approved review (admin fake review)
+exports.createCustomReview = async (req, res, next) => {
+  try {
+    const { productId, rating, comment, firstName, lastName, email, avatar, createdAt, images } = req.body;
+    const bcrypt = require('bcryptjs');
+
+    // Check if product exists
+    const product = await prisma.product.findUnique({ where: { id: productId } });
+    if (!product) {
+      return errorResponse(res, { statusCode: 404, message: 'Product not found' });
+    }
+
+    // Find or create user by email
+    let user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      const hashedPassword = await bcrypt.hash(Math.random().toString(36), 12);
+      const username = email.split('@')[0] + Math.floor(1000 + Math.random() * 9000);
+      user = await prisma.user.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          username,
+          password: hashedPassword,
+          avatar: avatar || null,
+          role: 'CUSTOMER',
+          status: 'ACTIVE',
+        },
+      });
+    } else if (avatar && avatar !== user.avatar) {
+      // Update avatar if provided and different
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { avatar },
+      });
+    }
+
+    // Create review
+    const review = await prisma.review.create({
+      data: {
+        userId: user.id,
+        productId,
+        rating: parseInt(rating),
+        comment,
+        images: Array.isArray(images) ? images : [],
+        status: 'APPROVED', // Custom reviews from admin are approved by default
+        createdAt: createdAt ? new Date(createdAt) : new Date(),
+      },
+    });
+
+    // Update product rating stats
+    const reviews = await prisma.review.findMany({ where: { productId, status: 'APPROVED' } });
+    const totalRating = reviews.reduce((acc, curr) => acc + curr.rating, 0);
+    const avgRating = reviews.length > 0 ? totalRating / reviews.length : 0;
+
+    await prisma.product.update({
+      where: { id: productId },
+      data: {
+        numReviews: reviews.length,
+        rating: avgRating,
+      },
+    });
+
+    return createdResponse(res, {
+      message: 'Custom review created successfully',
+      data: review,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+

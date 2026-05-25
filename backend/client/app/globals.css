@@ -120,11 +120,13 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
-  button, 
-  a, 
+
+  button,
+  a,
   [role="button"],
   input[type="submit"],
   input[type="button"],
@@ -136,8 +138,13 @@
 }
 
 @keyframes shimmer {
-  0%   { transform: translateX(-100%); }
-  100% { transform: translateX(300%); }
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(300%);
+  }
 }
 
 /* Proper Container Implementation */
@@ -325,6 +332,7 @@
    ROBUST MEDIA PRINT STYLES
    ========================================== */
 @media print {
+
   /* Force hide all layout chrome, headers, sidebars, and non-print elements */
   header,
   aside,
@@ -348,8 +356,8 @@
   }
 
   /* Reset layout margins, paddings, and background constraints */
-  body, 
-  html, 
+  body,
+  html,
   main,
   #root,
   #__next,
@@ -382,7 +390,7 @@
   .print\:shadow-none {
     box-shadow: none !important;
   }
-  
+
   .border,
   .border-b,
   .border-t,
@@ -451,4 +459,13 @@
     text-align: center !important;
     letter-spacing: 1px !important;
   }
+}
+
+button:hover,
+a:hover,
+input,
+select,
+option,
+textarea {
+  cursor: pointer !important;
 }

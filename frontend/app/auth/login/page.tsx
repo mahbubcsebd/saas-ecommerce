@@ -8,10 +8,10 @@ import { useCartStore } from '@/store/useCartStore';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { toast } from 'sonner';
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const { t } = useTranslations();
   const searchParams = useSearchParams();
@@ -109,5 +109,13 @@ export default function LoginPage() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex justify-center p-8">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

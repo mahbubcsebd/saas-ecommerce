@@ -10,7 +10,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useCartStore } from '@/store/useCartStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
@@ -77,7 +77,15 @@ export default function CheckoutForm({
     },
   });
 
+  const lastMessageRef = useRef<string | null>(null);
+
   useEffect(() => {
+    if (!state.message || lastMessageRef.current === state.message) {
+      return;
+    }
+    
+    lastMessageRef.current = state.message;
+
     if (state.success && state.orderId) {
       toast.success(state.message);
 
@@ -87,7 +95,7 @@ export default function CheckoutForm({
       setBuyNowItem(null);
 
       router.push(`/orders/success?orderId=${state.orderId}`);
-    } else if (state.message) {
+    } else {
       toast.error(state.message);
     }
   }, [state, clearCart, setBuyNowItem, router]);
@@ -221,9 +229,14 @@ export default function CheckoutForm({
       />
 
       <Button type="submit" size="lg" className="w-full mt-6" disabled={isPending}>
-        {isPending
-          ? t('common', 'processing', 'Processing...')
-          : `${t('common', 'placeOrder', 'Place Order')} - ${formatPrice(total)}`}
+        {isPending ? (
+          <span className="flex items-center justify-center gap-2">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            {t('common', 'processing', 'Processing...')}
+          </span>
+        ) : (
+          `${t('common', 'placeOrder', 'Place Order')} - ${formatPrice(total)}`
+        )}
       </Button>
     </form>
   );

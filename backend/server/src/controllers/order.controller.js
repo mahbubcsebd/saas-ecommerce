@@ -27,6 +27,48 @@ const orderInclude = {
  * Create Order
  */
 exports.createOrder = asyncHandler(async (req, res) => {
+  const DeviceDetector = require('device-detector-js');
+  const deviceDetector = new DeviceDetector();
+
+  const ipAddress = req.headers['x-client-ip'] || req.headers['x-forwarded-for'] || req.ip || req.socket.remoteAddress;
+  const rawUserAgent = req.headers['x-client-device'] || req.headers['user-agent'] || 'Unknown';
+
+  let deviceInfo = rawUserAgent;
+  if (rawUserAgent && rawUserAgent !== 'node' && rawUserAgent !== 'Unknown') {
+    try {
+      const result = deviceDetector.parse(rawUserAgent);
+      const os = result.os ? `${result.os.name} ${result.os.version || ''}`.trim() : '';
+      const client = result.client ? `${result.client.name} ${result.client.version || ''}`.trim() : '';
+      const deviceType = result.device && result.device.type ? result.device.type.toUpperCase() : 'DESKTOP';
+      
+      let str = '';
+      if (client) str += client;
+      if (os) str += ` on ${os}`;
+      if (deviceType) str += ` (${deviceType})`;
+      
+      if (str) deviceInfo = str;
+    } catch (e) {
+      // fallback
+    }
+  } else if (rawUserAgent === 'node') {
+    deviceInfo = 'NextJS Server (Proxy)';
+  }
+
+  // Check if IP or Device is blocked (match against either raw user agent or parsed device info)
+  const isBlocked = await prisma.blockedClient.findFirst({
+    where: {
+      OR: [
+        { type: 'IP', value: ipAddress },
+        { type: 'DEVICE', value: rawUserAgent },
+        { type: 'DEVICE', value: deviceInfo },
+      ],
+    },
+  });
+
+  if (isBlocked) {
+    throw ApiError.forbidden(`Your device or IP has been blocked due to suspicious activity. Please contact support. (Reason: ${isBlocked.reason || 'None'})`);
+  }
+
   const userId = req.user?.id;
   const {
     sessionId,
@@ -86,9 +128,22 @@ exports.createOrder = asyncHandler(async (req, res) => {
 
       if (!product) continue;
 
+      // Validate: if product has active variants, a variantId must be provided
+      const activeVariants = product.variants.filter((v) => v.isActive);
+      if (activeVariants.length > 0 && !item.variantId) {
+        throw ApiError.badRequest(
+          `Product "${product.name}" has variants. Please select a variant before ordering.`
+        );
+      }
+
       let variant;
       if (item.variantId) {
         variant = product.variants.find((v) => v.id === item.variantId);
+        if (!variant) {
+          throw ApiError.badRequest(
+            `Selected variant not found for product "${product.name}".`
+          );
+        }
       }
 
       const basePrice = variant ? variant.basePrice || product.basePrice : product.basePrice;
@@ -128,7 +183,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
     if (userId) {
       cart = await prisma.cart.findFirst({
         where: { userId },
-        include: { items: { include: { product: true, variant: true } } },
+        include: { items: { include: { product: { include: { variants: true } }, variant: true } } },
       });
     }
 
@@ -136,7 +191,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
     if ((!cart || cart.items.length === 0) && sessionId) {
       const guestCart = await prisma.cart.findFirst({
         where: { sessionId },
-        include: { items: { include: { product: true, variant: true } } },
+        include: { items: { include: { product: { include: { variants: true } }, variant: true } } },
       });
       if (guestCart && guestCart.items.length > 0) {
         cart = guestCart;
@@ -157,6 +212,14 @@ exports.createOrder = asyncHandler(async (req, res) => {
     }
 
     for (const item of selectedCartItems) {
+      // Validate: if product has active variants, item must have a variantId
+      const activeVariants = (item.product.variants || []).filter((v) => v.isActive);
+      if (activeVariants.length > 0 && !item.variantId) {
+        throw ApiError.badRequest(
+          `Product "${item.product.name}" has variants. Please select a variant before ordering.`
+        );
+      }
+
       const itemSellingPrice = item.variant?.sellingPrice || item.product.sellingPrice;
       const availableStock = item.variant?.stock || item.product.stock;
       const isPreOrder = item.variant?.isPreOrder || item.product.isPreOrder;
@@ -249,6 +312,8 @@ exports.createOrder = asyncHandler(async (req, res) => {
     invoiceNumber, // Added invoice number
     source: source,
     userId: userId || undefined,
+    ipAddress,
+    deviceInfo,
 
     // Info
     guestInfo: !userId ? guestInfo : undefined,
@@ -385,15 +450,17 @@ exports.createOrder = asyncHandler(async (req, res) => {
     });
   }
 
-  // Trigger Staff notifications only (no customer notify on order create)
+  // Trigger Staff notifications only (no customer notify on order create) - Background / Non-blocking
   try {
     const io = getIO();
-    await emitStaffOrderPlaced(io, order.id);
+    emitStaffOrderPlaced(io, order.id).catch((err) => {
+      console.warn('Failed to emit staff notification inside async job:', err?.message || err);
+    });
   } catch (ioError) {
     console.warn('Socket.IO not initialized during order creation notify');
   }
 
-  // Send order confirmation email to customer (or guest)
+  // Send order confirmation email to customer (or guest) in background (no-blocking)
   try {
     const { sendOrderConfirmationEmail } = require('../services/emailService');
     const customerEmail = order.user?.email || order.guestInfo?.email;
@@ -401,14 +468,16 @@ exports.createOrder = asyncHandler(async (req, res) => {
       ? `${order.user.firstName || ''} ${order.user.lastName || ''}`.trim()
       : order.guestInfo?.name || 'Customer';
     if (customerEmail) {
-      await sendOrderConfirmationEmail({
+      sendOrderConfirmationEmail({
         to: customerEmail,
         name: customerName,
         order,
+      }).catch((emailErr) => {
+        console.warn('Failed to send order confirmation email inside async job:', emailErr?.message || emailErr);
       });
     }
   } catch (emailErr) {
-    console.warn('Failed to send order confirmation email:', emailErr?.message || emailErr);
+    console.warn('Failed to dispatch order confirmation email:', emailErr?.message || emailErr);
   }
 
   // ---------------------------------------------------------
@@ -544,8 +613,8 @@ exports.updateOrderStatus = asyncHandler(async (req, res) => {
     data: { status },
   });
 
-  // If order is being CANCELLED, revert stock and decrement soldCount
-  if (status === 'CANCELLED' && currentOrder.status !== 'CANCELLED') {
+  // If order is being CANCELLED or REFUNDED, revert stock and decrement soldCount
+  if ((status === 'CANCELLED' || status === 'REFUNDED') && currentOrder.status !== 'CANCELLED' && currentOrder.status !== 'REFUNDED') {
     for (const item of currentOrder.items) {
       if (item.productId) {
         await prisma.product.update({
@@ -658,9 +727,83 @@ exports.getOrder = asyncHandler(async (req, res) => {
     throw ApiError.notFound('Order not found');
   }
 
+  // Calculate historical customer stats for security/fraud check
+  let customerStats = {
+    total: 1,
+    delivered: 0,
+    cancelled: 0,
+    successRate: 100,
+    resolvedCount: 0
+  };
+
+  try {
+    const customerEmail = order.user?.email || order.guestInfo?.email || (order.shippingAddress && typeof order.shippingAddress === 'object' ? order.shippingAddress.email : undefined);
+    const customerPhone = order.user?.phone || order.guestInfo?.phone || order.walkInPhone || (order.shippingAddress && typeof order.shippingAddress === 'object' ? order.shippingAddress.phone : undefined);
+    const userId = order.userId;
+
+    const conditions = [];
+    if (userId) conditions.push({ userId });
+    if (customerPhone) conditions.push({ walkInPhone: customerPhone });
+    if (customerEmail) conditions.push({ user: { email: customerEmail } });
+    if (customerPhone) conditions.push({ user: { phone: customerPhone } });
+
+    const candidateOrders = await prisma.order.findMany({
+      where: {
+        OR: conditions.length > 0 ? conditions : [{ id: order.id }]
+      },
+      select: {
+        id: true,
+        status: true,
+        guestInfo: true,
+        shippingAddress: true,
+        walkInPhone: true,
+        userId: true,
+        user: {
+          select: {
+            email: true,
+            phone: true
+          }
+        }
+      },
+      take: 100,
+      orderBy: { createdAt: 'desc' }
+    });
+
+    const matchedOrders = candidateOrders.filter(o => {
+      if (userId && o.userId === userId) return true;
+      
+      const oEmail = o.user?.email || o.guestInfo?.email || (o.shippingAddress && typeof o.shippingAddress === 'object' ? o.shippingAddress.email : undefined);
+      const oPhone = o.user?.phone || o.guestInfo?.phone || o.walkInPhone || (o.shippingAddress && typeof o.shippingAddress === 'object' ? o.shippingAddress.phone : undefined);
+
+      if (customerEmail && oEmail === customerEmail) return true;
+      if (customerPhone && oPhone === customerPhone) return true;
+
+      return false;
+    });
+
+    const total = matchedOrders.length;
+    const delivered = matchedOrders.filter(o => o.status === 'DELIVERED' || o.status === 'COMPLETED').length;
+    const cancelled = matchedOrders.filter(o => o.status === 'CANCELLED' || o.status === 'REFUNDED').length;
+    const resolvedCount = delivered + cancelled;
+    const successRate = resolvedCount > 0 ? Math.round((delivered / resolvedCount) * 100) : 100;
+
+    customerStats = {
+      total,
+      delivered,
+      cancelled,
+      successRate,
+      resolvedCount
+    };
+  } catch (error) {
+    console.error('Error calculating customer order stats:', error);
+  }
+
   return successResponse(res, {
     message: 'Order retrieved successfully',
-    data: order,
+    data: {
+      ...order,
+      customerStats
+    },
   });
 });
 
@@ -692,8 +835,8 @@ exports.bulkUpdateStatus = asyncHandler(async (req, res) => {
         data: { status },
       });
 
-      // Stock Reversal for CANCELLED
-      if (status === 'CANCELLED' && currentOrder.status !== 'CANCELLED') {
+      // Stock Reversal for CANCELLED or REFUNDED
+      if ((status === 'CANCELLED' || status === 'REFUNDED') && currentOrder.status !== 'CANCELLED' && currentOrder.status !== 'REFUNDED') {
         for (const item of currentOrder.items) {
           if (item.productId) {
             await prisma.product.update({
@@ -721,5 +864,57 @@ exports.bulkUpdateStatus = asyncHandler(async (req, res) => {
   return successResponse(res, {
     message: `Successfully updated ${results.length} orders to ${status}`,
     data: results,
+  });
+});
+
+/**
+ * Block a client (IP or User Agent)
+ */
+exports.blockClient = asyncHandler(async (req, res) => {
+  const { type, value, reason } = req.body;
+  if (!type || !value) {
+    throw ApiError.badRequest('Type and value are required');
+  }
+
+  const blocked = await prisma.blockedClient.create({
+    data: {
+      type, // "IP" or "DEVICE"
+      value,
+      reason,
+    },
+  });
+
+  return createdResponse(res, {
+    message: `${type} blocked successfully`,
+    data: blocked,
+  });
+});
+
+/**
+ * Get all blocked clients
+ */
+exports.getBlockedClients = asyncHandler(async (req, res) => {
+  const blocked = await prisma.blockedClient.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return successResponse(res, {
+    message: 'Blocked clients list retrieved successfully',
+    data: blocked,
+  });
+});
+
+/**
+ * Unblock a client
+ */
+exports.unblockClient = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  await prisma.blockedClient.delete({
+    where: { id },
+  });
+
+  return successResponse(res, {
+    message: 'Client unblocked successfully',
   });
 });

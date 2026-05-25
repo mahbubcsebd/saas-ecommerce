@@ -72,6 +72,19 @@ async function apiClient<T>(endpoint: string, options: FetchOptions = {}): Promi
       const match = document.cookie.match(/next-locale=([^;]+)/);
       if (match) headers.set('x-lang', match[1]);
     }
+
+    // Client-side: inject NextAuth accessToken as Authorization header
+    if (!headers.has('Authorization')) {
+      try {
+        const { getSession } = await import('next-auth/react');
+        const session = await getSession();
+        if (session?.accessToken) {
+          headers.set('Authorization', `Bearer ${session.accessToken}`);
+        }
+      } catch (e) {
+        console.error('Failed to inject dynamic session on client', e);
+      }
+    }
   }
 
   const response = await fetch(url, {

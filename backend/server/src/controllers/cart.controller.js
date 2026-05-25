@@ -101,6 +101,14 @@ exports.addToCart = asyncHandler(async (req, res) => {
     throw ApiError.notFound('Product not found');
   }
 
+  // Validate: products with active variants require a variantId
+  const activeVariants = product.variants.filter((v) => v.isActive);
+  if (activeVariants.length > 0 && !variantId) {
+    throw ApiError.badRequest(
+      `Please select a variant for "${product.name}" before adding to cart.`
+    );
+  }
+
   let unitPrice = product.sellingPrice;
   let availableStock = product.stock;
 

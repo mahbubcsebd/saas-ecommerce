@@ -12,10 +12,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useSettings } from '@/context/SettingsContext';
-import { useSocket } from '@/context/SocketContext';
 import { useTranslations } from '@/context/TranslationContext';
 import { useCartStore } from '@/store/useCartStore';
-import { LogOut, Menu, ShoppingCart, User, MessageSquare } from 'lucide-react';
+import { LogOut, Menu, ShoppingCart, User } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -26,7 +25,6 @@ import { Button } from './ui/button';
 
 export default function Header() {
   const cart = useCartStore((state) => state.cart);
-  const { chatUnreadCount } = useSocket();
   const { data: session } = useSession();
   const { settings } = useSettings();
   const { t } = useTranslations();
@@ -122,28 +120,6 @@ export default function Header() {
                 </Link>
               </Button>
             </div>
-          )}
-          {/* Chat */}
-          {session && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative"
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  window.dispatchEvent(new CustomEvent('open-chat'));
-                }
-              }}
-              aria-label={t('common', 'chat', { defaultValue: 'Chat' })}
-            >
-              <MessageSquare className="h-6 w-6" aria-hidden="true" />
-              <span className="sr-only">{t('common', 'chat', { defaultValue: 'Chat' })}</span>
-              {chatUnreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-blue-600 text-[11px] font-bold text-white flex items-center justify-center animate-in zoom-in">
-                  {chatUnreadCount}
-                </span>
-              )}
-            </Button>
           )}
 
           {/* Cart */}

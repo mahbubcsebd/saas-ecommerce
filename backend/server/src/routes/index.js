@@ -41,6 +41,15 @@ routes.use('/reviews', reviewRouter);
 const uploadRouter = require('./upload.routes');
 routes.use('/upload', uploadRouter);
 
+const blogRouter = require('./blog.routes');
+routes.use('/blog', blogRouter);
+
+const pageRouter = require('./page.routes');
+routes.use('/pages', pageRouter);
+
+const mediaRouter = require('./media.routes');
+routes.use('/media', mediaRouter);
+
 const wishlistRouter = require('./wishlist.routes');
 routes.use('/wishlist', wishlistRouter);
 

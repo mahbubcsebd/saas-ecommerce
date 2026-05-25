@@ -638,7 +638,7 @@ export function Sidebar({
             className={cn(
               'w-full justify-between font-medium',
               isParent // Highlight parent if any child is active
-                ? 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700'
+                ? 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-800 hover:text-white dark:text-white dark:hover:bg-slate-700'
                 : 'text-muted-foreground hover:text-foreground hover:bg-accent',
             )}
             onClick={() => toggleExpand(item.title)}

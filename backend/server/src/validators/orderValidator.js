@@ -49,7 +49,7 @@ const updateOrderStatusValidation = [
   body('status')
     .notEmpty()
     .withMessage('Status is required')
-    .isIn(['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'COMPLETED', 'RETURNED'])
+    .isIn(['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'COMPLETED', 'REFUNDED', 'RETURNED'])
     .withMessage('Invalid order status'),
 ];
 
@@ -65,7 +65,7 @@ const orderQueryValidation = [
 
   query('status')
     .optional()
-    .isIn(['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'COMPLETED', 'RETURNED'])
+    .isIn(['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'COMPLETED', 'REFUNDED', 'RETURNED'])
     .withMessage('Invalid status filter'),
 
   query('search').optional().isString().trim(),

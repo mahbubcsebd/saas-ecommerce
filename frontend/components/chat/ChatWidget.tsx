@@ -18,6 +18,10 @@ import {
   Smile,
   Trash2,
   X,
+  Phone,
+  Video,
+  ThumbsUp,
+  MessageCircleCode,
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useRef, useState } from 'react';
@@ -32,19 +36,19 @@ const playNotificationSound = () => {
     const ctx = new AudioContext();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-    
+
     osc.connect(gain);
     gain.connect(ctx.destination);
-    
+
     osc.type = 'sine';
     const now = ctx.currentTime;
-    
+
     osc.frequency.setValueAtTime(587.33, now); // D5
     osc.frequency.exponentialRampToValueAtTime(880.00, now + 0.1); // A5
-    
+
     gain.gain.setValueAtTime(0.35, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-    
+
     osc.start(now);
     osc.stop(now + 0.45);
   } catch (error) {
@@ -54,7 +58,7 @@ const playNotificationSound = () => {
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { socket, isConnected } = useSocket();
+  const { socket, isConnected, chatUnreadCount } = useSocket();
   const { data: session } = useSession();
 
   const [messages, setMessages] = useState<any[]>([]);
@@ -115,11 +119,11 @@ const ChatWidget = () => {
           if (prev.some((m) => m.id === message.id)) return prev;
           return [...prev, message];
         });
-        
+
         // Play notification sound if received from support
         if (message.senderId !== session?.user?.id) {
           playNotificationSound();
-          
+
           socket.emit('chat:read', {
             conversationId: conversation.id,
             messageId: message.id,
@@ -325,73 +329,104 @@ const ChatWidget = () => {
     socket?.emit('chat:react', { messageId, emoji });
   };
 
-  if (!session) return null;
+  const sendThumbsUp = () => {
+    if (!socket || !conversation) return;
+    socket.emit('chat:message', {
+      conversationId: conversation.id,
+      message: '👍',
+      replyToId: null,
+      type: 'TEXT',
+    });
+  };
 
+  if (!session) return null;
   return (
-    <div className="fixed bottom-6 right-6 z-100">
+    <div className="fixed bottom-6 right-6 z-[9999]">
       {!isOpen ? (
-        <Button
-          size="icon"
-          className="h-14 w-14 rounded-full shadow-2xl bg-blue-600 hover:bg-blue-700 transition-all scale-110"
+        <button
+          className="h-14 w-14 rounded-full shadow-[0_8px_30px_rgba(124,58,237,0.4)] bg-gradient-to-br from-[#7C3AED] via-[#8B5CF6] to-[#C084FC] hover:scale-115 active:scale-95 transition-all text-white flex items-center justify-center cursor-pointer border border-white/10 hover:shadow-[0_8px_30px_rgba(124,58,237,0.6)] duration-300 relative group"
           onClick={() => setIsOpen(true)}
         >
-          <MessageCircle className="h-6 w-6" />
-        </Button>
+          <MessageCircleCode />
+          {chatUnreadCount > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 h-5.5 w-5.5 rounded-full bg-red-500 text-[10px] font-bold text-white flex items-center justify-center animate-bounce shadow-md border-2 border-white dark:border-slate-900 px-1">
+              {chatUnreadCount}
+            </span>
+          )}
+        </button>
       ) : (
-        <Card className="w-80 sm:w-96 h-[550px] flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.2)] border-0 overflow-hidden animate-in slide-in-from-bottom-10 rounded-2xl">
-          <CardHeader className="bg-blue-600 text-white p-4 flex flex-row items-center justify-between shadow-md z-10">
+        <Card className="w-80 sm:w-[360px] h-[520px] flex flex-col shadow-[0_12px_40px_rgba(0,0,0,0.6)] border border-slate-900 overflow-hidden animate-in slide-in-from-bottom-8 duration-300 rounded-[18px] bg-black text-white">
+          <CardHeader className="bg-black border-b border-slate-900 p-3.5 flex flex-row items-center justify-between shadow-sm z-10">
             <div className="flex items-center gap-3">
-              <div className="relative">
-                <Avatar className="h-9 w-9 border-2 border-white/20">
-                  <AvatarFallback>S</AvatarFallback>
+              <div className="relative cursor-pointer" onClick={() => toast.info('Support profile details.')}>
+                <Avatar className="h-9 w-9 border border-slate-800">
+                  <AvatarFallback className="bg-gradient-to-br from-[#7C3AED] to-[#C084FC] text-white font-bold text-sm">S</AvatarFallback>
                 </Avatar>
                 <span
-                  className={`absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-blue-600 ${isConnected ? 'bg-green-500' : 'bg-gray-400'}`}
+                  className={`absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-black ${isConnected ? 'bg-green-500' : 'bg-gray-400'}`}
                 ></span>
               </div>
               <div>
-                <h3 className="font-bold text-sm leading-none mb-1">Live Support</h3>
-                <p className="text-[10px] opacity-80 uppercase tracking-wider font-semibold">
-                  {isConnected ? 'Active Now' : 'Reconnecting...'}
+                <h3 className="font-bold text-white text-sm leading-tight">Live Support</h3>
+                <p className="text-[10px] text-slate-400 font-semibold tracking-wide">
+                  {isConnected ? 'Active now' : 'Connecting...'}
                 </p>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-white hover:bg-white/10 rounded-full"
-              onClick={() => setIsOpen(false)}
-            >
-              <X className="h-5 w-5" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-[#8B5CF6] hover:bg-slate-900 rounded-full"
+                onClick={() => toast.info('Voice calls are coming soon!')}
+              >
+                <Phone className="h-4.5 w-4.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-[#8B5CF6] hover:bg-slate-900 rounded-full"
+                onClick={() => toast.info('Video calls are coming soon!')}
+              >
+                <Video className="h-4.5 w-4.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-slate-400 hover:text-white hover:bg-slate-900 rounded-full"
+                onClick={() => setIsOpen(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
           </CardHeader>
           <CardContent
-            className="flex-1 p-0 overflow-hidden flex flex-col bg-slate-50 dark:bg-slate-900/50 relative"
+            className="flex-1 p-0 overflow-hidden flex flex-col bg-black relative"
             {...getRootProps()}
           >
             <input {...getInputProps()} />
             {isDragActive && (
-              <div className="absolute inset-0 bg-blue-600/10 backdrop-blur-[1px] z-50 flex items-center justify-center border-2 border-dashed border-blue-600 m-2 rounded-xl pointer-events-none">
-                <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-xl flex flex-col items-center gap-2 animate-in zoom-in-95 duration-200">
-                  <div className="h-12 w-12 bg-blue-600/10 rounded-full flex items-center justify-center">
-                    <Paperclip className="h-6 w-6 text-blue-600" />
+              <div className="absolute inset-0 bg-[#8B5CF6]/10 backdrop-blur-[1px] z-50 flex items-center justify-center border-2 border-dashed border-[#8B5CF6] m-2 rounded-xl pointer-events-none">
+                <div className="bg-slate-900 p-4 rounded-2xl shadow-xl flex flex-col items-center gap-2 animate-in zoom-in-95 duration-200">
+                  <div className="h-12 w-12 bg-[#8B5CF6]/10 rounded-full flex items-center justify-center">
+                    <Paperclip className="h-6 w-6 text-[#8B5CF6]" />
                   </div>
-                  <p className="font-bold text-sm">Drop here</p>
+                  <p className="font-bold text-sm text-white">Drop to upload</p>
                 </div>
               </div>
             )}
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
               {loading ? (
                 <div className="flex items-center justify-center h-full">
-                  <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+                  <Loader2 className="h-6 w-6 animate-spin text-[#8B5CF6]" />
                 </div>
               ) : messages.length === 0 ? (
-                <div className="text-center py-20 px-6 space-y-2">
-                  <p className="font-bold text-slate-800 dark:text-white">
+                <div className="text-center py-16 px-6 space-y-3">
+                  <p className="text-xl font-bold text-white">
                     Hi {session.user.name?.split(' ')[0]}! 👋
                   </p>
-                  <p className="text-sm text-slate-500">
-                    Our team typically responds in a few minutes.
+                  <p className="text-sm text-slate-400">
+                    Ask us anything! Our support team typically responds in a few minutes.
                   </p>
                 </div>
               ) : (
@@ -404,33 +439,34 @@ const ChatWidget = () => {
                       className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}
                     >
                       <div
-                        className={`group relative flex items-end gap-2 max-w-[85%] ${isOwn ? 'flex-row-reverse' : 'flex-row'}`}
+                        className={`group relative flex items-end gap-2 max-w-[82%] ${isOwn ? 'flex-row-reverse' : 'flex-row'}`}
                       >
                         <div className="flex flex-col gap-0.5">
                           {m.replyTo && (
                             <div
-                              className={`text-[10px] p-2 mb-[-6px] rounded-t-xl opacity-60 line-clamp-1 border-l-2 ${isOwn ? 'bg-blue-100 dark:bg-blue-900/20 border-blue-600 text-blue-900' : 'bg-slate-200 border-slate-400'}`}
+                              className={`text-[10px] p-2 px-3 mb-[-6px] rounded-t-[14px] opacity-60 line-clamp-1 border-l-2 ${isOwn ? 'bg-slate-900 border-[#8B5CF6] text-[#C084FC]' : 'bg-slate-800 border-slate-600'}`}
                             >
                               {m.replyTo.message}
                             </div>
                           )}
                           <div
-                            className={`relative p-3 rounded-2xl text-[13px] shadow-sm transition-all ${
-                              isOwn
-                                ? 'bg-blue-600 text-white rounded-tr-none'
-                                : 'bg-white dark:bg-slate-800 rounded-tl-none border border-slate-200/50'
-                            } ${m.isDeleted ? 'italic opacity-50' : ''}`}
+                            className={`relative p-3 px-4 rounded-[18px] text-[13.5px] shadow-sm transition-all leading-relaxed ${isOwn
+                              ? 'bg-[#7C3AED] text-white rounded-br-sm'
+                              : 'bg-slate-900 text-slate-100 rounded-bl-sm border border-slate-800'
+                              } ${m.isDeleted ? 'italic opacity-50' : ''}`}
                           >
                             {m.type === 'IMAGE' ? (
                               <img
                                 src={m.attachments[0]}
-                                alt="img"
-                                className="rounded-lg max-w-full"
+                                alt="attachment"
+                                className="rounded-lg max-w-full hover:opacity-95 transition-opacity cursor-zoom-in"
+                                onClick={() => window.open(m.attachments[0], '_blank')}
                               />
                             ) : m.type === 'FILE' ? (
                               <a
                                 href={m.attachments[0]}
                                 target="_blank"
+                                rel="noopener noreferrer"
                                 className="flex items-center gap-2 underline"
                               >
                                 <FileIcon className="h-4 w-4" /> {m.message}
@@ -441,12 +477,12 @@ const ChatWidget = () => {
 
                             {m.reactions?.length > 0 && (
                               <div
-                                className={`absolute -bottom-2.5 ${isOwn ? 'right-0' : 'left-0'} flex gap-1`}
+                                className={`absolute -bottom-2.5 ${isOwn ? 'right-1' : 'left-1'} flex gap-1 z-20`}
                               >
                                 {m.reactions.map((r: any, i: number) => (
                                   <div
                                     key={i}
-                                    className="bg-white border text-[9px] rounded-full px-1 shadow-sm font-bold"
+                                    className="bg-slate-900 border border-slate-850 text-[10px] rounded-full px-1.5 py-0.5 shadow-sm font-bold scale-90 text-white"
                                   >
                                     {r.emoji} {r.userIds.length}
                                   </div>
@@ -456,41 +492,41 @@ const ChatWidget = () => {
 
                             {!m.isDeleted && (
                               <div
-                                className={`absolute top-1/2 -translate-y-1/2 ${isOwn ? 'right-[calc(100%+8px)]' : 'left-[calc(100%+8px)]'} hidden group-hover:flex items-center gap-1 bg-white dark:bg-slate-800 p-1 rounded-full shadow-lg z-10 border border-slate-200/50 animate-in fade-in zoom-in-95 duration-200 before:content-[''] before:absolute ${isOwn ? 'before:-right-4 before:left-0' : 'before:-left-4 before:right-0'} before:top-0 before:bottom-0 before:bg-transparent`}
+                                className={`absolute top-1/2 -translate-y-1/2 ${isOwn ? 'right-[calc(100%+10px)]' : 'left-[calc(100%+10px)]'} hidden group-hover:flex items-center gap-1 bg-slate-900 border border-slate-800 p-1 rounded-full shadow-lg z-30 animate-in fade-in zoom-in-95 duration-200`}
                               >
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="h-7 w-7 rounded-full hover:bg-slate-100"
+                                  className="h-7 w-7 rounded-full hover:bg-slate-800"
                                   onClick={() => setReplyTo(m)}
                                 >
-                                  <Reply className="h-3.5 w-3.5" />
+                                  <Reply className="h-3.5 w-3.5 text-slate-400" />
                                 </Button>
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="h-7 w-7 rounded-full hover:bg-slate-100"
+                                  className="h-7 w-7 rounded-full hover:bg-slate-800 text-red-500"
                                   onClick={() => handleReact(m.id, '❤️')}
                                 >
-                                  <Smile className="h-3.5 w-3.5" />
+                                  ❤️
                                 </Button>
                                 {isOwn && (
                                   <>
                                     <Button
                                       variant="ghost"
                                       size="icon"
-                                      className="h-7 w-7 rounded-full hover:bg-slate-100"
+                                      className="h-7 w-7 rounded-full hover:bg-slate-800"
                                       onClick={() => {
                                         setEditingId(m.id);
                                         setInput(m.message);
                                       }}
                                     >
-                                      <Pencil className="h-3 w-3" />
+                                      <Pencil className="h-3 w-3 text-slate-400" />
                                     </Button>
                                     <Button
                                       variant="ghost"
                                       size="icon"
-                                      className="h-7 w-7 rounded-full hover:bg-red-50 text-red-500"
+                                      className="h-7 w-7 rounded-full hover:bg-red-950/40 text-red-500"
                                       onClick={() => socket?.emit('chat:delete', m.id)}
                                     >
                                       <Trash2 className="h-3 w-3" />
@@ -502,13 +538,13 @@ const ChatWidget = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1 mt-1">
-                        <span className="text-[9px] opacity-40 uppercase font-bold tracking-tighter">
+                      <div className="flex items-center gap-1.5 mt-1 px-1">
+                        <span className="text-[9px] text-slate-500 font-semibold">
                           {format(new Date(m.createdAt), 'hh:mm a')}
                         </span>
                         {showSeen && (
-                          <span className="text-[9px] text-blue-600 font-bold flex items-center gap-0.5">
-                            <CheckCheck className="h-2 w-2" /> Seen
+                          <span className="text-[9px] text-[#8B5CF6] font-bold flex items-center gap-0.5">
+                            <CheckCheck className="h-2.5 w-2.5" /> Seen
                           </span>
                         )}
                       </div>
@@ -517,27 +553,27 @@ const ChatWidget = () => {
                 })
               )}
               {isTyping && (
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center animate-pulse">
                   <Avatar className="h-5 w-5">
-                    <AvatarFallback>S</AvatarFallback>
+                    <AvatarFallback className="bg-slate-800 text-[8px] font-bold">S</AvatarFallback>
                   </Avatar>
-                  <div className="bg-white dark:bg-slate-800 py-2 px-3 rounded-2xl rounded-tl-none flex gap-1 shadow-sm border border-slate-100">
-                    <span className="h-1.5 w-1.5 bg-blue-600 rounded-full animate-bounce"></span>
-                    <span className="h-1.5 w-1.5 bg-blue-600 rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                    <span className="h-1.5 w-1.5 bg-blue-600 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                  <div className="bg-slate-900 py-2 px-3 rounded-[16px] rounded-tl-none flex gap-1 shadow-sm border border-slate-800">
+                    <span className="h-1.5 w-1.5 bg-[#8B5CF6] rounded-full animate-bounce"></span>
+                    <span className="h-1.5 w-1.5 bg-[#8B5CF6] rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span className="h-1.5 w-1.5 bg-[#8B5CF6] rounded-full animate-bounce [animation-delay:0.4s]"></span>
                   </div>
                 </div>
               )}
             </div>
           </CardContent>
 
-          <CardFooter className="p-3 border-t bg-white dark:bg-slate-900 shadow-[0_-5px_15px_rgba(0,0,0,0.02)]">
+          <CardFooter className="p-3.5 border-t border-slate-900 bg-black shadow-[0_-5px_15px_rgba(0,0,0,0.2)]">
             <div className="flex flex-col w-full gap-2">
               {replyTo && (
-                <div className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-l-4 border-blue-600 text-[11px] shadow-inner mb-2 animate-in slide-in-from-bottom-2">
-                  <span className="truncate flex-1">Replying to: {replyTo.message}</span>
+                <div className="flex items-center justify-between p-2 px-3 bg-slate-900 rounded-lg border-l-4 border-[#8B5CF6] text-[11px] mb-1 animate-in slide-in-from-bottom-2">
+                  <span className="truncate flex-1 text-slate-350">Replying to: {replyTo.message}</span>
                   <X
-                    className="h-3 w-3 cursor-pointer ml-2 hover:text-red-500"
+                    className="h-3.5 w-3.5 cursor-pointer ml-2 hover:text-red-500"
                     onClick={() => setReplyTo(null)}
                   />
                 </div>
@@ -545,11 +581,11 @@ const ChatWidget = () => {
 
               {/* Pending Files Queue */}
               {pendingFiles.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border shadow-inner mb-2 animate-in slide-in-from-bottom-2">
+                <div className="flex flex-wrap gap-1.5 p-2 bg-slate-900 rounded-lg border border-slate-800 shadow-inner mb-1 animate-in slide-in-from-bottom-2">
                   {pendingFiles.map((file, i) => (
                     <div
                       key={i}
-                      className="relative group w-14 h-14 rounded-lg overflow-hidden bg-white dark:bg-slate-700 border border-slate-200/50"
+                      className="relative group w-12 h-12 rounded-lg overflow-hidden bg-slate-900 border border-slate-800"
                     >
                       {file.type.startsWith('image/') ? (
                         <img
@@ -559,8 +595,8 @@ const ChatWidget = () => {
                         />
                       ) : (
                         <div className="w-full h-full flex flex-col items-center justify-center p-0.5">
-                          <FileIcon className="h-5 w-5 opacity-40" />
-                          <span className="text-[7px] truncate w-full text-center px-1 font-medium">
+                          <FileIcon className="h-4 w-4 opacity-40 text-slate-400" />
+                          <span className="text-[6px] truncate w-full text-center px-1 font-medium">
                             {file.name}
                           </span>
                         </div>
@@ -574,8 +610,8 @@ const ChatWidget = () => {
                     </div>
                   ))}
                   {uploading && (
-                    <div className="w-14 h-14 flex items-center justify-center">
-                      <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+                    <div className="w-12 h-12 flex items-center justify-center">
+                      <Loader2 className="h-4 w-4 animate-spin text-[#8B5CF6]" />
                     </div>
                   )}
                 </div>
@@ -592,7 +628,7 @@ const ChatWidget = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-9 w-9 text-slate-400 hover:text-blue-600"
+                    className="h-9 w-9 text-[#8B5CF6] hover:bg-slate-900 rounded-full"
                     onClick={() => fileInputRef.current?.click()}
                   >
                     <Paperclip className="h-4.5 w-4.5" />
@@ -601,13 +637,13 @@ const ChatWidget = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className={`h-9 w-9 ${showEmojiPicker ? 'text-blue-600 bg-blue-50' : 'text-slate-400 hover:text-blue-600'}`}
+                      className={`h-9 w-9 rounded-full ${showEmojiPicker ? 'text-[#8B5CF6] bg-slate-900' : 'text-[#8B5CF6] hover:bg-slate-900'}`}
                       onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                     >
                       <Smile className="h-4.5 w-4.5" />
                     </Button>
                     {showEmojiPicker && (
-                      <div className="absolute bottom-full left-0 mb-2 p-1.5 bg-white dark:bg-slate-800 border rounded-xl shadow-2xl z-50 animate-in slide-in-from-bottom-2 grid grid-cols-4 gap-1 min-w-[140px]">
+                      <div className="absolute bottom-full left-0 mb-2 p-2 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl z-50 animate-in slide-in-from-bottom-2 grid grid-cols-4 gap-1 min-w-[150px]">
                         {[
                           '❤️',
                           '👍',
@@ -624,7 +660,7 @@ const ChatWidget = () => {
                         ].map((emoji) => (
                           <button
                             key={emoji}
-                            className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-base transition-transform hover:scale-125"
+                            className="p-1.5 hover:bg-slate-800 rounded-lg text-base transition-transform hover:scale-125 cursor-pointer"
                             onClick={() => {
                               setInput((prev) => prev + emoji);
                               setShowEmojiPicker(false);
@@ -638,8 +674,8 @@ const ChatWidget = () => {
                   </div>
                 </div>
                 <Input
-                  placeholder={editingId ? 'Update message...' : 'Message...'}
-                  className="flex-1 h-10 rounded-full bg-slate-50 dark:bg-slate-800 border-0 focus-visible:ring-1 focus-visible:ring-blue-600 text-sm shadow-none px-3"
+                  placeholder={editingId ? 'Update message...' : 'Aa'}
+                  className="flex-1 h-9 rounded-full bg-slate-900 border border-slate-800 focus-visible:ring-1 focus-visible:ring-[#8B5CF6]/20 text-sm shadow-none px-4 text-white placeholder-slate-500"
                   value={input}
                   onChange={(e) => {
                     setInput(e.target.value);
@@ -652,20 +688,31 @@ const ChatWidget = () => {
                     }
                   }}
                 />
-                <Button
-                  size="icon"
-                  disabled={uploading}
-                  className={`h-9 w-9 rounded-full shadow-lg shrink-0 transition-all ${editingId ? 'bg-orange-500 hover:bg-orange-600' : 'bg-blue-600 hover:bg-blue-700'}`}
-                  onClick={sendMessage}
-                >
-                  {uploading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : editingId ? (
-                    <X className="h-4.5 w-4.5" />
-                  ) : (
-                    <Send className="h-4 w-4" />
-                  )}
-                </Button>
+
+                {!input.trim() && pendingFiles.length === 0 ? (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-9 w-9 rounded-full text-[#8B5CF6] hover:bg-slate-900 hover:text-[#8B5CF6] shrink-0"
+                    onClick={sendThumbsUp}
+                  >
+                    <ThumbsUp className="h-5 w-5 fill-[#8B5CF6]" />
+                  </Button>
+                ) : (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    disabled={uploading}
+                    className="h-9 w-9 rounded-full text-[#8B5CF6] hover:bg-slate-900 shrink-0"
+                    onClick={sendMessage}
+                  >
+                    {uploading ? (
+                      <Loader2 className="h-4.5 w-4.5 animate-spin" />
+                    ) : (
+                      <Send className="h-5 w-5 fill-[#8B5CF6]" />
+                    )}
+                  </Button>
+                )}
               </div>
             </div>
           </CardFooter>

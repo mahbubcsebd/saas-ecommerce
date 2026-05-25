@@ -24,9 +24,11 @@ import {
     Search,
     ShoppingCart,
     Trash,
+    ShieldAlert,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import { toast } from "sonner";
 
@@ -67,6 +69,7 @@ import {
 import { Order, OrderService } from "@/services/order.service";
 
 export default function OrdersPage() {
+  const router = useRouter();
   const { data: session } = useSession();
   const accessToken = (session as any)?.accessToken;
 
@@ -311,6 +314,11 @@ export default function OrdersPage() {
           <p className="text-muted-foreground mt-1">Manage and track customer orders across all channels.</p>
         </div>
         <div className="flex items-center gap-2">
+            <Button variant="outline" className="hidden md:flex" asChild>
+                <Link href="/dashboard/orders/blocked-clients">
+                    <ShieldAlert className="mr-2 h-4 w-4 text-red-500" /> Managed Blocked IPs
+                </Link>
+            </Button>
             <Button variant="outline" className="hidden md:flex">
                 <Download className="mr-2 h-4 w-4" /> Export Report
             </Button>
@@ -492,7 +500,19 @@ export default function OrdersPage() {
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && "selected"}
-                      className="group"
+                      className="group cursor-pointer hover:bg-slate-50/80 transition-colors"
+                      onClick={(e) => {
+                        const target = e.target as HTMLElement;
+                        if (
+                          target.closest('[role="checkbox"]') ||
+                          target.closest('button') ||
+                          target.closest('[aria-haspopup]') ||
+                          target.closest('[data-state]')
+                        ) {
+                          return;
+                        }
+                        router.push(`/dashboard/orders/${(row.original as Order).id}`);
+                      }}
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id} className="py-4">

@@ -69,4 +69,8 @@ router.patch(
   orderController.updatePaymentStatus
 );
 
+router.post('/admin/block', authMiddleware, isStaff, orderController.blockClient);
+router.get('/admin/blocked', authMiddleware, isStaff, orderController.getBlockedClients);
+router.delete('/admin/block/:id', authMiddleware, isStaff, orderController.unblockClient);
+
 module.exports = router;

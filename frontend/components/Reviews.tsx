@@ -24,6 +24,7 @@ interface Review {
   };
   images?: string[];
   createdAt: string;
+  adminReply?: string | null;
 }
 
 export default function Reviews({ productId }: { productId: string }) {
@@ -229,12 +230,31 @@ export default function Reviews({ productId }: { productId: string }) {
             </div>
             <p className="text-muted-foreground mb-4">{review.comment}</p>
             {review.images && review.images.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 mb-3">
                 {review.images.map((img, i) => (
                   <div key={i} className="relative h-24 w-24 rounded-lg overflow-hidden border">
                     <Image src={img} alt="Review image" fill className="object-cover" />
                   </div>
                 ))}
+              </div>
+            )}
+            
+            {review.adminReply && (
+              <div className="mt-4 ml-4 sm:ml-8 pl-4 border-l-2 border-primary bg-primary/[0.03] p-4 rounded-r-xl space-y-1.5 shadow-sm border-t border-r border-b border-primary/5">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold">
+                    A
+                  </div>
+                  <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    Store Owner Reply
+                    <span className="bg-primary/10 text-primary text-[9px] uppercase px-1.5 py-0.5 rounded font-semibold tracking-wider scale-90 origin-left">
+                      Verified
+                    </span>
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                  {review.adminReply}
+                </p>
               </div>
             )}
           </div>

@@ -312,3 +312,8 @@ body[style*='pointer-events: none'] {
 }
 
 /* test */
+
+button, a, select, input[type="submit"], [role="button"], .cursor-pointer {
+  cursor: pointer !important;
+}
+

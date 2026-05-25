@@ -104,29 +104,23 @@ export const useCartStore = create<CartState>()(
       addToCart: async (productId, quantity, variantId) => {
         const { guestId } = get();
         console.log(
-          `[useCartStore] Adding to cart: productId=${productId}, guestId=${guestId || 'none'}`
+          `[useCartStore] Adding to cart: productId=${productId}, variantId=${variantId || 'none'}, guestId=${guestId || 'none'}`
         );
-        // Allow if we have either a guestId OR a user might be logged in
-        // (api client will handle auth headers/cookies)
 
-        try {
-          const data = await api.post<any>(`/cart/add`, {
-            guestId: guestId || undefined,
-            productId,
-            quantity,
-            variantId,
-          });
-          console.log(
-            `[useCartStore] Add to cart success, new items count: ${data?.items?.length || 0}`
-          );
-          set({ cart: data });
-          // Re-fetch to ensure data consistency and derived fields
-          if (guestId) {
-            console.log(`[useCartStore] Re-fetching cart for guestId: ${guestId}`);
-            await get().fetchCart(guestId);
-          }
-        } catch (error) {
-          console.error('Failed to add to cart', error);
+        const data = await api.post<any>(`/cart/add`, {
+          guestId: guestId || undefined,
+          productId,
+          quantity,
+          variantId,
+        });
+        console.log(
+          `[useCartStore] Add to cart success, new items count: ${data?.items?.length || 0}`
+        );
+        set({ cart: data });
+        // Re-fetch to ensure data consistency and derived fields
+        if (guestId) {
+          console.log(`[useCartStore] Re-fetching cart for guestId: ${guestId}`);
+          await get().fetchCart(guestId);
         }
       },
 

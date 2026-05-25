@@ -17,6 +17,7 @@ export function useCurrency() {
     decimalPlaces: 2,
     decimalSeparator: '.',
     thousandSeparator: ',',
+    showPriceDecimals: false,
     ...settings?.currency,
   };
 

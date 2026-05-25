@@ -1,0 +1,3220 @@
+{
+  "timestamp": "2026-05-23T03:41:00.190Z",
+  "version": "1.0",
+  "type": "scheduled",
+  "data": {
+    "user": [
+      {
+        "id": "6a000b0d634476b3ec4de57b",
+        "avatar": null,
+        "firstName": "Super",
+        "lastName": "Admin",
+        "email": "admin@mahbubshop.com",
+        "username": "admin",
+        "password": "$2b$10$nek0zcgFEb68H6FB3KrcnO4suanWS5V33us1zmd9vRxqgowSCwMbe",
+        "role": "ADMIN",
+        "isActive": true,
+        "status": "ACTIVE",
+        "permissions": [],
+        "customRoleId": null,
+        "groupId": null,
+        "invitationToken": null,
+        "invitationSentAt": null,
+        "invitationExpiry": null,
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "isEmailVerified": true,
+        "emailVerifiedAt": null,
+        "emailVerificationToken": null,
+        "emailVerificationTokenExpiry": null,
+        "phone": null,
+        "address": null,
+        "website": null,
+        "bio": null,
+        "dob": null,
+        "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTAwMGIwZDYzNDQ3NmIzZWM0ZGU1N2IiLCJpYXQiOjE3Nzk1MDY0NDYsImV4cCI6MTc4MDExMTI0Nn0.lIg7n_8tVf5DbO6ugCSo7gAx3oIT1Q_esOL3gqrc3Rc",
+        "refreshTokenExpires": null,
+        "createdAt": "2026-05-10T04:35:25.214Z",
+        "updatedAt": "2026-05-23T03:39:43.990Z",
+        "createdBy": null,
+        "conversationIds": [
+          "6a09e9dd364b7acdefc72e8b"
+        ],
+        "isOnline": true,
+        "lastSeen": "2026-05-23T03:39:43.988Z",
+        "socketId": "h0yWx4CK2p-jtPbXAAAF"
+      },
+      {
+        "id": "6a000b0d634476b3ec4de57c",
+        "avatar": null,
+        "firstName": "Demo",
+        "lastName": "Customer",
+        "email": "customer@mahbubshop.com",
+        "username": "customer",
+        "password": "$2b$10$nek0zcgFEb68H6FB3KrcnO4suanWS5V33us1zmd9vRxqgowSCwMbe",
+        "role": "CUSTOMER",
+        "isActive": true,
+        "status": "ACTIVE",
+        "permissions": [],
+        "customRoleId": null,
+        "groupId": null,
+        "invitationToken": null,
+        "invitationSentAt": null,
+        "invitationExpiry": null,
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "isEmailVerified": true,
+        "emailVerifiedAt": null,
+        "emailVerificationToken": null,
+        "emailVerificationTokenExpiry": null,
+        "phone": null,
+        "address": null,
+        "website": null,
+        "bio": null,
+        "dob": null,
+        "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTAwMGIwZDYzNDQ3NmIzZWM0ZGU1N2MiLCJpYXQiOjE3Nzk0NjM2MDcsImV4cCI6MTc4MDA2ODQwN30.cHa_UUQu4GY3lNYmfwlsrkYN_SBUJeURh_aMn1eBKGc",
+        "refreshTokenExpires": null,
+        "createdAt": "2026-05-10T04:35:25.854Z",
+        "updatedAt": "2026-05-22T15:28:45.766Z",
+        "createdBy": null,
+        "conversationIds": [
+          "6a09e9dd364b7acdefc72e8b"
+        ],
+        "isOnline": false,
+        "lastSeen": "2026-05-22T15:28:45.765Z",
+        "socketId": null
+      },
+      {
+        "id": "6a09eb3b506f93e75ea07d12",
+        "avatar": null,
+        "firstName": "Hridoy",
+        "lastName": "Ahmed",
+        "email": "hridoy@gmail.com",
+        "username": "hridoy490",
+        "password": "284f22cb7c8913fd7b43b275e108e037",
+        "role": "CUSTOMER",
+        "isActive": true,
+        "status": "PENDING",
+        "permissions": [],
+        "customRoleId": null,
+        "groupId": null,
+        "invitationToken": "f4b85f24e0d75d33132a2060c196e5c6672e487e5357affe36d113e6c8d652ee",
+        "invitationSentAt": "2026-05-17T16:22:19.126Z",
+        "invitationExpiry": "2026-05-24T16:22:19.126Z",
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "isEmailVerified": false,
+        "emailVerifiedAt": null,
+        "emailVerificationToken": null,
+        "emailVerificationTokenExpiry": null,
+        "phone": "018444444444",
+        "address": null,
+        "website": null,
+        "bio": null,
+        "dob": null,
+        "refreshToken": null,
+        "refreshTokenExpires": null,
+        "createdAt": "2026-05-17T16:22:19.127Z",
+        "updatedAt": "2026-05-17T16:22:19.127Z",
+        "createdBy": "6a000b0d634476b3ec4de57b",
+        "conversationIds": [],
+        "isOnline": false,
+        "lastSeen": null,
+        "socketId": null
+      },
+      {
+        "id": "6a09eb98364b7acdefc72e91",
+        "avatar": null,
+        "firstName": "Mahbubur",
+        "lastName": "Rahman",
+        "email": "mahbub.cse.me@gmail.com",
+        "username": "mahbub.cse.me340",
+        "password": "92088bc92fd9ab2c4ef1f80d23a060d9",
+        "role": "CUSTOMER",
+        "isActive": true,
+        "status": "PENDING",
+        "permissions": [],
+        "customRoleId": null,
+        "groupId": "6a0ac0e86169456d9728e8d6",
+        "invitationToken": "2862f92b326577b2d08909fbd93dd9627435278bbd560f3afe098c0f38651584",
+        "invitationSentAt": "2026-05-17T16:23:52.553Z",
+        "invitationExpiry": "2026-05-24T16:23:52.553Z",
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "isEmailVerified": false,
+        "emailVerifiedAt": null,
+        "emailVerificationToken": null,
+        "emailVerificationTokenExpiry": null,
+        "phone": "01886225492",
+        "address": null,
+        "website": null,
+        "bio": null,
+        "dob": null,
+        "refreshToken": null,
+        "refreshTokenExpires": null,
+        "createdAt": "2026-05-17T16:23:52.555Z",
+        "updatedAt": "2026-05-18T07:34:19.403Z",
+        "createdBy": "6a000b0d634476b3ec4de57b",
+        "conversationIds": [],
+        "isOnline": false,
+        "lastSeen": null,
+        "socketId": null
+      },
+      {
+        "id": "6a0ab8a46169456d9728e889",
+        "avatar": null,
+        "firstName": "Ashiq",
+        "lastName": "Rahman",
+        "email": "mahbub.cssssse.me@gmail.com",
+        "username": "mahbub.cssssse.me421",
+        "password": "3b876c05c3aa3e0cd852fd9a77ff6926",
+        "role": "CUSTOMER",
+        "isActive": true,
+        "status": "PENDING",
+        "permissions": [],
+        "customRoleId": null,
+        "groupId": "6a0ac0e86169456d9728e8d6",
+        "invitationToken": "85ef11bb7a574b65d37ca52a415a3af82ac53d06fb92dc6f5e179a366dc3a07e",
+        "invitationSentAt": "2026-05-18T06:58:44.842Z",
+        "invitationExpiry": "2026-05-25T06:58:44.840Z",
+        "passwordResetToken": null,
+        "passwordResetExpires": null,
+        "isEmailVerified": false,
+        "emailVerifiedAt": null,
+        "emailVerificationToken": null,
+        "emailVerificationTokenExpiry": null,
+        "phone": "018862253333",
+        "address": null,
+        "website": null,
+        "bio": null,
+        "dob": null,
+        "refreshToken": null,
+        "refreshTokenExpires": null,
+        "createdAt": "2026-05-18T06:58:44.845Z",
+        "updatedAt": "2026-05-18T07:34:19.403Z",
+        "createdBy": "6a000b0d634476b3ec4de57b",
+        "conversationIds": [],
+        "isOnline": false,
+        "lastSeen": null,
+        "socketId": null
+      }
+    ],
+    "product": [
+      {
+        "id": "6a000b10634476b3ec4de584",
+        "name": "iPhone 15 Pro Max",
+        "slug": "iphone-15-pro-max-858092",
+        "description": "<p>This is good.</p><p></p>",
+        "basePrice": 132000,
+        "sellingPrice": 115000,
+        "costPrice": null,
+        "sku": "IP15PM-001",
+        "barcode": "1234567890",
+        "stock": 131,
+        "minStockLevel": 5,
+        "lowStockAlert": 10,
+        "trackInventory": true,
+        "images": [
+          "products/qzd5frqp6dwf9qjvp4ee",
+          "products/fktpstbqvkg01etgb3nf",
+          "products/nysavhpheou20rd35fhr"
+        ],
+        "categoryId": "6a000b0e634476b3ec4de57f",
+        "brandId": null,
+        "brand": "Apple",
+        "tags": [
+          "electronics",
+          "trending",
+          "new-arrival",
+          "best-seller",
+          "sale",
+          "limited-edition"
+        ],
+        "videoUrls": [],
+        "weight": null,
+        "length": null,
+        "width": null,
+        "height": null,
+        "status": "PUBLISHED",
+        "isNewArrival": true,
+        "isFeatured": true,
+        "isHomeShown": false,
+        "homeOrder": 0,
+        "isFreeShipping": false,
+        "isPreOrder": false,
+        "warranty": null,
+        "metaTitle": "Iphone latest 17 pro max",
+        "metaDescription": "iPhone 17 Pro Max Price in Bangladesh Experience the future of smartphones with the Apple iPhone 17 Pro Max. Packed with the powerful A19 Pro chip, a pro-grade triple camera system, and a stunning 6.9-inch Super Retina XDR display, this device redefines performance, creativity, and elegance. Get yours today with Apple Gadgets’ exclusive offers, EMI plans, and official warranty support in Bangladesh.",
+        "metaKeywords": "online shopping, free shipping, quality products, test",
+        "ogImage": null,
+        "viewCount": 274,
+        "soldCount": 9,
+        "numReviews": 2,
+        "rating": 5,
+        "createdAt": "2026-05-10T04:35:28.365Z",
+        "updatedAt": "2026-05-23T03:16:14.570Z",
+        "taxClassId": null,
+        "createdById": null
+      },
+      {
+        "id": "6a0dea146a9df47c2e4577c5",
+        "name": "Macbook M5 pro",
+        "slug": "macbook-m5-pro-566088",
+        "description": "<p>test</p><p></p>",
+        "basePrice": 550000,
+        "sellingPrice": 500000,
+        "costPrice": 449998,
+        "sku": "PROD-2U45D1",
+        "barcode": "5374747965133",
+        "stock": 79,
+        "minStockLevel": 5,
+        "lowStockAlert": 10,
+        "trackInventory": true,
+        "images": [
+          "products/asvn1gfivjhkz6xthb83"
+        ],
+        "categoryId": "6a000b0e634476b3ec4de57e",
+        "brandId": null,
+        "brand": null,
+        "tags": [
+          "electronics"
+        ],
+        "videoUrls": [
+          "https://www.youtube.com/watch?v=MKNrfwx3Sw4"
+        ],
+        "weight": null,
+        "length": null,
+        "width": null,
+        "height": null,
+        "status": "PUBLISHED",
+        "isNewArrival": true,
+        "isFeatured": true,
+        "isHomeShown": false,
+        "homeOrder": 0,
+        "isFreeShipping": false,
+        "isPreOrder": false,
+        "warranty": null,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "ogImage": null,
+        "viewCount": 54,
+        "soldCount": 0,
+        "numReviews": 0,
+        "rating": 0,
+        "createdAt": "2026-05-20T17:06:28.428Z",
+        "updatedAt": "2026-05-23T03:16:14.965Z",
+        "taxClassId": null,
+        "createdById": null
+      }
+    ],
+    "productVariant": [
+      {
+        "id": "6a0e7fa329bb49577d9ae5d3",
+        "productId": "6a000b10634476b3ec4de584",
+        "name": "Orange / 512GB",
+        "sku": "IP15PM-001-V3",
+        "barcode": "2068442377447",
+        "basePrice": 120000,
+        "sellingPrice": 117000,
+        "costPrice": null,
+        "stock": 19,
+        "minStockLevel": 2,
+        "attributes": [
+          {
+            "type": "color",
+            "value": "Orange"
+          },
+          {
+            "type": "storage",
+            "value": "512GB"
+          }
+        ],
+        "images": [],
+        "videoUrls": [],
+        "isActive": true,
+        "isFreeShipping": null,
+        "isPreOrder": null,
+        "warranty": null,
+        "createdAt": "2026-05-21T03:44:34.298Z",
+        "updatedAt": "2026-05-21T03:44:34.298Z"
+      },
+      {
+        "id": "6a0e7fa329bb49577d9ae5d4",
+        "productId": "6a000b10634476b3ec4de584",
+        "name": "White - 256GB",
+        "sku": "IP15PM-WHT-256",
+        "barcode": "VAR-IP15PM-WHT",
+        "basePrice": 120000,
+        "sellingPrice": 115000,
+        "costPrice": null,
+        "stock": 35,
+        "minStockLevel": 2,
+        "attributes": [
+          {
+            "type": "Color",
+            "value": "White"
+          },
+          {
+            "type": "Storage",
+            "value": "256GB"
+          }
+        ],
+        "images": [],
+        "videoUrls": [],
+        "isActive": true,
+        "isFreeShipping": null,
+        "isPreOrder": null,
+        "warranty": null,
+        "createdAt": "2026-05-21T03:44:34.298Z",
+        "updatedAt": "2026-05-21T03:44:34.298Z"
+      },
+      {
+        "id": "6a0e7fa329bb49577d9ae5d5",
+        "productId": "6a000b10634476b3ec4de584",
+        "name": "Black - 256GB",
+        "sku": "IP15PM-BLK-256",
+        "barcode": "VAR-IP15PM-BLK",
+        "basePrice": 120000,
+        "sellingPrice": 115000,
+        "costPrice": null,
+        "stock": 44,
+        "minStockLevel": 2,
+        "attributes": [
+          {
+            "type": "Color",
+            "value": "Black"
+          },
+          {
+            "type": "Storage",
+            "value": "256GB"
+          }
+        ],
+        "images": [],
+        "videoUrls": [],
+        "isActive": true,
+        "isFreeShipping": null,
+        "isPreOrder": null,
+        "warranty": null,
+        "createdAt": "2026-05-21T03:44:34.298Z",
+        "updatedAt": "2026-05-21T03:44:34.298Z"
+      }
+    ],
+    "category": [
+      {
+        "id": "6a000b0e634476b3ec4de57e",
+        "name": "Electronics",
+        "slug": "electronics",
+        "image": null,
+        "icon": null,
+        "description": null,
+        "isHomeShown": false,
+        "order": 1,
+        "isActive": true,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "parentId": null,
+        "createdAt": "2026-05-10T04:35:26.146Z",
+        "updatedAt": "2026-05-18T07:26:55.000Z",
+        "createdById": null
+      },
+      {
+        "id": "6a000b0e634476b3ec4de57f",
+        "name": "Smartphones",
+        "slug": "smartphones",
+        "image": null,
+        "icon": null,
+        "description": null,
+        "isHomeShown": false,
+        "order": 0,
+        "isActive": true,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "parentId": "6a0abf1e6169456d9728e8b5",
+        "createdAt": "2026-05-10T04:35:26.772Z",
+        "updatedAt": "2026-05-18T07:27:51.423Z",
+        "createdById": null
+      },
+      {
+        "id": "6a000b0e634476b3ec4de580",
+        "name": "Clothing",
+        "slug": "clothing",
+        "image": null,
+        "icon": null,
+        "description": null,
+        "isHomeShown": false,
+        "order": 0,
+        "isActive": true,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "parentId": null,
+        "createdAt": "2026-05-10T04:35:26.949Z",
+        "updatedAt": "2026-05-18T07:26:55.000Z",
+        "createdById": null
+      },
+      {
+        "id": "6a000fd07810dc5714bdabfc",
+        "name": "Pharmacy",
+        "slug": "pharmacy",
+        "image": "https://res.cloudinary.com/dfigg4e5e/image/upload/v1778388943/ecommerce/categories/x3tsl8q4j78w7owntypm.webp",
+        "icon": null,
+        "description": "",
+        "isHomeShown": true,
+        "order": 4,
+        "isActive": true,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "parentId": null,
+        "createdAt": "2026-05-10T04:55:44.373Z",
+        "updatedAt": "2026-05-18T07:26:55.000Z",
+        "createdById": null
+      },
+      {
+        "id": "6a0abf1e6169456d9728e8b5",
+        "name": "Clinger",
+        "slug": "clinger",
+        "image": "https://res.cloudinary.com/dfigg4e5e/image/upload/v1779089182/ecommerce/categories/f9vp6jq9z8wksphsafmv.webp",
+        "icon": null,
+        "description": "",
+        "isHomeShown": false,
+        "order": 0,
+        "isActive": true,
+        "metaTitle": null,
+        "metaDescription": null,
+        "metaKeywords": null,
+        "parentId": "6a000fd07810dc5714bdabfc",
+        "createdAt": "2026-05-18T07:26:22.284Z",
+        "updatedAt": "2026-05-18T07:27:43.233Z",
+        "createdById": null
+      }
+    ],
+    "order": [
+      {
+        "id": "6a000b12634476b3ec4de58e",
+        "orderNumber": "ORD-290805",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": null,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 60,
+        "shippingAddress": {
+          "name": "Demo",
+          "address": "Dhaka",
+          "phone": "01700000000"
+        },
+        "billingAddress": null,
+        "shippingZoneId": null,
+        "shippingRateId": null,
+        "shippingMethod": null,
+        "total": 115060,
+        "dueAmount": 0,
+        "appliedCoupon": null,
+        "couponDiscount": 0,
+        "paymentMethod": "ONLINE",
+        "paymentStatus": "PAID",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "DELIVERED",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": null,
+        "notes": null,
+        "createdAt": "2026-05-10T04:35:30.937Z",
+        "updatedAt": "2026-05-10T04:35:30.937Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a0057b6c700b37231b0a9af",
+        "orderNumber": "ORD-20260510-M9T6G",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": 0,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 60,
+        "shippingAddress": {
+          "street": "Baruntek",
+          "city": "Farmgate",
+          "state": "",
+          "zipCode": "1215",
+          "country": "BD"
+        },
+        "billingAddress": null,
+        "shippingZoneId": "6a000b0c634476b3ec4de575",
+        "shippingRateId": "6a000b0c634476b3ec4de576",
+        "shippingMethod": "Inside Dhaka",
+        "total": 115060,
+        "dueAmount": 115060,
+        "appliedCoupon": "",
+        "couponDiscount": 0,
+        "paymentMethod": "COD",
+        "paymentStatus": "PENDING",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "COMPLETED",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": "INV-20260510-BVHW82",
+        "notes": null,
+        "createdAt": "2026-05-10T10:02:30.161Z",
+        "updatedAt": "2026-05-14T12:00:57.967Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a09e5c5506f93e75ea07ceb",
+        "orderNumber": "ORD-20260517-601Z6",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": 0,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 120,
+        "shippingAddress": {
+          "street": "Ideal Tower, Baruntek, Cantonment",
+          "city": "Dhaka",
+          "state": "",
+          "zipCode": "1216",
+          "country": "BD"
+        },
+        "billingAddress": null,
+        "shippingZoneId": "6a000b0c634476b3ec4de575",
+        "shippingRateId": "6a000b0c634476b3ec4de577",
+        "shippingMethod": "Inside Dhaka",
+        "total": 115120,
+        "dueAmount": 115120,
+        "appliedCoupon": "",
+        "couponDiscount": 0,
+        "paymentMethod": "COD",
+        "paymentStatus": "PENDING",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "DELIVERED",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": "INV-20260517-6EYPDU",
+        "notes": null,
+        "createdAt": "2026-05-17T15:59:01.201Z",
+        "updatedAt": "2026-05-17T16:01:45.568Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a09e614506f93e75ea07cf4",
+        "orderNumber": "ORD-20260517-CQ248",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": 0,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 120,
+        "shippingAddress": {
+          "street": "Ideal Tower, Baruntek, Cantonment",
+          "city": "Dhaka",
+          "state": "",
+          "zipCode": "1216",
+          "country": "BD"
+        },
+        "billingAddress": null,
+        "shippingZoneId": "6a000b0c634476b3ec4de575",
+        "shippingRateId": "6a000b0c634476b3ec4de577",
+        "shippingMethod": "Inside Dhaka",
+        "total": 115120,
+        "dueAmount": 115120,
+        "appliedCoupon": "",
+        "couponDiscount": 0,
+        "paymentMethod": "COD",
+        "paymentStatus": "PENDING",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "PENDING",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": "INV-20260517-U4GFB8",
+        "notes": null,
+        "createdAt": "2026-05-17T16:00:20.701Z",
+        "updatedAt": "2026-05-17T16:00:20.701Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a09e94d364b7acdefc72e7d",
+        "orderNumber": "ORD-20260517-978QS",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": 0,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 120,
+        "shippingAddress": {
+          "street": "Ideal Tower, Baruntek, Cantonment",
+          "city": "Dhaka",
+          "state": "Dhaka",
+          "zipCode": "1216",
+          "country": "BD"
+        },
+        "billingAddress": null,
+        "shippingZoneId": "6a000b0c634476b3ec4de578",
+        "shippingRateId": "6a000b0c634476b3ec4de579",
+        "shippingMethod": "Outside Dhaka",
+        "total": 115120,
+        "dueAmount": 115120,
+        "appliedCoupon": "",
+        "couponDiscount": 0,
+        "paymentMethod": "COD",
+        "paymentStatus": "PENDING",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "PENDING",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": "INV-20260517-K41NNN",
+        "notes": null,
+        "createdAt": "2026-05-17T16:14:05.038Z",
+        "updatedAt": "2026-05-17T16:14:05.038Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a09eac3506f93e75ea07d0d",
+        "orderNumber": "POS-20260517-Q34OY",
+        "source": "POS",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "guestInfo": null,
+        "walkInName": "",
+        "walkInPhone": "",
+        "subtotal": 115000,
+        "discountType": "FLAT",
+        "discountValue": 5,
+        "discountAmount": 5,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 0,
+        "shippingAddress": {},
+        "billingAddress": null,
+        "shippingZoneId": null,
+        "shippingRateId": null,
+        "shippingMethod": null,
+        "total": 114995,
+        "dueAmount": 0,
+        "appliedCoupon": null,
+        "couponDiscount": 5,
+        "paymentMethod": "CASH",
+        "paymentStatus": "PAID",
+        "codExtraCharge": 0,
+        "tenderedAmount": 150000,
+        "changeAmount": 35005,
+        "transactionId": null,
+        "status": "COMPLETED",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": "2026-05-17T16:20:19.636Z",
+        "invoiceNumber": "INV-20260517-DD28VG",
+        "notes": null,
+        "createdAt": "2026-05-17T16:20:19.637Z",
+        "updatedAt": "2026-05-17T16:20:19.637Z",
+        "soldBy": "6a000b0d634476b3ec4de57b",
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a0aab666169456d9728e848",
+        "orderNumber": "ORD-20260518-NEX73",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": 0,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 60,
+        "shippingAddress": {
+          "street": "Ideal Tower, Baruntek, Cantonment",
+          "city": "Dhaka",
+          "state": "Dhaka",
+          "zipCode": "1216",
+          "country": "BD"
+        },
+        "billingAddress": null,
+        "shippingZoneId": "6a000b0c634476b3ec4de575",
+        "shippingRateId": "6a000b0c634476b3ec4de576",
+        "shippingMethod": "Inside Dhaka",
+        "total": 115060,
+        "dueAmount": 115060,
+        "appliedCoupon": "",
+        "couponDiscount": 0,
+        "paymentMethod": "COD",
+        "paymentStatus": "PENDING",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "COMPLETED",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": "INV-20260518-NNHOJI",
+        "notes": null,
+        "createdAt": "2026-05-18T06:02:14.538Z",
+        "updatedAt": "2026-05-18T06:54:10.560Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a0b1c224d977fca1109a11d",
+        "orderNumber": "ORD-20260518-OEE7J",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": 0,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 120,
+        "shippingAddress": {
+          "street": "Ideal Tower, Baruntek, Cantonment",
+          "city": "Dhaka",
+          "state": "Dhaka",
+          "zipCode": "1216",
+          "country": "BD"
+        },
+        "billingAddress": null,
+        "shippingZoneId": "6a000b0c634476b3ec4de578",
+        "shippingRateId": "6a000b0c634476b3ec4de579",
+        "shippingMethod": "Outside Dhaka",
+        "total": 115120,
+        "dueAmount": 115120,
+        "appliedCoupon": "",
+        "couponDiscount": 0,
+        "paymentMethod": "COD",
+        "paymentStatus": "PENDING",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "PENDING",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": "INV-20260518-KQ4IEH",
+        "notes": null,
+        "createdAt": "2026-05-18T14:03:14.195Z",
+        "updatedAt": "2026-05-18T14:03:14.195Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a0d6e6a3f43d59935e06d08",
+        "orderNumber": "ORD-20260520-OQP1I",
+        "source": "ONLINE",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "guestInfo": null,
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 115000,
+        "discountType": null,
+        "discountValue": 0,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 120,
+        "shippingAddress": {
+          "street": "Ideal Tower, Baruntek, Cantonment",
+          "city": "Dhaka",
+          "state": "Dhaka",
+          "zipCode": "1216",
+          "country": "BD"
+        },
+        "billingAddress": null,
+        "shippingZoneId": "6a000b0c634476b3ec4de578",
+        "shippingRateId": "6a000b0c634476b3ec4de579",
+        "shippingMethod": "Outside Dhaka",
+        "total": 115120,
+        "dueAmount": 115120,
+        "appliedCoupon": "",
+        "couponDiscount": 0,
+        "paymentMethod": "COD",
+        "paymentStatus": "PENDING",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "PENDING",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": "INV-20260520-TDL6G7",
+        "notes": null,
+        "createdAt": "2026-05-20T08:18:50.661Z",
+        "updatedAt": "2026-05-20T08:18:50.661Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      },
+      {
+        "id": "6a0de9206a9df47c2e4577bc",
+        "orderNumber": "ORD-20260520-GNGIC",
+        "source": "ONLINE",
+        "userId": null,
+        "guestInfo": {
+          "name": "Demo Customer",
+          "email": "customer@mahbubshop.com",
+          "phone": "34242342342343242"
+        },
+        "walkInName": null,
+        "walkInPhone": null,
+        "subtotal": 232000,
+        "discountType": null,
+        "discountValue": 0,
+        "discountAmount": 0,
+        "vatPercent": 0,
+        "vatAmount": 0,
+        "tax": 0,
+        "shippingCost": 120,
+        "shippingAddress": {
+          "street": "234324",
+          "city": "243234234",
+          "state": "234234232234",
+          "zipCode": "324234234",
+          "country": "BD"
+        },
+        "billingAddress": null,
+        "shippingZoneId": "6a000b0c634476b3ec4de578",
+        "shippingRateId": "6a000b0c634476b3ec4de579",
+        "shippingMethod": "Outside Dhaka",
+        "total": 232120,
+        "dueAmount": 232120,
+        "appliedCoupon": "",
+        "couponDiscount": 0,
+        "paymentMethod": "COD",
+        "paymentStatus": "PENDING",
+        "codExtraCharge": 0,
+        "tenderedAmount": null,
+        "changeAmount": null,
+        "transactionId": null,
+        "status": "PENDING",
+        "trackingNumber": null,
+        "shippedAt": null,
+        "deliveredAt": null,
+        "invoiceNumber": "INV-20260520-9BNUPI",
+        "notes": null,
+        "createdAt": "2026-05-20T17:02:23.996Z",
+        "updatedAt": "2026-05-20T17:02:23.996Z",
+        "soldBy": null,
+        "salesChannel": "ONLINE"
+      }
+    ],
+    "orderItem": [
+      {
+        "id": "6a000b13634476b3ec4de58f",
+        "orderId": "6a000b12634476b3ec4de58e",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": null,
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-10T04:35:30.937Z",
+        "updatedAt": "2026-05-10T04:35:30.937Z"
+      },
+      {
+        "id": "6a0057b6c700b37231b0a9b0",
+        "orderId": "6a0057b6c700b37231b0a9af",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": "IP15PM-001",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-10T10:02:30.161Z",
+        "updatedAt": "2026-05-10T10:02:30.161Z"
+      },
+      {
+        "id": "6a09e5c5506f93e75ea07cec",
+        "orderId": "6a09e5c5506f93e75ea07ceb",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": "IP15PM-001",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-17T15:59:01.201Z",
+        "updatedAt": "2026-05-17T15:59:01.201Z"
+      },
+      {
+        "id": "6a09e614506f93e75ea07cf5",
+        "orderId": "6a09e614506f93e75ea07cf4",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": "IP15PM-001",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-17T16:00:20.701Z",
+        "updatedAt": "2026-05-17T16:00:20.701Z"
+      },
+      {
+        "id": "6a09e94d364b7acdefc72e7e",
+        "orderId": "6a09e94d364b7acdefc72e7d",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": "IP15PM-001",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-17T16:14:05.038Z",
+        "updatedAt": "2026-05-17T16:14:05.038Z"
+      },
+      {
+        "id": "6a09eac3506f93e75ea07d0e",
+        "orderId": "6a09eac3506f93e75ea07d0d",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max - Black - 256GB",
+        "sku": "IP15PM-BLK-256",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-17T16:20:19.637Z",
+        "updatedAt": "2026-05-17T16:20:19.637Z"
+      },
+      {
+        "id": "6a0aab666169456d9728e849",
+        "orderId": "6a0aab666169456d9728e848",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": "IP15PM-001",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-18T06:02:14.538Z",
+        "updatedAt": "2026-05-18T06:02:14.538Z"
+      },
+      {
+        "id": "6a0b1c224d977fca1109a11e",
+        "orderId": "6a0b1c224d977fca1109a11d",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": "iphone-15-pro-max-858092",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-18T14:03:14.195Z",
+        "updatedAt": "2026-05-18T14:03:14.195Z"
+      },
+      {
+        "id": "6a0d6e6a3f43d59935e06d09",
+        "orderId": "6a0d6e6a3f43d59935e06d08",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": "iphone-15-pro-max-858092",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-20T08:18:50.661Z",
+        "updatedAt": "2026-05-20T08:18:50.661Z"
+      },
+      {
+        "id": "6a0de9206a9df47c2e4577bd",
+        "orderId": "6a0de9206a9df47c2e4577bc",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max",
+        "sku": "iphone-15-pro-max-858092",
+        "quantity": 1,
+        "unitPrice": 115000,
+        "totalPrice": 115000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-20T17:02:23.996Z",
+        "updatedAt": "2026-05-20T17:02:23.996Z"
+      },
+      {
+        "id": "6a0de9206a9df47c2e4577be",
+        "orderId": "6a0de9206a9df47c2e4577bc",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "productName": "iPhone 15 Pro Max - Orange / 512GB",
+        "sku": "IP15PM-001-V3",
+        "quantity": 1,
+        "unitPrice": 117000,
+        "totalPrice": 117000,
+        "warranty": null,
+        "returnedQuantity": 0,
+        "isRefunded": false,
+        "createdAt": "2026-05-20T17:02:23.996Z",
+        "updatedAt": "2026-05-20T17:02:23.996Z"
+      }
+    ],
+    "cart": [
+      {
+        "id": "69a12fc31cab472fa33dd0d6",
+        "userId": null,
+        "sessionId": "test-guest-1772171202550",
+        "appliedCoupon": null,
+        "discountAmount": 0,
+        "subtotal": 0,
+        "total": 0,
+        "createdAt": "2026-02-27T05:46:43.433Z",
+        "updatedAt": "2026-02-27T05:46:43.433Z",
+        "recoveryEmailSentAt": null,
+        "recoveryEmailCount": 0,
+        "isRecovered": false
+      },
+      {
+        "id": "69a231dacfa281dae595f997",
+        "userId": null,
+        "sessionId": "709361f1-3e81-4731-a4f8-8166bfdcd55d",
+        "appliedCoupon": null,
+        "discountAmount": 0,
+        "subtotal": 0,
+        "total": 0,
+        "createdAt": "2026-02-28T00:07:54.459Z",
+        "updatedAt": "2026-02-28T00:07:54.459Z",
+        "recoveryEmailSentAt": null,
+        "recoveryEmailCount": 0,
+        "isRecovered": false
+      },
+      {
+        "id": "6a0b1c0c4d977fca1109a115",
+        "userId": null,
+        "sessionId": "36ba8240-9a00-47cf-b8dd-b058ac021969",
+        "appliedCoupon": null,
+        "discountAmount": 0,
+        "subtotal": 0,
+        "total": 0,
+        "createdAt": "2026-05-18T14:02:52.511Z",
+        "updatedAt": "2026-05-18T14:03:18.384Z",
+        "recoveryEmailSentAt": null,
+        "recoveryEmailCount": 0,
+        "isRecovered": false
+      },
+      {
+        "id": "6a0d6e563f43d59935e06cff",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "sessionId": null,
+        "appliedCoupon": null,
+        "discountAmount": 0,
+        "subtotal": 0,
+        "total": 0,
+        "createdAt": "2026-05-20T08:18:30.632Z",
+        "updatedAt": "2026-05-20T08:18:51.921Z",
+        "recoveryEmailSentAt": null,
+        "recoveryEmailCount": 0,
+        "isRecovered": false
+      },
+      {
+        "id": "6a0d9059f4a51eb1c112c9cd",
+        "userId": null,
+        "sessionId": "6e9e0ecd-518b-4422-8286-baedffa0e401",
+        "appliedCoupon": null,
+        "discountAmount": 0,
+        "subtotal": 0,
+        "total": 0,
+        "createdAt": "2026-05-20T10:43:37.779Z",
+        "updatedAt": "2026-05-20T17:02:25.685Z",
+        "recoveryEmailSentAt": null,
+        "recoveryEmailCount": 0,
+        "isRecovered": false
+      }
+    ],
+    "cartItem": [],
+    "discount": [
+      {
+        "id": "6a000b11634476b3ec4de588",
+        "name": "Welcome Bonus",
+        "code": "WELCOME50",
+        "description": null,
+        "type": "FLAT",
+        "applicableOn": "CART",
+        "value": 50,
+        "buyQuantity": 0,
+        "getQuantity": 0,
+        "startDate": "2026-05-10T04:35:28.586Z",
+        "endDate": "2027-05-10T04:35:28.586Z",
+        "isActive": true,
+        "usageLimit": 100,
+        "usageCount": 0,
+        "perUserLimit": 1,
+        "minOrderValue": 500,
+        "maxDiscountCap": null,
+        "categoryIds": [],
+        "brandNames": [],
+        "allowedCountries": [],
+        "excludedProducts": [],
+        "allowedUserIds": [],
+        "allowedGroupIds": [],
+        "newUsersOnly": false,
+        "priority": 0,
+        "isStackable": false,
+        "createdAt": "2026-05-10T04:35:28.683Z",
+        "updatedAt": "2026-05-10T04:35:28.683Z"
+      }
+    ],
+    "review": [
+      {
+        "id": "6a09ecf5364b7acdefc72e96",
+        "rating": 5,
+        "comment": "I recently explored the iPhone 17 Pro Max, and the experience feels extremely premium. The performance is effortlessly smooth — apps open instantly, multitasking feels seamless, and gaming runs without any noticeable lag",
+        "images": [
+          "https://res.cloudinary.com/dfigg4e5e/image/upload/v1779035381/reviews/onuddzajrzawjt4h8oqf.webp"
+        ],
+        "userId": "6a000b0d634476b3ec4de57c",
+        "productId": "6a000b10634476b3ec4de584",
+        "status": "APPROVED",
+        "adminReply": "Thank you for your positive feedback",
+        "isFlagged": true,
+        "createdAt": "2026-05-17T16:29:41.503Z",
+        "updatedAt": "2026-05-18T06:08:28.253Z"
+      },
+      {
+        "id": "6a0aac7d6169456d9728e859",
+        "rating": 5,
+        "comment": "Sundor product.",
+        "images": [
+          "https://res.cloudinary.com/dfigg4e5e/image/upload/v1779084413/reviews/kjzuf4zvyqodpjbyimtq.webp"
+        ],
+        "userId": "6a000b0d634476b3ec4de57c",
+        "productId": "6a000b10634476b3ec4de584",
+        "status": "APPROVED",
+        "adminReply": null,
+        "isFlagged": false,
+        "createdAt": "2026-05-18T06:06:53.543Z",
+        "updatedAt": "2026-05-18T06:08:55.198Z"
+      }
+    ],
+    "supplier": [
+      {
+        "id": "6a000b0f634476b3ec4de582",
+        "name": "Tech Wholesalers BD",
+        "contactPerson": "Mr. Rahim",
+        "email": "rahim@techwholesale.bd",
+        "phone": "01800000000",
+        "address": "Motijheel, Dhaka",
+        "isActive": true,
+        "dueBalance": 0,
+        "createdAt": "2026-05-10T04:35:27.263Z",
+        "updatedAt": "2026-05-18T07:31:49.864Z"
+      },
+      {
+        "id": "6a0ac08d6169456d9728e8d0",
+        "name": "Mahbubur Rahman",
+        "contactPerson": "Mahbubur Rahman",
+        "email": "mahbub.cse.me@gmail.com",
+        "phone": "01886225492",
+        "address": "Ideal Tower, Baruntek, Cantonment",
+        "isActive": true,
+        "dueBalance": 0,
+        "createdAt": "2026-05-18T07:32:29.033Z",
+        "updatedAt": "2026-05-18T07:32:29.033Z"
+      }
+    ],
+    "purchase": [
+      {
+        "id": "6a0ac0646169456d9728e8c6",
+        "purchaseNumber": "PO-1779089508243",
+        "supplierId": "6a000b0f634476b3ec4de582",
+        "totalCost": 0,
+        "status": "RECEIVED",
+        "notes": "",
+        "receivedAt": "2026-05-18T00:00:00.000Z",
+        "createdBy": "6a000b0d634476b3ec4de57b",
+        "createdAt": "2026-05-18T07:31:48.265Z",
+        "updatedAt": "2026-05-18T07:31:48.265Z"
+      }
+    ],
+    "purchaseItem": [
+      {
+        "id": "6a0ac0646169456d9728e8c7",
+        "purchaseId": "6a0ac0646169456d9728e8c6",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "quantity": 20,
+        "unitCost": 0,
+        "totalCost": 0
+      },
+      {
+        "id": "6a0ac0646169456d9728e8c8",
+        "purchaseId": "6a0ac0646169456d9728e8c6",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "quantity": 10,
+        "unitCost": 0,
+        "totalCost": 0
+      }
+    ],
+    "returnRequest": [],
+    "invoice": [
+      {
+        "id": "6a0057fdc700b37231b0a9b8",
+        "invoiceNumber": "INV-000001",
+        "orderId": "6a0057b6c700b37231b0a9af",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "amount": 115060,
+        "issueDate": "2026-05-10T10:03:41.961Z",
+        "dueDate": "2026-05-25T10:03:41.961Z",
+        "paidDate": null,
+        "status": "PENDING",
+        "createdAt": "2026-05-10T10:03:41.962Z",
+        "updatedAt": "2026-05-10T10:03:41.962Z"
+      },
+      {
+        "id": "6a0591db26ad3cb07daf0387",
+        "invoiceNumber": "INV-000002",
+        "orderId": "6a000b12634476b3ec4de58e",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "amount": 115060,
+        "issueDate": "2026-05-14T09:11:55.195Z",
+        "dueDate": "2026-05-29T09:11:55.195Z",
+        "paidDate": null,
+        "status": "PAID",
+        "createdAt": "2026-05-14T09:11:55.198Z",
+        "updatedAt": "2026-05-14T09:11:55.198Z"
+      },
+      {
+        "id": "6a0ab07b6169456d9728e87f",
+        "invoiceNumber": "INV-000003",
+        "orderId": "6a0aab666169456d9728e848",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "amount": 115060,
+        "issueDate": "2026-05-18T06:23:55.546Z",
+        "dueDate": "2026-06-02T06:23:55.546Z",
+        "paidDate": null,
+        "status": "PENDING",
+        "createdAt": "2026-05-18T06:23:55.549Z",
+        "updatedAt": "2026-05-18T06:23:55.549Z"
+      }
+    ],
+    "address": [
+      {
+        "id": "6a09e91f364b7acdefc72e74",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "Home",
+        "name": "Mahbubur Rahman",
+        "phone": "01886225492",
+        "street": "Ideal Tower, Baruntek, Cantonment",
+        "city": "Dhaka",
+        "state": "Dhaka",
+        "zipCode": "1216",
+        "country": "Bangladesh",
+        "isDefault": true,
+        "createdAt": "2026-05-17T16:13:19.770Z",
+        "updatedAt": "2026-05-17T16:13:19.770Z"
+      }
+    ],
+    "wishlist": [
+      {
+        "id": "6a0aac206169456d9728e854",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "productId": "6a000b10634476b3ec4de584",
+        "createdAt": "2026-05-18T06:05:20.739Z",
+        "updatedAt": "2026-05-18T06:05:20.739Z"
+      }
+    ],
+    "stockMovement": [
+      {
+        "id": "6a0057b6c700b37231b0a9b1",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 50,
+        "newQty": 49,
+        "reason": "Order ORD-20260510-M9T6G",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57c",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-10T10:02:30.737Z"
+      },
+      {
+        "id": "6a09e5c7506f93e75ea07ced",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 50,
+        "newQty": 49,
+        "reason": "Order ORD-20260517-601Z6",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57c",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-17T15:59:03.914Z"
+      },
+      {
+        "id": "6a09e617506f93e75ea07cf6",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 49,
+        "newQty": 48,
+        "reason": "Order ORD-20260517-CQ248",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57c",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-17T16:00:23.460Z"
+      },
+      {
+        "id": "6a09e94d364b7acdefc72e7f",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 48,
+        "newQty": 47,
+        "reason": "Order ORD-20260517-978QS",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57c",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-17T16:14:05.593Z"
+      },
+      {
+        "id": "6a09eac7506f93e75ea07d0f",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 25,
+        "newQty": 24,
+        "reason": "Order POS-20260517-Q34OY",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57b",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-17T16:20:23.618Z"
+      },
+      {
+        "id": "6a0aab676169456d9728e84a",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 46,
+        "newQty": 45,
+        "reason": "Order ORD-20260518-NEX73",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57c",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-18T06:02:15.238Z"
+      },
+      {
+        "id": "6a0ac0656169456d9728e8c9",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "PURCHASE",
+        "quantity": 20,
+        "previousQty": 24,
+        "newQty": 44,
+        "reason": "Purchase Order PO-1779089508243",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57b",
+        "supplierId": "6a000b0f634476b3ec4de582",
+        "purchaseId": "6a0ac0646169456d9728e8c6",
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-18T07:31:49.060Z"
+      },
+      {
+        "id": "6a0ac0656169456d9728e8ca",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "PURCHASE",
+        "quantity": 10,
+        "previousQty": 25,
+        "newQty": 35,
+        "reason": "Purchase Order PO-1779089508243",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57b",
+        "supplierId": "6a000b0f634476b3ec4de582",
+        "purchaseId": "6a0ac0646169456d9728e8c6",
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-18T07:31:49.689Z"
+      },
+      {
+        "id": "6a0b1c254d977fca1109a11f",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 75,
+        "newQty": 74,
+        "reason": "Order ORD-20260518-OEE7J",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57c",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-18T14:03:17.003Z"
+      },
+      {
+        "id": "6a0d6e6b3f43d59935e06d0a",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 74,
+        "newQty": 73,
+        "reason": "Order ORD-20260520-OQP1I",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57c",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-20T08:18:51.509Z"
+      },
+      {
+        "id": "6a0de9206a9df47c2e4577bf",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 73,
+        "newQty": 72,
+        "reason": "Order ORD-20260520-GNGIC",
+        "notes": null,
+        "performedBy": null,
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-20T17:02:24.580Z"
+      },
+      {
+        "id": "6a0de9216a9df47c2e4577c0",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "SALE",
+        "quantity": -1,
+        "previousQty": 20,
+        "newQty": 19,
+        "reason": "Order ORD-20260520-GNGIC",
+        "notes": null,
+        "performedBy": null,
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-20T17:02:25.414Z"
+      },
+      {
+        "id": "6a0dea146a9df47c2e4577d1",
+        "productId": "6a0dea146a9df47c2e4577c5",
+        "variantId": null,
+        "type": "PURCHASE",
+        "quantity": 69,
+        "previousQty": 0,
+        "newQty": 69,
+        "reason": "Initial stock",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57b",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-20T17:06:28.812Z"
+      },
+      {
+        "id": "6a0ed51a4085852dcbae3003",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "ADJUSTMENT",
+        "quantity": 50,
+        "previousQty": 71,
+        "newQty": 121,
+        "reason": "Manual stock update",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57b",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-21T09:49:14.382Z"
+      },
+      {
+        "id": "6a0ed52e4085852dcbae3004",
+        "productId": "6a0dea146a9df47c2e4577c5",
+        "variantId": null,
+        "type": "ADJUSTMENT",
+        "quantity": 10,
+        "previousQty": 69,
+        "newQty": 79,
+        "reason": "Manual stock update",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57b",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-21T09:49:34.463Z"
+      },
+      {
+        "id": "6a0ed52e4085852dcbae3005",
+        "productId": "6a000b10634476b3ec4de584",
+        "variantId": null,
+        "type": "ADJUSTMENT",
+        "quantity": 10,
+        "previousQty": 121,
+        "newQty": 131,
+        "reason": "Manual stock update",
+        "notes": null,
+        "performedBy": "6a000b0d634476b3ec4de57b",
+        "supplierId": null,
+        "purchaseId": null,
+        "purchaseReturnId": null,
+        "createdAt": "2026-05-21T09:49:34.470Z"
+      }
+    ],
+    "damageReport": [],
+    "shippingZone": [
+      {
+        "id": "6a000b0c634476b3ec4de575",
+        "name": "Inside Dhaka",
+        "countries": [],
+        "regions": [
+          "Dhaka"
+        ],
+        "isActive": true,
+        "priority": 0,
+        "createdAt": "2026-05-10T04:35:24.620Z",
+        "updatedAt": "2026-05-10T04:35:24.620Z"
+      },
+      {
+        "id": "6a000b0c634476b3ec4de578",
+        "name": "Outside Dhaka",
+        "countries": [],
+        "regions": [
+          "All BD"
+        ],
+        "isActive": true,
+        "priority": 0,
+        "createdAt": "2026-05-10T04:35:24.809Z",
+        "updatedAt": "2026-05-10T04:35:24.809Z"
+      }
+    ],
+    "shippingRate": [
+      {
+        "id": "6a000b0c634476b3ec4de576",
+        "zoneId": "6a000b0c634476b3ec4de575",
+        "method": "Standard Delivery",
+        "carrier": null,
+        "courierId": null,
+        "calculationType": "FLAT",
+        "flatRate": 60,
+        "baseRate": null,
+        "perKgRate": null,
+        "freeShippingThreshold": null,
+        "minWeight": null,
+        "maxWeight": null,
+        "minOrderValue": null,
+        "estimatedDays": null,
+        "isActive": true,
+        "createdAt": "2026-05-10T04:35:24.620Z",
+        "updatedAt": "2026-05-10T04:35:24.620Z"
+      },
+      {
+        "id": "6a000b0c634476b3ec4de577",
+        "zoneId": "6a000b0c634476b3ec4de575",
+        "method": "Express Delivery",
+        "carrier": null,
+        "courierId": null,
+        "calculationType": "FLAT",
+        "flatRate": 120,
+        "baseRate": null,
+        "perKgRate": null,
+        "freeShippingThreshold": null,
+        "minWeight": null,
+        "maxWeight": null,
+        "minOrderValue": null,
+        "estimatedDays": null,
+        "isActive": true,
+        "createdAt": "2026-05-10T04:35:24.620Z",
+        "updatedAt": "2026-05-10T04:35:24.620Z"
+      },
+      {
+        "id": "6a000b0c634476b3ec4de579",
+        "zoneId": "6a000b0c634476b3ec4de578",
+        "method": "Standard Delivery",
+        "carrier": null,
+        "courierId": null,
+        "calculationType": "FLAT",
+        "flatRate": 120,
+        "baseRate": null,
+        "perKgRate": null,
+        "freeShippingThreshold": null,
+        "minWeight": null,
+        "maxWeight": null,
+        "minOrderValue": null,
+        "estimatedDays": null,
+        "isActive": true,
+        "createdAt": "2026-05-10T04:35:24.809Z",
+        "updatedAt": "2026-05-10T04:35:24.809Z"
+      }
+    ],
+    "courier": [],
+    "campaign": [
+      {
+        "id": "699a4ba6311e127d41715236",
+        "name": "ddd",
+        "subject": "test",
+        "type": "EMAIL",
+        "status": "SENT",
+        "content": "sssss",
+        "template": null,
+        "targetType": "ALL",
+        "targetGroupIds": [],
+        "targetUserIds": [],
+        "scheduledAt": null,
+        "sentAt": "2026-02-22T00:20:02.885Z",
+        "totalRecipients": 2,
+        "sentCount": 2,
+        "openCount": 0,
+        "failedCount": 0,
+        "createdAt": "2026-02-22T00:19:50.031Z",
+        "updatedAt": "2026-02-22T00:20:02.888Z"
+      },
+      {
+        "id": "699a4dc9311e127d41715239",
+        "name": "ddd",
+        "subject": "ddd",
+        "type": "EMAIL",
+        "status": "SENT",
+        "content": "<!DOCTYPE html>\n<html>\n<head><meta charset=\"utf-8\"></head>\n<body style=\"margin:0;padding:0;background:#faf5ff;font-family:Arial,sans-serif;\">\n  <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n    <tr><td align=\"center\" style=\"padding:40px 20px;\">\n      <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.08);\">\n        <tr><td style=\"background:linear-gradient(135deg,#7c3aed,#db2777);padding:50px 40px;text-align:center;\">\n          <p style=\"margin:0 0 8px;color:rgba(255,255,255,.8);font-size:13px;text-transform:uppercase;letter-spacing:3px;font-weight:600;\">Just Arrived</p>\n          <h1 style=\"color:#fff;margin:0;font-size:30px;font-weight:800;\">New Collection Is Here ✨</h1>\n        </td></tr>\n        <tr><td style=\"padding:40px;\">\n          <p style=\"font-size:15px;color:#4b5563;line-height:1.7;margin:0 0 28px;\">We've just added exciting new products to our store. Be the first to explore our latest collection and find your next favourite item.</p>\n          <div style=\"background:#faf5ff;border-radius:8px;padding:20px;text-align:center;margin-bottom:28px;\">\n            <p style=\"margin:0;font-size:24px;font-weight:800;color:#7c3aed;\">50+ New Products</p>\n            <p style=\"margin:4px 0 0;font-size:13px;color:#6b7280;\">Added this week</p>\n          </div>\n          <div style=\"text-align:center;margin:20px 0;\">\n            <a href=\"#\" style=\"background:linear-gradient(135deg,#7c3aed,#db2777);color:#fff;text-decoration:none;padding:16px 40px;border-radius:8px;font-weight:700;font-size:16px;display:inline-block;\">Explore Now →</a>\n          </div>\n        </td></tr>\n        <tr><td style=\"background:#f9fafb;padding:20px 40px;text-align:center;border-top:1px solid #e5e7eb;\">\n          <p style=\"margin:0;font-size:12px;color:#9ca3af;\">Mahbub Shop · <a href=\"#\" style=\"color:#6b7280;\">Unsubscribe</a></p>\n        </td></tr>\n      </table>\n    </td></tr>\n  </table>\n</body>\n</html>",
+        "template": null,
+        "targetType": "ALL",
+        "targetGroupIds": [],
+        "targetUserIds": [],
+        "scheduledAt": null,
+        "sentAt": "2026-02-22T00:29:08.274Z",
+        "totalRecipients": 2,
+        "sentCount": 2,
+        "openCount": 0,
+        "failedCount": 0,
+        "createdAt": "2026-02-22T00:28:57.890Z",
+        "updatedAt": "2026-02-22T00:29:08.275Z"
+      }
+    ],
+    "notification": [
+      {
+        "id": "6a000c79864bdb2e2c74cfe6",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-10T04:41:29.224Z"
+      },
+      {
+        "id": "6a000c79864bdb2e2c74cfe7",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "LOGIN_NEW_DEVICE",
+        "title": "New Login Detected",
+        "message": "Login from node",
+        "data": {
+          "time": "2026-05-10T04:41:29.174Z"
+        },
+        "isRead": true,
+        "readAt": "2026-05-14T12:01:15.161Z",
+        "createdAt": "2026-05-10T04:41:29.177Z"
+      },
+      {
+        "id": "6a00579fc700b37231b0a9ad",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "LOGIN_NEW_DEVICE",
+        "title": "New Login Detected",
+        "message": "Login from node",
+        "data": {
+          "time": "2026-05-10T10:02:07.362Z"
+        },
+        "isRead": true,
+        "readAt": "2026-05-10T10:26:21.007Z",
+        "createdAt": "2026-05-10T10:02:07.364Z"
+      },
+      {
+        "id": "6a0057b7c700b37231b0a9b2",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#ORD-20260510-M9T6G · iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af"
+        },
+        "isRead": true,
+        "readAt": "2026-05-14T11:42:47.635Z",
+        "createdAt": "2026-05-10T10:02:31.098Z"
+      },
+      {
+        "id": "6a005ef0c839aea5116735c9",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_PROCESSING",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G is being packed.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-10T10:33:20.264Z"
+      },
+      {
+        "id": "6a005f0cc839aea5116735cd",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_DELIVERED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G has been delivered.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-10T10:33:48.199Z"
+      },
+      {
+        "id": "6a005f13c839aea5116735ce",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_DELIVERED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G is completed.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-10T10:33:55.614Z"
+      },
+      {
+        "id": "6a056db205639e98affa1b72",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "LOGIN_NEW_DEVICE",
+        "title": "New Login Detected",
+        "message": "Login from node",
+        "data": {
+          "time": "2026-05-14T06:37:38.056Z"
+        },
+        "isRead": true,
+        "readAt": "2026-05-14T11:30:06.635Z",
+        "createdAt": "2026-05-14T06:37:38.060Z"
+      },
+      {
+        "id": "6a056db205639e98affa1b73",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": true,
+        "readAt": "2026-05-14T11:29:50.693Z",
+        "createdAt": "2026-05-14T06:37:38.110Z"
+      },
+      {
+        "id": "6a05b6b99254ba4e97281ae8",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_PROCESSING",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G is being packed.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-14T11:49:13.160Z"
+      },
+      {
+        "id": "6a05b6c39254ba4e97281ae9",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_SHIPPED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G has been shipped.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-14T11:49:23.942Z"
+      },
+      {
+        "id": "6a05b6d19254ba4e97281aea",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_DELIVERED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G has been delivered.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-14T11:49:37.450Z"
+      },
+      {
+        "id": "6a05b9129254ba4e97281aee",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_CANCELLED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G was cancelled.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-14T11:59:14.609Z"
+      },
+      {
+        "id": "6a05b97a9254ba4e97281af3",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_DELIVERED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260510-M9T6G is completed.",
+        "data": {
+          "orderId": "6a0057b6c700b37231b0a9af",
+          "url": "/orders/6a0057b6c700b37231b0a9af"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-14T12:00:58.364Z"
+      },
+      {
+        "id": "6a077874bb44e59f90ae194f",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-15T19:48:04.539Z"
+      },
+      {
+        "id": "6a09e591506f93e75ea07ce2",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-17T15:58:09.713Z"
+      },
+      {
+        "id": "6a09e5c9506f93e75ea07cee",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#ORD-20260517-601Z6 · iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a09e5c5506f93e75ea07ceb"
+        },
+        "isRead": true,
+        "readAt": "2026-05-17T16:00:56.789Z",
+        "createdAt": "2026-05-17T15:59:05.712Z"
+      },
+      {
+        "id": "6a09e619506f93e75ea07cf7",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#ORD-20260517-CQ248 · iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a09e614506f93e75ea07cf4"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-17T16:00:25.278Z"
+      },
+      {
+        "id": "6a09e644506f93e75ea07cfb",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_PROCESSING",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260517-601Z6 is being packed.",
+        "data": {
+          "orderId": "6a09e5c5506f93e75ea07ceb",
+          "url": "/orders/6a09e5c5506f93e75ea07ceb"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-17T16:01:08.536Z"
+      },
+      {
+        "id": "6a09e65d506f93e75ea07cfe",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_SHIPPED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260517-601Z6 has been shipped.",
+        "data": {
+          "orderId": "6a09e5c5506f93e75ea07ceb",
+          "url": "/orders/6a09e5c5506f93e75ea07ceb"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-17T16:01:33.631Z"
+      },
+      {
+        "id": "6a09e66b506f93e75ea07cff",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_DELIVERED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260517-601Z6 has been delivered.",
+        "data": {
+          "orderId": "6a09e5c5506f93e75ea07ceb",
+          "url": "/orders/6a09e5c5506f93e75ea07ceb"
+        },
+        "isRead": true,
+        "readAt": "2026-05-17T16:33:31.370Z",
+        "createdAt": "2026-05-17T16:01:47.432Z"
+      },
+      {
+        "id": "6a09e7d3364b7acdefc72e51",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-17T16:07:47.923Z"
+      },
+      {
+        "id": "6a09e94e364b7acdefc72e80",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#ORD-20260517-978QS · iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a09e94d364b7acdefc72e7d"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-17T16:14:06.219Z"
+      },
+      {
+        "id": "6a09eac9506f93e75ea07d10",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#POS-20260517-Q34OY · iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a09eac3506f93e75ea07d0d"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-17T16:20:25.462Z"
+      },
+      {
+        "id": "6a0aa59e25f5e0c0d31aef9a",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_CHAT_MESSAGE",
+        "title": "New Message",
+        "message": "Demo sent you a message",
+        "data": {
+          "conversationId": "6a09e9dd364b7acdefc72e8b"
+        },
+        "isRead": true,
+        "readAt": "2026-05-18T05:40:14.157Z",
+        "createdAt": "2026-05-18T05:37:34.319Z"
+      },
+      {
+        "id": "6a0aa5f725f5e0c0d31aef9d",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "NEW_CHAT_MESSAGE",
+        "title": "New Message",
+        "message": "Super sent you a message",
+        "data": {
+          "conversationId": "6a09e9dd364b7acdefc72e8b"
+        },
+        "isRead": true,
+        "readAt": "2026-05-18T05:47:07.527Z",
+        "createdAt": "2026-05-18T05:39:03.233Z"
+      },
+      {
+        "id": "6a0aa64b25f5e0c0d31aef9f",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_CHAT_MESSAGE",
+        "title": "New Message",
+        "message": "Demo sent you a message",
+        "data": {
+          "conversationId": "6a09e9dd364b7acdefc72e8b"
+        },
+        "isRead": true,
+        "readAt": "2026-05-18T05:47:07.002Z",
+        "createdAt": "2026-05-18T05:40:27.151Z"
+      },
+      {
+        "id": "6a0aa75b25f5e0c0d31aefa1",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "NEW_CHAT_MESSAGE",
+        "title": "New Message",
+        "message": "Super sent you a message",
+        "data": {
+          "conversationId": "6a09e9dd364b7acdefc72e8b"
+        },
+        "isRead": true,
+        "readAt": "2026-05-18T05:47:07.527Z",
+        "createdAt": "2026-05-18T05:44:59.903Z"
+      },
+      {
+        "id": "6a0aa7da6169456d9728e82f",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "NEW_CHAT_MESSAGE",
+        "title": "New Message",
+        "message": "Super sent you a message",
+        "data": {
+          "conversationId": "6a09e9dd364b7acdefc72e8b"
+        },
+        "isRead": true,
+        "readAt": "2026-05-18T05:47:07.527Z",
+        "createdAt": "2026-05-18T05:47:06.865Z"
+      },
+      {
+        "id": "6a0aa7e76169456d9728e831",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_CHAT_MESSAGE",
+        "title": "New Message",
+        "message": "Demo sent you a message",
+        "data": {
+          "conversationId": "6a09e9dd364b7acdefc72e8b"
+        },
+        "isRead": true,
+        "readAt": "2026-05-18T05:47:20.014Z",
+        "createdAt": "2026-05-18T05:47:19.788Z"
+      },
+      {
+        "id": "6a0aa7f56169456d9728e833",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "NEW_CHAT_MESSAGE",
+        "title": "New Message",
+        "message": "Super sent you a message",
+        "data": {
+          "conversationId": "6a09e9dd364b7acdefc72e8b"
+        },
+        "isRead": true,
+        "readAt": "2026-05-18T05:47:34.111Z",
+        "createdAt": "2026-05-18T05:47:33.845Z"
+      },
+      {
+        "id": "6a0aa9d96169456d9728e837",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_CHAT_MESSAGE",
+        "title": "New Message",
+        "message": "Demo sent you a message",
+        "data": {
+          "conversationId": "6a09e9dd364b7acdefc72e8b"
+        },
+        "isRead": true,
+        "readAt": "2026-05-18T05:55:37.354Z",
+        "createdAt": "2026-05-18T05:55:37.086Z"
+      },
+      {
+        "id": "6a0aa9de6169456d9728e839",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_CHAT_MESSAGE",
+        "title": "New Message",
+        "message": "Demo sent you a message",
+        "data": {
+          "conversationId": "6a09e9dd364b7acdefc72e8b"
+        },
+        "isRead": true,
+        "readAt": "2026-05-18T05:55:43.069Z",
+        "createdAt": "2026-05-18T05:55:42.823Z"
+      },
+      {
+        "id": "6a0aa9f16169456d9728e83b",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "NEW_CHAT_MESSAGE",
+        "title": "New Message",
+        "message": "Super sent you a message",
+        "data": {
+          "conversationId": "6a09e9dd364b7acdefc72e8b"
+        },
+        "isRead": true,
+        "readAt": "2026-05-18T05:56:01.411Z",
+        "createdAt": "2026-05-18T05:56:01.110Z"
+      },
+      {
+        "id": "6a0aab676169456d9728e84b",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#ORD-20260518-NEX73 · iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a0aab666169456d9728e848"
+        },
+        "isRead": true,
+        "readAt": "2026-05-18T06:04:48.327Z",
+        "createdAt": "2026-05-18T06:02:15.680Z"
+      },
+      {
+        "id": "6a0ab7746169456d9728e885",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_PROCESSING",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260518-NEX73 is being packed.",
+        "data": {
+          "orderId": "6a0aab666169456d9728e848",
+          "url": "/orders/6a0aab666169456d9728e848"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-18T06:53:40.275Z"
+      },
+      {
+        "id": "6a0ab7936169456d9728e886",
+        "userId": "6a000b0d634476b3ec4de57c",
+        "type": "ORDER_DELIVERED",
+        "title": "Order Update",
+        "message": "Your order #ORD-20260518-NEX73 is completed.",
+        "data": {
+          "orderId": "6a0aab666169456d9728e848",
+          "url": "/orders/6a0aab666169456d9728e848"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-18T06:54:11.052Z"
+      },
+      {
+        "id": "6a0b1c284d977fca1109a120",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#ORD-20260518-OEE7J · iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a0b1c224d977fca1109a11d"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-18T14:03:20.484Z"
+      },
+      {
+        "id": "6a0c296f6aba2f90628db9f2",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-19T09:12:15.120Z"
+      },
+      {
+        "id": "6a0c29846aba2f90628db9f5",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-19T09:12:36.215Z"
+      },
+      {
+        "id": "6a0c29ae6aba2f90628db9f8",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-19T09:13:18.752Z"
+      },
+      {
+        "id": "6a0c2b946aba2f90628db9fd",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-19T09:21:24.039Z"
+      },
+      {
+        "id": "6a0c63b80ce2bbdaab8b4531",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-19T13:20:56.533Z"
+      },
+      {
+        "id": "6a0c63c30ce2bbdaab8b4534",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-19T13:21:07.798Z"
+      },
+      {
+        "id": "6a0c63d10ce2bbdaab8b4537",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-19T13:21:21.941Z"
+      },
+      {
+        "id": "6a0c64d30ce2bbdaab8b4543",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-19T13:25:39.167Z"
+      },
+      {
+        "id": "6a0c66530ce2bbdaab8b4549",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-19T13:32:03.541Z"
+      },
+      {
+        "id": "6a0c677d0ce2bbdaab8b454d",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-19T13:37:01.076Z"
+      },
+      {
+        "id": "6a0c67b20ce2bbdaab8b4550",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-19T13:37:54.761Z"
+      },
+      {
+        "id": "6a0d6ccb3f43d59935e06ceb",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-20T08:11:55.639Z"
+      },
+      {
+        "id": "6a0d6e6c3f43d59935e06d0b",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#ORD-20260520-OQP1I · iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a0d6e6a3f43d59935e06d08"
+        },
+        "isRead": true,
+        "readAt": "2026-05-22T10:56:09.038Z",
+        "createdAt": "2026-05-20T08:18:52.522Z"
+      },
+      {
+        "id": "6a0d92b96a9df47c2e457701",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-20T10:53:45.192Z"
+      },
+      {
+        "id": "6a0de9236a9df47c2e4577c1",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "NEW_ORDER",
+        "title": "New Order Received",
+        "message": "#ORD-20260520-GNGIC · iPhone 15 Pro Max, iPhone 15 Pro Max",
+        "data": {
+          "orderId": "6a0de9206a9df47c2e4577bc"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-20T17:02:27.224Z"
+      },
+      {
+        "id": "6a0e7d77f9e1ffe3c0154c36",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-21T03:35:19.540Z"
+      },
+      {
+        "id": "6a0ee85165260c8ed1160608",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-21T11:11:13.462Z"
+      },
+      {
+        "id": "6a0fc3bef9e1ffe3c0154c5d",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-22T02:47:26.802Z"
+      },
+      {
+        "id": "6a0fd79bb84f7d8a4a0f2f29",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-22T04:12:11.036Z"
+      },
+      {
+        "id": "6a10361db1fa5379bb3a9a92",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-22T10:55:25.917Z"
+      },
+      {
+        "id": "6a109989089ab46317353fb3",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-22T17:59:37.584Z"
+      },
+      {
+        "id": "6a1099a1089ab46317353fb5",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-22T18:00:01.744Z"
+      },
+      {
+        "id": "6a10a05b1444c4cd1d9276d7",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-22T18:28:43.531Z"
+      },
+      {
+        "id": "6a111d0f2366cf5a0ffe9ea8",
+        "userId": "6a000b0d634476b3ec4de57b",
+        "type": "STAFF_LOGIN",
+        "title": "Staff Login",
+        "message": "Super Admin logged in.",
+        "data": {
+          "userId": "6a000b0d634476b3ec4de57b",
+          "role": "ADMIN"
+        },
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-23T03:20:47.143Z"
+      }
+    ],
+    "conversation": [
+      {
+        "id": "6a09e9dd364b7acdefc72e8b",
+        "participantIds": [
+          "6a000b0d634476b3ec4de57c",
+          "6a000b0d634476b3ec4de57b"
+        ],
+        "type": "SUPPORT",
+        "status": "OPEN",
+        "lastMessage": "hello",
+        "lastMessageAt": "2026-05-18T05:56:00.869Z",
+        "assignedTo": null,
+        "createdAt": "2026-05-17T16:16:29.523Z",
+        "updatedAt": "2026-05-18T05:56:00.871Z"
+      }
+    ],
+    "chatMessage": [
+      {
+        "id": "6a09e9e2364b7acdefc72e8c",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57c",
+        "message": "hi",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-17T16:16:47.750Z",
+        "createdAt": "2026-05-17T16:16:34.273Z",
+        "updatedAt": "2026-05-17T16:16:47.751Z"
+      },
+      {
+        "id": "6a09e9f8364b7acdefc72e8e",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57b",
+        "message": "hello",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-17T16:16:57.577Z",
+        "createdAt": "2026-05-17T16:16:56.951Z",
+        "updatedAt": "2026-05-17T16:16:57.578Z"
+      },
+      {
+        "id": "6a09ea0c364b7acdefc72e8f",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57c",
+        "message": "❤️",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-17T16:17:17.483Z",
+        "createdAt": "2026-05-17T16:17:16.695Z",
+        "updatedAt": "2026-05-17T16:17:17.484Z"
+      },
+      {
+        "id": "6a0aa35e364b7acdefc72ebe",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57c",
+        "message": "hi",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-18T05:27:58.132Z",
+        "updatedAt": "2026-05-18T05:27:58.132Z"
+      },
+      {
+        "id": "6a0aa4bf364b7acdefc72ec2",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57c",
+        "message": "hi",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": false,
+        "readAt": null,
+        "createdAt": "2026-05-18T05:33:51.919Z",
+        "updatedAt": "2026-05-18T05:33:51.919Z"
+      },
+      {
+        "id": "6a0aa59d25f5e0c0d31aef99",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57c",
+        "message": "hi",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-18T05:38:27.193Z",
+        "createdAt": "2026-05-18T05:37:33.920Z",
+        "updatedAt": "2026-05-18T05:38:27.195Z"
+      },
+      {
+        "id": "6a0aa5f625f5e0c0d31aef9c",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57b",
+        "message": "what happend",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-18T05:39:03.706Z",
+        "createdAt": "2026-05-18T05:39:02.287Z",
+        "updatedAt": "2026-05-18T05:39:03.707Z"
+      },
+      {
+        "id": "6a0aa64a25f5e0c0d31aef9e",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57c",
+        "message": "kisu na",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-18T05:40:27.183Z",
+        "createdAt": "2026-05-18T05:40:26.732Z",
+        "updatedAt": "2026-05-18T05:40:27.185Z"
+      },
+      {
+        "id": "6a0aa75b25f5e0c0d31aefa0",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57b",
+        "message": "good",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-18T05:45:00.365Z",
+        "createdAt": "2026-05-18T05:44:59.432Z",
+        "updatedAt": "2026-05-18T05:45:00.366Z"
+      },
+      {
+        "id": "6a0aa7da6169456d9728e82e",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57b",
+        "message": "hi",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-18T05:47:07.285Z",
+        "createdAt": "2026-05-18T05:47:06.427Z",
+        "updatedAt": "2026-05-18T05:47:07.286Z"
+      },
+      {
+        "id": "6a0aa7e76169456d9728e830",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57c",
+        "message": "hello",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-18T05:47:19.835Z",
+        "createdAt": "2026-05-18T05:47:19.359Z",
+        "updatedAt": "2026-05-18T05:47:19.837Z"
+      },
+      {
+        "id": "6a0aa7f56169456d9728e832",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57b",
+        "message": "how are you?",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-18T05:47:33.928Z",
+        "createdAt": "2026-05-18T05:47:33.397Z",
+        "updatedAt": "2026-05-18T05:47:33.929Z"
+      },
+      {
+        "id": "6a0aa9d86169456d9728e836",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57c",
+        "message": "hi",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-18T05:55:37.086Z",
+        "createdAt": "2026-05-18T05:55:36.650Z",
+        "updatedAt": "2026-05-18T05:55:37.089Z"
+      },
+      {
+        "id": "6a0aa9de6169456d9728e838",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57c",
+        "message": "I am ashiq",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-18T05:55:42.905Z",
+        "createdAt": "2026-05-18T05:55:42.382Z",
+        "updatedAt": "2026-05-18T05:55:42.908Z"
+      },
+      {
+        "id": "6a0aa9f06169456d9728e83a",
+        "conversationId": "6a09e9dd364b7acdefc72e8b",
+        "senderId": "6a000b0d634476b3ec4de57b",
+        "message": "hello",
+        "attachments": [],
+        "type": "TEXT",
+        "replyToId": null,
+        "reactions": null,
+        "isEdited": false,
+        "isDeleted": false,
+        "deletedAt": null,
+        "isRead": true,
+        "readAt": "2026-05-18T05:56:01.284Z",
+        "createdAt": "2026-05-18T05:56:00.662Z",
+        "updatedAt": "2026-05-18T05:56:01.286Z"
+      }
+    ],
+    "heroSlide": [
+      {
+        "id": "6a0043167810dc5714bdac17",
+        "image": "https://res.cloudinary.com/dfigg4e5e/image/upload/v1778402069/ecommerce/hero/invbvnxkueihyynlfutn.webp",
+        "title": "Grocery",
+        "subtitle": "online shop with your trust",
+        "linkType": "PRODUCT",
+        "linkValue": "6a000b10634476b3ec4de584",
+        "isActive": true,
+        "startDate": null,
+        "endDate": null,
+        "order": 0,
+        "createdAt": "2026-05-10T08:34:30.003Z",
+        "updatedAt": "2026-05-10T08:49:35.772Z"
+      },
+      {
+        "id": "6a00443c7810dc5714bdac2b",
+        "image": "https://res.cloudinary.com/dfigg4e5e/image/upload/v1778402363/ecommerce/hero/qsjopdk6evkbtis6jg3m.webp",
+        "title": "Electronics",
+        "subtitle": "",
+        "linkType": "PRODUCT",
+        "linkValue": "6a000b10634476b3ec4de584",
+        "isActive": true,
+        "startDate": null,
+        "endDate": null,
+        "order": 1,
+        "createdAt": "2026-05-10T08:39:24.164Z",
+        "updatedAt": "2026-05-10T08:39:24.164Z"
+      },
+      {
+        "id": "6a0576ec26ad3cb07daf0339",
+        "image": "https://res.cloudinary.com/dfigg4e5e/image/upload/v1778743020/ecommerce/hero/l1gdccbn8ituf8kjxg1y.webp",
+        "title": "Summer",
+        "subtitle": "up to 50% off",
+        "linkType": "PRODUCT",
+        "linkValue": "6a000b10634476b3ec4de584",
+        "isActive": true,
+        "startDate": null,
+        "endDate": null,
+        "order": 3,
+        "createdAt": "2026-05-14T07:17:00.838Z",
+        "updatedAt": "2026-05-14T07:17:00.838Z"
+      },
+      {
+        "id": "6a0576ec26ad3cb07daf033a",
+        "image": "https://res.cloudinary.com/dfigg4e5e/image/upload/v1778743019/ecommerce/hero/r7ml4hp8yfnvekh4utqe.webp",
+        "title": "Summer",
+        "subtitle": "up to 50% off",
+        "linkType": "PRODUCT",
+        "linkValue": "6a000b10634476b3ec4de584",
+        "isActive": true,
+        "startDate": null,
+        "endDate": null,
+        "order": 2,
+        "createdAt": "2026-05-14T07:17:00.838Z",
+        "updatedAt": "2026-05-14T07:17:00.838Z"
+      }
+    ],
+    "emailTemplate": [
+      {
+        "id": "699abc582fcedbc07d87496a",
+        "name": "Order Confirmation",
+        "subject": "Thank you for your order! #{{order_number}}",
+        "type": "ORDER_CONFIRMATION",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee;\">\n        <h2 style=\"color: #333;\">Hello {{customer_name}},</h2>\n        <p>Your order <strong>#{{order_number}}</strong> has been confirmed!</p>\n        <div style=\"background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0;\">\n          {{order_items}}\n        </div>\n        <p style=\"font-size: 18px; font-weight: bold;\">Total: {{order_total}} BDT</p>\n        <p>We'll notify you when your items are on their way.</p>\n        <footer style=\"margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; font-size: 12px; color: #888;\">\n          Mahbub Shop | Powered by Saas Ecommerce\n        </footer>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "order_number",
+            "label": "Order Number"
+          },
+          {
+            "key": "order_total",
+            "label": "Order Total"
+          },
+          {
+            "key": "order_items",
+            "label": "Order Items Table"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:20:39.630Z",
+        "updatedAt": "2026-02-22T08:20:39.630Z"
+      },
+      {
+        "id": "699abc582fcedbc07d87496b",
+        "name": "Welcome Email",
+        "subject": "Welcome to Mahbub Shop, {{customer_name}}!",
+        "type": "WELCOME_EMAIL",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 40px; text-align: center;\">\n        <h1 style=\"color: #4f46e5;\">Welcome aboard!</h1>\n        <p style=\"font-size: 16px; color: #666;\">Hi {{customer_name}}, we're thrilled to have you with us.</p>\n        <a href=\"{{shop_link}}\" style=\"display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; margin-top: 20px;\">Start Shopping</a>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "shop_link",
+            "label": "Shop Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:20:40.691Z",
+        "updatedAt": "2026-02-22T08:20:40.691Z"
+      },
+      {
+        "id": "699abc592fcedbc07d87496c",
+        "name": "Password Reset",
+        "subject": "Reset your password",
+        "type": "PASSWORD_RESET",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px;\">\n        <h3>Hello {{customer_name}},</h3>\n        <p>You requested a password reset. Click the button below to set a new password:</p>\n        <a href=\"{{reset_link}}\" style=\"display: inline-block; background: #ef4444; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none;\">Reset Password</a>\n        <p style=\"margin-top: 20px; font-size: 12px; color: #999;\">If you didn't request this, you can safely ignore this email.</p>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "reset_link",
+            "label": "Reset Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:20:41.314Z",
+        "updatedAt": "2026-02-22T08:20:41.314Z"
+      },
+      {
+        "id": "699ac092648676575dfdbcc7",
+        "name": "Modern Welcome with Coupon",
+        "subject": "Welcome to Mahbub Shop! Unlock your 10% discount.",
+        "type": "WELCOME_EMAIL",
+        "body": "\n      <div style=\"font-family: 'Inter', sans-serif; max-width: 600px; margin: auto; padding: 40px; background: #ffffff; border: 1px solid #f1f5f9; border-radius: 16px;\">\n        <h1 style=\"color: #4f46e5; text-align: center; font-size: 32px;\">Welcome, {{customer_name}}!</h1>\n        <p style=\"text-align: center; color: #64748b; line-height: 1.6;\">We're so glad you're here. As a token of our appreciation, here's a special gift just for you:</p>\n        <div style=\"background: #f5f3ff; border: 2px dashed #c084fc; padding: 20px; text-align: center; margin: 30px 0; border-radius: 12px;\">\n          <span style=\"font-size: 14px; color: #7c3aed; font-weight: bold; display: block; margin-bottom: 5px;\">YOUR CODE</span>\n          <span style=\"font-size: 24px; color: #1e1b4b; font-weight: 900; letter-spacing: 2px;\">{{coupon_code}}</span>\n        </div>\n        <div style=\"text-align: center;\">\n          <a href=\"{{shop_link}}\" style=\"background: #4f46e5; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);\">Start Exploring</a>\n        </div>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "coupon_code",
+            "label": "Coupon Code"
+          },
+          {
+            "key": "shop_link",
+            "label": "Shop Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:41.690Z",
+        "updatedAt": "2026-02-22T08:38:41.690Z"
+      },
+      {
+        "id": "699ac092648676575dfdbcc8",
+        "name": "Minimalist Welcome",
+        "subject": "G'day from Mahbub Shop!",
+        "type": "WELCOME_EMAIL",
+        "body": "\n      <div style=\"font-family: serif; max-width: 600px; margin: auto; padding: 40px; color: #334155;\">\n        <p>Dear {{customer_name}},</p>\n        <p>Welcome to the family. We hope you find exactly what you're looking for.</p>\n        <p>Best,<br>The Team</p>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:42.779Z",
+        "updatedAt": "2026-02-22T08:38:42.779Z"
+      },
+      {
+        "id": "699ac093648676575dfdbcc9",
+        "name": "Visual Order Confirmation",
+        "subject": "Order Confirmed: #{{order_number}}",
+        "type": "ORDER_CONFIRMATION",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;\">\n        <div style=\"background: #1e293b; color: white; padding: 30px; text-align: center;\">\n          <h2 style=\"margin: 0;\">Thanks for your order!</h2>\n          <p style=\"opacity: 0.8; font-size: 14px; margin-top: 5px;\">#{{order_number}}</p>\n        </div>\n        <div style=\"padding: 30px;\">\n          <p>Hi {{customer_name}}, we've received your order and are getting it ready.</p>\n          <div style=\"margin: 20px 0;\">{{order_items}}</div>\n          <div style=\"border-top: 2px solid #f8fafc; padding-top: 20px; text-align: right;\">\n            <p style=\"font-size: 20px; font-weight: bold;\">Total: {{order_total}} BDT</p>\n          </div>\n        </div>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "order_number",
+            "label": "Order Number"
+          },
+          {
+            "key": "order_items",
+            "label": "Order Items (HTML)"
+          },
+          {
+            "key": "order_total",
+            "label": "Order Total"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:43.080Z",
+        "updatedAt": "2026-02-22T08:38:43.080Z"
+      },
+      {
+        "id": "699ac093648676575dfdbcca",
+        "name": "Flash Sale Alert",
+        "subject": "🔥 FLASH SALE IS LIVE!",
+        "type": "PROMOTION",
+        "body": "\n      <div style=\"font-family: 'Arial Black', sans-serif; max-width: 600px; margin: auto; text-align: center; background: #000; color: #fff; padding: 50px 20px;\">\n        <h1 style=\"font-size: 48px; color: #ffeb3b; margin: 0;\">{{discount_percentage}}% OFF</h1>\n        <h2 style=\"font-size: 24px; margin-top: 10px;\">{{sale_title}}</h2>\n        <p style=\"font-family: sans-serif; opacity: 0.8; margin: 30px 0;\">Limited time only. Don't miss out on these incredible deals.</p>\n        <a href=\"{{shop_link}}\" style=\"background: #ffffff; color: #000; padding: 15px 40px; border-radius: 4px; text-decoration: none; font-weight: bold; text-transform: uppercase;\">Shop Now</a>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "sale_title",
+            "label": "Sale Title"
+          },
+          {
+            "key": "discount_percentage",
+            "label": "Discount %"
+          },
+          {
+            "key": "shop_link",
+            "label": "Shop Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:43.489Z",
+        "updatedAt": "2026-02-22T08:38:43.489Z"
+      },
+      {
+        "id": "699ac093648676575dfdbccb",
+        "name": "Direct Message from Support",
+        "subject": "Regarding your recent query",
+        "type": "USER_DIRECT",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 30px; border-left: 4px solid #3b82f6; background: #f8fafc;\">\n        <h3 style=\"color: #1e293b; margin-top: 0;\">Hello {{customer_name}},</h3>\n        <p style=\"color: #475569; line-height: 1.7; white-space: pre-line;\">{{support_message}}</p>\n        <p style=\"font-size: 11px; color: #94a3b8; margin-top: 40px;\">Reference Ticket: #{{ticket_id}}</p>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "support_message",
+            "label": "Support Message Content"
+          },
+          {
+            "key": "ticket_id",
+            "label": "Ticket ID"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:43.799Z",
+        "updatedAt": "2026-02-22T08:38:43.799Z"
+      },
+      {
+        "id": "699ac094648676575dfdbccc",
+        "name": "Account Status Update",
+        "subject": "Important update about your account",
+        "type": "USER_DIRECT",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 30px; text-align: center;\">\n        <div style=\"background: #fffbeb; border: 1px solid #fde68a; padding: 20px; border-radius: 12px;\">\n          <h2 style=\"color: #92400e; margin-top: 0;\">Account Update</h2>\n          <p style=\"color: #78350f;\">Hi {{customer_name}}, we wanted to let you know that: {{status_message}}</p>\n        </div>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "status_message",
+            "label": "Status Update Description"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:44.100Z",
+        "updatedAt": "2026-02-22T08:38:44.100Z"
+      },
+      {
+        "id": "699ac094648676575dfdbccd",
+        "name": "Secure Password Reset",
+        "subject": "Reset your password",
+        "type": "PASSWORD_RESET",
+        "body": "\n      <div style=\"font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px;\">\n        <h3>Hello {{customer_name}},</h3>\n        <p>You requested a password reset. Click the button below to set a new password:</p>\n        <a href=\"{{reset_link}}\" style=\"display: inline-block; background: #ef4444; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none;\">Reset Password</a>\n        <p style=\"margin-top: 20px; font-size: 12px; color: #999;\">If you didn't request this, you can safely ignore this email.</p>\n      </div>\n    ",
+        "design": {},
+        "variables": [
+          {
+            "key": "customer_name",
+            "label": "Customer Name"
+          },
+          {
+            "key": "reset_link",
+            "label": "Reset Link"
+          }
+        ],
+        "isActive": true,
+        "createdAt": "2026-02-22T08:38:44.420Z",
+        "updatedAt": "2026-02-22T08:38:44.420Z"
+      }
+    ],
+    "landingPage": []
+  }
+}

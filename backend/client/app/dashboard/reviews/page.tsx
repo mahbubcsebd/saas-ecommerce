@@ -9,11 +9,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Eye, ShieldAlert } from "lucide-react";
+import { Eye, ShieldAlert, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ReviewModerationModal } from "./components/ReviewModerationModal";
+import { CreateCustomReviewModal } from "./components/CreateCustomReviewModal";
 
 interface User {
   id: string;
@@ -57,6 +58,7 @@ export default function ReviewsPage() {
   // Modal State
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -81,8 +83,9 @@ export default function ReviewsPage() {
       if (res.ok) {
         const data = await res.json();
         setReviews(data.data);
-        if (data.pagination) {
-          setTotalPages(data.pagination.totalPages);
+        const pagination = data.pagination || data.meta?.pagination;
+        if (pagination) {
+          setTotalPages(pagination.totalPages);
         }
       }
     } catch (error) {
@@ -123,11 +126,18 @@ export default function ReviewsPage() {
 
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Review Moderation</h1>
-          <p className="text-gray-600 mt-1">Manage and moderate customer product reviews</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-zinc-50">Review Moderation</h1>
+          <p className="text-gray-600 dark:text-zinc-400 mt-1">Manage and moderate customer product reviews</p>
         </div>
+        <Button
+          onClick={() => setIsCustomModalOpen(true)}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 shadow-sm font-semibold rounded-lg cursor-pointer"
+        >
+          <Plus className="w-4 h-4" />
+          Add Custom Review
+        </Button>
       </div>
 
       {/* Filters & Search */}
@@ -259,13 +269,13 @@ export default function ReviewsPage() {
                       ))}
                     </div>
                   </TableCell>
-                  <TableCell className="max-w-[200px] sm:max-w-[300px] md:max-w-[400px] lg:max-w-[500px]">
+                  <TableCell className="max-w-[200px] md:max-w-[300px]">
                     <div className="w-full">
-                      <p className="text-xs md:text-sm text-gray-700 break-words whitespace-normal line-clamp-2 md:line-clamp-3" title={review.comment || ""}>
+                      <p className="text-xs md:text-sm text-gray-700 dark:text-zinc-300 truncate" title={review.comment || ""}>
                         {review.comment || <span className="text-gray-400 italic">No comment provided</span>}
                       </p>
                       {review.adminReply && (
-                        <p className="text-[10px] md:text-xs text-blue-600 mt-1 md:mt-2 break-words line-clamp-1 md:line-clamp-2" title={review.adminReply}>
+                        <p className="text-[10px] md:text-xs text-indigo-600 dark:text-indigo-400 mt-1 truncate" title={review.adminReply}>
                           <span className="font-semibold">Reply:</span> {review.adminReply}
                         </p>
                       )}
@@ -345,6 +355,12 @@ export default function ReviewsPage() {
           onUpdate={fetchReviews}
         />
       )}
+
+      <CreateCustomReviewModal
+        isOpen={isCustomModalOpen}
+        onClose={() => setIsCustomModalOpen(false)}
+        onCreated={fetchReviews}
+      />
     </div>
   );
 }
